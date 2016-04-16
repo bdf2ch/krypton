@@ -1,0 +1,28 @@
+/**********
+** TEXT ALIGN
+**********/
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.text-justify {
+  text-align: justify;
+}
+/**********
+** BLOCK FLOAT
+**********/
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}

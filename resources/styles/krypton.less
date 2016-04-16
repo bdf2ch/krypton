@@ -1,0 +1,64 @@
+@import "utils";
+
+@app-min-width: 1200px;
+@app-header-height: 45px;
+@app-header-color: #0B8A9E;
+@app-menu-width: 200px;
+@app-menu-color: #818385;
+
+
+/**********
+** KRYPTON ADMINISTRATION PANEL
+***********/
+html, body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+
+#app-header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: @app-header-height;
+  min-width: @app-min-width;
+  box-sizing: border-box;
+  border-bottom: 1px solid #d4d4d4;
+  .gradient(#fff, #f2f2f2);
+
+  #app-logo {
+    position: relative;
+    width: @app-menu-width;
+    height: 100%;
+    box-sizing: border-box;
+  }
+}
+
+
+#app-content-wrapper {
+  position: absolute;
+  top: @app-header-height;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  min-width: @app-min-width;
+
+  #app-menu {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    bottom: 0px;
+    width: @app-menu-width;
+    background: url("../images/menu_background.png");
+  }
+
+  #app-content {
+    position: absolute;
+    left: @app-menu-width;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+}
