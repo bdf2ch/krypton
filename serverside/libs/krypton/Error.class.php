@@ -1,7 +1,7 @@
 <?php
-    constant DEFAULT_ERROR = 0;
-    constant ENGINE_ERROR = 1;
-    constant DATABASE_ERROR = 2;
+    const DEFAULT_ERROR = 0;
+    const ENGINE_ERROR = 1;
+    const DATABASE_ERROR = 2;
 
     class Error {
         public $type = DEFAULT_ERROR;
@@ -17,8 +17,10 @@
                         $this -> code;
                     if ($errorMessage != null)
                         $this -> $errorMessage;
-                }
-            }
+                } else
+                    die("Тип ошибки указан неверно");
+            } else
+                die("Не указан тип ошибки");
         }
 
     };

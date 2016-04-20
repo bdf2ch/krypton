@@ -1,6 +1,7 @@
 <?php
+    require_once "serverside/libs/krypton/config.php";
     require_once "serverside/libs/krypton/Module.class.php";
-    require_once "serverside/libs/krypton/Error.class.php";
+    require_once "serverside/libs/krypton/utils.php"
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
 
 
@@ -9,15 +10,17 @@
         include "serverside/libs/krypton/modules/".$className."module.php";
         throw new Exception("Unable to load $className.");
     }
-    try {
-        $obj = new NonLoadableClass();
-    } catch (Exception $e) {
-        echo $e -> getMessage(), "\n";
-    }
+    //try {
+        //$obj = new NonLoadableClass();
+    //} catch (Exception $e) {
+    //    echo $e -> getMessage(), "\n";
+    //}
 
 
 
     class Krypton {
+        //private $errors = array();
+        private $errors = new ErrorManager();
         private $modules = array();
         private $title = "";
         private $description = "";
@@ -26,11 +29,30 @@
         private $template;
 
         function __construct($title, $description) {
-            if ($title != null && $title != "")
-                $this -> title = $title;
-            if ($description != null && $description != "")
-                $this -> description = $description;
-            $this -> template = new XTemplate("serverside/templates/application.html");
+            global $db_host;
+            global $db_name;
+            global $db_user;
+            global $db_password;
+
+            $this -> title = $title != null && gettype($title) == "string" ? $title : "";
+            $this -> description = $description != null && gettype($description) == "string" ? $description : "";
+            //$this -> template = new XTemplate("serverside/templates/application.html");
+
+            /* Установка соединения с БД */
+            $link = mysql_connect($db_host, $db_user, $db_password);
+            if (!$link) {
+                $error = new Error(2, mysql_errno(), mysql_error());
+                array_push($this -> errors, $error);
+                echo json_encode($this -> errors);
+            } else {
+                echo 'Connected successfully';
+                mysql_close($link);
+            }
+
+            $link = connect($db_host, $db_user, $db_password);
+            if (isError($link))
+                array_push($this -> errors, $link);
+            else
         }
 
         public function title ($title) {
