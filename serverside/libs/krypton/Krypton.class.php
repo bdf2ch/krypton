@@ -1,7 +1,13 @@
 <?php
     require_once "serverside/libs/krypton/config.php";
+    require_once "serverside/libs/krypton/Error.class.php";
+    require_once "serverside/libs/krypton/ErrorManager.class.php";
     require_once "serverside/libs/krypton/Module.class.php";
-    require_once "serverside/libs/krypton/utils.php"
+    require_once "serverside/libs/krypton/ModuleManager.class.php";
+    require_once "serverside/libs/krypton/DBManager.class.php";
+    require_once "serverside/libs/krypton/SessionManager.class.php";
+    require_once "serverside/libs/krypton/PropertiesManager.class.php";
+    require_once "serverside/libs/krypton/utils.php";
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
 
 
@@ -19,13 +25,10 @@
 
 
     class Krypton {
-        //private $errors = array();
-        private $errors = new ErrorManager();
-        private $modules = array();
-        private $title = "";
-        private $description = "";
-        private $inDebugMode = false;
-        private $inConstructionMode = false;
+        private $title;
+        private $description;
+        private $inDebugMode;
+        private $inConstructionMode;
         private $template;
 
         function __construct($title, $description) {
@@ -34,25 +37,59 @@
             global $db_user;
             global $db_password;
 
-            $this -> title = $title != null && gettype($title) == "string" ? $title : "";
-            $this -> description = $description != null && gettype($description) == "string" ? $description : "";
             //$this -> template = new XTemplate("serverside/templates/application.html");
 
-            /* Установка соединения с БД */
-            $link = mysql_connect($db_host, $db_user, $db_password);
-            if (!$link) {
-                $error = new Error(2, mysql_errno(), mysql_error());
-                array_push($this -> errors, $error);
-                echo json_encode($this -> errors);
-            } else {
-                echo 'Connected successfully';
-                mysql_close($link);
-            }
+            if ($title != null) {
+                if (gettype($title) == "string")
+                    $this -> title = $title;
+                else {
+                    ErrorManager::add (
+                        ERROR_TYPE_ENGINE,
+                        ERROR_APP_WRONG_TITLE_TYPE,
+                        "Указан неверный тип параметра при создании приложения - наименование приложения"
+                    );
+                    $this -> title = "";
+                }
+            } else
+                $this -> title = "";
 
-            $link = connect($db_host, $db_user, $db_password);
-            if (isError($link))
-                array_push($this -> errors, $link);
-            else
+
+            if ($description != null) {
+                if (gettype($description) == "string")
+                    $this -> title = $title;
+                else {
+                    ErrorManager::add (
+                        ERROR_TYPE_ENGINE,
+                        ERROR_APP_WRONG_DESCRIPTION_TYPE,
+                        "Указан неверный тип параметра при создании приложения - описание приложения"
+                    );
+                    $this -> description = "";
+                }
+            } else
+                $this -> description = "";
+
+            /* Установка соединения с БД */
+            //$link = mysql_connect($db_host, $db_user, $db_password);
+            //if (!$link) {
+            //    $error = new Error(2, mysql_errno(), mysql_error());
+            //    array_push($this -> errors, $error);
+            //    echo json_encode($this -> errors);
+            //} else {
+            //    echo 'Connected successfully';
+            //    mysql_close($link);
+            //}
+
+            DBManager::connect_mysql($db_host, $db_user, $db_password);
+            DBManager::create_db_mysql("krypton");
+            DBManager::select_db_mysql("krypton");
+            DBManager::create_table_mysql("test_table");
+            DBManager::add_column_mysql("test_table", "testcol", "INTEGER(11)");
+
+            SessionManager::init();
+            PropertiesManager::init();
+
+            DBManager::disconnect_mysql();
+
         }
 
         public function title ($title) {

@@ -13,5 +13,10 @@
 
     echo("<br><br><br><br><br>");
     var_dump($app);
+    echo("<br><br><br>");
+    var_dump(ErrorManager::getAll());
+
+    echo("<br><br><br>");
+    var_dump(DBManager::$link);
 
 ?>

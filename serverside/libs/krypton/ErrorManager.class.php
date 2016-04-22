@@ -2,16 +2,16 @@
 
     class ErrorManager {
 
-        private $errors = array();
+        private static $errors = array();
 
-        public function get () {
-            return $this -> errors;
-        };
-
-        public function add ($errorType, $errorCode, $errorMessage) {
-            $error = new Error($errorType, $errorCode, $errorMessage);
-            array_push($this -> errors, $error);
+        public static function getAll () {
+            return self::$errors;
         }
-    }
+
+        public static function add ($errorType, $errorCode, $errorMessage) {
+            $error = new Error($errorType, $errorCode, $errorMessage);
+            array_push(ErrorManager::$errors, $error);
+        }
+    };
 
 ?>
