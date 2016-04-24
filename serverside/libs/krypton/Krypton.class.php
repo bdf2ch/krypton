@@ -68,22 +68,9 @@
             } else
                 $this -> description = "";
 
-            /* Установка соединения с БД */
-            //$link = mysql_connect($db_host, $db_user, $db_password);
-            //if (!$link) {
-            //    $error = new Error(2, mysql_errno(), mysql_error());
-            //    array_push($this -> errors, $error);
-            //    echo json_encode($this -> errors);
-            //} else {
-            //    echo 'Connected successfully';
-            //    mysql_close($link);
-            //}
-
             DBManager::connect_mysql($db_host, $db_user, $db_password);
             DBManager::create_db_mysql("krypton");
             DBManager::select_db_mysql("krypton");
-            DBManager::create_table_mysql("test_table");
-            DBManager::add_column_mysql("test_table", "testcol", "INTEGER(11)");
 
             SessionManager::init();
             PropertiesManager::init();
