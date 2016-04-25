@@ -7,6 +7,8 @@
     const ERROR_APP_WRONG_DESCRIPTION_TYPE = 000002;
     const ERROR_MODULE_LOAD_NO_TITLE = 000003;
     const ERROR_MODULE_LOAD_WRONG_TITLE_TYPE = 000004;
+    const ERROR_ENGINE_GET_PROPERTY_NO_TITLE = 0005;
+    const ERROR_ENGINE_GET_PROPERTY_WRONG_TITLE_TYPE = 0006;
 
     const ERROR_DB_CONNECTION_NO_HOST = 2001;
     const ERROR_DB_CONNECTION_NO_USERNAME = 2002;
@@ -31,6 +33,15 @@
     const ERROR_DB_DATA_INSERT_NO_VALUES = 2021;
     const ERROR_DB_DATA_INSERT_WRONG_VALUES_TYPE = 2022;
     const ERROR_DB_DATA_INSERT_COLUMNS_VALUES_MISMATCH = 2023;
+    const ERROR_DB_ENCODING_NO_TITLE = 2024;
+    const ERROR_DB_ENCODING_WRONG_TITLE_TYPE = 2025;
+    const ERROR_DB_SETTINGS_TABLE_DOES_NOT_EXISTS = 2026;
+    const ERROR_DB_SELECT_NO_TABLE_TITLE = 2027;
+    const ERROR_DB_SELECT_WRONG_TITLE_TYPE = 2028;
+    const ERROR_DB_SELECT_NO_COLUMNS = 2029;
+    const ERROR_DB_SELECT_WRONG_COLUMNS_TYPE = 2030;
+    const ERROR_DB_SELECT_NO_CONDITION = 2031;
+    const ERROR_DB_SELECT_WRONG_CONDITION_TYPE = 2032;
 
 
 
@@ -49,11 +60,16 @@
                     if ($errorCode != null)
                         $this -> code = $errorCode;
                     if ($errorMessage != null)
-                        $this -> errorMessage = $errorMessage;
+                        $this -> message = $errorMessage;
                 } else
                     die("Тип ошибки указан неверно");
             } else
                 die("Не указан тип ошибки");
+        }
+
+
+        public function send () {
+            echo(json_encode($this));
         }
 
     };

@@ -19,22 +19,25 @@
                             ERROR_TYPE_DATABASE,
                             mysql_errno(),
                             mysql_error()
-                        );
+                        ) -> send();
                         DBManager::$link = null;
-                    } else
+                        return false;
+                    } else {
                         DBManager::$link = $link;
+                        return true;
+                    }
                 } else
                     ErrorManager::add (
                         ERROR_TYPE_DATABASE,
                         ERROR_DB_CONNECTION_NO_USERNAME,
                         "Не указано имя пользователя при подключении к БД"
-                    );
+                    ) -> send();
             } else
                 ErrorManager::add (
                     ERROR_TYPE_DATABASE,
                     ERROR_DB_CONNECTION_NO_HOST,
                     "Не указан адрес сервера при подключении к БД"
-                );
+                ) -> send();
         }
 
 
@@ -63,6 +66,47 @@
 
 
 
+        public static function set_encoding_mysql ($title) {
+            if ($title != null) {
+                if (gettype($title) == "string") {
+                    if (DBManager::$link != null) {
+                        $query = mysql_query("SET NAMES $title", DBManager::$link);
+                        if (!$query) {
+                            ErrorManager::add (
+                                ERROR_TYPE_DATABASE,
+                                mysql_errno(),
+                                mysql_error()
+                            ) -> send();
+                            return false;
+                        } else
+                            return true;
+                    } else {
+                        ErrorManager::add (
+                            ERROR_TYPE_DATABASE,
+                            ERROR_DB_NO_CONNECTION,
+                            "Не удалось установить кодировку соединения - соединение отсутствует"
+                        ) -> send();
+                        return false;
+                    }
+                } else {
+                    ErrorManager::add (
+                        ERROR_TYPE_DATABASE,
+                        ERROR_DB_ENCODING_WRONG_TITLE_TYPE,
+                        "Задан неверный тип параметра при выборе БД - наименование БД"
+                    ) -> send();
+                    return false;
+                }
+            } else {
+                ErrorManager::add (
+                    ERROR_TYPE_DATABASE,
+                    ERROR_DB_ENCODING_NO_TITLE,
+                    "Не указан параметр при установке кодировки соединения"
+                ) -> send();
+                return false;
+            }
+        }
+
+
         /**
         * Создает таблицу в БД MySQL
         * @dbName - Наименование таблицы
@@ -71,13 +115,16 @@
             if ($dbName != null) {
                 if (gettype($dbName) == "string") {
                     if (DBManager::$link != null) {
-                        $query = mysql_query("CREATE DATABASE IF NOT EXISTS $dbName", DBManager::$link);
-                        if (!$query)
+                        $query = mysql_query("CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8 COLLATE utf8_general_ci", DBManager::$link);
+                        if (!$query) {
                             ErrorManager::add (
                                 ERROR_TYPE_DATABASE,
                                 mysql_errno(),
                                 mysql_error()
                             );
+                            return false;
+                        } else
+                            return true;
                     } else
                         ErrorManager::add (
                             ERROR_TYPE_DATABASE,
@@ -109,30 +156,39 @@
                 if (gettype($dbName) == "string") {
                     if (DBManager::$link != null) {
                         $query = mysql_query("USE $dbName", DBManager::$link);
-                        if (!$query)
+                        if (!$query) {
                             ErrorManager::add (
                                 ERROR_TYPE_DATABASE,
                                 mysql_errno(),
                                 mysql_error()
-                            );
-                    } else
+                            ) -> send();
+                            return false;
+                        } else
+                            return true;
+                    } else {
                         ErrorManager::add (
                             ERROR_TYPE_DATABASE,
                             ERROR_DB_NO_CONNECTION,
                             "Не удалось разорвать соединение с БД - соединение отсутствует"
-                        );
-                } else
+                        ) -> send();
+                        return false;
+                    }
+                } else {
                     ErrorManager::add (
                         ERROR_TYPE_DATABASE,
                         ERROR_DB_SELECT_DB_WRONG_TITLE_TYPE,
                         "Задан неверный тип параметра при выборе БД - наименование БД"
-                    );
-            } else
+                    ) -> send();
+                    return false;
+                }
+            } else {
                 ErrorManager::add (
                     ERROR_TYPE_DATABASE,
                     ERROR_DB_SELECT_DB_NO_TITLE,
                     "Не указан параметр при выборе БД - наименование БД"
-                );
+                ) -> send();
+                return false;
+            }
         }
 
 
@@ -146,30 +202,39 @@
                 if (gettype($tableName) == "string") {
                     if (DBManager::$link != null) {
                         $query = mysql_query("CREATE TABLE IF NOT EXISTS $tableName (id INT(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))", DBManager::$link);
-                        if (!$query)
+                        if (!$query) {
                             ErrorManager::add (
                                 ERROR_TYPE_DATABASE,
                                 mysql_errno(),
                                 mysql_error()
-                            );
-                    } else
+                            ) -> send();
+                            return false;
+                        } else
+                            return true;
+                    } else {
                         ErrorManager::add (
                             ERROR_TYPE_DATABASE,
                             ERROR_DB_NO_CONNECTION,
                             "Не удалось разорвать соединение с БД - соединение отсутствует"
-                        );
-                } else
+                        ) -> send();
+                        return false;
+                    }
+                } else {
                     ErrorManager::add (
                         ERROR_TYPE_DATABASE,
                         ERROR_DB_TABLE_CREATE_WRONG_TITLE_TYPE,
                         "Задан неверный тип параметра при создании таблицы БД - наименование таблицы"
-                    );
-            } else
+                    ) -> send();
+                    return false;
+                }
+            } else {
                 ErrorManager::add (
                     ERROR_TYPE_DATABASE,
                     ERROR_DB_TABLE_CREATE_NO_TITLE,
                     "Не указан параметр при создании таблицы - наименование таблицы"
-                );
+                ) -> send();
+                return false;
+            }
         }
 
 
@@ -183,24 +248,31 @@
                                 if (gettype($columnDefinition) == "string") {
                                     if (DBManager::$link != null) {
                                         $query = mysql_query("ALTER TABLE $tableName ADD COLUMN $columnName $columnDefinition", DBManager::$link);
-                                        if (!$query)
+                                        if (!$query) {
                                             ErrorManager::add (
                                                 ERROR_TYPE_DATABASE,
                                                 mysql_errno(),
                                                 mysql_error()
-                                            );
-                                    } else
+                                            ) -> send();
+                                            return false;
+                                        } else
+                                            return true;
+                                    } else {
                                         ErrorManager::add (
                                             ERROR_TYPE_DATABASE,
                                             ERROR_DB_NO_CONNECTION,
                                             "Не удалось добавить столбец в таблицу - отсутствует соединение с БД"
-                                        );
-                                } else
+                                        ) -> send();
+                                        return false;
+                                    }
+                                } else {
                                     ErrorManager::add (
                                         ERROR_TYPE_DATABASE,
                                         ERROR_DB_COLUMN_ADD_WRONG_PROPERTIES_TYPE,
                                         "Задан неверный тип параметра при создании таблицы - наименование столбца"
-                                    );
+                                    ) -> send();
+                                    return false;
+                                }
                             } else
                                 ErrorManager::add (
                                     ERROR_TYPE_DATABASE,
@@ -240,36 +312,43 @@
                 if (gettype($tableName) == "string") {
                     if (DBManager::$link != null) {
                         $query = mysql_query("SELECT * FROM information_schema.tables WHERE table_name = '$tableName' LIMIT 1", DBManager::$link);
-                        if (!$query)
+                        if (!$query) {
                             ErrorManager::add (
                                 ERROR_TYPE_DATABASE,
                                 mysql_errno(),
                                 mysql_error()
-                            );
-                        else {
+                            ) -> send();
+                            return false;
+                        } else {
                             if (mysql_num_rows($query) > 0)
                                 return true;
                             else
                                 return false;
                         }
-                    } else
+                    } else {
                         ErrorManager::add (
                             ERROR_TYPE_DATABASE,
                             ERROR_DB_NO_CONNECTION,
                             "Не удалось проверить наличие таблицы - отсутствует соединение с БД"
-                        );
-                } else
+                        ) -> send();
+                        return false;
+                    }
+                } else {
                     ErrorManager::add (
                         ERROR_TYPE_DATABASE,
                         ERROR_DB_TABLE_CHECK_WRONG_TITLE_TYPE,
                         "Задан неверный тип параметра при проверке существования таблицы - наименование таблицы"
-                    );
-            } else
+                    ) -> send();
+                    return false;
+                }
+            } else {
                 ErrorManager::add (
                     ERROR_TYPE_DATABASE,
                     ERROR_DB_TABLE_CHECK_NO_TABLE_TITLE,
                     "Не указан параметр при проверке существования таблицы - наименование таблицы"
-                );
+                ) -> send();;
+                return false;
+            }
         }
 
 
@@ -294,65 +373,164 @@
                                                 $vals .= $val;
                                                 $vals .= $key < count($values) - 1 ? ", " : "";
                                             }
-                                            echo($cols);
-                                            echo("<br>");
-                                            echo($vals);
 
                                             $query = mysql_query("INSERT INTO $tableName ($cols) VALUES ($vals)", DBManager::$link);
-                                            if (!$query)
+                                            if (!$query) {
                                                 ErrorManager::add (
                                                     ERROR_TYPE_DATABASE,
                                                     mysql_errno(),
                                                     mysql_error()
-                                                );
+                                                ) -> send();
+                                                return false;
+                                            } else
+                                                return true;
                                         } else
                                             ErrorManager::add (
                                                 ERROR_TYPE_DATABASE,
                                                 ERROR_DB_NO_CONNECTION,
                                                 "Не удалось проверить наличие таблицы - отсутствует соединение с БД"
-                                            );
+                                            ) -> send();
+                                            return false;
                                     } else
                                         ErrorManager::add (
                                             ERROR_TYPE_DATABASE,
                                             ERROR_DB_DATA_INSERT_COLUMNS_VALUES_MISMATCH,
                                             "Не совпадает количество столбцов и значений при добавлении данных в БД"
-                                        );
+                                        ) -> send();
+                                        return false;
                                 } else
                                     ErrorManager::add (
                                         ERROR_TYPE_DATABASE,
                                         ERROR_DB_DATA_INSERT_WRONG_VALUES_TYPE,
                                         "Задан неверный тип параметра при добавлении данных - массив значений"
-                                    );
+                                    ) -> send();
+                                    return false;
                             } else
                                 ErrorManager::add (
                                     ERROR_TYPE_DATABASE,
                                     ERROR_DB_DATA_INSERT_NO_VALUES,
                                     "Не указан параметр при добавлении данных - массив значений"
-                                );
+                                ) -> send();
+                                return false;
                         } else
                             ErrorManager::add (
                                 ERROR_TYPE_DATABASE,
                                 ERROR_DB_DATA_INSERT_WRONG_COLUMNS_TYPE,
                                 "Задан неверный тип параметра при добавлении данных - массив столбцов"
-                            );
+                            ) -> send();
+                            return false;
                     } else
                         ErrorManager::add (
                             ERROR_TYPE_DATABASE,
                             ERROR_DB_DATA_INSERT_NO_COLUMNS,
                             "Не указан параметр при добавлении данных - массив столбцов"
-                        );
+                        ) -> send();
+                        return false;
                 } else
                     ErrorManager::add (
                         ERROR_TYPE_DATABASE,
                         ERROR_DB_TABLE_CHECK_WRONG_TITLE_TYPE,
                         "Задан неверный тип параметра при добавлении данных - наименование таблицы"
-                    );
+                    ) -> send();
+                    return false;
             } else
                 ErrorManager::add (
                     ERROR_TYPE_DATABASE,
                     ERROR_DB_DATA_INSERT_NO_TABLE_TITLE,
                     "Не указан параметр при добавлении данных - наименование таблицы"
-                );
+                ) -> send();
+                return false;
+        }
+
+
+        public static function select_mysql ($tableName, $columns, $condition) {
+            if ($tableName != null) {
+                if (gettype($tableName) != "string") {
+                    ErrorManager::add (
+                        ERROR_TYPE_DATABASE,
+                        ERROR_DB_SELECT_WRONG_TITLE_TYPE,
+                        "Задан неверный тип параметра при выборке данных - наименование таблицы"
+                    ) -> send();
+                    return false;
+                } else {
+                    if ($columns != null) {
+                        if (gettype($columns) == "array") {
+                            if ($condition != null) {
+                                if (gettype($condition) == "string") {
+
+                                    if (DBManager::$link != null) {
+                                        $cols = "";
+                                        foreach ($columns as $key => $column) {
+                                            $cols .= $column;
+                                            $cols .= $key < count($columns) - 1 ? ", " : "";
+                                        }
+                                        $cond = $condition != "''" ? " WHERE ".$condition : "";
+                                        $query = mysql_query("SELECT $cols FROM $tableName".$cond, DBManager::$link);
+                                        if (!$query) {
+                                            ErrorManager::add (
+                                                ERROR_TYPE_DATABASE,
+                                                mysql_errno(),
+                                                mysql_error()
+                                            ) -> send();
+                                            return false;
+                                        } else {
+                                            $result = array();
+                                            for ($i = 0; $i < mysql_num_rows($query); $i++) {
+                                                $parsed = mysql_fetch_array($query);
+                                                array_push($result, $parsed);
+                                            }
+                                            return $result;
+                                        }
+                                    } else {
+                                        ErrorManager::add (
+                                            ERROR_TYPE_DATABASE,
+                                            ERROR_DB_NO_CONNECTION,
+                                            "Не удалось выбрать данные - отсутствует соединение с БД"
+                                        ) -> send();
+                                        return false;
+                                    }
+
+                                } else {
+                                    ErrorManager::add (
+                                        ERROR_TYPE_DATABASE,
+                                        ERROR_DB_SELECT_WRONG_CONDITION_TYPE,
+                                       "Задан неверный тип параметра при выборке данных - условие выборки"
+                                    ) -> send();
+                                    return false;
+                                }
+                            } else {
+                                ErrorManager::add (
+                                    ERROR_TYPE_DATABASE,
+                                    ERROR_DB_SELECT_NO_CONDITION,
+                                    "Не указан параметр при выборке данных - условие выборки"
+                                ) -> send();
+                                return false;
+                            }
+                        } else {
+                            ErrorManager::add (
+                                ERROR_TYPE_DATABASE,
+                                ERROR_DB_SELECT_WRONG_COLUMNS_TYPE,
+                                "Задан неверный тип параметра при выборке данных - массив столбцов"
+                            ) -> send();
+                            return false;
+                        }
+                    } else {
+                        ErrorManager::add (
+                            ERROR_TYPE_DATABASE,
+                            ERROR_DB_SELECT_NO_COLUMNS,
+                            "Не указан параметр при выборке данных - массив столбцов"
+                        ) -> send();
+                        return false;
+                    }
+                }
+            } else {
+                ErrorManager::add (
+                    ERROR_TYPE_DATABASE,
+                    ERROR_DB_SELECT_NO_TABLE_TITLE,
+                    "Не указан параметр при выборке данных - наименование таблицы"
+                ) -> send();
+                return false;
+            }
         }
 
     };

@@ -1,4 +1,6 @@
 <?php
+
+if (!defined("ENGINE_INSTALL_MODE")) {
     require_once "serverside/libs/krypton/config.php";
     require_once "serverside/libs/krypton/Error.class.php";
     require_once "serverside/libs/krypton/ErrorManager.class.php";
@@ -9,13 +11,14 @@
     require_once "serverside/libs/krypton/PropertiesManager.class.php";
     require_once "serverside/libs/krypton/utils.php";
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
+}
 
 
 
-    function __autoload($className) {
-        include "serverside/libs/krypton/modules/".$className."module.php";
-        throw new Exception("Unable to load $className.");
-    }
+    //function __autoload($className) {
+    //    include "serverside/libs/krypton/modules/".$className."module.php";
+    //    throw new Exception("Unable to load $className.");
+    //}
     //try {
         //$obj = new NonLoadableClass();
     //} catch (Exception $e) {
@@ -25,17 +28,65 @@
 
 
     class Krypton {
-        private $title;
-        private $description;
+        private static $title;
+        private static $description;
         private $inDebugMode;
         private $inConstructionMode;
         private $template;
+
+        public $modules;
 
         function __construct($title, $description) {
             global $db_host;
             global $db_name;
             global $db_user;
             global $db_password;
+
+            $this -> modules = new ModuleManager();
+
+            $this -> modules -> load = function ($moduleName) {
+                if ($moduleName != null) {
+                    if (gettype($moduleName) == "string") {
+                        $module = new $moduleName();
+                        $module -> init();
+                    } else {
+                        ErrorManager::add (
+                            ERROR_TYPE_ENGINE,
+                            ERROR_MODULE_LOAD_WRONG_TITLE_TYPE,
+                            "Указан неверный тип параметра при загрузке модуля"
+                        ) -> send();
+                        return false;
+                    }
+                } else {
+                    ErrorManager::add (
+                        ERROR_TYPE_ENGINE,
+                        ERROR_MODULE_LOAD_NO_TITLE,
+                        "Не указано наименование загружаемого модуля"
+                    );
+                }
+            };
+
+            $this -> modules -> isLoaded = function ($moduleName) {
+                if ($moduleName != null) {
+                    if (gettype($moduleName) == "string") {
+
+                    } else {
+                        ErrorManager::add (
+                            ERROR_TYPE_ENGINE,
+                            ERROR_MODULE_LOAD_WRONG_TITLE_TYPE,
+                            "Указан неверный тип параметра при прорверке загруженного модуля"
+                        ) -> send();
+                        return false;
+                    }
+                } else {
+                    ErrorManager::add (
+                        ERROR_TYPE_ENGINE,
+                        ERROR_MODULE_LOAD_NO_TITLE,
+                        "Не задан параметр при проверке загруженного модуля"
+                    );
+                    return false;
+                }
+            };
 
             //$this -> template = new XTemplate("serverside/templates/application.html");
 
@@ -48,10 +99,10 @@
                         ERROR_APP_WRONG_TITLE_TYPE,
                         "Указан неверный тип параметра при создании приложения - наименование приложения"
                     );
-                    $this -> title = "";
+                    $this -> title = "krypron application";
                 }
             } else
-                $this -> title = "";
+                $this -> title = "krypton application";
 
 
             if ($description != null) {
@@ -69,20 +120,31 @@
                 $this -> description = "";
 
             DBManager::connect_mysql($db_host, $db_user, $db_password);
-            DBManager::create_db_mysql("krypton");
+            //DBManager::create_db_mysql("krypton");
             DBManager::select_db_mysql("krypton");
 
-            SessionManager::init();
-            PropertiesManager::init();
 
-            DBManager::disconnect_mysql();
+            PropertiesManager::init();
+            //SessionManager::init();
+
+            echo("</br></br>");
+            var_dump(PropertiesManager::getByCode("session_duration"));
+
+            //echo("</br></br>");
+            //var_dump(PropertiesManager::get("session_duration"));
+
+            //DBManager::disconnect_mysql();
 
         }
 
-        public function title ($title) {
+        public static function title ($title) {
             if ($title != null && gettype($title) == "string")
-                $this -> title = $title;
-            return $this -> title;
+                self::$title = $title;
+            return self::$title;
+        }
+
+        public static function get_title () {
+            return self::$title;
         }
 
         public function description ($description) {
@@ -111,6 +173,24 @@
         public function display () {
             $this -> template -> parse("main");
             $this -> template -> out("main");
+        }
+
+        public static function install () {
+            global $db_host;
+            global $db_name;
+            global $db_user;
+            global $db_password;
+
+            DBManager::connect_mysql($db_host, $db_user, $db_password);
+            if (DBManager::create_db_mysql("krypton")) {
+                if (DBManager::select_db_mysql("krypton")) {
+                    if ( DBManager::set_encoding_mysql("utf8")) {
+                        echo("Установка Krypton core выполнена успешно</br>");
+                    }
+                } else
+                    echo("Не удалось выполнить установку Krypton core</br>");
+            } else
+                echo("Не удалось выполнить установку Krypton core</br>");
         }
     };
 
