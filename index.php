@@ -7,6 +7,7 @@
     /*** Создание и инициализация нового приложения Krypton ***/
     $app = new Krypton("test app", "test app description");
     $app -> modules -> load("Session");
+    $app -> modules -> load("LDAP");
 
 
 

@@ -16,7 +16,7 @@
         //}
 
         abstract public function init();
-        abstract public function install();
+        abstract public static function install();
     };
 
 ?>

@@ -13,6 +13,12 @@ if (!defined("ENGINE_INSTALL_MODE")) {
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
 }
 
+function __autoload($className) {
+            echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");
+            include "serverside/libs/krypton/modules/".$className.".module.php";
+            //throw new Exception("Unable to load $className.");
+}
+
 
 
     //function __autoload($className) {

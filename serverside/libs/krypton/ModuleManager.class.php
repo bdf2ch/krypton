@@ -1,9 +1,9 @@
 <?php
-    function __autoload($className) {
-            echo("../serverside/libs/krypton/modules/".$className.".module.php"."</br>");
-            include "serverside/libs/krypton/modules/".$className.".module.php";
+    //function __autoload($className) {
+    //        echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");
+    //        include "serverside/libs/krypton/modules/".$className.".module.php";
             //throw new Exception("Unable to load $className.");
-    }
+    //}
 
     class ModuleManager {
         private $modules = array();
