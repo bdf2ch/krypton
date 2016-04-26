@@ -1,7 +1,7 @@
 <?php
 
     class LDAP extends Module {
-        public function install () {
+        public static function install () {
 
         }
 

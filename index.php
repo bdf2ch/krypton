@@ -6,8 +6,10 @@
 
     /*** Создание и инициализация нового приложения Krypton ***/
     $app = new Krypton("test app", "test app description");
+    $app -> modules -> load("Settings");
     $app -> modules -> load("Session");
     $app -> modules -> load("LDAP");
+
 
 
 
@@ -20,5 +22,8 @@
 
     echo("<br><br><br>");
     var_dump(DBManager::$link);
+
+    echo("<br><br><br>");
+        var_dump(Settings::getByCode("session_duration"));
 
 ?>

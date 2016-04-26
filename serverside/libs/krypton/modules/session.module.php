@@ -1,13 +1,8 @@
 <?php
-    //echo("session module included</br>");
+
     class Session extends Module {
 
-        public function _construct {
-            parent::_construct();
-        }
-
         public static function install () {
-            echo("session install");
             if (!DBManager::is_table_exists_mysql("sessions")) {
                 if (DBManager::create_table_mysql("sessions")) {
                     if (DBManager::add_column_mysql("sessions", "user_id", "int(11) NOT NULL default 0") &&
@@ -15,8 +10,8 @@
                         DBManager::add_column_mysql("sessions", "start", "int(11) NOT NULL default 0") &&
                         DBManager::add_column_mysql("sessions", "end", "int(11) NOT NULL default 0")) {
                         if (DBManager::is_table_exists_mysql("settings")) {
-                            if (PropertiesManager::add("''", "'session_duration'", "'Продолжительность сессии пользователя'", "'integer'", 2000, 1))
-                                echo("Установка SessionManager выполнена успешно</br>");
+                            if (Settings::add("'session'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", "'integer'", 2000, 1))
+                                echo("Установка модуля Session выполнена успешно</br>");
                         }
                     } else
                         echo("Не удалось выполнить установку SessionManager");
@@ -30,12 +25,13 @@
             session_start();
             echo("session module init</br>");
             if (isset($_COOKIE["krypton_session"])) {
-                echo("session identified: ".$_COOKIE["krypton_session"]);
+                echo("session identified: ".$_COOKIE["krypton_session"]."</br>");
             } else {
                 $token = self::generate_token(32);
-                DBManager::insert_row_mysql("sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + PropertiesManager::getByCode("session_duration")]);
+                DBManager::insert_row_mysql("sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
                 setcookie("krypton_session", $token);
             }
+            $this -> setLoaded(true);
          }
 
 

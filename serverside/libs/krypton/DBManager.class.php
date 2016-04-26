@@ -443,6 +443,64 @@
         }
 
 
+        public static function update_row_mysql ($table, $columns, $values, $condition) {
+            if ($table == null) {
+                /**/
+            } else {
+                if (gettype($table) != "string") {
+                    /**/
+                } else {
+                    if ($columns == null) {
+                        /**/
+                    } else {
+                        if (gettype($columns) != "array") {
+                            /**/
+                        } else {
+                            if ($values == null) {
+                                /**/
+                            } else {
+                                if (gettype($values) != "array") {
+                                    /**/
+                                } else {
+                                    if (count($columns) != count($values)) {
+                                        /**/
+                                    } else {
+                                        if ($condition != null && gettype($condition) != "string") {
+                                            /**/
+                                        } else {
+                                            if (DBManager::$link == null) {
+                                                /**/
+                                            } else {
+                                                $colsAndVals = "";
+                                                foreach ($columns as $colkey => $column) {
+                                                    $colsAndVals .= $column."=".$values[$colkey];
+                                                    $colsAndVals .= $colkey < count($columns) - 1 ? ", " : "";
+                                                }
+                                                $colsAndVals .= $condition != null ? " WHERE $condition" : "";
+                                                echo("</br></br>colsAndVals: ".$colsAndVals."</br>");
+                                                $query = mysql_query("UPDATE $table SET $colsAndVals", DBManager::$link);
+                                                if ($query == false) {
+                                                    ErrorManager::add (
+                                                        ERROR_TYPE_DATABASE,
+                                                        mysql_errno(),
+                                                        mysql_error()
+                                                    ) -> send();
+                                                    return false;
+                                                } else {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
         public static function select_mysql ($tableName, $columns, $condition) {
             if ($tableName != null) {
                 if (gettype($tableName) != "string") {

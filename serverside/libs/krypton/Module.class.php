@@ -5,6 +5,8 @@
         private $description;
         private $version;
         private $clientSideModule = "";
+        private static $isModuleInstalled = false;
+        private static $isModuleLoaded = false;
 
         //public function __construct($moduleTitle, $moduleDescription) {
         //    if ($moduleTitle != null && gettype($moduleTitle) == "string") {
@@ -17,6 +19,30 @@
 
         abstract public function init();
         abstract public static function install();
+
+
+        protected function setInstalled ($flag) {
+            if ($flag != null && gettype($flag) == "boolean")
+                self::$isModuleInstalled = $flag;
+            echo("module is installed = ".$flag."</br>");
+        }
+
+
+        public static function isInstalled () {
+            return self::$isModuleInstalled;
+        }
+
+
+        protected function setLoaded ($flag) {
+            if ($flag != null && gettype($flag) == "boolean")
+                self::$isModuleLoaded = $flag;
+            echo("module is loaded = ".$flag."</br>");
+        }
+
+
+        public static function isLoaded () {
+            return self::$isModuleLoaded;
+        }
     };
 
 ?>

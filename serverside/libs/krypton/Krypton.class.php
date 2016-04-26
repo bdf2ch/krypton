@@ -1,5 +1,11 @@
 <?php
 
+//function __autoload($className) {
+//    echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");
+//    include "serverside/libs/krypton/modules/".$className.".module.php";
+            //throw new Exception("Unable to load $className.");
+//}
+
 if (!defined("ENGINE_INSTALL_MODE")) {
     require_once "serverside/libs/krypton/config.php";
     require_once "serverside/libs/krypton/Error.class.php";
@@ -7,17 +13,18 @@ if (!defined("ENGINE_INSTALL_MODE")) {
     require_once "serverside/libs/krypton/Module.class.php";
     require_once "serverside/libs/krypton/ModuleManager.class.php";
     require_once "serverside/libs/krypton/DBManager.class.php";
-    require_once "serverside/libs/krypton/SessionManager.class.php";
-    require_once "serverside/libs/krypton/PropertiesManager.class.php";
-    require_once "serverside/libs/krypton/utils.php";
+    //require_once "serverside/libs/krypton/SessionManager.class.php";
+    //require_once "serverside/libs/krypton/PropertiesManager.class.php";
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
+
+    function __autoload($className) {
+        //echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");
+        include "serverside/libs/krypton/modules/".$className.".module.php";
+                //throw new Exception("Unable to load $className.");
+    }
 }
 
-function __autoload($className) {
-            echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");
-            include "serverside/libs/krypton/modules/".$className.".module.php";
-            //throw new Exception("Unable to load $className.");
-}
+
 
 
 
@@ -128,19 +135,6 @@ function __autoload($className) {
             DBManager::connect_mysql($db_host, $db_user, $db_password);
             //DBManager::create_db_mysql("krypton");
             DBManager::select_db_mysql("krypton");
-
-
-            PropertiesManager::init();
-            //SessionManager::init();
-
-            echo("</br></br>");
-            var_dump(PropertiesManager::getByCode("session_duration"));
-
-            //echo("</br></br>");
-            //var_dump(PropertiesManager::get("session_duration"));
-
-            //DBManager::disconnect_mysql();
-
         }
 
         public static function title ($title) {
