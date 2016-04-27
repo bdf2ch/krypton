@@ -15,6 +15,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
     require_once "serverside/libs/krypton/DBManager.class.php";
     //require_once "serverside/libs/krypton/SessionManager.class.php";
     //require_once "serverside/libs/krypton/PropertiesManager.class.php";
+    //require_once "serverside/libs/krypton/Controller.class.php";
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
 
     function __autoload($className) {
@@ -23,6 +24,8 @@ if (!defined("ENGINE_INSTALL_MODE")) {
                 //throw new Exception("Unable to load $className.");
     }
 }
+
+
 
 
 
@@ -50,11 +53,6 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         public $modules;
 
         function __construct($title, $description) {
-            global $db_host;
-            global $db_name;
-            global $db_user;
-            global $db_password;
-
             $this -> modules = new ModuleManager();
 
             $this -> modules -> load = function ($moduleName) {
@@ -132,8 +130,18 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             } else
                 $this -> description = "";
 
-            DBManager::connect_mysql($db_host, $db_user, $db_password);
+            //DBManager::connect_mysql($db_host, $db_user, $db_password);
             //DBManager::create_db_mysql("krypton");
+            //DBManager::select_db_mysql("krypton");
+        }
+
+        public function init () {
+            global $db_host;
+            global $db_name;
+            global $db_user;
+            global $db_password;
+
+            DBManager::connect_mysql($db_host, $db_user, $db_password);
             DBManager::select_db_mysql("krypton");
         }
 
@@ -170,10 +178,12 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             }
         }
 
+
         public function display () {
             $this -> template -> parse("main");
             $this -> template -> out("main");
         }
+
 
         public static function install () {
             global $db_host;
@@ -181,16 +191,18 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             global $db_user;
             global $db_password;
 
-            DBManager::connect_mysql($db_host, $db_user, $db_password);
-            if (DBManager::create_db_mysql("krypton")) {
-                if (DBManager::select_db_mysql("krypton")) {
-                    if ( DBManager::set_encoding_mysql("utf8")) {
-                        echo("Установка Krypton core выполнена успешно</br>");
-                    }
+            if (DBManager::connect_mysql($db_host, $db_user, $db_password)) {
+                if (DBManager::create_db_mysql("krypton")) {
+                    if (DBManager::select_db_mysql("krypton")) {
+                        if ( DBManager::set_encoding_mysql("utf8")) {
+                            echo("Установка Krypton.Core выполнена успешно</br>");
+                        }
+                    } else
+                        echo("Не удалось выполнить установку Krypton.Core</br>");
                 } else
-                    echo("Не удалось выполнить установку Krypton core</br>");
-            } else
-                echo("Не удалось выполнить установку Krypton core</br>");
+                    echo("Не удалось выполнить установку Krypton.Core</br>");
+            }
+
         }
     };
 

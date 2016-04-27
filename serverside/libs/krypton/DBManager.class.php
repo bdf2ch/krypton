@@ -11,61 +11,61 @@
         * @dbpassword - Пароль пользователя БД
         **/
         public static function connect_mysql ($dbhost, $dbuser, $dbpassword) {
-            if ($dbhost != null) {
-                if ($dbuser != null) {
+            if ($dbhost == null) {
+                Errors::push(2001);
+                return false;
+            } else {
+                if ($dbuser == null) {
+                    Errors::push(2002);
+                    return false;
+                } else {
                     $link = mysql_connect($dbhost, $dbuser, $dbpassword);
                     if (!$link) {
-                        ErrorManager::add (
-                            ERROR_TYPE_DATABASE,
-                            mysql_errno(),
-                            mysql_error()
-                        ) -> send();
-                        DBManager::$link = null;
+                        Errors::push_generic_mysql();
+                        self::$link = null;
                         return false;
                     } else {
-                        DBManager::$link = $link;
+                        self::$link = $link;
                         return true;
                     }
-                } else
-                    ErrorManager::add (
-                        ERROR_TYPE_DATABASE,
-                        ERROR_DB_CONNECTION_NO_USERNAME,
-                        "Не указано имя пользователя при подключении к БД"
-                    ) -> send();
-            } else
-                ErrorManager::add (
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_CONNECTION_NO_HOST,
-                    "Не указан адрес сервера при подключении к БД"
-                ) -> send();
+                }
+            }
         }
 
+
+        /**
+        * Проверяет, установлено ли соединение с БД
+        **/
+        public static function is_connected () {
+            $result = self::$link != null ? true : false;
+            return $result;
+        }
 
 
         /**
         * Разрывает соединение с БД MySQL
         **/
         public static function disconnect_mysql () {
-            if (DBManager::$link != null) {
-                $result = mysql_close(DBManager::$link);
-                if (!$result) {
-                    ErrorManager::add (
-                        ERROR_TYPE_DATABASE,
-                        mysql_errno(),
-                        mysql_error()
-                    );
-                } else
-                    DBManager::$link = null;
-            } else
-                ErrorManager::add (
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_NO_CONNECTION,
-                    "Не удалось разорвать соединение с БД - соединение отсутствует"
-                );
+            if (!self::is_connected()) {
+                Errors::push(2004);
+                return false;
+            } else {
+                 $result = mysql_close(DBManager::$link);
+                 if (!$result) {
+                     Errors::push_generic_mysql();
+                     return false;
+                 } else {
+                    self::$link = null;
+                    return true;
+                 }
+            }
         }
 
 
-
+        /**
+        * Устанавливает кодировку соединения с БД MySQL
+        * @title - Наименование кодировки
+        **/
         public static function set_encoding_mysql ($title) {
             if ($title != null) {
                 if (gettype($title) == "string") {
@@ -443,33 +443,49 @@
         }
 
 
+        /**
+        * Выполняет обновление данных в БД MySQL
+        * @table - Наименование таблицы
+        * @columns - Массив наименование столбцов таблицы
+        * @values - Массив значений
+        * [@condition] - Условие выборки
+        **/
         public static function update_row_mysql ($table, $columns, $values, $condition) {
             if ($table == null) {
-                /**/
+                Errors::push(2040);
+                return false;
             } else {
                 if (gettype($table) != "string") {
-                    /**/
+                    Errors::push(2041);
+                    return false;
                 } else {
                     if ($columns == null) {
-                        /**/
+                        Errors::push(2042);
+                        return false;
                     } else {
                         if (gettype($columns) != "array") {
-                            /**/
+                            Errors::push(2043);
+                            return false;
                         } else {
                             if ($values == null) {
-                                /**/
+                                Errors::push(2044);
+                                return false;
                             } else {
                                 if (gettype($values) != "array") {
-                                    /**/
+                                    Errors::push(2045);
+                                    return false;
                                 } else {
                                     if (count($columns) != count($values)) {
-                                        /**/
+                                        Errors::push(2046);
+                                        return false;
                                     } else {
                                         if ($condition != null && gettype($condition) != "string") {
-                                            /**/
+                                            Errors::push(2047);
+                                            return false;
                                         } else {
                                             if (DBManager::$link == null) {
-                                                /**/
+                                                Errors::push(2004);
+                                                return false;
                                             } else {
                                                 $colsAndVals = "";
                                                 foreach ($columns as $colkey => $column) {
@@ -480,11 +496,7 @@
                                                 echo("</br></br>colsAndVals: ".$colsAndVals."</br>");
                                                 $query = mysql_query("UPDATE $table SET $colsAndVals", DBManager::$link);
                                                 if ($query == false) {
-                                                    ErrorManager::add (
-                                                        ERROR_TYPE_DATABASE,
-                                                        mysql_errno(),
-                                                        mysql_error()
-                                                    ) -> send();
+                                                    Errors::push_generic_mysql();
                                                     return false;
                                                 } else {
                                                     return true;
@@ -501,93 +513,60 @@
         }
 
 
-        public static function select_mysql ($tableName, $columns, $condition) {
-            if ($tableName != null) {
-                if (gettype($tableName) != "string") {
-                    ErrorManager::add (
-                        ERROR_TYPE_DATABASE,
-                        ERROR_DB_SELECT_WRONG_TITLE_TYPE,
-                        "Задан неверный тип параметра при выборке данных - наименование таблицы"
-                    ) -> send();
+        /**
+        * Выполняет выборку данных из БД MySQL
+        * @table - Наименование таблицы
+        * @columns - Массив наименований столбцов таблицы
+        * $condition - Условие выборки
+        **/
+        public static function select_mysql ($table, $columns, $condition) {
+            if ($table == null) {
+                Errors::push(2027);
+                return false;
+            } else {
+                if (gettype($table) != "string") {
+                    Errors::push(2028);
                     return false;
                 } else {
-                    if ($columns != null) {
-                        if (gettype($columns) == "array") {
-                            if ($condition != null) {
-                                if (gettype($condition) == "string") {
-
-                                    if (DBManager::$link != null) {
-                                        $cols = "";
-                                        foreach ($columns as $key => $column) {
-                                            $cols .= $column;
-                                            $cols .= $key < count($columns) - 1 ? ", " : "";
-                                        }
-                                        $cond = $condition != "''" ? " WHERE ".$condition : "";
-                                        $query = mysql_query("SELECT $cols FROM $tableName".$cond, DBManager::$link);
-                                        if (!$query) {
-                                            ErrorManager::add (
-                                                ERROR_TYPE_DATABASE,
-                                                mysql_errno(),
-                                                mysql_error()
-                                            ) -> send();
-                                            return false;
-                                        } else {
-                                            $result = array();
-                                            for ($i = 0; $i < mysql_num_rows($query); $i++) {
-                                                $parsed = mysql_fetch_array($query);
-                                                array_push($result, $parsed);
-                                            }
-                                            return $result;
-                                        }
-                                    } else {
-                                        ErrorManager::add (
-                                            ERROR_TYPE_DATABASE,
-                                            ERROR_DB_NO_CONNECTION,
-                                            "Не удалось выбрать данные - отсутствует соединение с БД"
-                                        ) -> send();
-                                        return false;
-                                    }
-
-                                } else {
-                                    ErrorManager::add (
-                                        ERROR_TYPE_DATABASE,
-                                        ERROR_DB_SELECT_WRONG_CONDITION_TYPE,
-                                       "Задан неверный тип параметра при выборке данных - условие выборки"
-                                    ) -> send();
-                                    return false;
-                                }
-                            } else {
-                                ErrorManager::add (
-                                    ERROR_TYPE_DATABASE,
-                                    ERROR_DB_SELECT_NO_CONDITION,
-                                    "Не указан параметр при выборке данных - условие выборки"
-                                ) -> send();
-                                return false;
-                            }
-                        } else {
-                            ErrorManager::add (
-                                ERROR_TYPE_DATABASE,
-                                ERROR_DB_SELECT_WRONG_COLUMNS_TYPE,
-                                "Задан неверный тип параметра при выборке данных - массив столбцов"
-                            ) -> send();
-                            return false;
-                        }
-                    } else {
-                        ErrorManager::add (
-                            ERROR_TYPE_DATABASE,
-                            ERROR_DB_SELECT_NO_COLUMNS,
-                            "Не указан параметр при выборке данных - массив столбцов"
-                        ) -> send();
+                    if ($columns == null) {
+                        Errors::push(2029);
                         return false;
+                    } else {
+                        if (gettype($columns) != "array") {
+                            Errors::push(2030);
+                            return false;
+                        } else {
+                            if ($condition != null && gettype($condition) != "string") {
+                                Errors::push(2032);
+                                return false;
+                            } else {
+                                if (!self::is_connected()) {
+                                    Errors::push(2004);
+                                    return false;
+                                } else {
+                                    $cols = "";
+                                    foreach ($columns as $key => $column) {
+                                        $cols .= $column;
+                                        $cols .= $key < count($columns) - 1 ? ", " : "";
+                                    }
+                                    $cond = $condition != null && $condition != "''" ? " WHERE ".$condition : "";
+                                    $query = mysql_query("SELECT $cols FROM $table".$cond, self::$link);
+                                    if (!$query) {
+                                        Errors::push_generic_mysql();
+                                        return false;
+                                    } else {
+                                        $result = array();
+                                        for ($i = 0; $i < mysql_num_rows($query); $i++) {
+                                            $fetched = mysql_fetch_array($query);
+                                            array_push($result, $fetched);
+                                        }
+                                        return $result;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-            } else {
-                ErrorManager::add (
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_SELECT_NO_TABLE_TITLE,
-                    "Не указан параметр при выборке данных - наименование таблицы"
-                ) -> send();
-                return false;
             }
         }
 

@@ -1,7 +1,13 @@
 <?php
 
     class LDAP extends Module {
+
         public static function install () {
+
+        }
+
+
+        public static function isInstalled () {
 
         }
 

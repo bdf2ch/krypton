@@ -1,7 +1,7 @@
 <?php
-    const ERROR_TYPE_DEFAULT = 0;
-    const ERROR_TYPE_ENGINE = 1;
-    const ERROR_TYPE_DATABASE = 2;
+    //const ERROR_TYPE_DEFAULT = 0;
+    //const ERROR_TYPE_ENGINE = 1;
+    //const ERROR_TYPE_DATABASE = 2;
 
     const ERROR_APP_WRONG_TITLE_TYPE = 000001;
     const ERROR_APP_WRONG_DESCRIPTION_TYPE = 000002;
@@ -46,7 +46,7 @@
 
 
     class Error {
-        public $type = ERROR_TYPE_DEFAULT;
+        public $type = Errors::ERROR_TYPE_DEFAULT;
         public $code = 0;
         public $message = "";
         public $timestamp = 0;
@@ -54,7 +54,7 @@
         /* Конструктор объекта */
         public function __construct ($errorType, $errorCode, $errorMessage) {
             if ($errorType != null) {
-                if ($errorType == ERROR_TYPE_DEFAULT || $errorType == ERROR_TYPE_ENGINE || $errorType == ERROR_TYPE_DATABASE) {
+                if ($errorType == Errors::ERROR_TYPE_DEFAULT || $errorType == Errors::ERROR_TYPE_ENGINE || $errorType == Errors::ERROR_TYPE_DATABASE) {
                     $this -> type = $errorType;
                     $this -> timestamp = time();
                     if ($errorCode != null)
@@ -62,9 +62,9 @@
                     if ($errorMessage != null)
                         $this -> message = $errorMessage;
                 } else
-                    die("Тип ошибки указан неверно");
+                    die("Error: Тип ошибки указан неверно");
             } else
-                die("Не указан тип ошибки");
+                die("Error: Не указан тип ошибки");
         }
 
 

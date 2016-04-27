@@ -1,8 +1,13 @@
 <?php
 
     class Settings extends Module {
+
+        private static $id = "settings";
         private static $settings = array();
 
+        /**
+        * Производит установку модуля в системе
+        **/
         public static function install () {
             if (!DBManager::is_table_exists_mysql("settings")) {
                 if (DBManager::create_table_mysql("settings")) {
@@ -15,10 +20,10 @@
                         DBManager::add_column_mysql("settings", "is_system", "int(11) NOT NULL default 1")
                     ) {
                         Settings::setInstalled(true);
-                        if (Settings::add("'engine'", "'app_title'", "'Наименование приложения'", "''", "'string'", "''", 1) &&
-                            Settings::add("'engine'", "'app_description'", "'описание приложения'", "''", "'string'", "''", 1) &&
-                            Settings::add("'engine'", "'app_debug_mode'", "'Режим отладки'", "'Приложение находится в режиме отладки'", "'boolean'", 0, 1) &&
-                            Settings::add("'engine'", "'app_construction_mode'", "'Сервисный режим'", "'Приложение находится в сервисном режиме'", "'boolean'", 0, 1)
+                        if (Settings::add("'".self::$id."'", "'app_title'", "'Наименование приложения'", "''", "'string'", "''", 1) &&
+                            Settings::add("'".self::$id."'", "'app_description'", "'описание приложения'", "''", "'string'", "''", 1) &&
+                            Settings::add("'".self::$id."'", "'app_debug_mode'", "'Режим отладки'", "'Приложение находится в режиме отладки'", "'boolean'", 0, 1) &&
+                            Settings::add("'".self::$id."'", "'app_construction_mode'", "'Сервисный режим'", "'Приложение находится в сервисном режиме'", "'boolean'", 0, 1)
                         )
                             echo("Установка модуля Settings выполнена успешно</br>");
                         else
@@ -31,83 +36,143 @@
         }
 
 
+        /**
+        * Проверяет, установлен ли модуль в системе
+        **/
+        public static function isInstalled () {
+            if (DBManager::is_table_exists_mysql("settings"))
+                return true;
+            else
+                return false;
+        }
+
+
+        /**
+        * Производит инициализацию модуля
+        **/
         public function init () {
-            echo("settings module is here</br>");
-            Settings::setLoaded(true);
+            Errors::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                7001,
+                "Settings: Модуль не установлен</br>"
+            ));
+            Errors::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                7005,
+                "Settings -> getByCode: Не задан параметр - код настройки</br>"
+            ));
+            Errors::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                7006,
+                "Settings -> getByCode: Неверно задан тип параметра - код настройки</br>"
+            ));
+            Errors::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                7007,
+                "Settings -> setByCode: Не задан параметр - код настройки</br>"
+            ));
+            Errors::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                7008,
+                "Settings -> setByCode: Неверно задан тип параметра - код настройки</br>"
+            ));
+            Errors::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                7009,
+                "Settings -> setByCode: Не задан параметр - Значение настройки</br>"
+            ));
+            Errors::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                7010,
+                "Settings -> setByCode: Неверно задан тип параметра - значение настройки</br>"
+            ));
+
+            //Settings::setLoaded(true);
 
             $settings = DBManager::select_mysql("settings", ["*"], "''");
             Settings::$settings = $settings != false ? $settings : array();
-            var_dump(Settings::$settings);
 
-            DBManager::update_row_mysql("settings", ["title", "description"], ["'test_title'", "'test_description'"], "code = 'app_title'");
+            self::setByCode("app_title", "'another app title'");
+            self::setByCode("test_setting", "'poo poo'");
+
+
+            //echo("</br>");
+            //var_dump(Settings::$settings);
+            //echo("</br>");
+
+            //DBManager::update_row_mysql("settings", ["title", "description"], ["'test_title'", "'test_description'"], "code = 'app_title'");
+            //self::add("'test'", "'test_setting'", "'test setting'", "'test setting title'", "'string'", "'test setting value'", 1);
         }
 
 
+        /**
+        * Добавляет настройку в систему
+        * @moduleTitle - Наименование модуля
+        * @settingCode - Код настройки
+        * @settingTitle - Наименование настройки
+        * @settingDescription - Описание настройки
+        * @settingDataType - Тип данных настройки
+        * @settingValue - Значение настройки
+        * @settingIsSystem - Является ли настройка системной
+        **/
         public static function add ($moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem) {
-            if (Settings::isInstalled()) {
-                if (DBManager::insert_row_mysql("settings", ["module_id", "code", "title", "description", "type", "value", "is_system"], [$moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem]))
-                    return true;
+            if (self::isInstalled()) {
+                if (DBManager::insert_row_mysql(
+                        "settings",
+                        ["module_id", "code", "title", "description", "type", "value", "is_system"],
+                        [$moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem]
+                    )
+                )
+                return true;
             } else {
-                ErrorManager::add(
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_SETTINGS_TABLE_DOES_NOT_EXISTS,
-                    "Не удалось добавить настройку - отсутствует таблица с настройками"
-                ) -> send();
+                Errors::push(7001);
                 return false;
             }
-
-
-
-            /*
-            if (DBManager::is_table_exists_mysql("settings") == true) {
-                if (DBManager::insert_row_mysql("settings", ["module_id", "code", "title", "description", "type", "value", "is_system"], [$moduleName, $propCode, $propName, $propType, $propValue, $propIsSystem]))
-
-                    return true;
-            } else {
-                ErrorManager::add(
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_SETTINGS_TABLE_DOES_NOT_EXISTS,
-                    "Не удалось добавить настройку - отсутствует таблица с настройками"
-                ) -> send();
-                return false;
-            }
-            */
-
         }
 
 
+        /**
+        * Возвращает значение настройки по коду настройки
+        * @settingCode - Код настройки
+        **/
         public static function getByCode ($settingCode) {
-            if ($settingCode != null) {
-                if (gettype($settingCode) == "string") {
+            if ($settingCode == null) {
+                Errors::push(7005);
+                return false;
+            } else {
+                if (gettype($settingCode) != "string") {
+                    Errors::push(7006);
+                    return false;
+                } else {
                     foreach (self::$settings as $key => $setting) {
                         if ($setting["code"] == $settingCode)
                             return self::$settings[$key]["value"];
-                            //return false;
                     }
-                } else {
-                    ErrorManager::add (
-                        ERROR_TYPE_ENGINE,
-                        ERROR_ENGINE_GET_PROPERTY_WRONG_TITLE_TYPE,
-                        "Задан неверный тип параметра при получении значения настройки - код настройки"
-                    ) -> send();
-                    return false;
                 }
-            } else {
-                ErrorManager::add (
-                    ERROR_TYPE_ENGINE,
-                    ERROR_ENGINE_GET_PROPERTY_NO_TITLE,
-                    "Не указан параметр при получении значения настройки - код настройки"
-                ) -> send();
-                return false;
             }
         }
 
 
+        /**
+        * Устанавливает значение настройки по коду настройки
+        * @settingCode - Код настроки
+        * @settingValue - Значение настройки
+        **/
         public static function setByCode ($settingCode, $settingValue) {
-            if ($settingCode != null) {
-                if (gettype($settingCode) == "string") {
-                    if ($settingValue != null) {
-
+            if ($settingCode == null) {
+                Errors::push(7007);
+                return false;
+            } else {
+                if (gettype($settingCode) != "string") {
+                    Errors::push(7008);
+                    return false;
+                } else {
+                    if ($settingValue == null) {
+                        Errors::push(7009);
+                        return false;
+                    } else {
+                        if (DBManager::update_row_mysql("settings", ["value"], [$settingValue], "code = '$settingCode'"))
+                            return true;
                     }
                 }
             }

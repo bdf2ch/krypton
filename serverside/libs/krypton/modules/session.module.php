@@ -21,9 +21,14 @@
         }
 
 
+        public static function isInstalled () {
+
+        }
+
+
         public function init () {
             session_start();
-            echo("session module init</br>");
+            //echo("session module init</br>");
             if (isset($_COOKIE["krypton_session"])) {
                 echo("session identified: ".$_COOKIE["krypton_session"]."</br>");
             } else {
