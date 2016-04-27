@@ -140,6 +140,39 @@
                 "Errors -> add: Ошибка с таким кодом уже существует</br>"
             ));
 
+            /***** UserSession.class *****/
+
+            self::add(new Error(
+                Errors::ERROR_TYPE_DEFAULT,
+                1100,
+                "UserSession -> __construct: Не задан параметр - токен</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                 1101,
+                 "UserSession -> __construct: Неверный тип параметра - токен</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                1102,
+                "UserSession -> __construct: Не задан параметр - начало сессии</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                 1103,
+                 "UserSession -> __construct: Неверный тип параметра - начало сессии</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                1104,
+                "UserSession -> __construct: Не задан параметр - конец сессии</br>"
+            ));
+            self::add( new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                 1105,
+                 "UserSession -> __construct: Неверный тип параметра - конец сессии</br>"
+            ));
+
 
         }
 
@@ -190,7 +223,7 @@
                 } else {
                     foreach (self::$items as $key => $error) {
                         if ($error -> code == intval($errorCode)) {
-                            echo("error found:".$errorCode."</br>");
+                            //echo("error found:".$errorCode."</br>");
                             array_push(self::$errors, $error);
                             $error -> send();
                         }

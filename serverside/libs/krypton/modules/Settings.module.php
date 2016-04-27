@@ -92,8 +92,8 @@
             $settings = DBManager::select_mysql("settings", ["*"], "''");
             Settings::$settings = $settings != false ? $settings : array();
 
-            self::setByCode("app_title", "'another app title'");
-            self::setByCode("test_setting", "'poo poo'");
+            //self::setByCode("app_title", "'another app title'");
+            //self::setByCode("test_setting", "'poo poo'");
 
 
             //echo("</br>");

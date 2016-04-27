@@ -16,7 +16,7 @@
             //}
             //if ($moduleDescription != null && gettype($moduleDescription) == "string")
             //    $this -> description = $moduleDescription;
-            self::controller = new Controller();
+            self::$controller = new Controller();
         }
 
         abstract public function init();

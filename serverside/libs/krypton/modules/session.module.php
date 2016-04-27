@@ -1,6 +1,7 @@
 <?php
 
     class Session extends Module {
+        private static $current;
 
         public static function install () {
             if (!DBManager::is_table_exists_mysql("sessions")) {
@@ -28,15 +29,24 @@
 
         public function init () {
             session_start();
-            //echo("session module init</br>");
             if (isset($_COOKIE["krypton_session"])) {
-                echo("session identified: ".$_COOKIE["krypton_session"]."</br>");
+                $cookie_token = $_COOKIE["krypton_session"];
+                $s = DBManager::select_mysql("sessions", ["*"], "token = '$cookie_token'");
+                self::$current = $s != false ? new UserSession($s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                //echo("</br>session^</br>");
+                //var_dump(self::getCurrent());
+                //echo("</br></br>");
             } else {
                 $token = self::generate_token(32);
                 DBManager::insert_row_mysql("sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
                 setcookie("krypton_session", $token);
             }
             $this -> setLoaded(true);
+         }
+
+
+         public static function getCurrent () {
+            return self::$current;
          }
 
 

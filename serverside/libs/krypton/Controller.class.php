@@ -1,7 +1,7 @@
 <?php
 
     class Controller {
-        //private $actions = array();
+        private $actions = array();
 
     };
 

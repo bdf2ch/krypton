@@ -557,7 +557,7 @@
                                     } else {
                                         $result = array();
                                         for ($i = 0; $i < mysql_num_rows($query); $i++) {
-                                            $fetched = mysql_fetch_array($query);
+                                            $fetched = mysql_fetch_assoc($query);
                                             array_push($result, $fetched);
                                         }
                                         return $result;

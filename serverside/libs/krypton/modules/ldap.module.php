@@ -13,7 +13,7 @@
 
 
         public function init () {
-            echo("LDAP module init");
+            //echo("LDAP module init");
         }
     };
 
