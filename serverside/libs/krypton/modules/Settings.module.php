@@ -5,6 +5,7 @@
         private static $id = "settings";
         private static $settings = array();
 
+
         /**
         * Производит установку модуля в системе
         **/

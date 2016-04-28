@@ -2,6 +2,7 @@
 
     class Session extends Module {
         private static $current;
+        private static $user;
 
         public static function install () {
             if (!DBManager::is_table_exists_mysql("sessions")) {
@@ -30,12 +31,12 @@
         public function init () {
             session_start();
             if (isset($_COOKIE["krypton_session"])) {
-                $cookie_token = $_COOKIE["krypton_session"];
-                $s = DBManager::select_mysql("sessions", ["*"], "token = '$cookie_token'");
-                self::$current = $s != false ? new UserSession($s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
-                //echo("</br>session^</br>");
-                //var_dump(self::getCurrent());
-                //echo("</br></br>");
+                $s = DBManager::select_mysql("sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
+                self::$current = $s != false ? new UserSession($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                if (self::$current != null && self::$current -> userId != 0) {
+                    $u = DBManager::select_mysql("users", ["*"], "id = ".self::$current -> userId." LIMIT 1");
+                    self::$user = $u != false ? new User($u[0]["surname"], $u[0]["name"], $u[0]["fname"], $u[0]["position"], $u[0]["email"], $u[0]["phone"]) : null;
+               }
             } else {
                 $token = self::generate_token(32);
                 DBManager::insert_row_mysql("sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
@@ -45,9 +46,14 @@
          }
 
 
-         public static function getCurrent () {
-            return self::$current;
-         }
+        public static function getCurrentSession () {
+           return self::$current;
+        }
+
+
+        public static function getCurrentUser () {
+           return self::$user;
+        }
 
 
         private function generate_token ($length) {

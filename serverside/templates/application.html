@@ -4,14 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="resources/styles/application.css">
 </head>
 <body>
-<script>
-    var krypton_init = {
-        session: {USER_SESSION}
-    };
-</script>
-gfdgfdg fdgfdfd fdgdfgdfg
+    <script id="krypton_init_data">
+        var krypton_init = {
+            session: {CURRENT_SESSION},
+            user: {CURRENT_USER}
+        };
+        console.log(krypton_init);
+    </script>
+
+    <div id="app-header">
+
+    </div>
+    <div id="app-wrapper">
+
+    </div>
 </body>
 </html>
 <!-- END: main -->

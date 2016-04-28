@@ -15,6 +15,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
     require_once "serverside/libs/krypton/DBManager.class.php";
     //require_once "serverside/libs/krypton/SessionManager.class.php";
     require_once "serverside/libs/krypton/Session.class.php";
+    require_once "serverside/libs/krypton/User.class.php";
     //require_once "serverside/libs/krypton/PropertiesManager.class.php";
     require_once "serverside/libs/krypton/Controller.class.php";
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
@@ -180,7 +181,8 @@ if (!defined("ENGINE_INSTALL_MODE")) {
 
         public function display () {
             $this -> template = new XTemplate("serverside/templates/application.html");
-            $this -> template -> assign("USER_SESSION", json_encode(Session::getCurrent()));
+            $this -> template -> assign("CURRENT_SESSION", json_encode(Session::getCurrentSession()));
+            $this -> template -> assign("CURRENT_USER", json_encode(Session::getCurrentUser()));
             $this -> template -> parse("main");
             $this -> template -> out("main");
         }

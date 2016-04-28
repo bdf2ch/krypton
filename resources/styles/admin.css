@@ -1,0 +1,81 @@
+/**********
+** TEXT ALIGN
+**********/
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.text-justify {
+  text-align: justify;
+}
+/**********
+** BLOCK FLOAT
+**********/
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+/**********
+** KRYPTON ADMINISTRATION PANEL
+***********/
+html,
+body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+#app-header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 45px;
+  min-width: 1200px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #d4d4d4;
+  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
+}
+#app-header #app-logo {
+  position: relative;
+  width: 200px;
+  height: 100%;
+  box-sizing: border-box;
+}
+#app-content-wrapper {
+  position: absolute;
+  top: 45px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  min-width: 1200px;
+}
+#app-content-wrapper #app-menu {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 200px;
+  background: url("../images/menu_background.png");
+}
+#app-content-wrapper #app-content {
+  position: absolute;
+  left: 200px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+}

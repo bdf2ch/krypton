@@ -27,14 +27,14 @@
         protected function setInstalled ($flag) {
             if ($flag != null && gettype($flag) == "boolean")
                 self::$isModuleInstalled = $flag;
-            echo("module is installed = ".$flag."</br>");
+            //echo("module is installed = ".$flag."</br>");
         }
 
 
         protected function setLoaded ($flag) {
             if ($flag != null && gettype($flag) == "boolean")
                 self::$isModuleLoaded = $flag;
-            echo("module is loaded = ".$flag."</br>");
+            //echo("module is loaded = ".$flag."</br>");
         }
 
 

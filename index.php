@@ -11,6 +11,7 @@
     $app -> modules -> load("Settings");
     $app -> modules -> load("Session");
     $app -> modules -> load("LDAP");
+    $app -> modules -> load("Users");
     $app -> display();
 
 

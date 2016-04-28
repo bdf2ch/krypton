@@ -22,6 +22,8 @@
     Krypton::install();
     Settings::install();
     Session::install();
+    Users::install();
+    LDAP::install();
 
     $template = new XTemplate("../serverside/templates/install.html");
     $template -> parse("krypton_install");

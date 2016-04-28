@@ -140,8 +140,19 @@
                 "Errors -> add: Ошибка с таким кодом уже существует</br>"
             ));
 
+
             /***** UserSession.class *****/
 
+            self::add(new Error(
+                Errors::ERROR_TYPE_DEFAULT,
+                1068,
+                "UserSession -> __construct: Не задан параметр - токен</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                 1069,
+                 "UserSession -> __construct: Неверный тип параметра - токен</br>"
+            ));
             self::add(new Error(
                 Errors::ERROR_TYPE_DEFAULT,
                 1100,
@@ -174,6 +185,53 @@
             ));
 
 
+            /***** User.class *****/
+
+            self::add(new Error(
+                Errors::ERROR_TYPE_DEFAULT,
+                1106,
+                "User -> __construct: Не задан параметр - фамилия пользователя</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                 1107,
+                 "User -> __construct: Неверный тип параметра - фамилия пользователя</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                1108,
+                "User -> __construct: Не задан параметр - имя пользователя</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                 1109,
+                 "User -> __construct: Неверный тип параметра - имя пользователя</br>"
+            ));
+            self::add( new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                 1110,
+                 "User -> __construct: Неверный тип параметра - отчество пользователя</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                 1111,
+                 "User -> __construct: Неверный тип параметра - должность пользователя</br>"
+            ));
+            self::add(new Error(
+                Errors::ERROR_TYPE_DEFAULT,
+                1112,
+                "User -> __construct: Не задан параметр - email пользователя</br>"
+            ));
+            self::add(new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                1113,
+                "User -> __construct: Неверный тип параметра - email пользователя</br>"
+            ));
+            self::add( new Error (
+                Errors::ERROR_TYPE_DEFAULT,
+                1114,
+                "User -> __construct: Неверный тип параметра - телефон пользователя</br>"
+            ));
         }
 
 

@@ -1,61 +1,56 @@
 <?php
 
     class User {
-        private $name;
-        private $surname;
-        private $fname;
-        private $position;
-        private $email;
-        private $phone;
+        public $name;
+        public $surname;
+        public $fname;
+        public $position;
+        public $email;
+        public $phone;
 
-        public function ___construct ($surname, $name, $fname, $position, $email, $phone) {
-            if ($surname== null) {
-                Errors::push();
+        public function __construct ($surname, $name, $fname, $position, $email, $phone) {
+            if ($surname == null) {
+                Errors::push(1106);
                 return false;
             } else {
                 if (gettype($surname) != "string") {
-                    Errors::push();
+                    Errors::push(1107);
                     return false;
                 } else {
                     if ($name == null) {
-                        Errors::push();
+                        Errors::push(1108);
                         return false;
                     } else {
                         if (gettype($name) != "string") {
-                            Errors::push();
+                            Errors::push(1109);
                             return false;
                         } else {
                             if ($fname != null && gettype($fname) != "string") {
-                                Errors::push();
+                                Errors::push(1110);
                                 return false;
                             } else {
-                                if ($position != null && gettype($position) != "string'") {
-                                    Errors::push();
+                                if ($position != null && gettype($position) != "string") {
+                                    Errors::push(1111);
                                     return false;
                                 } else {
                                     if ($email == null) {
-                                        Errors::push();
+                                        Errors::push(1112);
                                         return false;
                                     } else {
                                         if (gettype($email) != "string") {
-                                            Errors::push();
-                                            return false
+                                            Errors::push(1113);
+                                            return false;
                                         } else {
-                                            if ($phone == null) {
-                                                Errors::push();
+                                            if ($phone != null && gettype($phone) != "string") {
+                                                Errors::push(1114);
                                                 return false;
                                             } else {
-                                                if (gettype($phone) != "string") {
-                                                    Errors::push();
-                                                    return false;
-                                                } else {
-                                                    $this -> surname = $surname;
-                                                    $this -> name = $name;
-                                                    $this -> fname = $fname;
-                                                    $this -> position = $position;
-                                                    $this -> phone = $phone;
-                                                    $this -> email = $email;
-                                                }
+                                                $this -> surname = $surname;
+                                                $this -> name = $name;
+                                                $this -> fname = $fname;
+                                                $this -> position = $position;
+                                                $this -> phone = $phone;
+                                                $this -> email = $email;
                                             }
                                         }
                                     }
