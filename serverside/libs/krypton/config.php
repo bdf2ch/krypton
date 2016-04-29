@@ -5,4 +5,6 @@
     $db_user = "root";
     $db_password = "";
 
+    $ldap_host = "10.50.0.1";
+
 ?>

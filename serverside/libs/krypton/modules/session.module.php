@@ -34,7 +34,7 @@
                 $s = DBManager::select_mysql("sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
                 self::$current = $s != false ? new UserSession($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                 if (self::$current != null && self::$current -> userId != 0) {
-                    $u = DBManager::select_mysql("users", ["*"], "id = ".self::$current -> userId." LIMIT 1");
+                    $u = Users::getById(self::$current -> userId);
                     self::$user = $u != false ? new User($u[0]["surname"], $u[0]["name"], $u[0]["fname"], $u[0]["position"], $u[0]["email"], $u[0]["phone"]) : null;
                }
             } else {

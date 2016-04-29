@@ -37,6 +37,13 @@
         public function init () {
             //echo("LDAP module init");
         }
+
+
+        public static function login () {
+            global $ldap_host;
+            $connection = ldap_connect($ldap_host);
+            return $connection;
+        }
     };
 
 ?>

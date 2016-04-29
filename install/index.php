@@ -1,5 +1,5 @@
 <?php
-    const ENGINE_INSTALL_MODE = 1;
+    define ("ENGINE_INSTALL_MODE", 1);
 
     function __autoload($className) {
             echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");

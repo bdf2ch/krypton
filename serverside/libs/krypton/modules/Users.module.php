@@ -47,12 +47,12 @@
         public function init () {
             Errors::add(new Error (
                 Errors::ERROR_TYPE_DEFAULT,
-                self::$errorIndex++,
+                5555,
                 "Users -> getById: Не задан параметр - идентификатор пользователя</br>"
             ));
             Errors::add(new Error (
                 Errors::ERROR_TYPE_DEFAULT,
-                self::$errorIndex++,
+                5556,
                 "Users -> getById: Неверно задан тип параметра - идентификатор пользователя</br>"
             ));
         }
@@ -64,14 +64,15 @@
         **/
         public static function getById ($userId) {
             if ($userId == null) {
-                Errors::push();
+                Errors::push(5555);
                 return false;
             } else {
                 if (gettype($userId) != "integer") {
-                    Errors::push();
+                    Errors::push(5556);
                     return false;
                 } else {
-
+                    $user = DBManager::select_mysql("users", ["*"], "id = $userId LIMIT 1");
+                    return $user;
                 }
             }
         }

@@ -24,6 +24,8 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         //echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");
         include "serverside/libs/krypton/modules/".$className.".module.php";
     }
+} else {
+
 }
 
 
@@ -180,6 +182,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
 
 
         public function display () {
+            echo($_SERVER["REQUEST_URI"]."</br>");
             $this -> template = new XTemplate("serverside/templates/application.html");
             $this -> template -> assign("CURRENT_SESSION", json_encode(Session::getCurrentSession()));
             $this -> template -> assign("CURRENT_USER", json_encode(Session::getCurrentUser()));
