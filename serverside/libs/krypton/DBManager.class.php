@@ -158,7 +158,7 @@
                         $query = mysql_query("USE $dbName", DBManager::$link);
                         if (!$query) {
                             ErrorManager::add (
-                                ERROR_TYPE_DATABASE,
+                                Errors::ERROR_TYPE_DATABASE,
                                 mysql_errno(),
                                 mysql_error()
                             ) -> send();
@@ -167,7 +167,7 @@
                             return true;
                     } else {
                         ErrorManager::add (
-                            ERROR_TYPE_DATABASE,
+                            Errors::ERROR_TYPE_DATABASE,
                             ERROR_DB_NO_CONNECTION,
                             "Не удалось разорвать соединение с БД - соединение отсутствует"
                         ) -> send();
@@ -175,7 +175,7 @@
                     }
                 } else {
                     ErrorManager::add (
-                        ERROR_TYPE_DATABASE,
+                        Errors::ERROR_TYPE_DATABASE,
                         ERROR_DB_SELECT_DB_WRONG_TITLE_TYPE,
                         "Задан неверный тип параметра при выборе БД - наименование БД"
                     ) -> send();
@@ -346,7 +346,7 @@
                     ERROR_TYPE_DATABASE,
                     ERROR_DB_TABLE_CHECK_NO_TABLE_TITLE,
                     "Не указан параметр при проверке существования таблицы - наименование таблицы"
-                ) -> send();;
+                ) -> send();
                 return false;
             }
         }

@@ -182,8 +182,18 @@ if (!defined("ENGINE_INSTALL_MODE")) {
 
 
         public function display () {
-            echo($_SERVER["REQUEST_URI"]."</br>");
-            $this -> template = new XTemplate("serverside/templates/application.html");
+            //print_r($_SERVER["REQUEST_URI"]);echo("</br>");
+            //print_r($_SERVER["SERVER_NAME"]);
+
+            $path = explode("/", $_SERVER["REQUEST_URI"]);
+            if ((count($path) == 3 && $path[1] == "admin") || (count($path) == 2 && $path[1] == "admin")) {
+                $template_url = "serverside/templates/admin_login.html";
+            } else
+                $template_url = "serverside/templates/application.html";
+
+            //print_r($path);
+            //print_r(count($path));
+            $this -> template = new XTemplate($template_url);
             $this -> template -> assign("CURRENT_SESSION", json_encode(Session::getCurrentSession()));
             $this -> template -> assign("CURRENT_USER", json_encode(Session::getCurrentUser()));
             $this -> template -> parse("main");
@@ -208,8 +218,9 @@ if (!defined("ENGINE_INSTALL_MODE")) {
                 } else
                     echo("Не удалось выполнить установку Krypton.Core</br>");
             }
-
         }
+
+
     };
 
 ?>

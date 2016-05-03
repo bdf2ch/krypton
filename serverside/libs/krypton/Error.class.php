@@ -69,7 +69,7 @@
 
 
         public function send () {
-            echo(json_encode($this));
+            var_dump($this);
         }
 
     };

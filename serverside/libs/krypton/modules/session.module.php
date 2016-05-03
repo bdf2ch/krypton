@@ -1,18 +1,24 @@
 <?php
 
     class Session extends Module {
+
+        private static $id = "kr_sessions";
         private static $current;
         private static $user;
 
+
+        /**
+        * Производит установку модуля в системе
+        **/
         public static function install () {
-            if (!DBManager::is_table_exists_mysql("sessions")) {
-                if (DBManager::create_table_mysql("sessions")) {
-                    if (DBManager::add_column_mysql("sessions", "user_id", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column_mysql("sessions", "token", "varchar(50) NOT NULL") &&
-                        DBManager::add_column_mysql("sessions", "start", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column_mysql("sessions", "end", "int(11) NOT NULL default 0")) {
-                        if (DBManager::is_table_exists_mysql("settings")) {
-                            if (Settings::add("'session'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", "'integer'", 2000, 1))
+            if (!DBManager::is_table_exists_mysql(self::$id)) {
+                if (DBManager::create_table_mysql(self::$id)) {
+                    if (DBManager::add_column_mysql(self::$id, "user_id", "int(11) NOT NULL default 0") &&
+                        DBManager::add_column_mysql(self::$id, "token", "varchar(50) NOT NULL") &&
+                        DBManager::add_column_mysql(self::$id, "start", "int(11) NOT NULL default 0") &&
+                        DBManager::add_column_mysql(self::$id, "end", "int(11) NOT NULL default 0")) {
+                        if (Settings::isInstalled()) {
+                            if (Settings::add("'".self::$id."'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", "'integer'", 2000, 1))
                                 echo("Установка модуля Session выполнена успешно</br>");
                         }
                     } else
@@ -23,39 +29,59 @@
         }
 
 
+        /**
+        * Проверяет, установлен ли модуль в системе
+        **/
         public static function isInstalled () {
-
+            if (DBManager::is_table_exists_mysql(self::$id))
+                return true;
+            else
+                return false;
         }
 
 
+        /**
+        * Производит инициализацию модуля
+        **/
         public function init () {
             session_start();
             if (isset($_COOKIE["krypton_session"])) {
-                $s = DBManager::select_mysql("sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
+                $s = DBManager::select_mysql(self::$id, ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
                 self::$current = $s != false ? new UserSession($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+
                 if (self::$current != null && self::$current -> userId != 0) {
                     $u = Users::getById(self::$current -> userId);
-                    self::$user = $u != false ? new User($u[0]["surname"], $u[0]["name"], $u[0]["fname"], $u[0]["position"], $u[0]["email"], $u[0]["phone"]) : null;
+                    self::$user = $u != false ? new User(intval($u[0]["id"]), $u[0]["surname"], $u[0]["name"], $u[0]["fname"], $u[0]["position"], $u[0]["email"], $u[0]["phone"], boolval($u[0]["is_admin"])) : null;
                }
             } else {
                 $token = self::generate_token(32);
-                DBManager::insert_row_mysql("sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
+                DBManager::insert_row_mysql(self::$id, ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
                 setcookie("krypton_session", $token);
             }
             $this -> setLoaded(true);
          }
 
 
+        /**
+        * Возвращает объект текущей сессии
+        **/
         public static function getCurrentSession () {
            return self::$current;
         }
 
 
+        /**
+        * Возвращает объект текущего пользователя
+        **/
         public static function getCurrentUser () {
            return self::$user;
         }
 
 
+        /**
+        * Генерирует уникальный ключ
+        * @length - длина ключа
+        **/
         private function generate_token ($length) {
             $arr = array(
                 'a','b','c','d','e','f',

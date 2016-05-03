@@ -14,6 +14,8 @@
     $app -> modules -> load("Users");
     $app -> display();
 
+    //print_r($_SERVER["REQUEST"]);
+
 
 
 

@@ -2,7 +2,7 @@
 
     class Settings extends Module {
 
-        private static $id = "settings";
+        private static $id = "kr_settings";
         private static $settings = array();
 
 
@@ -10,15 +10,15 @@
         * Производит установку модуля в системе
         **/
         public static function install () {
-            if (!DBManager::is_table_exists_mysql("settings")) {
-                if (DBManager::create_table_mysql("settings")) {
-                    if (DBManager::add_column_mysql("settings", "module_id", "varchar(200) NOT NULL default ''") &&
-                        DBManager::add_column_mysql("settings", "code", "varchar(200) NOT NULL default ''") &&
-                        DBManager::add_column_mysql("settings", "title", "varchar(200) NOT NULL") &&
-                        DBManager::add_column_mysql("settings", "description", "varchar(200) default ''") &&
-                        DBManager::add_column_mysql("settings", "type", "varchar(100) NOT NULL") &&
-                        DBManager::add_column_mysql("settings", "value", "varchar(500)") &&
-                        DBManager::add_column_mysql("settings", "is_system", "int(11) NOT NULL default 1")
+            if (!DBManager::is_table_exists_mysql("kr_settings")) {
+                if (DBManager::create_table_mysql("kr_settings")) {
+                    if (DBManager::add_column_mysql(self::$id, "module_id", "varchar(200) NOT NULL default ''") &&
+                        DBManager::add_column_mysql(self::$id, "code", "varchar(200) NOT NULL default ''") &&
+                        DBManager::add_column_mysql(self::$id, "title", "varchar(200) NOT NULL") &&
+                        DBManager::add_column_mysql(self::$id, "description", "varchar(200) default ''") &&
+                        DBManager::add_column_mysql(self::$id, "type", "varchar(100) NOT NULL") &&
+                        DBManager::add_column_mysql(self::$id, "value", "varchar(500)") &&
+                        DBManager::add_column_mysql(self::$id, "is_system", "int(11) NOT NULL default 1")
                     ) {
                         Settings::setInstalled(true);
                         if (Settings::add("'".self::$id."'", "'app_title'", "'Наименование приложения'", "''", "'string'", "''", 1) &&
@@ -41,7 +41,7 @@
         * Проверяет, установлен ли модуль в системе
         **/
         public static function isInstalled () {
-            if (DBManager::is_table_exists_mysql("settings"))
+            if (DBManager::is_table_exists_mysql(self::$id))
                 return true;
             else
                 return false;
@@ -90,7 +90,7 @@
 
             //Settings::setLoaded(true);
 
-            $settings = DBManager::select_mysql("settings", ["*"], "''");
+            $settings = DBManager::select_mysql(self::$id, ["*"], "''");
             Settings::$settings = $settings != false ? $settings : array();
 
             //self::setByCode("app_title", "'another app title'");
@@ -119,7 +119,7 @@
         public static function add ($moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem) {
             if (self::isInstalled()) {
                 if (DBManager::insert_row_mysql(
-                        "settings",
+                         self::$id,
                         ["module_id", "code", "title", "description", "type", "value", "is_system"],
                         [$moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem]
                     )

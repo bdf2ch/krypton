@@ -1,0 +1,5 @@
+RewriteEngine On
+Options +FollowSymlinks
+RewriteBase /
+RewriteCond %{REQUEST_URI} !^/install/
+RewriteRule ^.*$ index.php

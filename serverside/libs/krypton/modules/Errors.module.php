@@ -144,93 +144,108 @@
             /***** UserSession.class *****/
 
             self::add(new Error(
-                Errors::ERROR_TYPE_DEFAULT,
+                self::ERROR_TYPE_DEFAULT,
                 1068,
                 "UserSession -> __construct: Не задан параметр - токен</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
-                 1069,
-                 "UserSession -> __construct: Неверный тип параметра - токен</br>"
+                self::ERROR_TYPE_DEFAULT,
+                1069,
+                "UserSession -> __construct: Неверный тип параметра - токен</br>"
             ));
             self::add(new Error(
-                Errors::ERROR_TYPE_DEFAULT,
+                self::ERROR_TYPE_DEFAULT,
                 1100,
                 "UserSession -> __construct: Не задан параметр - токен</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
-                 1101,
-                 "UserSession -> __construct: Неверный тип параметра - токен</br>"
+                self::ERROR_TYPE_DEFAULT,
+                1101,
+                "UserSession -> __construct: Неверный тип параметра - токен</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
+                self::ERROR_TYPE_DEFAULT,
                 1102,
                 "UserSession -> __construct: Не задан параметр - начало сессии</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
-                 1103,
-                 "UserSession -> __construct: Неверный тип параметра - начало сессии</br>"
+                self::ERROR_TYPE_DEFAULT,
+                1103,
+                "UserSession -> __construct: Неверный тип параметра - начало сессии</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
+                self::ERROR_TYPE_DEFAULT,
                 1104,
                 "UserSession -> __construct: Не задан параметр - конец сессии</br>"
             ));
             self::add( new Error (
-                Errors::ERROR_TYPE_DEFAULT,
-                 1105,
-                 "UserSession -> __construct: Неверный тип параметра - конец сессии</br>"
+                self::ERROR_TYPE_DEFAULT,
+                1105,
+                "UserSession -> __construct: Неверный тип параметра - конец сессии</br>"
             ));
 
 
             /***** User.class *****/
 
             self::add(new Error(
-                Errors::ERROR_TYPE_DEFAULT,
+                self::ERROR_TYPE_DEFAULT,
+                1116,
+                "User -> __construct: Не задан параметр - идентификатор пользователя</br>"
+            ));
+            self::add(new Error (
+                self::ERROR_TYPE_DEFAULT,
+                1117,
+                "User -> __construct: Неверный тип параметра - идентификатор пользователя</br>"
+            ));
+            self::add(new Error(
+                self::ERROR_TYPE_DEFAULT,
                 1106,
                 "User -> __construct: Не задан параметр - фамилия пользователя</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
-                 1107,
-                 "User -> __construct: Неверный тип параметра - фамилия пользователя</br>"
+                self::ERROR_TYPE_DEFAULT,
+                1107,
+                "User -> __construct: Неверный тип параметра - фамилия пользователя</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
+                self::ERROR_TYPE_DEFAULT,
                 1108,
                 "User -> __construct: Не задан параметр - имя пользователя</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
-                 1109,
-                 "User -> __construct: Неверный тип параметра - имя пользователя</br>"
-            ));
-            self::add( new Error (
-                Errors::ERROR_TYPE_DEFAULT,
-                 1110,
-                 "User -> __construct: Неверный тип параметра - отчество пользователя</br>"
+                self::ERROR_TYPE_DEFAULT,
+                1109,
+                "User -> __construct: Неверный тип параметра - имя пользователя</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
-                 1111,
-                 "User -> __construct: Неверный тип параметра - должность пользователя</br>"
+                self::ERROR_TYPE_DEFAULT,
+                1110,
+                "User -> __construct: Неверный тип параметра - отчество пользователя</br>"
+            ));
+            self::add(new Error (
+                self::ERROR_TYPE_DEFAULT,
+                1111,
+                "User -> __construct: Неверный тип параметра - должность пользователя</br>"
             ));
             self::add(new Error(
-                Errors::ERROR_TYPE_DEFAULT,
+                self::ERROR_TYPE_DEFAULT,
                 1112,
                 "User -> __construct: Не задан параметр - email пользователя</br>"
             ));
             self::add(new Error (
-                Errors::ERROR_TYPE_DEFAULT,
+                self::ERROR_TYPE_DEFAULT,
                 1113,
                 "User -> __construct: Неверный тип параметра - email пользователя</br>"
             ));
-            self::add( new Error (
-                Errors::ERROR_TYPE_DEFAULT,
+            self::add(new Error (
+                self::ERROR_TYPE_DEFAULT,
                 1114,
                 "User -> __construct: Неверный тип параметра - телефон пользователя</br>"
+            ));
+            self::add(new Error (
+                self::ERROR_TYPE_DEFAULT,
+                1115,
+                "User -> __construct: Неверный тип параметра - является ли администратором</br>"
             ));
         }
 
