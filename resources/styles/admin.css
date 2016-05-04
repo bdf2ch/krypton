@@ -1,4 +1,19 @@
 /**********
+** FONTS
+*********/
+@font-face {
+  font-family: "Roboto Regular";
+  src: url("../fonts/Roboto-Regular.ttf");
+}
+@font-face {
+  font-family: "Roboto Bold";
+  src: url("../fonts/Roboto-Bold.ttf");
+}
+@font-face {
+  font-family: "Roboto Italic";
+  src: url("../fonts/Roboto-Italic.ttf");
+}
+/**********
 ** TEXT ALIGN
 **********/
 .text-left {
@@ -29,6 +44,12 @@
 /**********
 ** GRID
 **********/
+.row-container .row {
+  box-sizing: border-box;
+}
+.row-container .row.split-5 {
+  margin-bottom: 5px;
+}
 /**********
 ** WIDTH
 **********/
@@ -39,13 +60,79 @@
   width: 90%;
 }
 /**********
-** PADDINGS
+** PADDINGS & MARGINS
 **********/
 .padding-5 {
   padding: 5px;
 }
 .padding-10 {
   padding: 10px;
+}
+.split-top-5 {
+  margin-top: 5px;
+}
+.split-bottom-5 {
+  margin-bottom: 5px;
+}
+/**********
+** FORMS
+**********/
+input {
+  font-family: "Roboto Regular";
+  font-size: 18px;
+  border: 1px solid lightgrey;
+}
+input[type='text'],
+input[type='password'] {
+  padding: 8px;
+  box-sizing: border-box;
+}
+/**********
+** BUTTONS
+**********/
+input[type='button'],
+input[type='submit'],
+button {
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+input[type='button'].rounded,
+input[type='submit'].rounded,
+button.rounded {
+  border-radius: 5px;
+}
+/**********
+** COLORS
+**********/
+.red {
+  background-color: #F44336;
+  color: white;
+}
+.red:hover {
+  background-color: #D32F2F;
+}
+.light-red {
+  background-color: #EF9A9A;
+  color: #D50000;
+}
+.blue {
+  background-color: #2196F3;
+  color: white;
+}
+.blue:hover {
+  background-color: #1976D2;
+}
+.green {
+  background-color: #4CAF50;
+  color: white;
+}
+.green:hover {
+  background-color: #388E3C;
+}
+.light-green {
+  background-color: #A5D6A7;
+  color: #1B5E20;
 }
 /**********
 ** KRYPTON ADMINISTRATION PANEL
@@ -55,6 +142,21 @@ body {
   height: 100%;
   margin: 0px;
   padding: 0px;
+  font-family: "Roboto Regular";
+  font-size: 15px;
+}
+html a,
+body a {
+  color: #64B5F6;
+  text-decoration: none;
+}
+html a:hover,
+body a:hover {
+  color: #1E88E5;
+}
+html label,
+body label {
+  color: #BDBDBD;
 }
 #app-header {
   position: absolute;
@@ -65,11 +167,11 @@ body {
   min-width: 1200px;
   box-sizing: border-box;
   border-bottom: 1px solid #d4d4d4;
-  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
 }
 #app-header #app-logo {
   position: relative;
@@ -99,4 +201,13 @@ body {
   top: 0px;
   right: 0px;
   bottom: 0px;
+}
+/**********
+** KRYPTON ADMINISTRATION PANEL LOGIN
+**********/
+#admin-login {
+  width: 350px;
+}
+#admin-login #admin-login-form {
+  border: 1px solid lightgrey;
 }

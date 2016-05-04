@@ -6,7 +6,7 @@
         const ERROR_TYPE_DATABASE = 3;
 
         public static $errors = array();
-        private static $items = array();
+        //private static $items = array();
 
 
         public static function install () {
@@ -17,7 +17,7 @@
 
 
         public function init () {
-
+            /*
             self::$items = array(
                 new Error (
                     self::ERROR_TYPE_DEFAULT,
@@ -120,8 +120,10 @@
                     "DB -> update_row_mysql: Неверный тип параметра - условие отбора</br>"
                 )
             );
+            */
 
 
+            /*
             self::add(new Error (
                 self::ERROR_TYPE_DEFAULT,
                 1003,
@@ -139,10 +141,13 @@
                 1005,
                 "Errors -> add: Ошибка с таким кодом уже существует</br>"
             ));
+            */
+
 
 
             /***** UserSession.class *****/
 
+            /*
             self::add(new Error(
                 self::ERROR_TYPE_DEFAULT,
                 1068,
@@ -183,10 +188,13 @@
                 1105,
                 "UserSession -> __construct: Неверный тип параметра - конец сессии</br>"
             ));
+            */
+
 
 
             /***** User.class *****/
 
+            /*
             self::add(new Error(
                 self::ERROR_TYPE_DEFAULT,
                 1116,
@@ -247,6 +255,8 @@
                 1115,
                 "User -> __construct: Неверный тип параметра - является ли администратором</br>"
             ));
+            */
+
         }
 
 
@@ -254,6 +264,7 @@
         *
         *
         **/
+        /*
         public static function add ($error) {
             if ($error == null) {
                 self::push(1001);
@@ -277,13 +288,15 @@
                 }
             }
         }
+        */
 
 
         /**
         *
         *
         **/
-        public static function push ($errorCode) {
+        public static function push ($errorType, $errorMessage) {
+            /*
             if ($errorCode == null) {
                 self::push(1003);
                 //echo("Errors -> add: Не указан параметр - код ошибки");
@@ -299,6 +312,35 @@
                             //echo("error found:".$errorCode."</br>");
                             array_push(self::$errors, $error);
                             $error -> send();
+                        }
+                    }
+                }
+            }
+            */
+
+            if ($errorType == null) {
+                $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Не задан параметр - тип ошибки");
+                array_push($error, Errors::$errors);
+                return false;
+            } else {
+                if (gettype($errorType) != "integer") {
+                    $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Неверно задан тип параметра - тип ошибки");
+                    array_push($error, Errors::$errors);
+                    return false;
+                } else {
+                    if ($errorMessage == null) {
+                        $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Не задан параметр - текст ошибки");
+                        array_push($error, Errors::$errors);
+                        return false;
+                    } else {
+                        if (gettype($errorMessage != "string")) {
+                            $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Неверно задан тип параметра - текст ошибки");
+                            array_push($error, Errors::$errors);
+                            return false;
+                        } else {
+                            $error = new Error($errorType, $errorMessage);
+                            array_push($error, Errors::$errors);
+                            return true;
                         }
                     }
                 }

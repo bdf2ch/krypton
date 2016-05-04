@@ -6,6 +6,10 @@
 @app-menu-width: 200px;
 @app-menu-color: #818385;
 
+@admin-login-width: 350px;
+
+
+
 
 /**********
 ** KRYPTON ADMINISTRATION PANEL
@@ -14,6 +18,20 @@ html, body {
   height: 100%;
   margin: 0px;
   padding: 0px;
+  font-family: "Roboto Regular";
+  font-size: 15px;
+
+  a {
+    color: #64B5F6;
+    text-decoration: none;
+    &:hover {
+      color: #1E88E5;
+    }
+  }
+
+  label {
+    color: #BDBDBD;
+  }
 }
 
 
@@ -60,5 +78,17 @@ html, body {
     top: 0px;
     right: 0px;
     bottom: 0px;
+  }
+}
+
+
+/**********
+** KRYPTON ADMINISTRATION PANEL LOGIN
+**********/
+#admin-login {
+  width: @admin-login-width;
+
+  #admin-login-form {
+    border: 1px solid @ui-border-color;
   }
 }

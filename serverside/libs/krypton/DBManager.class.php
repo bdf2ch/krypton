@@ -10,7 +10,7 @@
         * @dbuser - Имя пользователя БД
         * @dbpassword - Пароль пользователя БД
         **/
-        public static function connect_mysql ($dbhost, $dbuser, $dbpassword) {
+        public static function connect ($dbhost, $dbuser, $dbpassword) {
             if ($dbhost == null) {
                 Errors::push(2001);
                 return false;
@@ -19,18 +19,26 @@
                     Errors::push(2002);
                     return false;
                 } else {
-                    $link = mysql_connect($dbhost, $dbuser, $dbpassword);
-                    if (!$link) {
-                        Errors::push_generic_mysql();
-                        self::$link = null;
-                        return false;
-                    } else {
-                        self::$link = $link;
-                        return true;
+                    switch (Krypton::getDBType()) {
+                        case Krypton::DB_TYPE_MYSQL:
+                            $link = mysql_connect($dbhost, $dbuser, $dbpassword);
+                            if (!$link) {
+                                Errors::push_generic_mysql();
+                                self::$link = null;
+                                return false;
+                            } else {
+                                self::$link = $link;
+                                return true;
+                            }
+                            break;
+                        case Krypton::DB_TYPE_ORACLE:
+                            break;
                     }
+
                 }
             }
         }
+
 
 
         /**
@@ -45,19 +53,25 @@
         /**
         * Разрывает соединение с БД MySQL
         **/
-        public static function disconnect_mysql () {
+        public static function disconnect () {
             if (!self::is_connected()) {
                 Errors::push(2004);
                 return false;
             } else {
-                 $result = mysql_close(DBManager::$link);
-                 if (!$result) {
-                     Errors::push_generic_mysql();
-                     return false;
-                 } else {
-                    self::$link = null;
-                    return true;
-                 }
+                switch (Krypton::getDBType()) {
+                    case Krypton::DB_TYPE_MYSQL:
+                        $result = mysql_close(DBManager::$link);
+                        if (!$result) {
+                            Errors::push_generic_mysql();
+                            return false;
+                        } else {
+                            self::$link = null;
+                            return true;
+                        }
+                        break;
+                    case KRYPTON::DB_TYPE_ORACLE:
+                        break;
+                }
             }
         }
 
@@ -66,20 +80,26 @@
         * Устанавливает кодировку соединения с БД MySQL
         * @title - Наименование кодировки
         **/
-        public static function set_encoding_mysql ($title) {
+        public static function set_encoding ($title) {
             if ($title != null) {
                 if (gettype($title) == "string") {
                     if (DBManager::$link != null) {
-                        $query = mysql_query("SET NAMES $title", DBManager::$link);
-                        if (!$query) {
-                            ErrorManager::add (
-                                ERROR_TYPE_DATABASE,
-                                mysql_errno(),
-                                mysql_error()
-                            ) -> send();
-                            return false;
-                        } else
-                            return true;
+                        switch (Krypton::getDBType()) {
+                            case Krypton::DB_TYPE_MYSQL:
+                                $query = mysql_query("SET NAMES $title", DBManager::$link);
+                                if (!$query) {
+                                    ErrorManager::add (
+                                        ERROR_TYPE_DATABASE,
+                                        mysql_errno(),
+                                        mysql_error()
+                                    ) -> send();
+                                    return false;
+                                } else
+                                return true;
+                                break;
+                            case Krypton::DB_TYPE_ORACLE:
+                                break;
+                        }
                     } else {
                         ErrorManager::add (
                             ERROR_TYPE_DATABASE,

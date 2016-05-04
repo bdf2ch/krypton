@@ -1,18 +1,18 @@
 <!-- BEGIN: main -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="kryptonApp">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="resources/styles/application.css">
+    <link type="text/css" rel="stylesheet" href="resources/styles/application.css">
 </head>
 <body>
     <script id="krypton_init_data">
-        var krypton_init = {
+        var krypton = {
             session: {CURRENT_SESSION},
             user: {CURRENT_USER}
         };
-        console.log(krypton_init);
+        console.log(krypton);
     </script>
 
     <div id="app-header">
@@ -21,6 +21,8 @@
     <div id="app-wrapper">
 
     </div>
+
+    <script src="libs/angularjs/angular.min.js"></script>
 </body>
 </html>
 <!-- END: main -->

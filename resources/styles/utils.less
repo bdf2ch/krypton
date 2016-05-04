@@ -1,3 +1,5 @@
+@ui-border-color: lightgrey;
+
 .gradient (@start-color, @end-color) {
   background-image: -moz-linear-gradient(top, @start-color, @end-color);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@start-color), to(@end-color));
@@ -10,6 +12,27 @@
      -moz-border-radius: @radius;
   -webkit-border-radius: @radius;
           border-radius: @radius;
+}
+
+
+
+/**********
+** FONTS
+*********/
+
+@font-face {
+  font-family: "Roboto Regular";
+  src: url("../fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Roboto Bold";
+  src: url("../fonts/Roboto-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Roboto Italic";
+  src: url("../fonts/Roboto-Italic.ttf");
 }
 
 
@@ -61,7 +84,12 @@
 .row-container {
 
   .row {
+    //border: 1px solid black;
+    box-sizing: border-box;
 
+    &.split-5 {
+      margin-bottom: 5px;
+    }
   }
 }
 
@@ -82,7 +110,7 @@
 
 
 /**********
-** PADDINGS
+** PADDINGS & MARGINS
 **********/
 
 .padding-5 {
@@ -91,4 +119,85 @@
 
 .padding-10 {
   padding: 10px;
+}
+
+.split-top-5 {
+  margin-top: 5px;
+}
+
+.split-bottom-5 {
+  margin-bottom: 5px;
+}
+
+
+
+/**********
+** FORMS
+**********/
+
+input {
+  font-family: "Roboto Regular";
+  font-size: 18px;
+  border: 1px solid @ui-border-color;
+}
+
+input[type='text'], input[type='password'] {
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+
+
+/**********
+** BUTTONS
+**********/
+
+input[type='button'], input[type='submit'], button {
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+
+  &.rounded {
+    border-radius: 5px;
+  }
+}
+
+
+
+/**********
+** COLORS
+**********/
+
+.red {
+  background-color: #F44336;
+  color: white;
+  &:hover {
+    background-color: #D32F2F;
+  }
+}
+
+.light-red {
+  background-color: #EF9A9A;
+  color: #D50000;
+}
+
+.blue {
+  background-color: #2196F3;
+  color: white;
+  &:hover {
+    background-color: #1976D2;
+  }
+}
+
+.green {
+  background-color: #4CAF50;
+  color: white;
+  &:hover {
+    background-color: #388E3C;
+  }
+}
+
+.light-green {
+  background-color: #A5D6A7;
+  color: #1B5E20;
 }

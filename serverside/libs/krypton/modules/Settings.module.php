@@ -52,6 +52,7 @@
         * Производит инициализацию модуля
         **/
         public function init () {
+            /*
             Errors::add(new Error (
                 Errors::ERROR_TYPE_DEFAULT,
                 7001,
@@ -87,6 +88,7 @@
                 7010,
                 "Settings -> setByCode: Неверно задан тип параметра - значение настройки</br>"
             ));
+            */
 
             //Settings::setLoaded(true);
 

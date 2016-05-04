@@ -1,23 +1,54 @@
 <!-- BEGIN: main -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="krypton.admin.login">
 <head>
     <meta charset="UTF-8">
     <title>Авторизация</title>
-    <link rel="stylesheet" href="/../resources/styles/admin.css">
+    <link rel="stylesheet" href="resources/styles/admin.css">
 </head>
 <body>
-    <form id="" action="" class="row-container">
-        <div class="row padding-10">
-            <input type="text" class="width-100" placeholder="Имя пользователя">
+    <script src="libs/angularjs/angular.min.js"></script>
+
+    <div id="admin-login" class="row" ng-controller="KryptonAdminLoginController" ng-cloak="">
+        <!-- Форма авторизации в административной панели -->
+        <form id="admin-login-form" class="row-container">
+            <div class="row">
+
+            </div>
+            <div class="row padding-10">
+                <label for="user-name">Имя пользователя</label>
+                <input type="text" id="user-name" name="user-name" class="width-100" placeholder="Имя пользователя" ng-model="userName">
+            </div>
+            <div class="row padding-10" ng-show="remindPasswordMode() === false">
+                <label for="user-password">
+                    Пароль
+                    <a href class="right" ng-click="remindPasswordMode(true)">Забыли пароль?</a>
+                </label>
+                <input type="password" id="user-password" name="user-password" class="width-100" placeholder="Пароль" ng-model="password">
+            </div>
+            <div class="row padding-10">
+                <button type="submit" class="width-100 green" ng-show="remindPasswordMode() === false" ng-click="login()">Войти</button>
+                <button type="submit" class="width-100 split-top-5 green" ng-show="remindPasswordMode() === true && isPasswordSent === false" ng-click="remindPassword()">Получить новый пароль</button>
+                <button type="submit" class="width-100 split-top-5 blue" ng-show="remindPasswordMode() === true" ng-click="remindPasswordMode(false)">&larr;&nbsp; Вернуться к авторизации</button>
+            </div>
+        </form>
+        <!-- Ошибки -->
+        <div class="row padding-10 light-red" ng-show="errors.length > 0">
+            <span ng-repeat="error in errors">
+                {{ error }}</br>
+            </span>
         </div>
-        <div class="row padding-10">
-            <input type="text" class="width-100" placeholder="Пароль">
+        <!-- Оповещение об успешной отправке пароля -->
+        <div class="row light-green">
+            <div class="row padding-10">
+                Новый пароль отправлен на Ваш e-mail
+            </div>
         </div>
-        <div class="row padding-10">
-            <button type="submit">Войти</button>
-        </div>
-    </form>
+    </div>
+
+
+    <script src="libs/krypton/krypton.js"></script>
+    <script src="modules/krypton.admin.login.js"></script>
 </body>
 </html>
 <!-- END: main -->

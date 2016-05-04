@@ -47,6 +47,10 @@ if (!defined("ENGINE_INSTALL_MODE")) {
 
 
     class Krypton {
+        const DB_TYPE_MYSQL = 1;
+        const DB_TYPE_ORACLE = 2;
+
+        private static $dbType = self::DB_TYPE_MYSQL;
         private static $title;
         private static $description;
         private $inDebugMode;
@@ -56,6 +60,11 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         public $modules;
 
         function __construct($title, $description) {
+            global $db_host;
+            global $db_name;
+            global $db_user;
+            global $db_password;
+
             $this -> modules = new ModuleManager();
 
             $this -> modules -> load = function ($moduleName) {
@@ -136,18 +145,10 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             //DBManager::connect_mysql($db_host, $db_user, $db_password);
             //DBManager::create_db_mysql("krypton");
             //DBManager::select_db_mysql("krypton");
-        }
-
-
-        public function init () {
-            global $db_host;
-            global $db_name;
-            global $db_user;
-            global $db_password;
-
-            DBManager::connect_mysql($db_host, $db_user, $db_password);
+            DBManager::connect($db_host, $db_user, $db_password);
             DBManager::select_db_mysql("krypton");
         }
+
 
 
         public static function title ($title) {
@@ -162,22 +163,9 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         }
 
 
-        public function description ($description) {
-            if ($description != null && gettype($description) == "string")
-                $this -> description = $description;
-            return $this -> description;
-        }
 
-
-        public function debugMode ($flag) {
-            if ($flag != null && gettype($flag) == "boolean")
-                $this -> inDebugMode = $flag;
-        }
-
-
-        public function constructionMode ($flag) {
-            if ($flag != null && gettype($flag) == "boolean")
-                $this -> inConstructionMode = $flag;
+        public static function getDBType () {
+            return self::$dbType;
         }
 
 
@@ -188,6 +176,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             $path = explode("/", $_SERVER["REQUEST_URI"]);
             if ((count($path) == 3 && $path[1] == "admin") || (count($path) == 2 && $path[1] == "admin")) {
                 $template_url = "serverside/templates/admin_login.html";
+                //header("Content-type: text/css");
             } else
                 $template_url = "serverside/templates/application.html";
 
@@ -207,10 +196,10 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             global $db_user;
             global $db_password;
 
-            if (DBManager::connect_mysql($db_host, $db_user, $db_password)) {
+            if (DBManager::connect($db_host, $db_user, $db_password)) {
                 if (DBManager::create_db_mysql("krypton")) {
                     if (DBManager::select_db_mysql("krypton")) {
-                        if ( DBManager::set_encoding_mysql("utf8")) {
+                        if ( DBManager::set_encoding("utf8")) {
                             echo("Установка Krypton.Core выполнена успешно</br>");
                         }
                     } else

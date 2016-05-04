@@ -56,6 +56,8 @@
             } else {
                 $token = self::generate_token(32);
                 DBManager::insert_row_mysql(self::$id, ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
+                $s = DBManager::select_mysql(self::$id, ["*"], "token = '".$token."' LIMIT 1");
+                self::$current = $s != false ? new UserSession($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                 setcookie("krypton_session", $token);
             }
             $this -> setLoaded(true);

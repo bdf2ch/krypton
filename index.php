@@ -6,7 +6,6 @@
 
     /*** Создание и инициализация нового приложения Krypton ***/
     $app = new Krypton("test app", "test app description");
-    $app -> init();
     $app -> modules -> load("Errors");
     $app -> modules -> load("Settings");
     $app -> modules -> load("Session");

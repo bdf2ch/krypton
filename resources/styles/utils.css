@@ -1,4 +1,19 @@
 /**********
+** FONTS
+*********/
+@font-face {
+  font-family: "Roboto Regular";
+  src: url("../fonts/Roboto-Regular.ttf");
+}
+@font-face {
+  font-family: "Roboto Bold";
+  src: url("../fonts/Roboto-Bold.ttf");
+}
+@font-face {
+  font-family: "Roboto Italic";
+  src: url("../fonts/Roboto-Italic.ttf");
+}
+/**********
 ** TEXT ALIGN
 **********/
 .text-left {
@@ -29,6 +44,12 @@
 /**********
 ** GRID
 **********/
+.row-container .row {
+  box-sizing: border-box;
+}
+.row-container .row.split-5 {
+  margin-bottom: 5px;
+}
 /**********
 ** WIDTH
 **********/
@@ -39,11 +60,77 @@
   width: 90%;
 }
 /**********
-** PADDINGS
+** PADDINGS & MARGINS
 **********/
 .padding-5 {
   padding: 5px;
 }
 .padding-10 {
   padding: 10px;
+}
+.split-top-5 {
+  margin-top: 5px;
+}
+.split-bottom-5 {
+  margin-bottom: 5px;
+}
+/**********
+** FORMS
+**********/
+input {
+  font-family: "Roboto Regular";
+  font-size: 18px;
+  border: 1px solid lightgrey;
+}
+input[type='text'],
+input[type='password'] {
+  padding: 8px;
+  box-sizing: border-box;
+}
+/**********
+** BUTTONS
+**********/
+input[type='button'],
+input[type='submit'],
+button {
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+input[type='button'].rounded,
+input[type='submit'].rounded,
+button.rounded {
+  border-radius: 5px;
+}
+/**********
+** COLORS
+**********/
+.red {
+  background-color: #F44336;
+  color: white;
+}
+.red:hover {
+  background-color: #D32F2F;
+}
+.light-red {
+  background-color: #EF9A9A;
+  color: #D50000;
+}
+.blue {
+  background-color: #2196F3;
+  color: white;
+}
+.blue:hover {
+  background-color: #1976D2;
+}
+.green {
+  background-color: #4CAF50;
+  color: white;
+}
+.green:hover {
+  background-color: #388E3C;
+}
+.light-green {
+  background-color: #A5D6A7;
+  color: #1B5E20;
 }

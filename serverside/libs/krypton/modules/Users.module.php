@@ -19,8 +19,8 @@
                         DBManager::add_column_mysql(self::$id, "fname", "varchar(200)") &&
                         DBManager::add_column_mysql(self::$id, "email", "varchar(200) NOT NULL") &&
                         DBManager::add_column_mysql(self::$id, "phone", "varchar(100)") &&
-                        DBManager::add_column_mysql(self::$id, "position", "varchar(500)" &&
-                        DBManager::add_column_mysql(self::$id, "is_admin", "int(11) NOT NULL default 0"))
+                        DBManager::add_column_mysql(self::$id, "position", "varchar(500)") &&
+                        DBManager::add_column_mysql(self::$id, "is_admin", "int(11) NOT NULL default 0")
                     )
                         echo("Установка модуля Krypton.Users выполнена успешно</br>");
                     else
@@ -46,7 +46,7 @@
         * Производит инициализацию модуля
         **/
         public function init () {
-
+            /*
             Errors::add(new Error (
                 Errors::ERROR_TYPE_DEFAULT,
                 5555,
@@ -57,7 +57,7 @@
                 5556,
                 "Users -> getById: Неверно задан тип параметра - идентификатор пользователя</br>"
             ));
-
+            */
         }
 
 

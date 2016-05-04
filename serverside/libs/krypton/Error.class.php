@@ -47,24 +47,24 @@
 
     class Error {
         public $type = Errors::ERROR_TYPE_DEFAULT;
-        public $code = 0;
+        //public $code = 0;
         public $message = "";
         public $timestamp = 0;
 
         /* Конструктор объекта */
-        public function __construct ($errorType, $errorCode, $errorMessage) {
+        public function __construct ($errorType, $errorMessage) {
             if ($errorType != null) {
                 if ($errorType == Errors::ERROR_TYPE_DEFAULT || $errorType == Errors::ERROR_TYPE_ENGINE || $errorType == Errors::ERROR_TYPE_DATABASE) {
                     $this -> type = $errorType;
                     $this -> timestamp = time();
-                    if ($errorCode != null)
-                        $this -> code = $errorCode;
+                    //if ($errorCode != null)
+                    //    $this -> code = $errorCode;
                     if ($errorMessage != null)
                         $this -> message = $errorMessage;
                 } else
-                    die("Error: Тип ошибки указан неверно");
+                    die("Error -> __construct: Тип ошибки указан неверно");
             } else
-                die("Error: Не указан тип ошибки");
+                die("Error -> __construct: Не указан тип ошибки");
         }
 
 
