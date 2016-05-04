@@ -31,19 +31,21 @@
                 <button type="submit" class="width-100 split-top-5 green" ng-show="remindPasswordMode() === true && isPasswordSent === false" ng-click="remindPassword()">Получить новый пароль</button>
                 <button type="submit" class="width-100 split-top-5 blue" ng-show="remindPasswordMode() === true" ng-click="remindPasswordMode(false)">&larr;&nbsp; Вернуться к авторизации</button>
             </div>
-        </form>
-        <!-- Ошибки -->
-        <div class="row padding-10 light-red" ng-show="errors.length > 0">
+
+            <!-- Ошибки -->
+            <div class="row padding-10 light-red" ng-show="errors.length > 0">
             <span ng-repeat="error in errors">
                 {{ error }}</br>
             </span>
-        </div>
-        <!-- Оповещение об успешной отправке пароля -->
-        <div class="row light-green">
-            <div class="row padding-10">
-                Новый пароль отправлен на Ваш e-mail
             </div>
-        </div>
+            <!-- Оповещение об успешной отправке пароля -->
+            <div class="row light-green">
+                <div class="row padding-10">
+                    Новый пароль отправлен на Ваш e-mail
+                </div>
+            </div>
+        </form>
+
     </div>
 
 

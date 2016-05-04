@@ -84,7 +84,7 @@ input {
 }
 input[type='text'],
 input[type='password'] {
-  padding: 8px;
+  padding: 7px;
   box-sizing: border-box;
 }
 /**********
@@ -113,7 +113,7 @@ button.rounded {
   background-color: #D32F2F;
 }
 .light-red {
-  background-color: #EF9A9A;
+  background-color: #FFCDD2;
   color: #D50000;
 }
 .blue {
@@ -123,6 +123,10 @@ button.rounded {
 .blue:hover {
   background-color: #1976D2;
 }
+.light-blue {
+  background-color: #BBDEFB;
+  color: #0D47A1;
+}
 .green {
   background-color: #4CAF50;
   color: white;
@@ -131,7 +135,7 @@ button.rounded {
   background-color: #388E3C;
 }
 .light-green {
-  background-color: #A5D6A7;
+  background-color: #C8E6C9;
   color: #1B5E20;
 }
 /**********
@@ -167,11 +171,11 @@ body label {
   min-width: 1200px;
   box-sizing: border-box;
   border-bottom: 1px solid #d4d4d4;
-  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
+  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
 }
 #app-header #app-logo {
   position: relative;
