@@ -38,12 +38,31 @@
         }
 
 
+
         /**
         * Производит инициализацию модуля
         **/
         public function init () {
             //echo("LDAP module init");
         }
+
+
+
+        public static function isLDAPEnabled ($userId) {
+            if ($userId == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> isLDAPEnabled: Не задан параметр - идентификатор пользователя");
+                return false;
+            } else {
+                if (gettype($userId) != "integer") {
+                    Errors::push(Errors::DB_ERROR_TYPE_DEFAULT, "LDAP -> isLDAPEnabled: Неверно задан тип параметра - идентификатор пользователя");
+                    return false;
+                } else {
+                    $ldap = DBManager::select_mysql(self::$id, ["*"], "'user_id = $userId LIMIT 1'");
+                    return $ldap != false ? boolval($ldap) : false;
+                }
+            }
+        }
+
 
 
         public static function login () {

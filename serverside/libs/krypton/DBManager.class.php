@@ -396,69 +396,89 @@
 
                                             $query = mysql_query("INSERT INTO $tableName ($cols) VALUES ($vals)", DBManager::$link);
                                             if (!$query) {
+                                                /*
                                                 ErrorManager::add (
                                                     ERROR_TYPE_DATABASE,
                                                     mysql_errno(),
                                                     mysql_error()
                                                 ) -> send();
+                                                */
+
                                                 return false;
                                             } else
                                                 return true;
                                         } else
+                                            /*
                                             ErrorManager::add (
                                                 ERROR_TYPE_DATABASE,
                                                 ERROR_DB_NO_CONNECTION,
                                                 "Не удалось проверить наличие таблицы - отсутствует соединение с БД"
                                             ) -> send();
+                                            */
                                             return false;
                                     } else
+                                        /*
                                         ErrorManager::add (
                                             ERROR_TYPE_DATABASE,
                                             ERROR_DB_DATA_INSERT_COLUMNS_VALUES_MISMATCH,
                                             "Не совпадает количество столбцов и значений при добавлении данных в БД"
                                         ) -> send();
+                                        */
                                         return false;
                                 } else
+                                    /*
                                     ErrorManager::add (
                                         ERROR_TYPE_DATABASE,
                                         ERROR_DB_DATA_INSERT_WRONG_VALUES_TYPE,
                                         "Задан неверный тип параметра при добавлении данных - массив значений"
                                     ) -> send();
+                                    */
                                     return false;
                             } else
+                                /*
                                 ErrorManager::add (
                                     ERROR_TYPE_DATABASE,
                                     ERROR_DB_DATA_INSERT_NO_VALUES,
                                     "Не указан параметр при добавлении данных - массив значений"
                                 ) -> send();
+                                */
                                 return false;
                         } else
+                            /*
                             ErrorManager::add (
                                 ERROR_TYPE_DATABASE,
                                 ERROR_DB_DATA_INSERT_WRONG_COLUMNS_TYPE,
                                 "Задан неверный тип параметра при добавлении данных - массив столбцов"
                             ) -> send();
+                            */
                             return false;
                     } else
+                        /*
                         ErrorManager::add (
                             ERROR_TYPE_DATABASE,
                             ERROR_DB_DATA_INSERT_NO_COLUMNS,
                             "Не указан параметр при добавлении данных - массив столбцов"
                         ) -> send();
+                        */
                         return false;
                 } else
+                    /*
                     ErrorManager::add (
                         ERROR_TYPE_DATABASE,
                         ERROR_DB_TABLE_CHECK_WRONG_TITLE_TYPE,
                         "Задан неверный тип параметра при добавлении данных - наименование таблицы"
                     ) -> send();
+                    */
                     return false;
+
             } else
+                /*
                 ErrorManager::add (
                     ERROR_TYPE_DATABASE,
                     ERROR_DB_DATA_INSERT_NO_TABLE_TITLE,
                     "Не указан параметр при добавлении данных - наименование таблицы"
                 ) -> send();
+                */
                 return false;
         }
 

@@ -67,6 +67,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
 
             $this -> modules = new ModuleManager();
 
+/*
             $this -> modules -> load = function ($moduleName) {
                 if ($moduleName != null) {
                     if (gettype($moduleName) == "string") {
@@ -88,7 +89,9 @@ if (!defined("ENGINE_INSTALL_MODE")) {
                     );
                 }
             };
+            */
 
+            /*
             $this -> modules -> isLoaded = function ($moduleName) {
                 if ($moduleName != null) {
                     if (gettype($moduleName) == "string") {
@@ -110,6 +113,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
                     return false;
                 }
             };
+            */
 
             //$this -> template = new XTemplate("serverside/templates/application.html");
 

@@ -295,52 +295,35 @@
         *
         *
         **/
-        public static function push ($errorType, $errorMessage) {
-            /*
-            if ($errorCode == null) {
-                self::push(1003);
-                //echo("Errors -> add: Не указан параметр - код ошибки");
-                return false;
-            } else {
-                if (gettype($errorCode) != "integer") {
-                    //echo("Errors -> add: Неверный тип параметра - код ошибки");
-                    self::push(1004);
-                    return false;
-                } else {
-                    foreach (self::$items as $key => $error) {
-                        if ($error -> code == intval($errorCode)) {
-                            //echo("error found:".$errorCode."</br>");
-                            array_push(self::$errors, $error);
-                            $error -> send();
-                        }
-                    }
-                }
-            }
-            */
-
-            if ($errorType == null) {
+        public static function push ($type, $message) {
+            if ($type == null) {
                 $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Не задан параметр - тип ошибки");
-                array_push($error, Errors::$errors);
+                array_push(Errors::$errors, $error);
+                $error -> send();
                 return false;
             } else {
-                if (gettype($errorType) != "integer") {
+                if (gettype($type) != "integer") {
                     $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Неверно задан тип параметра - тип ошибки");
-                    array_push($error, Errors::$errors);
+                    array_push(Errors::$errors, $error);
+                    $error -> send();
                     return false;
                 } else {
-                    if ($errorMessage == null) {
+                    if ($message == null) {
                         $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Не задан параметр - текст ошибки");
-                        array_push($error, Errors::$errors);
+                        array_push(Errors::$errors, $error);
+                        $error -> send();
                         return false;
                     } else {
-                        if (gettype($errorMessage != "string")) {
+                        if (gettype($message) != "string") {
                             $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Неверно задан тип параметра - текст ошибки");
-                            array_push($error, Errors::$errors);
+                            array_push(Errors::$errors, $error);
+                            $error -> send();
                             return false;
                         } else {
-                            $error = new Error($errorType, $errorMessage);
-                            array_push($error, Errors::$errors);
-                            return true;
+                            $error = new Error($type, $message);
+                            array_push(Errors::$errors, $error);
+                            $error -> send();
+                            return $error;
                         }
                     }
                 }

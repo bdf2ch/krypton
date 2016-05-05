@@ -8,8 +8,8 @@
             return self::$errors;
         }
 
-        public static function add ($errorType, $errorCode, $errorMessage) {
-            $error = new Error($errorType, $errorCode, $errorMessage);
+        public static function add ($type, $message) {
+            $error = new Error($type, $message);
             array_push(ErrorManager::$errors, $error);
             return $error;
         }

@@ -8,9 +8,10 @@
         public $position;
         public $email;
         public $phone;
+        public $login;
         public $isAdmin = false;
 
-        public function __construct ($id, $surname, $name, $fname, $position, $email, $phone, $isAdmin) {
+        public function __construct ($id, $surname, $name, $fname, $position, $email, $phone, $login, $isAdmin) {
             if ($id == null) {
                 Errors::push(1116);
                 return false;
@@ -55,19 +56,31 @@
                                                         Errors::push(1114);
                                                         return false;
                                                     } else {
-                                                        if ($isAdmin != null && gettype($isAdmin) != "boolean") {
-                                                            Errors::push();
+                                                        if ($login == null) {
+                                                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "");
                                                             return false;
                                                         } else {
-                                                            $this -> id = $id;
-                                                            $this -> surname = $surname;
-                                                            $this -> name = $name;
-                                                            $this -> fname = $fname;
-                                                            $this -> position = $position;
-                                                            $this -> phone = $phone;
-                                                            $this -> email = $email;
-                                                            $this -> isAdmin = $isAdmin;
+                                                            if (gettype($login) != "string") {
+                                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "");
+                                                                return false;
+                                                            } else {
+                                                                if ($isAdmin != null && gettype($isAdmin) != "boolean") {
+                                                                    Errors::push();
+                                                                    return false;
+                                                                } else {
+                                                                    $this -> id = $id;
+                                                                    $this -> surname = $surname;
+                                                                    $this -> name = $name;
+                                                                    $this -> fname = $fname;
+                                                                    $this -> position = $position;
+                                                                    $this -> phone = $phone;
+                                                                    $this -> email = $email;
+                                                                    $this -> login = $login;
+                                                                    $this -> isAdmin = $isAdmin;
+                                                                }
+                                                            }
                                                         }
+
                                                     }
                                                 }
                                             }

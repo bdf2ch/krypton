@@ -7,6 +7,7 @@
         private static $user;
 
 
+
         /**
         * Производит установку модуля в системе
         **/
@@ -29,6 +30,7 @@
         }
 
 
+
         /**
         * Проверяет, установлен ли модуль в системе
         **/
@@ -38,6 +40,7 @@
             else
                 return false;
         }
+
 
 
         /**
@@ -64,6 +67,7 @@
          }
 
 
+
         /**
         * Возвращает объект текущей сессии
         **/
@@ -72,12 +76,48 @@
         }
 
 
+
         /**
         * Возвращает объект текущего пользователя
         **/
         public static function getCurrentUser () {
            return self::$user;
         }
+
+
+
+        public static function login ($userName, $password) {
+            if ($userName == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> login: Не задан параметр - имя пользователя");
+                return false;
+            } else {
+                if (gettype($userName) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> login: Неверно задан тип параметра - имя пользователя");
+                    return false;
+                } else {
+                    if ($password == null) {
+                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> login: Не задан параметр - пароль");
+                        return false;
+                    } else {
+                        if (gettype($password) != "string") {
+                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> login: Неверно задан тип параметра - пароль");
+                            return false;
+                        } else {
+                            if (LDAP::isInstalled() != true) {
+                                Errors::push(Errors::ERROR_TYPE_ENGINE, "Session -> login: Модуль Krypton.LDAP не установлен");
+                                return false;
+                            } else {
+                                $u = self::getCurrentUser();
+                                if ($u != null && $u -> id != 0) {
+                                    $ldap_enabled - LDAP::isLDAPEnabled($u -> id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
 
 
         /**

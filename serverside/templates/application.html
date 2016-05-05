@@ -1,6 +1,6 @@
 <!-- BEGIN: main -->
 <!DOCTYPE html>
-<html lang="en" ng-app="kryptonApp">
+<html lang="en" ng-app="krypton.app">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -14,7 +14,7 @@
         };
         console.log(krypton);
     </script>
-
+    <script src="libs/angularjs/angular.min.js"></script>
     <div id="app-header">
 
     </div>
@@ -22,7 +22,12 @@
 
     </div>
 
-    <script src="libs/angularjs/angular.min.js"></script>
+    <script src="libs/angularjs/angular-route.min.js"></script>
+    <script src="libs/angularjs/angular-cookies.min.js"></script>
+    <script src="modules/krypton.app.js"></script>
+    <script src="libs/krypton/krypton.js"></script>
+    <script src="libs/krypton/krypton.session.js"></script>
+
 </body>
 </html>
 <!-- END: main -->

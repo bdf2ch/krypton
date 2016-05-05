@@ -2,7 +2,7 @@
 
 (function () {
     angular
-        .module("krypton.admin.login", ["krypton"])
+        .module("krypton.admin.login", ["krypton", "krypton.session"])
         .controller("KryptonAdminLoginController", KryptonAdminLoginController);
 
 
