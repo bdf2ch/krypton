@@ -11,8 +11,7 @@
             "krypton.session" ]
         )
         .factory("$application", applicationFactory)
-
-    angular.module("krypton.app").run(kryptonAppRun);
+        .run(kryptonAppRun);
 
     function kryptonAppRun ($log, $classes, $session) {
         $log.log("krypton.app run...");

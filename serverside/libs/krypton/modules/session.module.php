@@ -54,7 +54,7 @@
 
                 if (self::$current != null && self::$current -> userId != 0) {
                     $u = Users::getById(self::$current -> userId);
-                    self::$user = $u != false ? new User(intval($u[0]["id"]), $u[0]["surname"], $u[0]["name"], $u[0]["fname"], $u[0]["position"], $u[0]["email"], $u[0]["phone"], boolval($u[0]["is_admin"])) : null;
+                    self::$user = $u != false ? new User(intval($u[0]["id"]), $u[0]["surname"], $u[0]["name"], $u[0]["fname"], $u[0]["position"], $u[0]["email"], $u[0]["phone"], $u[0]["login"], boolval($u[0]["is_admin"])) : null;
                }
             } else {
                 $token = self::generate_token(32);

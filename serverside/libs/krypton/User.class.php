@@ -8,10 +8,9 @@
         public $position;
         public $email;
         public $phone;
-        public $login;
         public $isAdmin = false;
 
-        public function __construct ($id, $surname, $name, $fname, $position, $email, $phone, $login, $isAdmin) {
+        public function __construct ($id, $surname, $name, $fname, $position, $email, $phone, $isAdmin) {
             if ($id == null) {
                 Errors::push(1116);
                 return false;
@@ -56,31 +55,19 @@
                                                         Errors::push(1114);
                                                         return false;
                                                     } else {
-                                                        if ($login == null) {
-                                                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "");
+                                                        if ($isAdmin != null && gettype($isAdmin) != "boolean") {
+                                                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "User -> __construct: Неверно задан тип параметра - логин пользователя");
                                                             return false;
                                                         } else {
-                                                            if (gettype($login) != "string") {
-                                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "");
-                                                                return false;
-                                                            } else {
-                                                                if ($isAdmin != null && gettype($isAdmin) != "boolean") {
-                                                                    Errors::push();
-                                                                    return false;
-                                                                } else {
-                                                                    $this -> id = $id;
-                                                                    $this -> surname = $surname;
-                                                                    $this -> name = $name;
-                                                                    $this -> fname = $fname;
-                                                                    $this -> position = $position;
-                                                                    $this -> phone = $phone;
-                                                                    $this -> email = $email;
-                                                                    $this -> login = $login;
-                                                                    $this -> isAdmin = $isAdmin;
-                                                                }
-                                                            }
+                                                            $this -> id = $id;
+                                                            $this -> surname = $surname;
+                                                            $this -> name = $name;
+                                                            $this -> fname = $fname;
+                                                            $this -> position = $position;
+                                                            $this -> phone = $phone;
+                                                            $this -> email = $email;
+                                                            $this -> isAdmin = $isAdmin;
                                                         }
-
                                                     }
                                                 }
                                             }

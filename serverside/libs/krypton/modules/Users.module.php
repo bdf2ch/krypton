@@ -20,7 +20,6 @@
                         DBManager::add_column_mysql(self::$id, "email", "varchar(200) NOT NULL") &&
                         DBManager::add_column_mysql(self::$id, "phone", "varchar(100)") &&
                         DBManager::add_column_mysql(self::$id, "position", "varchar(500)") &&
-                        DBManager::add_column_mysql(self::$id, "login", "varchar(30) NOT NULL default ''") &&
                         DBManager::add_column_mysql(self::$id, "password", "varchar(60) NOT NULL default ''") &&
                         DBManager::add_column_mysql(self::$id, "is_admin", "int(11) NOT NULL default 0")
                     )

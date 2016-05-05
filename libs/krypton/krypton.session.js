@@ -20,7 +20,6 @@
             //position: new Field({ source: "position", type: "string", value: "", default_value: "", backupable: true }),
             email: new Field({ source: "email", type: "string", value: "", default_value: "", backupable: true }),
             phone: new Field({ source: "phone", type: "string", value: "", default_value: "", backupable: true }),
-            login: new Field({ source: "login", type: "string", value: "", default_value: "", backupable: true }),
             isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true })
         });
 
