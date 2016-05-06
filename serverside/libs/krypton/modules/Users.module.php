@@ -49,7 +49,7 @@
         * Производит инициализацию модуля
         **/
         public function init () {
-            self::add("'ТЕСТ'", "'ТЕСТОВИЧ'", "'ТЕСТОВ'", "'ТЕЛЕФОНИСТ'", "'testov@kolenergo.ru'" ,"'666-777'", "'testov'", "'qwerty'", true);
+            //self::add("'ТЕСТ'", "'ТЕСТОВИЧ'", "'ТЕСТОВ'", "'ТЕЛЕФОНИСТ'", "'testov@kolenergo.ru'", "'666-777'", "'qwerty'", true);
         }
 
 
@@ -57,7 +57,7 @@
         /**
         * Добавляет нового пользователя
         **/
-        public static function add ($name, $fname, $surname, $position, $email, $phone, $login, $password, $isAdmin) {
+        public static function add ($name, $fname, $surname, $position, $email, $phone, $password, $isAdmin) {
             if ($name == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - имя пользователя");
                 return false;
@@ -106,45 +106,36 @@
                                                             Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - телефон пользователя");
                                                             return false;
                                                         } else {
-                                                            if ($login == null) {
-                                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - логин пользователя");
+                                                            if ($password == null) {
+                                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - пароль пользователя");
                                                                 return false;
                                                             } else {
-                                                                if (gettype($login) != "string") {
-                                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - логин пользователя");
+                                                                if (gettype($password) != "string") {
+                                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - пароль пользователя");
                                                                     return false;
                                                                 } else {
-                                                                    if ($password == null) {
-                                                                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - пароль пользователя");
+                                                                    if ($isAdmin == null && $isAdmin !== false) {
+                                                                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - является ли пользователь администратором");
                                                                         return false;
                                                                     } else {
-                                                                        if (gettype($password) != "string") {
-                                                                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - пароль пользователя");
+                                                                        if (gettype($isAdmin) != "boolean") {
+                                                                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - является ли пользователь администратором");
                                                                             return false;
                                                                         } else {
-                                                                            if ($isAdmin == null && $isAdmin !== false) {
-                                                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - является ли пользователь администратором");
-                                                                                return false;
-                                                                            } else {
-                                                                                if (gettype($isAdmin) != "boolean") {
-                                                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - является ли пользователь администратором");
+                                                                            if (self::isInstalled() == true) {
+                                                                                $result = DBManager::insert_row_mysql(
+                                                                                    self::$id,
+                                                                                    ["name", "surname", "fname", "email", "phone", "position", "password", "is_admin"],
+                                                                                    [$name, $surname, $fname, $email, $phone, $position, "'".md5($password)."'", intval($isAdmin)]
+                                                                                );
+                                                                                if ($result == false) {
+                                                                                    Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> add: ".mysql_errno()." - ".mysql_error());
                                                                                     return false;
                                                                                 } else {
-                                                                                    if (self::isInstalled() == true) {
-                                                                                        $result = DBManager::insert_row_mysql(
-                                                                                            self::$id,
-                                                                                            ["name", "surname", "fname", "email", "phone", "position", "login", "password", "is_admin"],
-                                                                                            [$name, $surname, $fname, $email, $phone, $position, $login, "'".md5($password)."'", intval($isAdmin)]
-                                                                                        );
-                                                                                        if ($result == false) {
-                                                                                            Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> add: ".mysql_errno()." - ".mysql_error());
-                                                                                            return false;
-                                                                                        } else {
-                                                                                            $id = mysql_insert_id();
-                                                                                            return $id != null && $id != 0 ? $id : false;
-                                                                                        }
-                                                                                    }
+                                                                                    $id = mysql_insert_id();
+                                                                                    return $id != null && $id != 0 ? $id : false;
                                                                                 }
+                                                                                //}
                                                                             }
                                                                         }
                                                                     }
