@@ -5,16 +5,67 @@
 
 
         /**
-        * Устанавливает соединение с БД MySQL
+        * Устанавливает соединение с БД
         * @dbhost - Адрес сервера БД
         * @dbuser - Имя пользователя БД
         * @dbpassword - Пароль пользователя БД
         **/
         public static function connect ($dbhost, $dbuser, $dbpassword) {
             if ($dbhost == null) {
-                Errors::push(2001);
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> connect: Не задан параметр - адрес сервера БД");
                 return false;
             } else {
+                if (gettype($dbhost) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> connect: Неверно задан тип параметра - адрес сервера БД");
+                    return false;
+                } else {
+                    if ($dbuser == null) {
+                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> connect: Не задан параметр - пользователь БД");
+                        return false;
+                    } else {
+                        if (gettype($dbuser) != "string") {
+                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> connect: Неверно задан тип параметра - пользователь БД");
+                            return false;
+                        } else {
+                            if ($dbpassword != null && gettype($dbpassword) != "string") {
+                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> connect: Неверно задан типа парметра - пароль пользователя БД");
+                                return false;
+                            } else {
+                                switch (Krypton::getDBType()) {
+                                    case Krypton::DB_TYPE_MYSQL:
+                                        $link = mysql_connect($dbhost, $dbuser, $dbpassword);
+                                        if (!$link) {
+                                            Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> connect: ".mysql_errno()." - ".mysql_error());
+                                            self::$link = null;
+                                            return false;
+                                        } else {
+                                            self::$link = $link;
+                                            $encoding = mysql_query("SET NAMES utf-8");
+                                            if (!encoding) {
+                                                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> connect: Не удалось установить кодировку соединения с БД - ".mysql_errno()." - ".mysql_error());
+                                            }
+                                            return $link;
+                                        }
+                                        break;
+                                    case Krypton::DB_TYPE_ORACLE:
+                                        $link = oci_connect($dbuser, $dbpassword, $dbhost, "AL32UTF8");
+                                        if (!$link) {
+                                            $error = oci_error();
+                                            $message = $error != false ? $error["code"]." - ".$error["message"]." - ".$error["sqltext"] : "";
+                                            Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> connect: ".$message);
+                                            self::$link = null;
+                                            return false;
+                                        } else {
+                                            self::$link = $link;
+                                            return $link;
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+                /*
                 if ($dbuser == null) {
                     Errors::push(2002);
                     return false;
@@ -32,10 +83,12 @@
                             }
                             break;
                         case Krypton::DB_TYPE_ORACLE:
+                            $link = oci_connect($dbuser, $dbpassword, $dbhost);
                             break;
                     }
 
                 }
+                */
             }
         }
 
@@ -51,18 +104,18 @@
 
 
         /**
-        * Разрывает соединение с БД MySQL
+        * Разрывает соединение с БД
         **/
         public static function disconnect () {
             if (!self::is_connected()) {
-                Errors::push(2004);
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> disconnect: Не удалось закрыть соединение с БД - соединение с БД отсутствует");
                 return false;
             } else {
                 switch (Krypton::getDBType()) {
                     case Krypton::DB_TYPE_MYSQL:
-                        $result = mysql_close(DBManager::$link);
+                        $result = mysql_close(self::$link);
                         if (!$result) {
-                            Errors::push_generic_mysql();
+                            Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> disconnect: ".mysql_errno()." - ".mysql_error());
                             return false;
                         } else {
                             self::$link = null;
@@ -70,6 +123,16 @@
                         }
                         break;
                     case KRYPTON::DB_TYPE_ORACLE:
+                        $result = oci_close(self::$link);
+                        if (!result) {
+                            $error = oci_error();
+                            $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                            Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> disconnect: ".$message);
+                            return false;
+                        } else {
+                            self::$link = null;
+                            return true;
+                        }
                         break;
                 }
             }
@@ -80,6 +143,7 @@
         * Устанавливает кодировку соединения с БД MySQL
         * @title - Наименование кодировки
         **/
+        /*
         public static function set_encoding ($title) {
             if ($title != null) {
                 if (gettype($title) == "string") {
@@ -125,6 +189,7 @@
                 return false;
             }
         }
+        */
 
 
         /**

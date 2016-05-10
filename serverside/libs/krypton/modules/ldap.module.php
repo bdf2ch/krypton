@@ -31,7 +31,7 @@
         * Проверяет, установлен ли модуль в системе
         **/
         public static function isInstalled () {
-            if (DBManager::is_table_exists_mysql("ldap"))
+            if (DBManager::is_table_exists_mysql("kr_ldap"))
                 return true;
             else
                 return false;
@@ -44,6 +44,7 @@
         **/
         public function init () {
             //echo("LDAP module init");
+            self::login("kolu0897", "zx12!@#$");
         }
 
 
@@ -65,10 +66,53 @@
 
 
 
-        public static function login () {
+        public static function login ($login, $password) {
             global $ldap_host;
-            $connection = ldap_connect($ldap_host);
-            return $connection;
+
+            if ($login == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан прараметр - логин пользователя");
+                return false;
+            } else {
+                if (gettype($login) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра - логин пользователя");
+                    return false;
+                } else {
+                    if ($password == null) {
+                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан параметр - пароль пользователя");
+                        return false;
+                    } else {
+                        if (gettype($password) != "string") {
+                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра  пароль пользователя");
+                            return false;
+                        } else {
+                            $link = ldap_connect($ldap_host);
+                            ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, 3);
+                            if (!$link) {
+                                echo("LDAP connect to host false</br>");
+                            } else {
+                                echo("LDAP connect to host success</br>");
+
+                                $bind = ldap_bind($link, "NW\\".$login, $password);
+                                if (!$bind) {
+                                    echo("no such user in AD</br>");
+                                } else {
+                                    echo("AD user found</br>");
+                                    $attributes = array("displayname", "mail", "samaccountname", "cn");
+                                    $filter = "(&(objectCategory=person)(sAMAccountName=$login))";
+                                    $userInfo = ldap_search($link, ('OU=02_USERS,OU=Kolenergo,DC=nw,DC=mrsksevzap,DC=ru'), $filter, $attributes);
+                                    echo "Результат поиска: " . $userInfo . "<br />";
+
+                                    echo "Получено количество записей " . ldap_count_entries($link, $userInfo) . "<br />";
+
+                                    $info = ldap_get_entries($link, $userInfo);
+                                    var_dump($info);
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
         }
     };
 

@@ -59,7 +59,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
 
         public $modules;
 
-        function __construct($title, $description) {
+        function __construct($title, $description, $dbType) {
             global $db_host;
             global $db_name;
             global $db_user;
@@ -67,90 +67,27 @@ if (!defined("ENGINE_INSTALL_MODE")) {
 
             $this -> modules = new ModuleManager();
 
-/*
-            $this -> modules -> load = function ($moduleName) {
-                if ($moduleName != null) {
-                    if (gettype($moduleName) == "string") {
-                        $module = new $moduleName();
-                        $module -> init();
-                    } else {
-                        ErrorManager::add (
-                            ERROR_TYPE_ENGINE,
-                            ERROR_MODULE_LOAD_WRONG_TITLE_TYPE,
-                            "Указан неверный тип параметра при загрузке модуля"
-                        ) -> send();
-                        return false;
-                    }
-                } else {
-                    ErrorManager::add (
-                        ERROR_TYPE_ENGINE,
-                        ERROR_MODULE_LOAD_NO_TITLE,
-                        "Не указано наименование загружаемого модуля"
-                    );
-                }
-            };
-            */
-
-            /*
-            $this -> modules -> isLoaded = function ($moduleName) {
-                if ($moduleName != null) {
-                    if (gettype($moduleName) == "string") {
-
-                    } else {
-                        ErrorManager::add (
-                            ERROR_TYPE_ENGINE,
-                            ERROR_MODULE_LOAD_WRONG_TITLE_TYPE,
-                            "Указан неверный тип параметра при прорверке загруженного модуля"
-                        ) -> send();
-                        return false;
-                    }
-                } else {
-                    ErrorManager::add (
-                        ERROR_TYPE_ENGINE,
-                        ERROR_MODULE_LOAD_NO_TITLE,
-                        "Не задан параметр при проверке загруженного модуля"
-                    );
-                    return false;
-                }
-            };
-            */
-
             //$this -> template = new XTemplate("serverside/templates/application.html");
+            if ($title == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Не задан параметр - наименование приложения");
+                return false;
+            } else {
+                if (gettype($title) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Неверно задан тип параметра - наименование приложения");
+                    return false;
+                } else {
+                    if ($description != null && gettype($description) != "string") {
+                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Неверно задан тип параметра - описание приложения");
+                        return false;
+                    } else {
+                        self::$title = $title;
+                        self::$description = $description;
 
-            if ($title != null) {
-                if (gettype($title) == "string")
-                    $this -> title = $title;
-                else {
-                    ErrorManager::add (
-                        ERROR_TYPE_ENGINE,
-                        ERROR_APP_WRONG_TITLE_TYPE,
-                        "Указан неверный тип параметра при создании приложения - наименование приложения"
-                    );
-                    $this -> title = "krypron application";
+                        DBManager::connect($db_host, $db_user, $db_password);
+                        DBManager::select_db_mysql("krypton");
+                    }
                 }
-            } else
-                $this -> title = "krypton application";
-
-
-            if ($description != null) {
-                if (gettype($description) == "string")
-                    $this -> title = $title;
-                else {
-                    ErrorManager::add (
-                        ERROR_TYPE_ENGINE,
-                        ERROR_APP_WRONG_DESCRIPTION_TYPE,
-                        "Указан неверный тип параметра при создании приложения - описание приложения"
-                    );
-                    $this -> description = "";
-                }
-            } else
-                $this -> description = "";
-
-            //DBManager::connect_mysql($db_host, $db_user, $db_password);
-            //DBManager::create_db_mysql("krypton");
-            //DBManager::select_db_mysql("krypton");
-            DBManager::connect($db_host, $db_user, $db_password);
-            DBManager::select_db_mysql("krypton");
+            }
         }
 
 
@@ -203,9 +140,9 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             if (DBManager::connect($db_host, $db_user, $db_password)) {
                 if (DBManager::create_db_mysql("krypton")) {
                     if (DBManager::select_db_mysql("krypton")) {
-                        if ( DBManager::set_encoding("utf8")) {
+                        //if ( DBManager::set_encoding("utf8")) {
                             echo("Установка Krypton.Core выполнена успешно</br>");
-                        }
+                        //}
                     } else
                         echo("Не удалось выполнить установку Krypton.Core</br>");
                 } else

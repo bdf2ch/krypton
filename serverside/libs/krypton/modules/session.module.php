@@ -129,21 +129,27 @@
                             Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> login: Неверно задан тип параметра - пароль");
                             return false;
                         } else {
+
                             if (LDAP::isInstalled() == true) {
                                 /***** Если модуль Krypton.LDAP установлен *****/
-                                if(LDAP::isLDAPEnabled($u -> id) == true) {
+                                if(LDAP::isLDAPEnabled(self::getCurrentUser() -> id) == true) {
+
+                                } else {
+                                     echo("LDAP is disabled for user id=".self::getCurrentUser() -> id."</br>");
 
                                 }
                             } else {
+                                 echo("LDAP not installed</br>");
                                 /***** Если модуль Krypton.LDAP не установлен *****/
                                 $encodedPassword = md5($password);
-                                $user = DBManager::select_mysql("kr_users", ["*"], "email = '$login' AND password = '$encoded' LIMIT 1");
+                                $user = DBManager::select_mysql("kr_users", ["*"], "email = '$login' AND password = '$encodedPassword' LIMIT 1");
+                                var_dump($user);
 
                                 if ($user != false) {
                                     /**** Пользователь найден *****/
                                     $currentSessionToken = self::getCurrentSession() -> token;
                                     DBManager::update_row_mysql(self::$id, ["user_id"], [intval($user[0]["id"])]);
-                                    echo(json_encode($u[0]));
+                                    var_dump($user);
                                 } else {
                                     /***** Пользователь не найден *****/
                                     echo(json_encode("Нет такого пользователя: ".$login.", ".$password));

@@ -43,7 +43,6 @@
                                             Errors::push(Errors::ERROR_TYPE_DEFAULT, "User -> __construct: Неверно задан тип параметра - отчество пользователя");
                                             return false;
                                         } else {
-
                                             if ($position == null) {
                                                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "User -> __construct: Не задан параметр - должность пользователя");
                                                 return false;
@@ -68,7 +67,7 @@
                                                                     Errors::push(Errors::ERROR_TYPE_DEFAULT, "User -> __construct: Неверно задан тип параметра - телефон пользователя");
                                                                     return false;
                                                                 } else {
-                                                                    if ($isAdmin == null) {
+                                                                    if ($isAdmin == null && gettype($isAdmin) != "boolean") {
                                                                         Errors::push(Errors::ERROR_TYPE_DEFAULT, "User -> __construct: Неверно задан параметр - является ли пользователь администратором");
                                                                         return false;
                                                                     } else {
