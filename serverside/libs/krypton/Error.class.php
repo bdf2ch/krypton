@@ -54,7 +54,7 @@
         /* Конструктор объекта */
         public function __construct ($errorType, $errorMessage) {
             if ($errorType != null) {
-                if ($errorType == Errors::ERROR_TYPE_DEFAULT || $errorType == Errors::ERROR_TYPE_ENGINE || $errorType == Errors::ERROR_TYPE_DATABASE) {
+                if ($errorType == Errors::ERROR_TYPE_DEFAULT || $errorType == Errors::ERROR_TYPE_ENGINE || $errorType == Errors::ERROR_TYPE_DATABASE || $errorType == Errors::ERROR_TYPE_LDAP) {
                     $this -> type = $errorType;
                     $this -> timestamp = time();
                     //if ($errorCode != null)

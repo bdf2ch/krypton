@@ -88,32 +88,58 @@
                             $link = ldap_connect($ldap_host);
                             ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, 3);
                             if (!$link) {
-                                echo("LDAP connect to host false</br>");
+                                Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: Не удалось подключиться к серверу LDAP");
+                                return false;
                             } else {
-                                echo("LDAP connect to host success</br>");
-
                                 $bind = ldap_bind($link, "NW\\".$login, $password);
                                 if (!$bind) {
-                                    echo("no such user in AD</br>");
+                                    Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+                                    return false;
                                 } else {
-                                    echo("AD user found</br>");
-                                    $attributes = array("displayname", "mail", "samaccountname", "cn");
+                                    $attributes = array("name", "mail", "samaccountname", "cn", "telephonenumber");
                                     $filter = "(&(objectCategory=person)(sAMAccountName=$login))";
                                     $userInfo = ldap_search($link, ('OU=02_USERS,OU=Kolenergo,DC=nw,DC=mrsksevzap,DC=ru'), $filter, $attributes);
-                                    echo "Результат поиска: " . $userInfo . "<br />";
+                                    if (!userInfo) {
+                                        Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+                                        return false;
+                                    } else {
+                                        $info = ldap_get_entries($link, $userInfo);
+                                        if (!$info) {
+                                            Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+                                            return false;
+                                        } else {
+                                            //var_dump($info);
+                                            $fio = explode(" ", $info[0]["name"][0]);
+                                            $surname = $fio[0];
+                                            $name = $fio[1];
+                                            $fname = $fio[2];
+                                            $phone = "";
+                                            $email = $info[0]["mail"][0];
 
-                                    echo "Получено количество записей " . ldap_count_entries($link, $userInfo) . "<br />";
+                                            if ($info[0]["telephonenumber"]["count"] > 0) {
+                                                for ($i = 0; $i < $info[0]["telephonenumber"]["count"]; $i++) {
+                                                    $phone += strval($info[0]["telephonenumber"][$i]);
+                                                    $phone += $i < $info[0]["telephonenumber"]["count"] ? ";" : "";
+                                                }
+                                            }
+                                            //var_dump($fio);echo("</br>");
+                                            //var_dump($phone);echo("</br>");
+                                            //var_dump($email);echo("</br>");
+                                            //var_dump($info);
 
-                                    $info = ldap_get_entries($link, $userInfo);
-                                    var_dump($info);
+                                            $user = new User(10, $surname, $name, $fname, "слюнтяй", $email, strval($phone), false);
+                                            var_dump($user);echo("</br>");
+                                        }
+                                    }
                                 }
-
                             }
                         }
                     }
                 }
             }
         }
+
+
     };
 
 ?>
