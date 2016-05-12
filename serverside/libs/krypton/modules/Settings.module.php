@@ -10,7 +10,7 @@
         * Производит установку модуля в системе
         **/
         public static function install () {
-            if (!DBManager::is_table_exists_mysql("kr_settings")) {
+            if (!DBManager::is_table_exists("kr_settings")) {
                 if (DBManager::create_table_mysql("kr_settings")) {
                     if (DBManager::add_column_mysql(self::$id, "module_id", "varchar(200) NOT NULL default ''") &&
                         DBManager::add_column_mysql(self::$id, "code", "varchar(200) NOT NULL default ''") &&
@@ -41,7 +41,7 @@
         * Проверяет, установлен ли модуль в системе
         **/
         public static function isInstalled () {
-            if (DBManager::is_table_exists_mysql(self::$id))
+            if (DBManager::is_table_exists(self::$id))
                 return true;
             else
                 return false;
@@ -92,7 +92,7 @@
 
             //Settings::setLoaded(true);
 
-            $settings = DBManager::select_mysql(self::$id, ["*"], "''");
+            $settings = DBManager::select(self::$id, ["*"], "''");
             Settings::$settings = $settings != false ? $settings : array();
 
             //self::setByCode("app_title", "'another app title'");
@@ -120,7 +120,7 @@
         **/
         public static function add ($moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem) {
             if (self::isInstalled()) {
-                if (DBManager::insert_row_mysql(
+                if (DBManager::insert_row(
                          self::$id,
                         ["module_id", "code", "title", "description", "type", "value", "is_system"],
                         [$moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem]
@@ -174,7 +174,7 @@
                         Errors::push(7009);
                         return false;
                     } else {
-                        if (DBManager::update_row_mysql("settings", ["value"], [$settingValue], "code = '$settingCode'"))
+                        if (DBManager::update_row("settings", ["value"], [$settingValue], "code = '$settingCode'"))
                             return true;
                     }
                 }

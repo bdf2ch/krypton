@@ -58,6 +58,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         private $template;
 
         public $modules;
+        public $db;
 
         function __construct($title, $description, $dbType) {
             global $db_host;
@@ -66,6 +67,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             global $db_password;
 
             $this -> modules = new ModuleManager();
+            $this -> db = new DBManager();
 
             //$this -> template = new XTemplate("serverside/templates/application.html");
             if ($title == null) {

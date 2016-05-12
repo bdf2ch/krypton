@@ -12,7 +12,7 @@
         * Производит установку модуля в системе
         **/
         public static function install () {
-            if (!DBManager::is_table_exists_mysql(self::$id)) {
+            if (!DBManager::is_table_exists(self::$id)) {
                 if (DBManager::create_table_mysql(self::$id)) {
                     if (DBManager::add_column_mysql(self::$id, "user_id", "int(11) NOT NULL default 0") &&
                         DBManager::add_column_mysql(self::$id, "token", "varchar(50) NOT NULL") &&
@@ -35,7 +35,7 @@
         * Проверяет, установлен ли модуль в системе
         **/
         public static function isInstalled () {
-            if (DBManager::is_table_exists_mysql(self::$id))
+            if (DBManager::is_table_exists(self::$id))
                 return true;
             else
                 return false;
@@ -49,11 +49,11 @@
         public function init () {
             session_start();
             if (isset($_COOKIE["krypton_session"])) {
-                $s = DBManager::select_mysql(self::$id, ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
+                $s = DBManager::select(self::$id, ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
                 if ($s == false) {
                      $token = self::generate_token(32);
                      DBManager::insert_row_mysql(self::$id, ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
-                     $s = DBManager::select_mysql(self::$id, ["*"], "token = '".$token."' LIMIT 1");
+                     $s = DBManager::select(self::$id, ["*"], "token = '".$token."' LIMIT 1");
                      self::$current = $s != false ? new UserSession($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                      setcookie("krypton_session", $token);
                 } else {
@@ -68,28 +68,19 @@
                 if (self::$current -> userId != 0) {
                     $u = Users::getById(self::$current -> userId);
                     if ($u != false) {
-                        self::$user = new User (
-                            intval($u[0]["id"]),
-                            $u[0]["surname"],
-                            $u[0]["name"],
-                            $u[0]["fname"],
-                            $u[0]["position"],
-                            $u[0]["email"],
-                            $u[0]["phone"],
-                            boolval($u[0]["is_admin"])
-                        );
+                        self::$user = $u;
                     }
                 }
             } else {
                 $token = self::generate_token(32);
-                DBManager::insert_row_mysql(self::$id, ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
-                $s = DBManager::select_mysql(self::$id, ["*"], "token = '".$token."' LIMIT 1");
+                DBManager::insert_row(self::$id, ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
+                $s = DBManager::select(self::$id, ["*"], "token = '".$token."' LIMIT 1");
                 self::$current = $s != false ? new UserSession($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                 setcookie("krypton_session", $token);
             }
             $this -> setLoaded(true);
 
-            self::login("testov@kolenergo.ru", "qwerty");
+            LDAP::login("kolu0897", "zx12!@#$");
          }
 
 
@@ -104,10 +95,64 @@
 
 
         /**
+        * Устанавливает объект текущего пользователя по идентификатору пользователя
+        * @id - Идентификатор пользователя
+        **/
+        public static function setCurrentUserById ($id) {
+            if ($id == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> setCurrentUserById: Не задан параметр - идентификатор пользователя");
+                return false;
+            } else {
+                if (gettype($id) != "integer") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> setCurrentUserById: Неверно задан тип параметра - идентификатор пользователя");
+                    return false;
+                } else {
+                    $user = Users::getById($id);
+                    if (!$user) {
+                        Errors::push(Errors::Error_TYPE_ENGINE, "Session -> setCurrentUserById: пользователь с идентификатором ".$id." не найден");
+                        return false;
+                    } else {
+                        self::$user = $user;
+                        return true;
+                    }
+                }
+            }
+        }
+
+
+        /**
         * Возвращает объект текущего пользователя
         **/
         public static function getCurrentUser () {
            return self::$user;
+        }
+
+
+
+        public static function assignCurrentSessionToUser ($userId) {
+            if ($userId == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> assignSessionToUser: Не задан параметр - идентификатор пользователя");
+                return false;
+            } else {
+                if (gettype($userId) != "integer") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> assignSessionToUser: Неверно задан тип параметра - идентификатор пользователя");
+                    return false;
+                } else {
+                    if (self::getCurrentSession() == null) {
+                        Errors::push(Error_TYPE_ENGINE, "Session -> assignSessionToUser: Текущая сессия не определена");
+                        return false;
+                    } else {
+                        $currentSessionToken = self::getCurrentSession() -> token;
+                        if (!DBManager::update_row(self::$id, ["user_id"], [$userId], "token = '$currentSessionToken'")) {
+                            return false;
+                        } else {
+                            if (self::$current != null)
+                                self::$current -> userId = $userId;
+                            return true;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -142,13 +187,13 @@
                                  echo("LDAP not installed</br>");
                                 /***** Если модуль Krypton.LDAP не установлен *****/
                                 $encodedPassword = md5($password);
-                                $user = DBManager::select_mysql("kr_users", ["*"], "email = '$login' AND password = '$encodedPassword' LIMIT 1");
+                                $user = DBManager::select("kr_users", ["*"], "email = '$login' AND password = '$encodedPassword' LIMIT 1");
                                 var_dump($user);
 
                                 if ($user != false) {
                                     /**** Пользователь найден *****/
                                     $currentSessionToken = self::getCurrentSession() -> token;
-                                    DBManager::update_row_mysql(self::$id, ["user_id"], [intval($user[0]["id"])]);
+                                    DBManager::update_row(self::$id, ["user_id"], [intval($user[0]["id"])]);
                                     var_dump($user);
                                 } else {
                                     /***** Пользователь не найден *****/
