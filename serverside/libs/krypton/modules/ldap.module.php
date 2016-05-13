@@ -31,7 +31,7 @@
         * Проверяет, установлен ли модуль в системе
         **/
         public static function isInstalled () {
-            if (DBManager::is_table_exists("kr_ldap"))
+            if (DBManager::is_table_exists(self::$id))
                 return true;
             else
                 return false;
@@ -153,8 +153,10 @@
                                             //var_dump($email);echo("</br>");
                                             //var_dump($info);
 
-                                            $user = new User(10, $surname, $name, $fname, " ", $email, strval($phone), false);
+                                            $user = new User(0, $surname, $name, $fname, " ", $email, strval($phone), false);
+                                            return $user;
 
+                                            /*
                                             if (!Users::getByEmail($email)) {
                                                 echo("пользователь с email = ".$email." не найден</br>");
 
@@ -162,9 +164,6 @@
                                                 if ($newUserId != false) {
                                                     echo("Пользователь добавлен</br>");
                                                     self::enableLDAP($newUserId);
-                                                   // echo("ldap enabled = ".var_dump(self::isLDAPEnabled($newUserId))."</br>");
-                                                    //if (self::isLDAPEnabled($newUserId)) {
-                                                        //привязать сессию к пользователю
                                                         if (!Session::assignCurrentSessionToUser($newUserId)) {
                                                             echo("не удалось привязать текущкю сессию к пользователю ".$newUserId."</br>");
                                                         } else {
@@ -173,10 +172,7 @@
                                                                 echo("не удалось установить текущего пользователя сессии</br>");
                                                             }
                                                         }
-                                                    //} else {
-                                                     //   Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: Для пользователя с идентификатором ".$newUserId." запрещена LDAP-аутентификация");
-                                                     //   return false;
-                                                    //}
+
                                                 } else {
 
                                                 }
@@ -186,7 +182,7 @@
                                                     echo("для пользователя id = ".Session::getCurrentUser() -> id." запрещена LDAP-аутентификация</br>");
                                                 } else {
                                                     if (!Session::assignCurrentSessionToUser(Session::getCurrentUser() -> id)) {
-                                                        echo("не удалось привязать текущкю сессию к пользователю ".$newUserId."</br>");
+                                                        echo("не удалось привязать текущую сессию к пользователю ".$newUserId."</br>");
                                                     } else {
                                                         echo("текущая сессия привязана к пользователю</br>");
                                                         if(!Session::setCurrentUserById(Session::getCurrentUser() -> id)) {
@@ -196,6 +192,7 @@
                                                 }
                                             }
                                             var_dump($user);echo("</br>");
+                                            */
                                         }
                                     }
                                 }
