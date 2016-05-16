@@ -119,201 +119,166 @@
 
 
         /**
-        * Создает таблицу в БД MySQL
+        * Создает БД
         * @dbName - Наименование таблицы
         **/
-        public static function create_db_mysql($dbName) {
-            if ($dbName != null) {
-                if (gettype($dbName) == "string") {
-                    if (DBManager::$link != null) {
-                        $query = mysql_query("CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8 COLLATE utf8_general_ci", DBManager::$link);
-                        if (!$query) {
-                            ErrorManager::add (
-                                ERROR_TYPE_DATABASE,
-                                mysql_errno(),
-                                mysql_error()
-                            );
-                            return false;
-                        } else
-                            return true;
-                    } else
-                        ErrorManager::add (
-                            ERROR_TYPE_DATABASE,
-                            ERROR_DB_NO_CONNECTION,
-                            "Не удалось создать БД - соединение отсутствует с БД"
-                        );
-                } else
-                    ErrorManager::add (
-                        ERROR_TYPE_DATABASE,
-                        ERROR_DB_CREATE_WRONG_TITLE_TYPE,
-                        "Задан неверный тип параметра при создании БД - наименование БД"
-                    );
-            } else
-                ErrorManager::add (
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_CREATE_NO_TITLE,
-                    "Не указан параметр при создании БД - наименование БД"
-                );
+        public static function create_db($dbName) {
+            if ($dbName == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> create_db: Не задан параметр - наименование БД");
+                return false;
+            } else {
+                if (gettype($dbName) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> create_db: Неверно задан тип параметра - наименование БД");
+                    return false;
+                } else {
+                    if (self::is_connected() == false) {
+                        Errors:push(Errors::ERROR_TYPE_DATABASE, "DB -> create_db: Отсутствует соединение с БД");
+                        return false;
+                    } else {
+                        switch (Krypton::getDBType()) {
+                            case Krypton::DB_TYPE_MYSQL:
+                                $query = mysql_query("CREATE DATABASE IF NOT EXISTS $dbName CHARACTER SET utf8 COLLATE utf8_general_ci", self::$link);
+                                if (!$query) {
+                                    Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> create_db: ".mysql_errno()." - ".mysql_error());
+                                    return false;
+                                } else
+                                    return true;
+                                break;
+                            case Krypton::DB_TYPE_ORACLE:
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
 
 
         /**
-        * Выбирает текущую БД в БД MySQL
+        * Выбирает текущую БД
         * @dbName - Наименование БД
         **/
-        public static function select_db_mysql($dbName) {
-            if ($dbName != null) {
-                if (gettype($dbName) == "string") {
-                    if (DBManager::$link != null) {
-                        $query = mysql_query("USE $dbName", DBManager::$link);
-                        if (!$query) {
-                            ErrorManager::add (
-                                Errors::ERROR_TYPE_DATABASE,
-                                mysql_errno(),
-                                mysql_error()
-                            ) -> send();
-                            return false;
-                        } else
-                            return true;
-                    } else {
-                        ErrorManager::add (
-                            Errors::ERROR_TYPE_DATABASE,
-                            ERROR_DB_NO_CONNECTION,
-                            "Не удалось разорвать соединение с БД - соединение отсутствует"
-                        ) -> send();
-                        return false;
-                    }
-                } else {
-                    ErrorManager::add (
-                        Errors::ERROR_TYPE_DATABASE,
-                        ERROR_DB_SELECT_DB_WRONG_TITLE_TYPE,
-                        "Задан неверный тип параметра при выборе БД - наименование БД"
-                    ) -> send();
-                    return false;
-                }
-            } else {
-                ErrorManager::add (
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_SELECT_DB_NO_TITLE,
-                    "Не указан параметр при выборе БД - наименование БД"
-                ) -> send();
+        public static function select_db($dbName) {
+            if ($dbName == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_db: Не задан параметр - наименование БД");
                 return false;
+            } else {
+                if (gettype($dbName) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_db: Неверно задан тип параметра - наименование БД");
+                    return false;
+                } else {
+                    if (self::is_connected() == false) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select_db: Отсутствует соединение с БД");
+                        return false;
+                    } else {
+                        switch (Krypton::getDBType()) {
+                            case Krypton::DB_TYPE_MYSQL:
+                                $query = mysql_query("USE $dbName", self::$link);
+                                if (!$query) {
+                                    Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select_db: ".mysql_errno()." - ".mysql_error());
+                                    return false;
+                                } else
+                                    return true;
+                                break;
+                            case Krypton::DB_TYPE_ORACLE:
+                                break;
+                        }
+                    }
+                }
             }
         }
 
 
 
         /**
-        * Создает таблицу в текщей БД в БД MySQL
+        * Создает таблицу в текщей БД
         * @tableName - Наименование таблицы
         **/
-        public static function create_table_mysql ($tableName) {
-            if ($tableName != null) {
-                if (gettype($tableName) == "string") {
-                    if (DBManager::$link != null) {
-                        $query = mysql_query("CREATE TABLE IF NOT EXISTS $tableName (id INT(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))", DBManager::$link);
-                        if (!$query) {
-                            ErrorManager::add (
-                                ERROR_TYPE_DATABASE,
-                                mysql_errno(),
-                                mysql_error()
-                            ) -> send();
-                            return false;
-                        } else
-                            return true;
-                    } else {
-                        ErrorManager::add (
-                            ERROR_TYPE_DATABASE,
-                            ERROR_DB_NO_CONNECTION,
-                            "Не удалось разорвать соединение с БД - соединение отсутствует"
-                        ) -> send();
-                        return false;
-                    }
-                } else {
-                    ErrorManager::add (
-                        ERROR_TYPE_DATABASE,
-                        ERROR_DB_TABLE_CREATE_WRONG_TITLE_TYPE,
-                        "Задан неверный тип параметра при создании таблицы БД - наименование таблицы"
-                    ) -> send();
-                    return false;
-                }
-            } else {
-                ErrorManager::add (
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_TABLE_CREATE_NO_TITLE,
-                    "Не указан параметр при создании таблицы - наименование таблицы"
-                ) -> send();
+        public static function create_table ($tableName) {
+            if ($tableName == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> create_table: Не задан параметр - наименование таблицы");
                 return false;
+            } else {
+                if (gettype($tableName) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> crate_table: Неверно задан тип параметра - наименование таблицы");
+                    return false;
+                } else {
+                    if (self::is_connected() == false) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> create_table: Отсутствуете соединение с БД");
+                        return false;
+                    } else {
+                        switch (Krypton::getDBType()) {
+                            case Krypton::DB_TYPE_MYSQL:
+                                $query = mysql_query("CREATE TABLE IF NOT EXISTS $tableName (id INT(11) NOT NULL AUTO_INCREMENT, PRIMARY KEY(id))", self::$link);
+                                if (!$query) {
+                                    Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> create_table: ".mysql_errno()." - ".mysql_error());
+                                    return false;
+                                } else
+                                    return true;
+                                break;
+                            case Krypton::DB_TYPE_ORACLE:
+                                break;
+                        }
+                    }
+                }
             }
         }
 
 
-
-        public static function add_column_mysql ($tableName, $columnName, $columnDefinition) {
-            if ($tableName != null) {
-                if (gettype($tableName) == "string") {
-                    if ($columnName != null) {
-                        if (gettype($columnName == "string")) {
-                            if ($columnDefinition != null) {
-                                if (gettype($columnDefinition) == "string") {
-                                    if (DBManager::$link != null) {
-                                        $query = mysql_query("ALTER TABLE $tableName ADD COLUMN $columnName $columnDefinition", DBManager::$link);
-                                        if (!$query) {
-                                            ErrorManager::add (
-                                                ERROR_TYPE_DATABASE,
-                                                mysql_errno(),
-                                                mysql_error()
-                                            ) -> send();
-                                            return false;
-                                        } else
-                                            return true;
-                                    } else {
-                                        ErrorManager::add (
-                                            ERROR_TYPE_DATABASE,
-                                            ERROR_DB_NO_CONNECTION,
-                                            "Не удалось добавить столбец в таблицу - отсутствует соединение с БД"
-                                        ) -> send();
-                                        return false;
-                                    }
-                                } else {
-                                    ErrorManager::add (
-                                        ERROR_TYPE_DATABASE,
-                                        ERROR_DB_COLUMN_ADD_WRONG_PROPERTIES_TYPE,
-                                        "Задан неверный тип параметра при создании таблицы - наименование столбца"
-                                    ) -> send();
+        /**
+        * Добавляет столбец в таблицу
+        * @tableName - Наименование таблицы
+        * @columnName - Наименование столбца
+        * @columnDefinition - Спецификации столбца
+        **/
+        public static function add_column ($tableName, $columnName, $columnDefinition) {
+            if ($tableName == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_column: Не задан параметр - наименование таблицы");
+                return false;
+            } else {
+                if (gettype($tableName) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_column: Неверно задан тип параметра - наименование таблицы");
+                    return false;
+                } else {
+                    if ($columnName == null) {
+                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_column: Не задан параметр - наименование столбца");
+                        return false;
+                    } else {
+                        if (gettype($columnName) != "string") {
+                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_column: Неверно задан тип параметра - наименование столбца");
+                            return false;
+                        } else {
+                            if ($columnDefinition == null) {
+                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_column: Не задан параметр - спецификации столбца");
+                                return false;
+                            } else {
+                                if (gettype($columnDefinition) != "string") {
+                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_column: Неверно задан тип параметра - спецификации столбца");
                                     return false;
+                                } else {
+                                    if (self::is_connected() == false) {
+                                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> add_column: Отсутствует соединение с БД");
+                                        return false;
+                                    } else {
+                                        switch (Krypton::getDBType()) {
+                                            case Krypton::DB_TYPE_MYSQL:
+                                                $query = mysql_query("ALTER TABLE $tableName ADD COLUMN $columnName $columnDefinition", self::$link);
+                                                if (!$query) {
+                                                    Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> add_column: ".mysql_errno()." - ".mysql_error());
+                                                    return false;
+                                                } else
+                                                    return true;
+                                                break;
+                                            case Krypton::DB_TYPE_ORACLE:
+                                                break;
+                                        }
+                                    }
                                 }
-                            } else
-                                ErrorManager::add (
-                                    ERROR_TYPE_DATABASE,
-                                    ERROR_DB_COLUMN_ADD_NO_PROPERTIES,
-                                    "Не указан параметр при добавлении столбца в таблицу - параметры столбца"
-                                );
-                        } else
-                            ErrorManager::add (
-                                ERROR_TYPE_DATABASE,
-                                ERROR_DB_COLUMN_ADD_WRONG_COLUMN_TYPE,
-                                "Задан неверный тип параметра при создании таблицы - наименование столбца"
-                            );
-                    } else
-                        ErrorManager::add (
-                            ERROR_TYPE_DATABASE,
-                            ERROR_DB_COLUMN_ADD_NO_COLUMN_TITLE,
-                            "Не указан параметр при добавлении столбца в таблицу - наименование столбца"
-                        );
-                } else
-                    ErrorManager::add (
-                        ERROR_TYPE_DATABASE,
-                        ERROR_DB_COLUMN_ADD_WRONG_TITLE_TYPE,
-                        "Задан неверный тип параметра при создании таблицы - наименование таблицы"
-                    );
-            } else
-                ErrorManager::add (
-                    ERROR_TYPE_DATABASE,
-                    ERROR_DB_COLUMN_ADD_NO_TABLE_TITLE,
-                    "Не указан параметр при добавлении столбца в таблицу - наименование таблицы"
-                );
+                            }
+                        }
+                    }
+                }
+            }
         }
 
 

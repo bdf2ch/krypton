@@ -12,7 +12,7 @@
         public static function install () {
             if (!DBManager::is_table_exists(self::$id)) {
                 echo("no users table</br>");
-                if (DBManager::create_table_mysql(self::$id)) {
+                if (DBManager::create_table(self::$id)) {
                     if (
                         DBManager::add_column_mysql(self::$id, "name", "varchar(200) NOT NULL") &&
                         DBManager::add_column_mysql(self::$id, "surname", "varchar(200) NOT NULL") &&

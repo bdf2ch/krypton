@@ -13,11 +13,11 @@
         **/
         public static function install () {
             if (!DBManager::is_table_exists(self::$id)) {
-                if (DBManager::create_table_mysql(self::$id)) {
-                    if (DBManager::add_column_mysql(self::$id, "user_id", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column_mysql(self::$id, "token", "varchar(50) NOT NULL") &&
-                        DBManager::add_column_mysql(self::$id, "start", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column_mysql(self::$id, "end", "int(11) NOT NULL default 0")) {
+                if (DBManager::create_table(self::$id)) {
+                    if (DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0") &&
+                        DBManager::add_column(self::$id, "token", "varchar(50) NOT NULL") &&
+                        DBManager::add_column(self::$id, "start", "int(11) NOT NULL default 0") &&
+                        DBManager::add_column(self::$id, "end", "int(11) NOT NULL default 0")) {
                         if (Settings::isInstalled()) {
                             if (Settings::add("'".self::$id."'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", "'integer'", 2000, 1))
                                 echo("Установка модуля Session выполнена успешно</br>");
@@ -81,6 +81,7 @@
             $this -> setLoaded(true);
 
             LDAP::login("kolu0897", "zx12!@#$");
+            //Krypton::$settings::test();
          }
 
 

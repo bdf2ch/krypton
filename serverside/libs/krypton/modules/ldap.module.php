@@ -9,9 +9,9 @@
         **/
         public static function install () {
             if (!DBManager::is_table_exists(self::$id)) {
-                if (DBManager::create_table_mysql(self::$id)) {
-                    if (DBManager::add_column_mysql(self::$id, "user_id", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column_mysql(self::$id, "enabled", "int(11) NOT NULL default 1")
+                if (DBManager::create_table(self::$id)) {
+                    if (DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0") &&
+                        DBManager::add_column(self::$id, "enabled", "int(11) NOT NULL default 1")
                     ) {
                         if (Settings::isInstalled()) {
                             if (Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", "'string'", "''", 1))
@@ -153,12 +153,13 @@
                                             //var_dump($email);echo("</br>");
                                             //var_dump($info);
 
-                                            $user = new User(0, $surname, $name, $fname, " ", $email, strval($phone), false);
+                                            $user = new User(-1, $surname, $name, $fname, " ", $email, strval($phone), false);
+                                            var_dump($user);echo("</br>");
                                             return $user;
 
                                             /*
                                             if (!Users::getByEmail($email)) {
-                                                echo("пользователь с email = ".$email." не найден</br>");
+                                                echo("пользовател ь с email = ".$email." не найден</br>");
 
                                                 $newUserId = Users::add($name, $fname, $surname, " ", $email, strval($phone), $password, false);
                                                 if ($newUserId != false) {
