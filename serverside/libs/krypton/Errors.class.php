@@ -1,31 +1,19 @@
 <?php
 
-    class Errors extends Module {
+    class Errors {
         const ERROR_TYPE_DEFAULT = 1;
         const ERROR_TYPE_ENGINE = 2;
         const ERROR_TYPE_DATABASE = 3;
         const ERROR_TYPE_LDAP = 4;
 
         public static $errors = array();
-        //private static $items = array();
-
-
-        public static function install () {
-            /* nothing to install */
-        }
-
-        public static function isInstalled () {}
-
-
-        public function init () {
-
-        }
 
 
 
         /**
-        *
-        *
+        * Добавляет ошибку в стек ошибок
+        * @type - Тип ошибки
+        * @message - Сообщение ошибки
         **/
         public static function push ($type, $message) {
             if ($type == null) {
@@ -65,21 +53,27 @@
 
 
         /**
-        *
+        * Возвращает все ошибки
         **/
-        public static function push_generic_mysql () {
-            $error = new Error(
-                self::ERROR_TYPE_DATABASE,
-                mysql_errno(),
-                mysql_error()
-            );
-            array_push(self::$errors, $error);
+        public static function get () {
+            return self::$errors;
         }
 
 
 
-        public static function get () {
-            return self::$errors;
+        /**
+        * Проверяет, является ли объект экземпляром класса Error
+        * @error - объект для проверки
+        **/
+        public static function isError ($error) {
+            if ($error == null) {
+                die("Errors -> isError: Не задан параметр - объект для проверки");
+            } else {
+                if (gettype($error) != "object")
+                    die("Errors -> isError: Неверно задан тип параметра - объект дял проверки");
+                else
+                    return get_class($error) == "Error" ? true : false;
+            }
         }
 
     };

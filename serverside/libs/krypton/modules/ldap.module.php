@@ -8,10 +8,10 @@
         * Производит установку модуля в системе
         **/
         public static function install () {
-            if (!DBManager::is_table_exists_mysql(self::$id)) {
-                if (DBManager::create_table_mysql(self::$id)) {
-                    if (DBManager::add_column_mysql(self::$id, "user_id", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column_mysql(self::$id, "enabled", "int(11) NOT NULL default 1")
+            if (!DBManager::is_table_exists(self::$id)) {
+                if (DBManager::create_table(self::$id)) {
+                    if (DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0") &&
+                        DBManager::add_column(self::$id, "enabled", "int(11) NOT NULL default 1")
                     ) {
                         if (Settings::isInstalled()) {
                             if (Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", "'string'", "''", 1))
@@ -31,7 +31,7 @@
         * Проверяет, установлен ли модуль в системе
         **/
         public static function isInstalled () {
-            if (DBManager::is_table_exists_mysql("kr_ldap"))
+            if (DBManager::is_table_exists(self::$id))
                 return true;
             else
                 return false;
@@ -44,7 +44,7 @@
         **/
         public function init () {
             //echo("LDAP module init");
-            self::login("kolu0897", "zx12!@#$");
+            //self::login("kolu0897", "zx12!@#$");
         }
 
 
@@ -58,8 +58,34 @@
                     Errors::push(Errors::DB_ERROR_TYPE_DEFAULT, "LDAP -> isLDAPEnabled: Неверно задан тип параметра - идентификатор пользователя");
                     return false;
                 } else {
-                    $ldap = DBManager::select_mysql(self::$id, ["*"], "'user_id = $userId LIMIT 1'");
-                    return $ldap != false ? boolval($ldap) : false;
+                    $ldap = DBManager::select(self::$id, ["*"], "user_id = $userId LIMIT 1");
+                    return $ldap != false ? boolval($ldap[0]["enabled"]) : false;
+                }
+            }
+        }
+
+
+
+        public static function enableLDAP ($userId) {
+            if ($userId == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> setLDAPEnabled: Не задан параметр - идентификатор пользователя");
+                return false;
+            } else {
+                if (gettype($userId) != "integer") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> setLDAPEnabled: Неверно задан тип параметра - идентификатор пользователя");
+                    return false;
+                } else {
+                    if (!DBManager::select(self::$id, ["*"], "user_id = $userId LIMIT 1")) {
+                        if (!DBManager::insert_row(self::$id, ["user_id", "enabled"], [$userId, 1])) {
+                            return false;
+                        } else
+                            return true;
+                    } else {
+                        if(!DBManager::update_row(self::$id, ["enabled"], [1], "user_id = $userId"))
+                            return false;
+                         else
+                            return true;
+                    }
                 }
             }
         }
@@ -127,8 +153,47 @@
                                             //var_dump($email);echo("</br>");
                                             //var_dump($info);
 
-                                            $user = new User(10, $surname, $name, $fname, "слюнтяй", $email, strval($phone), false);
+                                            $user = new User(-1, $surname, $name, $fname, " ", $email, strval($phone), false);
                                             var_dump($user);echo("</br>");
+                                            return $user;
+
+                                            /*
+                                            if (!Users::getByEmail($email)) {
+                                                echo("пользовател ь с email = ".$email." не найден</br>");
+
+                                                $newUserId = Users::add($name, $fname, $surname, " ", $email, strval($phone), $password, false);
+                                                if ($newUserId != false) {
+                                                    echo("Пользователь добавлен</br>");
+                                                    self::enableLDAP($newUserId);
+                                                        if (!Session::assignCurrentSessionToUser($newUserId)) {
+                                                            echo("не удалось привязать текущкю сессию к пользователю ".$newUserId."</br>");
+                                                        } else {
+                                                            echo("текущая сессия привязана к пользователю</br>");
+                                                            if(!Session::setCurrentUserById($newUserId)) {
+                                                                echo("не удалось установить текущего пользователя сессии</br>");
+                                                            }
+                                                        }
+
+                                                } else {
+
+                                                }
+                                            } else {
+                                                echo("Пользователь с email = ".$email." уже сущетсвует</br>");
+                                                if (!self::isLDAPEnabled(Session::getCurrentUser() -> id)) {
+                                                    echo("для пользователя id = ".Session::getCurrentUser() -> id." запрещена LDAP-аутентификация</br>");
+                                                } else {
+                                                    if (!Session::assignCurrentSessionToUser(Session::getCurrentUser() -> id)) {
+                                                        echo("не удалось привязать текущую сессию к пользователю ".$newUserId."</br>");
+                                                    } else {
+                                                        echo("текущая сессия привязана к пользователю</br>");
+                                                        if(!Session::setCurrentUserById(Session::getCurrentUser() -> id)) {
+                                                            echo("не удалось установить текущего пользователя сессии</br>");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            var_dump($user);echo("</br>");
+                                            */
                                         }
                                     }
                                 }
