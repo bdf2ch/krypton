@@ -1,6 +1,6 @@
 <?php
 
-    class UserSession {
+    class Session {
         public $userId = 0;
         public $token;
         public $start;

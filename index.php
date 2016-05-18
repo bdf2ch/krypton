@@ -7,11 +7,11 @@
     /*** Создание и инициализация нового приложения Krypton ***/
     $app = new Krypton("test app", "test app description", Krypton::DB_TYPE_MYSQL);
     //$app -> modules -> load("Errors");
-    $app -> modules -> load("Settings");
-    $app -> modules -> load("Session");
+    //$app -> modules -> load("Settings");
+    //$app -> modules -> load("Session");
     $app -> modules -> load("LDAP");
     $app -> modules -> load("Users");
-    $app -> display();
+    $app -> start();
 
     //print_r($_SERVER["REQUEST"]);
 

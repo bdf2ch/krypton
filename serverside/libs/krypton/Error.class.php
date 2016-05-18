@@ -69,7 +69,7 @@
 
 
         public function send () {
-            var_dump($this);
+            echo($this -> message."</br>");
         }
 
     };

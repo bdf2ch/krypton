@@ -1,51 +1,60 @@
 <?php
 
-    class Settings extends Module {
+    class Settings {
 
         private static $id = "kr_settings";
         private static $settings = array();
 
 
         /**
-        * Производит установку модуля в системе
+        * Производит установку подсистемы
         **/
         public static function install () {
             if (!DBManager::is_table_exists("kr_settings")) {
                 if (DBManager::create_table("kr_settings")) {
-                    if (DBManager::add_column(self::$id, "module_id", "varchar(200) NOT NULL default ''") &&
-                        DBManager::add_column(self::$id, "code", "varchar(200) NOT NULL default ''") &&
-                        DBManager::add_column(self::$id, "title", "varchar(200) NOT NULL") &&
-                        DBManager::add_column(self::$id, "description", "varchar(200) default ''") &&
-                        DBManager::add_column(self::$id, "type", "varchar(100) NOT NULL") &&
-                        DBManager::add_column(self::$id, "value", "varchar(500)") &&
-                        DBManager::add_column(self::$id, "is_system", "int(11) NOT NULL default 1")
+                    if (DBManager::add_column("kr_settings", "module_id", "varchar(200) NOT NULL default ''") &&
+                        DBManager::add_column("kr_settings", "code", "varchar(200) NOT NULL default ''") &&
+                        DBManager::add_column("kr_settings", "title", "varchar(200) NOT NULL") &&
+                        DBManager::add_column("kr_settings", "description", "varchar(200) default ''") &&
+                        DBManager::add_column("kr_settings", "type", "varchar(100) NOT NULL") &&
+                        DBManager::add_column("kr_settings", "value", "varchar(500)") &&
+                        DBManager::add_column("kr_settings", "is_system", "int(11) NOT NULL default 1")
                     ) {
-                        Settings::setInstalled(true);
-                        if (Settings::add("'".self::$id."'", "'app_title'", "'Наименование приложения'", "''", "'string'", "''", 1) &&
-                            Settings::add("'".self::$id."'", "'app_description'", "'описание приложения'", "''", "'string'", "''", 1) &&
-                            Settings::add("'".self::$id."'", "'app_debug_mode'", "'Режим отладки'", "'Приложение находится в режиме отладки'", "'boolean'", 0, 1) &&
-                            Settings::add("'".self::$id."'", "'app_construction_mode'", "'Сервисный режим'", "'Приложение находится в сервисном режиме'", "'boolean'", 0, 1)
+                        //Settings::setInstalled(true);
+                        if (Settings::add("'krypton'", "'app_title'", "'Наименование приложения'", "''", "'string'", "''", 1) &&
+                            Settings::add("'krypton'", "'app_description'", "'описание приложения'", "''", "'string'", "''", 1) &&
+                            Settings::add("'krypton'", "'app_debug_mode'", "'Режим отладки'", "'Приложение находится в режиме отладки'", "'boolean'", 0, 1) &&
+                            Settings::add("'krypton'", "'app_construction_mode'", "'Сервисный режим'", "'Приложение находится в сервисном режиме'", "'boolean'", 0, 1)
                         )
-                            echo("Установка модуля Settings выполнена успешно</br>");
-                        else
-                            echo("Не удалось выполнить установку модуля Settings</br>");
-                    } else
-                        echo("Не удалось выполнить установку модуля Settings</br>");
-                } else
-                    echo("Не удалось выполнить установку модуля Settings</br>");
-            }
+                            return true;
+                        else {
+                            Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось добавить базовые настройки в систему");
+                            return false;
+                        }
+                    } else {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось создать структуру таблицы настроек");
+                        return false;
+                    }
+                } else {
+                    Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось создать таблицу с настройками");
+                    return false;
+                }
+            } else
+                return false;
         }
+
 
 
         /**
         * Проверяет, установлен ли модуль в системе
         **/
-        public static function isInstalled () {
+
+        /*public static function isInstalled () {
             if (DBManager::is_table_exists(self::$id))
                 return true;
             else
                 return false;
-        }
+        }*/
 
 
         /**
@@ -55,7 +64,13 @@
             //Settings::setLoaded(true);
 
             $settings = DBManager::select(self::$id, ["*"], "''");
-            Settings::$settings = $settings != false ? $settings : array();
+            if ($settings != false) {
+                foreach ($settings as $key => $item) {
+                    $setting = new Setting($item["module_id"], $item["code"], $item["title"], $item["type"], $item["value"], $item["description"], boolval($item["is_system"]));
+                    array_push($setting, self::$settings);
+                }
+            }
+            //self::$settings = $settings != false ? $settings : array();
 
             //self::setByCode("app_title", "'another app title'");
             //self::setByCode("test_setting", "'poo poo'");
@@ -70,6 +85,11 @@
         }
 
 
+        public static function getAll () {
+
+        }
+
+
         /**
         * Добавляет настройку в систему
         * @moduleTitle - Наименование модуля
@@ -81,18 +101,20 @@
         * @settingIsSystem - Является ли настройка системной
         **/
         public static function add ($moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem) {
-            if (self::isInstalled()) {
+            //if (self::isInstalled()) {
                 if (DBManager::insert_row(
                          self::$id,
                         ["module_id", "code", "title", "description", "type", "value", "is_system"],
                         [$moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem]
                     )
-                )
-                return true;
-            } else {
-                Errors::push(7001);
-                return false;
-            }
+                ) {
+                    $setting = new Setting();
+                    return true;
+                }
+            //} else {
+            //    Errors::push(7001);
+            //    return false;
+            //}
         }
 
 
