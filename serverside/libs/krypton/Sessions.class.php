@@ -1,8 +1,8 @@
 <?php
 
-    class Session extends Module {
+    class Sessions {
 
-        private static $id = "kr_sessions";
+        //private static $id = "kr_sessions";
         private static $current;
         private static $user;
 
@@ -12,21 +12,29 @@
         * Производит установку модуля в системе
         **/
         public static function install () {
-            if (!DBManager::is_table_exists(self::$id)) {
-                if (DBManager::create_table(self::$id)) {
-                    if (DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column(self::$id, "token", "varchar(50) NOT NULL") &&
-                        DBManager::add_column(self::$id, "start", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column(self::$id, "end", "int(11) NOT NULL default 0")) {
-                        if (Settings::isInstalled()) {
-                            if (Settings::add("'".self::$id."'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", "'integer'", 2000, 1))
-                                echo("Установка модуля Session выполнена успешно</br>");
+            if (!DBManager::is_table_exists("kr_sessions")) {
+                if (DBManager::create_table("kr_sessions")) {
+                    if (DBManager::add_column("kr_sessions", "user_id", "int(11) NOT NULL default 0") &&
+                        DBManager::add_column("kr_sessions", "token", "varchar(50) NOT NULL") &&
+                        DBManager::add_column("kr_sessions", "start", "int(11) NOT NULL default 0") &&
+                        DBManager::add_column("kr_sessions", "end", "int(11) NOT NULL default 0")
+                    ) {
+                        if (Settings::add("'krypton'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", "'integer'", 2000, 1))
+                            return true;
+                        else {
+                            Errors::push(Errors::Error_TYPE_ENGINE, "Session -> install: Не удалось добавить настройку");
+                            return false;
                         }
-                    } else
-                        echo("Не удалось выполнить установку SessionManager");
-                } else
-                    echo("Не удалось выполнить установку SessionManager");
-            }
+                    } else {
+                        Errors::push(Errors::Error_TYPE_ENGINE, "Session -> install: Не удалось создать структуру таблицы сессий");
+                        return false;
+                    }
+                } else {
+                    Errors::push(Errors::ERROR_TYPE_ENGINE, "Session -> install: Не удалось создать таблицу сессий");
+                    return false;
+                }
+            } else
+                return false;
         }
 
 
@@ -34,12 +42,12 @@
         /**
         * Проверяет, установлен ли модуль в системе
         **/
-        public static function isInstalled () {
-            if (DBManager::is_table_exists(self::$id))
-                return true;
-            else
-                return false;
-        }
+        //public static function isInstalled () {
+        //    if (DBManager::is_table_exists(self::$id))
+        //        return true;
+        //    else
+        //        return false;
+       // }
 
 
 
@@ -49,15 +57,15 @@
         public function init () {
             session_start();
             if (isset($_COOKIE["krypton_session"])) {
-                $s = DBManager::select(self::$id, ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
+                $s = DBManager::select("kr_sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
                 if ($s == false) {
                      $token = self::generate_token(32);
-                     DBManager::insert_row_mysql(self::$id, ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
-                     $s = DBManager::select(self::$id, ["*"], "token = '".$token."' LIMIT 1");
-                     self::$current = $s != false ? new UserSession($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                     DBManager::insert_row_mysql("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
+                     $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
+                     self::$current = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                      setcookie("krypton_session", $token);
                 } else {
-                    self::$current = new UserSession(
+                    self::$current = new Session(
                         $s[0]["user_id"],
                         $s[0]["token"],
                         $s[0]["start"],
@@ -73,12 +81,12 @@
                 }
             } else {
                 $token = self::generate_token(32);
-                DBManager::insert_row(self::$id, ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
-                $s = DBManager::select(self::$id, ["*"], "token = '".$token."' LIMIT 1");
-                self::$current = $s != false ? new UserSession($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
+                $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
+                self::$current = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                 setcookie("krypton_session", $token);
             }
-            $this -> setLoaded(true);
+            //$this -> setLoaded(true);
 
             LDAP::login("kolu0897", "zx12!@#$");
             //Krypton::$settings::test();
@@ -98,6 +106,7 @@
         /**
         * Устанавливает объект текущего пользователя по идентификатору пользователя
         * @id - Идентификатор пользователя
+        * ! Требует наличия загруженного модуля Users
         **/
         public static function setCurrentUserById ($id) {
             if ($id == null) {
@@ -119,6 +128,7 @@
                 }
             }
         }
+
 
 
         /**

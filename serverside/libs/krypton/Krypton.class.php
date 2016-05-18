@@ -15,9 +15,11 @@ if (!defined("ENGINE_INSTALL_MODE")) {
     require_once "serverside/libs/krypton/DBManager.class.php";
     //require_once "serverside/libs/krypton/SessionManager.class.php";
     require_once "serverside/libs/krypton/Session.class.php";
+    require_once "serverside/libs/krypton/Sessions.class.php";
     require_once "serverside/libs/krypton/User.class.php";
-    //require_once "serverside/libs/krypton/PropertiesManager.class.php";
-    require_once "serverside/libs/krypton/SettingManager.class.php";
+    require_once "serverside/libs/krypton/Setting.class.php";
+    require_once "serverside/libs/krypton/Settings.class.php";
+    //require_once "serverside/libs/krypton/SettingManager.class.php";
     require_once "serverside/libs/krypton/Controller.class.php";
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
 
@@ -25,8 +27,6 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         //echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");
         include "serverside/libs/krypton/modules/".$className.".module.php";
     }
-} else {
-
 }
 
 
@@ -50,6 +50,10 @@ if (!defined("ENGINE_INSTALL_MODE")) {
     class Krypton {
         const DB_TYPE_MYSQL = 1;
         const DB_TYPE_ORACLE = 2;
+        const DATA_TYPE_INTEGER = 1;
+        const DATA_TYPE_STRING = 2;
+        const DATA_TYPE_BOOLEAN = 3;
+        const DATA_TYPE_FLOAT = 4;
 
         private static $dbType = self::DB_TYPE_MYSQL;
         private static $title;
@@ -69,8 +73,8 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             global $db_password;
 
             $this -> modules = new ModuleManager();
-            $this -> db = new DBManager();
-            $this -> settings = new SettingManager();
+            //$this -> db = new DBManager();
+            //$this -> settings = new SettingManager();
 
             //$this -> template = new XTemplate("serverside/templates/application.html");
             if ($title == null) {
@@ -115,25 +119,23 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         }
 
 
-        public function display () {
-            //print_r($_SERVER["REQUEST_URI"]);echo("</br>");
-            //print_r($_SERVER["SERVER_NAME"]);
-
+        public function start () {
             $path = explode("/", $_SERVER["REQUEST_URI"]);
             if ((count($path) == 3 && $path[1] == "admin") || (count($path) == 2 && $path[1] == "admin")) {
                 $template_url = "serverside/templates/admin_login.html";
-                //header("Content-type: text/css");
             } else
                 $template_url = "serverside/templates/application.html";
 
-            //print_r($path);
-            //print_r(count($path));
+            Settings::init();
+            Sessions::init();
+
             $this -> template = new XTemplate($template_url);
-            $this -> template -> assign("CURRENT_SESSION", json_encode(Session::getCurrentSession()));
-            $this -> template -> assign("CURRENT_USER", json_encode(Session::getCurrentUser()));
+            $this -> template -> assign("CURRENT_SESSION", json_encode(Sessions::getCurrentSession()));
+            $this -> template -> assign("CURRENT_USER", json_encode(Sessions::getCurrentUser()));
             $this -> template -> parse("main");
             $this -> template -> out("main");
         }
+
 
 
         public static function install () {
@@ -145,13 +147,25 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             if (DBManager::connect($db_host, $db_user, $db_password)) {
                 if (DBManager::create_db("krypton")) {
                     if (DBManager::select_db("krypton")) {
-                        //if ( DBManager::set_encoding("utf8")) {
-                            echo("Установка Krypton.Core выполнена успешно</br>");
-                        //}
-                    } else
-                        echo("Не удалось выполнить установку Krypton.Core</br>");
-                } else
-                    echo("Не удалось выполнить установку Krypton.Core</br>");
+                        if (Settings::install() == true) {
+                            echo("Установка подсистемы настроек выполнена успешно</br>");
+                            return true;
+                        }
+                        if (Sessions::install() == true) {
+                            echo("Установка подсистемы учета сессий выполнена успешно</br>");
+                            return true;
+                        }
+                    } else {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось выбрать БД");
+                        return false;
+                    }
+                } else {
+                    Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось создать БД");
+                    return false;
+                }
+            } else {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось подключиться к БД");
+                return false;
             }
         }
 
