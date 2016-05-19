@@ -6,6 +6,10 @@
         .controller("KryptonAdminLoginController", KryptonAdminLoginController);
 
 
+
+    /**
+     * Контроллер авторизации в административную часть приложения
+     */
     function KryptonAdminLoginController ($log, $scope, $http) {
         $scope.userName = "";
         $scope.password = "";
@@ -13,6 +17,13 @@
         $scope.isPasswordSent = false;
         $scope.errors = [];
 
+
+
+        /**
+         * Включает / отключает режима напоминания пароля
+         * @param flag - Флаг, включить / отключить режим напоминания пароля
+         * @returns {boolean|*}
+         */
         $scope.remindPasswordMode = function (flag) {
             if (flag !== undefined && typeof(flag) === "boolean") {
                 $scope.inRemindPasswordMode = flag;
@@ -21,6 +32,11 @@
             return $scope.inRemindPasswordMode;
         };
 
+
+
+        /**
+         * Отпраялет данные для авторизации
+         */
         $scope.login = function () {
             $scope.errors.splice(0, $scope.errors.length);
             if ($scope.userName === "") {
@@ -33,6 +49,8 @@
                 
             }
         };
+
+
 
         $scope.remindPassword = function () {
             $scope.errors.splice(0, $scope.errors.length);

@@ -39,62 +39,86 @@
                                         Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Не задан параметр - типа данных настройки");
                                         return false;
                                     } else {
-                                        if (gettype($dataType) != "integer") {
+                                        if (gettype($dataType) != "integer" && gettype($dataType) != "string") {
                                             Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Неверно задан тип параметра - тип данных настройки");
                                             return false;
                                         } else {
-                                            if ($dataType != Krypton::DATA_TYPE_INTEGER || $dataType != Krypton::DATA_TYPE_STRING || $dataType != Krypton::DATA_TYPE_BOOLEAN || $dataType != Krypton::DATA_TYPE_FLOAT) {
-                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Неверно задано значение параметра - тип данных настройки");
-                                                return false;
-                                            } else {
-                                                $this -> $module = $module;
-                                                $this -> code = $code;
-                                                $this -> title = $title;
-                                                $this -> dataType = $dataType;
-
-                                                if ($value != null) {
+                                            if (gettype($dataType) == "integer") {
+                                                if ($dataType != Krypton::DATA_TYPE_INTEGER || $dataType != Krypton::DATA_TYPE_STRING || $dataType != Krypton::DATA_TYPE_FLOAT || $dataType != Krypton::DATA_TYPE_BOOLEAN) {
+                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Неверно задано значение параметра - тип данных настройки (integer)");
+                                                    return false;
+                                                } else
+                                                    $this -> dataType = $dataType;
+                                            } else if (gettype($dataType) == "string") {
+                                                if ($dataType != "integer" && $dataType != "string" && $dataType != "float" && $dataType != "boolean") {
+                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Неверно задано значение параметра - тип данных настройки (string)");
+                                                    return false;
+                                                } else {
                                                     switch ($dataType) {
+                                                        case "integer":
+                                                            $this -> dataType = Krypton::DATA_TYPE_INTEGER;
+                                                            break;
+                                                        case "string":
+                                                            $this -> dataType = Krypton::DATA_TYPE_STRING;
+                                                            break;
+                                                        case "float":
+                                                            $this -> dataType = Krypton::DATA_TYPE_FLOAT;
+                                                            break;
+                                                        case "boolean":
+                                                            $this -> dataType = Krypton::DATA_TYPE_BOOLEAN;
+                                                            break;
+                                                    }
+                                                }
+                                            }
+
+                                            $this -> moduleId = $module;
+                                            $this -> code = $code;
+                                            $this -> title = $title;
+
+                                            if ($value != null) {
+                                                switch ($this -> dataType) {
                                                         case Krypton::DATA_TYPE_INTEGER:
-                                                            if (gettype($value) != "integer") {
+                                                            if (gettype(intval($value)) != "integer") {
                                                                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Тип значения настройки не соответствует типу данных настройки");
                                                                 return false;
-                                                            }
+                                                            } else
+                                                                $this -> value = intval($value);
                                                             break;
                                                         case Krypton::DATA_TYPE_STRING:
                                                             if (gettype($value) != "string") {
                                                                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Тип значения настройки не соответствует типу данных настройки");
                                                                 return false;
-                                                            }
+                                                            } else
+                                                                $this -> value = $value;
                                                             break;
                                                         case Krypton::DATA_TYPE_BOOLEAN:
-                                                            if (gettype($value) != "boolean") {
+                                                            if (gettype(boolval($value)) != "boolean") {
                                                                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Тип значения настройки не соответствует типу данных настройки");
                                                                 return false;
-                                                            }
+                                                            } else
+                                                                $this -> value = boolval($value);
                                                             break;
                                                         case Krypton::DATA_TYPE_FLOAT:
-                                                            if (gettype($value) != "double") {
+                                                            if (gettype(floatval($value)) != "double") {
                                                                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Тип значения настройки не соответствует типу данных настройки");
                                                                 return false;
-                                                            }
+                                                            } else
+                                                                $this -> value = floatval($value);
                                                             break;
-                                                    }
-                                                    $this -> value = $value;
                                                 }
-
-
-                                                if ($description != null && gettype($description) != "string") {
-                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Неверно задан тип параметра - описание настройки");
-                                                    return false;
-                                                } else
-                                                    $this -> description = $description;
-
-                                                if ($isSystem != null && gettype($isSystem) != "boolean") {
-                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Неверно задан тип параметра - является ли настройки системной");
-                                                    return false;
-                                                } else
-                                                    $this -> isSystem = $isSystem;
                                             }
+
+                                            if ($description != null && gettype($description) != "string") {
+                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Неверно задан тип параметра - описание настройки");
+                                                return false;
+                                            } else
+                                                $this -> description = $description;
+
+                                            if ($isSystem != null && gettype(boolval($isSystem)) != "boolean") {
+                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Неверно задан тип параметра - является ли настройки системной");
+                                                return false;
+                                            } else
+                                                $this -> isSystem = boolval($isSystem);
                                         }
                                     }
                                 }
@@ -104,6 +128,8 @@
                 }
             }
         }
+
+
     };
 
 ?>

@@ -12,6 +12,10 @@ if (!defined("ENGINE_INSTALL_MODE")) {
     require_once "serverside/libs/krypton/Errors.class.php";
     require_once "serverside/libs/krypton/Module.class.php";
     require_once "serverside/libs/krypton/ModuleManager.class.php";
+
+    require_once "serverside/libs/krypton/ControllerAction.class.php";
+    require_once "serverside/libs/krypton/Controller.class.php";
+
     require_once "serverside/libs/krypton/DBManager.class.php";
     //require_once "serverside/libs/krypton/SessionManager.class.php";
     require_once "serverside/libs/krypton/Session.class.php";
@@ -66,17 +70,17 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         public static $settings;
         public $db;
 
+
         function __construct($title, $description, $dbType) {
             global $db_host;
             global $db_name;
             global $db_user;
             global $db_password;
 
+            session_start();
             $this -> modules = new ModuleManager();
-            //$this -> db = new DBManager();
-            //$this -> settings = new SettingManager();
+            var_dump(session_name());
 
-            //$this -> template = new XTemplate("serverside/templates/application.html");
             if ($title == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Не задан параметр - наименование приложения");
                 return false;
@@ -91,7 +95,6 @@ if (!defined("ENGINE_INSTALL_MODE")) {
                     } else {
                         self::$title = $title;
                         self::$description = $description;
-
                         DBManager::connect($db_host, $db_user, $db_password);
                         DBManager::select_db("krypton");
                     }
@@ -108,6 +111,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         }
 
 
+
         public static function get_title () {
             return self::$title;
         }
@@ -117,6 +121,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         public static function getDBType () {
             return self::$dbType;
         }
+
 
 
         public function start () {
@@ -132,6 +137,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             $this -> template = new XTemplate($template_url);
             $this -> template -> assign("CURRENT_SESSION", json_encode(Sessions::getCurrentSession()));
             $this -> template -> assign("CURRENT_USER", json_encode(Sessions::getCurrentUser()));
+            $this -> template -> assign("SETTINGS", json_encode(Settings::getAll()));
             $this -> template -> parse("main");
             $this -> template -> out("main");
         }

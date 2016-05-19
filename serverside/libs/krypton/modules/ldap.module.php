@@ -154,7 +154,7 @@
                                             //var_dump($info);
 
                                             $user = new User(-1, $surname, $name, $fname, " ", $email, strval($phone), false);
-                                            var_dump($user);echo("</br>");
+                                            //var_dump($user);echo("</br>");
                                             return $user;
 
                                             /*
