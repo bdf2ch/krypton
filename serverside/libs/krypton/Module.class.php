@@ -3,19 +3,11 @@
     abstract class Module {
         private $id;
         private $description;
-        private $version;
-        private $errors = array();
         private static $controller;
         private static $isModuleInstalled = false;
         private static $isModuleLoaded = false;
 
         public function __construct() {
-            //if ($moduleTitle != null && gettype($moduleTitle) == "string") {
-            //    $this -> title = $moduleTitle;
-            //    $this -> clientSideModule = "krypton.".$this -> title.".js";
-            //}
-            //if ($moduleDescription != null && gettype($moduleDescription) == "string")
-            //    $this -> description = $moduleDescription;
             self::$controller = new Controller();
         }
 

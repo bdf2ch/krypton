@@ -15,6 +15,8 @@
 
     //print_r($_SERVER["REQUEST"]);
 
+    var_dump(method_exists("Sessions", "install"));
+
 
 
 

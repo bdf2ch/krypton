@@ -1,5 +1,13 @@
 <?php
 
+    $postdata = json_decode(file_get_contents('php://input'));
+    if (isset($postdata -> action)) {
+        switch ($postdata -> action) {
+
+        }
+    }
+
+
     class Sessions {
 
         //private static $id = "kr_sessions";
@@ -55,7 +63,7 @@
         * Производит инициализацию модуля
         **/
         public function init () {
-            session_start();
+            //session_start();
             if (isset($_COOKIE["krypton_session"])) {
                 $s = DBManager::select("kr_sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
                 if ($s == false) {
@@ -88,8 +96,8 @@
             }
             //$this -> setLoaded(true);
 
-            LDAP::login("kolu0897", "zx12!@#$");
-            //Krypton::$settings::test();
+            //var_dump(LDAP::login("kolu0897", "zx12!@#$"));
+            self::login("kolu0897", "zx12!@#$");
          }
 
 
@@ -187,13 +195,18 @@
                         } else {
 
                             if (LDAP::isInstalled() == true) {
-                                /***** Если модуль Krypton.LDAP установлен *****/
-                                if(LDAP::isLDAPEnabled(self::getCurrentUser() -> id) == true) {
-
+                                if (self::getCurrentUser() != null) {
+                                    if(LDAP::isLDAPEnabled(self::getCurrentUser() -> id) == true) {
+                                        var_dump(LDAP::login($login, $password));
+                                    } else {
+                                        echo("LDAP is disabled for user id=".self::getCurrentUser() -> id."</br>");
+                                    }
                                 } else {
-                                     echo("LDAP is disabled for user id=".self::getCurrentUser() -> id."</br>");
-
+                                    echo("current user is null");
                                 }
+
+                                /***** Если модуль Krypton.LDAP установлен *****/
+
                             } else {
                                  echo("LDAP not installed</br>");
                                 /***** Если модуль Krypton.LDAP не установлен *****/
