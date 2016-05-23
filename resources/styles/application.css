@@ -1,8 +1,7 @@
 .krypton-ui-calendar {
   overflow: auto;
-  width: 295px;
+  width: 282px;
   height: auto;
-  padding: 5px;
   box-sizing: border-box;
   border: 1px solid lightgrey;
 }
@@ -11,11 +10,12 @@
   width: 280px;
   height: 40px;
   box-sizing: border-box;
-  border: 1px solid black;
 }
 .krypton-ui-calendar .weekdays {
   float: left;
-  height: 30px;
+  height: 20px;
+  text-transform: uppercase;
+  color: darkgray;
   box-sizing: border-box;
 }
 .krypton-ui-calendar .day {
@@ -31,17 +31,19 @@
   box-sizing: border-box;
 }
 .krypton-ui-calendar .day:hover {
-  background: #EEEEEE;
+  background: #E0E0E0;
 }
 .krypton-ui-calendar .day.weekday {
   font-size: 12px;
+  line-height: 10px;
   background: transparent;
+  cursor: default;
 }
 .krypton-ui-calendar .day.weekend {
   background: #FFCDD2 !important;
 }
 .krypton-ui-calendar .day.weekend:hover {
-  background: #EF9A9A;
+  background: #EF9A9A !important;
 }
 /**********
 ** FONTS
@@ -99,10 +101,28 @@
 ** WIDTH
 **********/
 .width-100 {
+  float: left;
   width: 100%;
 }
 .width-90 {
+  float: left;
   width: 90%;
+}
+.width-50 {
+  float: left;
+  width: 50%;
+}
+.width-33 {
+  float: left;
+  width: 33%;
+}
+.width-30 {
+  float: left;
+  width: 30%;
+}
+.width-25 {
+  float: left;
+  width: 25%;
 }
 /**********
 ** PADDINGS & MARGINS

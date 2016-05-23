@@ -2,14 +2,14 @@
 
 @ui-calendar-day-width: 40px;
 @ui-calendar-day-height: 40px;
-@ui-calendar-width: @ui-calendar-day-width * 7 + 15;
+@ui-calendar-width: @ui-calendar-day-width * 7 + 2;
 @ui-calendar-height: 190px;
 
 .krypton-ui-calendar {
   overflow: auto;
   width: @ui-calendar-width;
   height: auto;
-  padding: 5px;
+  //padding: 5px;
   box-sizing: border-box;
   border: 1px solid @ui-border-color;
   //background: red;
@@ -19,12 +19,15 @@
     width: @ui-calendar-day-width * 7;
     height: @ui-calendar-day-height;
     box-sizing: border-box;
-    border: 1px solid black;
+    //border: 1px solid black;
   }
 
   .weekdays {
     float: left;
-    height: 30px;
+    height: 20px;
+    //line-height: 15px;
+    text-transform: uppercase;
+    color: darkgray;
     box-sizing: border-box;
   }
 
@@ -41,19 +44,21 @@
     box-sizing: border-box;
     
     &:hover {
-      background: #EEEEEE;
+      background: #E0E0E0;
     }
 
     &.weekday {
       font-size: 12px;
+      line-height: @ui-calendar-day-height - 30;
       background: transparent;
+      cursor: default;
     }
 
     &.weekend {
       background: #FFCDD2 !important;
       
       &:hover {
-        background: #EF9A9A;
+        background: #EF9A9A !important;
       }
     }
   }
