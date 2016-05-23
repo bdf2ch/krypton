@@ -8,26 +8,53 @@
             "ngRoute",
             "ngCookies",
             "krypton",
-            "krypton.session" ]
+            "krypton.ui"]
         )
         .factory("$application", applicationFactory)
+        .controller("testController", testController)
         .run(kryptonAppRun);
 
-    function kryptonAppRun ($log, $classes, $session) {
+
+
+    function kryptonAppRun ($log, $classes, $http, $errors, $calendar) {
         $log.log("krypton.app run...");
         if (krypton !== undefined) {
             $log.info(krypton);
-            $session.setCurrentSession(krypton.session);
-            $session.setCurrentUser(krypton.user);
+            //$session.setCurrentSession(krypton.session);
+            //$session.setCurrentUser(krypton.user);
         }
         
-        $log.log("session: ", $session.getCurrentSession());
-        $log.log("user: ", $session.getCurrentUser());
+        //$log.log("session: ", $session.getCurrentSession());
+        //$log.log("user: ", $session.getCurrentUser());
+        $log.log($errors.add(50, "test error"));
+
+        $http.post("serverside/libs/krypton/controllers/appController.php", {action: "test", parameters: {first: 10, second: "secpar"}})
+            .success(function (data) {
+                $log.log(data);
+            });
+
+
+
+
+
     };
+
 
 
     function applicationFactory () {
 
+    };
+
+
+
+
+    function testController ($scope, $calendar) {
+        $scope.test = 100;
+
+        $calendar.add({
+            modelValue: $scope.test,
+            isModal: true
+        });
     };
 
 })();

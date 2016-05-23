@@ -1,0 +1,8 @@
+<div class="toolbar"></div>
+<div class="weekdays">
+    <div class="day weekday"
+         ng-repeat="weekday in weekdays track by $index">
+        {{ weekday }}
+    </div>
+</div>
+<div class="day" ng-repeat="day in days track by $index" ng-class="{'weekend': ($index + 1) % 7 === 0}">{{$index}}</div>

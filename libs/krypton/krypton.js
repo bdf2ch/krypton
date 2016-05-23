@@ -1,6 +1,11 @@
 "use strict";
 
 
+const ERROR_TYPE_DEFAULT = 1;
+const ERROR_TYPE_ENGINE = 2;
+const ERROR_TYPE_DATABASE = 3;
+const ERROR_TYPE_LDAP = 4;
+
 
 /**
  * Класс поля модели данных
@@ -34,6 +39,7 @@ function Field (parameters) {
         .module("krypton", [])
         .factory("$classes", classesFactory)
         .factory("$factory", factoryFactory)
+        .factory("$errors", errorsFactory)
         .factory("$application", applicationFactory)
         .factory("$settings", settingsFactory);
 
@@ -171,6 +177,78 @@ function Field (parameters) {
 
 
 
+    /********************
+     * $errors
+     * Сервис, реализующий управление ошибками в ходе выполнения приложения
+     ********************/
+    function errorsFactory ($log, $factory) {
+        var errors = [];
+
+        return {
+            /**
+             * Добавляет ошибку в стек
+             * @param errorType - Тип ошибки
+             * @param errorMessage - Текст ошибки
+             * @returns {*} - Error / false
+             */
+            add: function (errorType, errorMessage) {
+                if (errorType !== undefined) {
+                    if (!isNaN(errorType)) {
+                        if (errorMessage !== undefined) {
+                            var tempError = $factory({ classes: ["Error", "Model"], base_class: "Error" });
+                            tempError.typeId.value = errorType;
+                            tempError.message.value = errorMessage;
+                            tempError.timestamp.value = Math.floor(Date.now() / 1000);
+                            errors.push(tempError);
+                            $log.error(moment.unix(tempError.timestamp.value).format("DD.MM.YYYY HH:mm") + ": " + tempError.message.value);
+                            return tempError;
+                        } else {
+                            $log.error("$errors -> add: Не задан параметр - текст ошибки");
+                            return false;
+                        }
+                    } else {
+                        $log.error("$errors -> add: Неверно задан тип параметра - тип ошибки");
+                        return false;
+                    }
+                } else {
+                    $log.error("$errors -> add: Не задан параметр - тип ошибки");
+                    return false;
+                }
+            },
+
+            /**
+             * Возвращает стек ошибок
+             * @returns {Array}
+             */
+            getAll: function () {
+                return errors;
+            },
+
+            /**
+             * Проверяет, является ли объект экземпляром ошибки
+             * @param error - Объект для проверки
+             * @returns {boolean}
+             */
+            isError: function (error) {
+                if (error !== undefined) {
+                    if (typeof error === "object" && error.typeId !== undefined && error.message !== undefined)
+                        return true;
+                    else
+                        return false;
+                } else {
+                    var tempError = $factory({ classes: ["Error", "Model"], base_class: "Error" });
+                    tempError.typeId.value = ERROR_TYPE_DEFAULT;
+                    tempError.message.value = "$errors -> isError: Не задан параметр - объект для проверки";
+                    tempError.timestamp.value = Math.floor(Date.now() / 1000);
+                    errors.push(tempError);
+                    return false;
+                }
+            }
+        }
+    };
+
+
+
     /******************************
      * $application
      * Сервис приложения
@@ -195,6 +273,23 @@ function Field (parameters) {
     function kryptonRun ($log, $classes) {
         $log.log("krypton run...");
 
+        /**
+         * Error
+         * Набор свойств и методов, описывающий ошибку
+         */
+        $classes.add("Error", {
+            __dependencies__: [],
+            typeId: new Field({ source: "typeId", type: "integer", value: 0, default_value: 0 }),
+            message: new Field({ source: "message", type: "string", value: "", default_value: "" }),
+            timestamp: new Field({ source: "timestamp", type: "integer", value: 0, default_value: 0 })
+        });
+
+
+
+        /**
+         * Model
+         * Набор свойст и методов, описывающих модель данных
+         */
         $classes.add("Model", {
             __dependencies__: [],
             _model_: {

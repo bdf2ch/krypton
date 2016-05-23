@@ -510,7 +510,7 @@
                                             $cond = $condition != null && $condition != "''" ? " WHERE ".$condition : "";
                                             $query = mysql_query("SELECT $cols FROM $table".$cond, self::$link);
                                             if (!$query) {
-                                                Errors::push_generic_mysql();
+                                                Errors::push(Errors::ERROR_TYPE_DATABASE, "DBManager -> select: ".mysql_errno()." - ".mysql_error());
                                                 return false;
                                             } else {
                                                 $result = array();

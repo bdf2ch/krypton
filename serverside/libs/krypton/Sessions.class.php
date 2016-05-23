@@ -1,16 +1,7 @@
 <?php
 
-    $postdata = json_decode(file_get_contents('php://input'));
-    if (isset($postdata -> action)) {
-        switch ($postdata -> action) {
-
-        }
-    }
-
-
     class Sessions {
 
-        //private static $id = "kr_sessions";
         private static $current;
         private static $user;
 
@@ -63,28 +54,41 @@
         * Производит инициализацию модуля
         **/
         public function init () {
-            //session_start();
-            if (isset($_COOKIE["krypton_session"])) {
-                $s = DBManager::select("kr_sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
-                if ($s == false) {
-                     $token = self::generate_token(32);
-                     DBManager::insert_row_mysql("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
-                     $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
-                     self::$current = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
-                     setcookie("krypton_session", $token);
-                } else {
-                    self::$current = new Session(
-                        $s[0]["user_id"],
-                        $s[0]["token"],
-                        $s[0]["start"],
-                        $s[0]["end"]
-                    );
-                }
+            global $db_host;
+            global $db_user;
+            global $db_password;
 
-                if (self::$current -> userId != 0) {
-                    $u = Users::getById(self::$current -> userId);
-                    if ($u != false) {
-                        self::$user = $u;
+            if (isset($_COOKIE["krypton_session"])) {
+                if (!DBManager::is_connected()) {
+                    if (!DBManager::connect($db_host, $db_user, $db_password)) {
+                        return Errors::push(Errors::ERROR_TYPE_DATABASE, "Sessions -> init: Не удалось установить соединение с БД");
+                    } else {
+                        if (!DBManager::select_db("krypton")) {
+                            return Errors::push(Errors::ERROR_TYPE_DATABASE, "Sessions -> init: Не удалось выбрать БД");
+                        } else {
+                            $s = DBManager::select("kr_sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
+                                if ($s == false) {
+                                $token = self::generate_token(32);
+                                DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
+                                $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
+                                self::$current = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                                setcookie("krypton_session", $token);
+                            } else {
+                                self::$current = new Session(
+                                    $s[0]["user_id"],
+                                    $s[0]["token"],
+                                    $s[0]["start"],
+                                    $s[0]["end"]
+                                );
+                            }
+
+                            if (self::$current -> userId != 0) {
+                                $u = UsersModule::getById(self::$current -> userId);
+                                if ($u != false) {
+                                    self::$user = $u;
+                                }
+                            }
+                        }
                     }
                 }
             } else {
@@ -97,7 +101,7 @@
             //$this -> setLoaded(true);
 
             //var_dump(LDAP::login("kolu0897", "zx12!@#$"));
-            self::login("kolu0897", "zx12!@#$");
+            //self::login("kolu0897", "zx12!@#$");
          }
 
 
@@ -114,7 +118,7 @@
         /**
         * Устанавливает объект текущего пользователя по идентификатору пользователя
         * @id - Идентификатор пользователя
-        * ! Требует наличия загруженного модуля Users
+        * ! Требует наличия загруженного модуля UsersModule
         **/
         public static function setCurrentUserById ($id) {
             if ($id == null) {
@@ -125,7 +129,7 @@
                     Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> setCurrentUserById: Неверно задан тип параметра - идентификатор пользователя");
                     return false;
                 } else {
-                    $user = Users::getById($id);
+                    $user = UsersModule::getById($id);
                     if (!$user) {
                         Errors::push(Errors::Error_TYPE_ENGINE, "Session -> setCurrentUserById: пользователь с идентификатором ".$id." не найден");
                         return false;
@@ -194,10 +198,10 @@
                             return false;
                         } else {
 
-                            if (LDAP::isInstalled() == true) {
+                            if (LDAPModule::isInstalled() == true) {
                                 if (self::getCurrentUser() != null) {
-                                    if(LDAP::isLDAPEnabled(self::getCurrentUser() -> id) == true) {
-                                        var_dump(LDAP::login($login, $password));
+                                    if(LDAPModule::isLDAPEnabled(self::getCurrentUser() -> id) == true) {
+                                        var_dump(LDAPModule::login($login, $password));
                                     } else {
                                         echo("LDAP is disabled for user id=".self::getCurrentUser() -> id."</br>");
                                     }

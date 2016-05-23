@@ -1,0 +1,60 @@
+@import "utils.less";
+
+@ui-calendar-day-width: 40px;
+@ui-calendar-day-height: 40px;
+@ui-calendar-width: @ui-calendar-day-width * 7 + 15;
+@ui-calendar-height: 190px;
+
+.krypton-ui-calendar {
+  overflow: auto;
+  width: @ui-calendar-width;
+  height: auto;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid @ui-border-color;
+  //background: red;
+
+  .toolbar {
+    float: left;
+    width: @ui-calendar-day-width * 7;
+    height: @ui-calendar-day-height;
+    box-sizing: border-box;
+    border: 1px solid black;
+  }
+
+  .weekdays {
+    float: left;
+    height: 30px;
+    box-sizing: border-box;
+  }
+
+  .day {
+    display: block;
+    float: left;
+    width: @ui-calendar-day-width;
+    height: @ui-calendar-day-height;
+    padding: 5px;
+    text-align: center;
+    line-height: @ui-calendar-day-height - 10;
+    cursor: pointer;
+    background: #F5F5F5;
+    box-sizing: border-box;
+    
+    &:hover {
+      background: #EEEEEE;
+    }
+
+    &.weekday {
+      font-size: 12px;
+      background: transparent;
+    }
+
+    &.weekend {
+      background: #FFCDD2 !important;
+      
+      &:hover {
+        background: #EF9A9A;
+      }
+    }
+  }
+}

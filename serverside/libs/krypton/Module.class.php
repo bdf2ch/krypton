@@ -3,13 +3,10 @@
     abstract class Module {
         private $id;
         private $description;
-        private static $controller;
         private static $isModuleInstalled = false;
         private static $isModuleLoaded = false;
 
-        public function __construct() {
-            self::$controller = new Controller();
-        }
+        public function __construct() {}
 
         abstract public function init();
         abstract public static function install();

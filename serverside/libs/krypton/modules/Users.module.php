@@ -1,6 +1,6 @@
 <?php
 
-    class Users extends Module {
+    class UsersModule extends Module {
 
         private static $id = "kr_users";
         private static $users = array();
