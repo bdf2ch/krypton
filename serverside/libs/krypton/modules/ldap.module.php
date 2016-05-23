@@ -1,6 +1,6 @@
 <?php
 
-    class LDAP extends Module {
+    class LDAPModule extends Module {
 
         private static $id = "kr_ldap";
 

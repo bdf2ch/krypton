@@ -9,13 +9,13 @@
     //$app -> modules -> load("Errors");
     //$app -> modules -> load("Settings");
     //$app -> modules -> load("Session");
-    $app -> modules -> load("LDAP");
-    $app -> modules -> load("Users");
+    $app -> modules -> load("LDAPModule");
+    $app -> modules -> load("UsersModule");
     $app -> start();
 
     //print_r($_SERVER["REQUEST"]);
 
-    var_dump(method_exists("Sessions", "install"));
+    //var_dump(method_exists("Sessions", "install"));
 
 
 

@@ -1,48 +1,3 @@
-.krypton-ui-calendar {
-  overflow: auto;
-  width: 295px;
-  height: auto;
-  padding: 5px;
-  box-sizing: border-box;
-  border: 1px solid lightgrey;
-}
-.krypton-ui-calendar .toolbar {
-  float: left;
-  width: 280px;
-  height: 40px;
-  box-sizing: border-box;
-  border: 1px solid black;
-}
-.krypton-ui-calendar .weekdays {
-  float: left;
-  height: 30px;
-  box-sizing: border-box;
-}
-.krypton-ui-calendar .day {
-  display: block;
-  float: left;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
-  text-align: center;
-  line-height: 30px;
-  cursor: pointer;
-  background: #F5F5F5;
-  box-sizing: border-box;
-}
-.krypton-ui-calendar .day:hover {
-  background: #EEEEEE;
-}
-.krypton-ui-calendar .day.weekday {
-  font-size: 12px;
-  background: transparent;
-}
-.krypton-ui-calendar .day.weekend {
-  background: #FFCDD2 !important;
-}
-.krypton-ui-calendar .day.weekend:hover {
-  background: #EF9A9A;
-}
 /**********
 ** FONTS
 *********/
@@ -183,17 +138,48 @@ button.rounded {
   background-color: #C8E6C9;
   color: #1B5E20;
 }
-html,
-body {
-  height: 100%;
-  margin: 0px;
-  font-family: "Roboto Regular";
+.krypton-ui-calendar {
+  overflow: auto;
+  width: 295px;
+  height: auto;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid lightgrey;
 }
-#app-header {
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  right: 0px;
-  height: 100px;
-  background: red;
+.krypton-ui-calendar .toolbar {
+  float: left;
+  width: 280px;
+  height: 40px;
+  box-sizing: border-box;
+  border: 1px solid black;
+}
+.krypton-ui-calendar .weekdays {
+  float: left;
+  height: 30px;
+  box-sizing: border-box;
+}
+.krypton-ui-calendar .day {
+  display: block;
+  float: left;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  text-align: center;
+  line-height: 30px;
+  cursor: pointer;
+  background: #F5F5F5;
+  box-sizing: border-box;
+}
+.krypton-ui-calendar .day:hover {
+  background: #EEEEEE;
+}
+.krypton-ui-calendar .day.weekday {
+  font-size: 12px;
+  background: transparent;
+}
+.krypton-ui-calendar .day.weekend {
+  background: #FFCDD2 !important;
+}
+.krypton-ui-calendar .day.weekend:hover {
+  background: #EF9A9A;
 }

@@ -5,8 +5,10 @@
 //    include "serverside/libs/krypton/modules/".$className.".module.php";
             //throw new Exception("Unable to load $className.");
 //}
-
+require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/config.php";
+require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/xtemplate/xtemplate.class.php";
 if (!defined("ENGINE_INSTALL_MODE")) {
+    /*
     require_once "serverside/libs/krypton/config.php";
     require_once "serverside/libs/krypton/Error.class.php";
     require_once "serverside/libs/krypton/Errors.class.php";
@@ -26,11 +28,22 @@ if (!defined("ENGINE_INSTALL_MODE")) {
     //require_once "serverside/libs/krypton/SettingManager.class.php";
     require_once "serverside/libs/krypton/Controller.class.php";
     require_once "serverside/libs/xtemplate/xtemplate.class.php";
+    */
 
+    /*
     function __autoload($className) {
+        $modulePos = strpos($className, "Module");
+        if ($modulePos != false) {
+            $moduleTitle = substr($className, 0, $modulePos);
+            require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/modules/".$moduleTitle.".module.php";
+        } else {
+             require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/".$className.".class.php";
+        }
+
         //echo("serverside/libs/krypton/modules/".$className.".module.php"."</br>");
-        include "serverside/libs/krypton/modules/".$className.".module.php";
+        //include "serverside/libs/krypton/modules/".$className.".module.php";
     }
+    */
 }
 
 

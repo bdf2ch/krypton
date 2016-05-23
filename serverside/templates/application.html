@@ -6,7 +6,7 @@
     <title>Title</title>
     <link type="text/css" rel="stylesheet" href="resources/styles/application.css">
 </head>
-<body>
+<body ng-controller="testController">
     <script id="krypton_init_data">
         var krypton = {
             session: {CURRENT_SESSION},
@@ -25,12 +25,14 @@
 
     </div>
     -->
+    <input type="text">
 
     <script src="libs/angularjs/angular-route.min.js"></script>
     <script src="libs/angularjs/angular-cookies.min.js"></script>
     <script src="modules/krypton.app.js"></script>
     <script src="libs/krypton/krypton.js"></script>
-    <script src="libs/krypton/krypton.session.js"></script>
+    <script src="libs/krypton/krypton.ui.js"></script>
+    <script src="libs/momentjs/moment-with-locales.min.js"></script>
 
 </body>
 </html>
