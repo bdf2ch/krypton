@@ -1,7 +1,7 @@
 @import "utils.less";
 
 @ui-date-time-picker-width: 250px;
-@ui-date-time-picker-width-modal: 549px;
+@ui-date-time-picker-width-modal: 564px;
 @ui-date-time-picker-day-width: ceil(@ui-calendar-day-width / 7);
 @ui-date-time-picker-day-width-modal: @ui-date-time-picker-width-modal / 7;
 
@@ -35,6 +35,7 @@
   box-sizing: border-box;
   z-index: 2;
   background: white;
+  border: 1px solid lightgray;
   .box-shadow(1px, 1px, 15px, 1px, rgba(0, 0, 0, 0.2));
 
   .header {
@@ -46,7 +47,7 @@
 
   .toolbar {
     float: left;
-    width: @ui-calendar-day-width * 7;
+    width: 100%;
     height: 35px;
     box-sizing: border-box;
     //border: 1px solid black;
@@ -70,10 +71,14 @@
     height: @ui-calendar-day-height;
     padding: 5px;
     text-align: center;
+    font-size: 26px;
     line-height: @ui-calendar-day-height - 10;
     cursor: pointer;
     background: #F5F5F5;
     box-sizing: border-box;
+    border-right: 1px solid #E0E0E0;
+    border-top: 1px solid #E0E0E0;
+
     
     &:hover {
       background: #E0E0E0;
@@ -85,10 +90,12 @@
       color: #004D40;
       background: #D1C4E9;
       cursor: default;
+      border-right: none;
     }
 
     &.weekend {
-      background: #FFCDD2 !important;
+      background: #FFEBEE !important;
+      border-right: none;
       
       &:hover {
         background: #EF9A9A !important;
@@ -101,11 +108,11 @@
 
   &.modal {
     width: @ui-date-time-picker-width-modal;
+    border: none;
 
     .toolbar {
       float: left;
       overflow: hidden;
-      width: @ui-date-time-picker-width-modal;
       height: 45px;
       box-sizing: border-box;
     }
@@ -139,10 +146,10 @@
       }
 
       &.weekend {
-        background: #FFCDD2 !important;
+        //background: #FFCDD2 !important;
 
         &:hover {
-          background: #EF9A9A !important;
+          background: #FFCDD2 !important;
         }
       }
     }

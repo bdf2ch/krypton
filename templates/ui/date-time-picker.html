@@ -1,30 +1,31 @@
-<!-- <div class="header" ng-if="dateTimePickerTitle !== ''">{{ dateTimePickerTitle }}</div> -->
-<div class="toolbar">
-    <div class="width-15">
-        <button class="blue width-100" ng-class="{'big': isModal === true}">&larr;</button>
-    </div>
-    <div class="width-70">
-        <div class="width-50 text-right">
-            <select name="" id="" class="no-border" ng-model="selectedMonthIndex"
-                    ng-options="month for month in months">
-            </select>
+ <!-- <div class="header" ng-if="dateTimePickerTitle !== ''">{{ dateTimePickerTitle }}</div> -->
+    <div class="toolbar">
+        <div class="width-15">
+            <button class="blue width-100" ng-class="{'big': isModal === true}" title="Предыдущий месяц">&larr;</button>
         </div>
-        <div class="width-50 text-left">
-            <select name="" id="" class=" no-border">
-                <option value="">2016</option>
-            </select>
+        <div class="width-70">
+            <div class="width-50 text-right">
+                <select name="" id="" class="no-border" ng-model="selectedMonthIndex"
+                        ng-options="month for month in months">
+                </select>
+            </div>
+            <div class="width-50 text-left">
+                <select name="" id="" class=" no-border">
+                    <option value="">2016</option>
+                </select>
+            </div>
+        </div>
+        <div class="width-15">
+            <button class="width-100 blue" ng-class="{'big': isModal === true}" title="Следующий месяц">&rarr;</button>
         </div>
     </div>
-    <div class="width-15">
-        <button class="width-100 blue">&rarr;</button>
+    <div class="weekdays">
+        <div class="day weekday" ng-repeat="weekday in weekdays track by $index">
+            <span ng-if="isModal === false">{{ weekday[0] }}</span>
+            <span ng-if="isModal === true">{{ weekday[1] }}</span>
+        </div>
     </div>
-</div>
-<div class="weekdays">
-    <div class="day weekday" ng-repeat="weekday in weekdays track by $index">
-        <span ng-if="isModal === false">{{ weekday[0] }}</span>
-        <span ng-if="isModal === true">{{ weekday[1] }}</span>
+    <div class="day" ng-repeat="day in days track by $index" ng-class="{'weekend': ($index + 1) % 7 === 0}">
+        {{$index}}
     </div>
-</div>
-<div class="day" ng-repeat="day in days track by $index" ng-class="{'weekend': ($index + 1) % 7 === 0}">
-    {{$index}}
-</div>
+

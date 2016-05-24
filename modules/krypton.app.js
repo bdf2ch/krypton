@@ -57,6 +57,8 @@
             isModal: true,
             title: "Выберите дату"
         });
+
+        $dateTimePicker.open("testInput");
     };
 
 })();
