@@ -1,4 +1,5 @@
 @ui-border-color: lightgrey;
+@ui-input-height: 35px;
 
 .gradient (@start-color, @end-color) {
   background-image: -moz-linear-gradient(top, @start-color, @end-color);
@@ -12,6 +13,15 @@
      -moz-border-radius: @radius;
   -webkit-border-radius: @radius;
           border-radius: @radius;
+}
+
+/**
+*
+**/
+.box-shadow (@offset-x, @offset-y, @blur-radius, @spread-radius, @shadow-color) {
+  -webkit-box-shadow: @offset-x @offset-y @blur-radius @spread-radius @shadow-color;
+  -moz-box-shadow: @offset-x @offset-y @blur-radius @spread-radius @shadow-color;
+  box-shadow: @offset-x @offset-y @blur-radius @spread-radius @shadow-color;
 }
 
 
@@ -109,6 +119,16 @@
   width: 90%;
 }
 
+.width-70 {
+  float: left;
+  width: 70%;
+}
+
+.width-60 {
+  float: left;
+  width: 60%;
+}
+
 .width-50 {
   float: left;
   width: 50%;
@@ -117,6 +137,11 @@
 .width-33 {
   float: left;
   width: 33%;
+}
+
+.width-40 {
+  float: left;
+  width: 40%;
 }
 
 .width-30 {
@@ -129,6 +154,20 @@
   width: 25%;
 }
 
+.width-20 {
+  float: left;
+  width: 20%;
+}
+
+.width-15 {
+  float: left;
+  width: 15%;
+}
+
+.width-10 {
+  float: left;
+  width: 10%;
+}
 
 
 /**********
@@ -168,6 +207,24 @@ input[type='text'], input[type='password'] {
   box-sizing: border-box;
 }
 
+select {
+  height: @ui-input-height;
+  padding: 7px;
+  box-sizing: border-box;
+  font-family: "Roboto Regular";
+  font-size: 17px;
+  text-align: center !important;
+  border: 1px solid @ui-border-color;
+
+  &.no-border {
+    border: none;
+  }
+
+  option {
+    padding: 10px;
+    color: gray;
+  }
+}
 
 
 /**********
@@ -175,12 +232,18 @@ input[type='text'], input[type='password'] {
 **********/
 
 input[type='button'], input[type='submit'], button {
+  height: 35px;
   padding: 10px;
   border: none;
   cursor: pointer;
+  box-sizing: border-box;
 
   &.rounded {
     border-radius: 5px;
+  }
+
+  &.big {
+    height: 45px;
   }
 }
 

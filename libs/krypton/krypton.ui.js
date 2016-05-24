@@ -1,8 +1,8 @@
 (function () {
     angular
         .module("krypton.ui", [])
-            .factory("$calendar", calendarFactory)
-            .directive("uiCalendar", calendarDirective);
+            .factory("$dateTimePicker", dateTimePickerFactory)
+            .directive("uiDateTimePicker", dateTimePickerDirective);
     angular.module("krypton.ui").run(kryptonUIRun);
     
     
@@ -13,81 +13,164 @@
          * Calendar
          * Набор свойств и методов, описывающих элемент интрефейса - календарь
          */
-        $classes.add("Calendar", {
+        $classes.add("DateTimePicker", {
             __dependencies__: [],
             id: 0,
-            parentElement: 0,
+            element: 0,
+            title: "",
             modelValue: 0,
             isVisible: false,
-            isModal: false
+            isModal: false,
+            isOpened: false,
+
+            open: function () {
+                this.isOpened = true;
+            },
+
+            close: function () {
+                this.isOpened = false;
+            }
         });
     };
 
 
 
-    function calendarDirective () {
+    function dateTimePickerDirective ($log, $http, $compile, $rootScope, $window) {
         return {
             restrict: "A",
             requires: "ngModel",
-            templateUrl: "templates/ui/calendar.html",
+            //templateUrl: "templates/ui/date-time-picker.html",
             scope: {
-                //id: 0,
-                //isVisible: false,
-                //isModal: false
-                uiCalendarModelValue: "&"
+                dateTimePickerModelValue: "&",
+                dateTimePickerModal: "=",
+                dateTimePickerTitle: "@",
+                dateTimePickerEnableTime: "="
             },
             link: function (scope, element, attrs, controller) {
+                var dateTimePicker;
                 var days = scope.days = new Array(35);
-                var weekdays = scope.weekdays = ["Пн", "Вт", "Ср", "Чт" , "Пт", "Сб", "Вс"];
+                var weekdays = scope.weekdays = [["Пн", "Понедельник"], ["Вт", "Вторник"], ["Ср", "Среда"], ["Чт", "Четверг"] , ["Пт", "Пятница"], ["Сб", "Суббота"], ["Вс", "Воскресение"]];
+                var months = scope.months =  ["Январь" ,"Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+                var isModal = scope.isModal = false;
+                var selectedMonthIndex = scope.selectedMonthIndex = 1;
+
+
+                var redraw = function (element) {
+                    if (element !== undefined) {
+                        var width = angular.element(element).prop("clientWidth");
+                        var height = angular.element(element).prop("clientHeight");
+                        var top = ($window.innerHeight / 2) - height / 2;
+                        var left = ($window.innerWidth / 2) - width / 2;
+
+                        angular.element(element).css("left", left + "px");
+                        angular.element(element).css("top", top + "px");
+                    }
+                };
+
+
+                if (scope.dateTimePickerModal !== undefined) {
+                    switch (scope.dateTimePickerModal) {
+                        case true:
+                            scope.isModal = true;
+                            var fog = document.createElement("div");
+                            fog.className = "krypton-ui-fog";
+                            document.body.appendChild(fog);
+                            break;
+                        default:
+                            scope.isModal = false;
+                            break;
+                    }
+                }
+
+                $http.get("templates/ui/date-time-picker.html")
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            dateTimePicker = document.createElement("div");
+                            dateTimePicker.className = scope.isModal === true ? "krypton-ui-date-time-picker modal" : "krypton-ui-date-time-picker";
+                            dateTimePicker.innerHTML = data;
+                            document.body.appendChild(dateTimePicker);
+                            $compile(dateTimePicker)(scope);
+
+                            dateTimePicker.addEventListener("DOMSubtreeModified", function (event) {
+                                redraw(dateTimePicker);
+                            }, false);
+
+                            angular.element($window).bind("resize", function () {
+                                redraw(dateTimePicker);
+                            });
+                        }
+                    });
+
+
+                
             }
         }
     };
 
 
-    function calendarFactory ($log, $window, $document, $errors, $factory, $compile, $rootScope) {
+    function dateTimePickerFactory ($log, $window, $document, $errors, $factory, $compile, $rootScope) {
         var instances = [];
-
-
         
         return {
-
+            /**
+             * Добавляет новый элемент в стек
+             * @param parameters - Набор параметров инициализации
+             * @returns {*}
+             */
             add: function (parameters) {
                 if (parameters !== undefined) {
                     if (typeof parameters === "object") {
-                        var tempCalendar = $factory({classes: ["Calendar"], base_class: "Calendar"});
-                        for (var param in parameters) {
-                            if (tempCalendar.hasOwnProperty(param)) {
-                                switch (param) {
-                                    case "modelValue":
-                                        tempCalendar.modelValue = parameters[param];
-                                        break;
-                                    case "isModal":
-                                        if (typeof parameters[param] === "boolean")
-                                            tempCalendar.isModal = parameters[param];
-                                        else
-                                            return $errors.add(ERROR_TYPE_DEFAULT, "$calendar -> add: Неверно задан тип параметра - модальный режим");
-                                        break;
-                                }
-                            }
-                        }
-                        tempCalendar.id = "calendar" + instances.length;
-                        instances.push(tempCalendar);
-                        $log.info("cal = ", tempCalendar);
-                        
-                        var calendarBody = document.createElement("div");
-                        calendarBody.className = "krypton-ui-calendar";
-                        calendarBody.setAttribute("ui-calendar-model-value", tempCalendar.modelValue);
-                        calendarBody.setAttribute("ui-calendar", "");
-                        document.body.appendChild(calendarBody);
-                        $compile(calendarBody)($rootScope.$new());
+                        if (parameters["element"] !== undefined) {
 
-                        return tempCalendar;
+                            var element = document.getElementById(parameters["element"]);
+                            $log.log("element = ", element);
+                            if (element !== undefined && element !== null) {
+                                var dateTimePicker = $factory({classes: ["DateTimePicker"], base_class: "DateTimePicker"});
+                                dateTimePicker.id = "calendar" + instances.length + 1;
+                                dateTimePicker.element = element;
+
+                                for (var param in parameters) {
+                                    if (dateTimePicker.hasOwnProperty(param)) {
+                                        switch (param) {
+                                            case "modelValue":
+                                                dateTimePicker.modelValue = parameters[param];
+                                                break;
+                                            case "isModal":
+                                                if (typeof parameters[param] === "boolean")
+                                                    dateTimePicker.isModal = parameters[param];
+                                                else
+                                                    return $errors.add(ERROR_TYPE_DEFAULT, "$calendar -> add: Неверно задан тип параметра - модальный режим");
+                                                break;
+                                            case "title":
+                                                dateTimePicker.title = parameters[param] !== undefined && parameters[param] !== "" ? parameters[param] : "";
+                                                break;
+                                        }
+                                    }
+                                }
+
+                                element.setAttribute("ui-date-time-picker", "");
+                                element.setAttribute("date-time-picker-model-value", dateTimePicker.modelValue);
+                                if (dateTimePicker.isModal === true)
+                                    element.setAttribute("date-time-picker-modal", dateTimePicker.isModal);
+                                if (dateTimePicker.title !== "")
+                                    element.setAttribute("date-time-picker-title", dateTimePicker.title);
+
+                                instances.push(dateTimePicker);
+                                $log.info("cal = ", dateTimePicker);
+                                $compile(dateTimePicker.element)($rootScope.$new());
+                                return dateTimePicker;
+                            } else
+                                return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> add: Элемент с идентификатором '" + parameters[param] + "' не найден");
+                        } else
+                            return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> add: Не задан целевой элемент");
                     } else 
                         return $errors.add(ERROR_TYPE_DEFAULT, "$calendar -> add: Неверно задан тип параметра инициализации");                     
                 } else
                     return $errors.add(ERROR_TYPE_DEFAULT, "$calendar -> add: Не заданы параметры инициализации");
             },
 
+            
+            
             open: function (instance) {
                 if (instance !== undefined) {
 

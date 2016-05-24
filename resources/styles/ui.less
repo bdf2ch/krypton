@@ -1,29 +1,61 @@
 @import "utils.less";
 
+@ui-date-time-picker-width: 250px;
+@ui-date-time-picker-width-modal: 549px;
+@ui-date-time-picker-day-width: ceil(@ui-calendar-day-width / 7);
+@ui-date-time-picker-day-width-modal: @ui-date-time-picker-width-modal / 7;
+
+
 @ui-calendar-day-width: 40px;
+@ui-calendar-day-width-modal: 70px;
 @ui-calendar-day-height: 40px;
-@ui-calendar-width: @ui-calendar-day-width * 7 + 2;
+@ui-calendar-day-height-modal: 70px;
+@ui-calendar-width: @ui-calendar-day-width * 7;
 @ui-calendar-height: 190px;
 
-.krypton-ui-calendar {
+
+
+.krypton-ui-fog {
+  position: absolute;
+  overflow: hidden;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+
+.krypton-ui-date-time-picker {
+  position: absolute;
   overflow: auto;
-  width: @ui-calendar-width;
+  width: @ui-date-time-picker-width;
   height: auto;
-  //padding: 5px;
   box-sizing: border-box;
-  border: 1px solid @ui-border-color;
-  //background: red;
+  z-index: 2;
+  background: white;
+  .box-shadow(1px, 1px, 15px, 1px, rgba(0, 0, 0, 0.2));
+
+  .header {
+    float: left;
+    width: @ui-date-time-picker-width-modal;
+    height: @ui-calendar-day-height - 5;
+    .gradient(#FAFAFA, #CFD8DC);
+  }
 
   .toolbar {
     float: left;
     width: @ui-calendar-day-width * 7;
-    height: @ui-calendar-day-height;
+    height: 35px;
     box-sizing: border-box;
     //border: 1px solid black;
   }
 
   .weekdays {
     float: left;
+    overflow: hidden;
+    width: @ui-date-time-picker-width;
     height: 20px;
     //line-height: 15px;
     text-transform: uppercase;
@@ -34,7 +66,7 @@
   .day {
     display: block;
     float: left;
-    width: @ui-calendar-day-width;
+    width: @ui-date-time-picker-day-width;
     height: @ui-calendar-day-height;
     padding: 5px;
     text-align: center;
@@ -49,8 +81,9 @@
 
     &.weekday {
       font-size: 12px;
-      line-height: @ui-calendar-day-height - 30;
-      background: transparent;
+      line-height: @ui-calendar-day-height - 28;
+      color: #004D40;
+      background: #D1C4E9;
       cursor: default;
     }
 
@@ -59,6 +92,58 @@
       
       &:hover {
         background: #EF9A9A !important;
+      }
+    }
+  }
+
+
+
+
+  &.modal {
+    width: @ui-date-time-picker-width-modal;
+
+    .toolbar {
+      float: left;
+      overflow: hidden;
+      width: @ui-date-time-picker-width-modal;
+      height: 45px;
+      box-sizing: border-box;
+    }
+
+    .weekdays {
+      width: @ui-date-time-picker-width-modal;
+      height: 25px;
+    }
+
+    .day {
+      display: block;
+      float: left;
+      width: @ui-date-time-picker-day-width-modal;
+      height: @ui-calendar-day-height-modal;
+      padding: 5px;
+      text-align: center;
+      line-height: @ui-calendar-day-height-modal - 10;
+      cursor: pointer;
+      background: #F5F5F5;
+      box-sizing: border-box;
+
+      &:hover {
+        background: #E0E0E0;
+      }
+
+
+      &.weekday {
+        font-size: 10px;
+        line-height: 18px;
+        background: #E0F2F1;
+      }
+
+      &.weekend {
+        background: #FFCDD2 !important;
+
+        &:hover {
+          background: #EF9A9A !important;
+        }
       }
     }
   }

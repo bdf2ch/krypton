@@ -16,7 +16,7 @@
 
 
 
-    function kryptonAppRun ($log, $classes, $http, $errors, $calendar) {
+    function kryptonAppRun ($log, $classes, $http, $errors) {
         $log.log("krypton.app run...");
         if (krypton !== undefined) {
             $log.info(krypton);
@@ -48,12 +48,14 @@
 
 
 
-    function testController ($scope, $calendar) {
+    function testController ($scope, $dateTimePicker) {
         $scope.test = 100;
 
-        $calendar.add({
+        $dateTimePicker.add({
+            element: "testInput",
             modelValue: $scope.test,
-            isModal: true
+            isModal: true,
+            title: "Выберите дату"
         });
     };
 
