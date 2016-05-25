@@ -58,7 +58,9 @@
             title: "Выберите дату"
         });
 
-        $dateTimePicker.open("testInput");
+        $dateTimePicker.open("testInput2");
+
+        //$dateTimePicker.open("testInput");
     };
 
 })();

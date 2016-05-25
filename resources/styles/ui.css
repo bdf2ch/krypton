@@ -214,10 +214,20 @@ button.big {
   bottom: 0px;
   right: 0px;
   z-index: 1;
+  opacity: 0;
   background: rgba(0, 0, 0, 0.2);
+}
+.krypton-ui-fog.visible {
+  opacity: 1;
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(2px);
+  -o-filter: blur(2px);
+  -ms-filter: blur(2px);
+  filter: blur(2px);
 }
 .krypton-ui-date-time-picker {
   position: absolute;
+  display: none;
   overflow: auto;
   width: 250px;
   height: auto;
@@ -233,11 +243,11 @@ button.big {
   float: left;
   width: 564px;
   height: 35px;
-  background-image: -moz-linear-gradient(top, #fafafa, #cfd8dc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#cfd8dc));
-  background-image: -webkit-linear-gradient(top, #fafafa, #cfd8dc);
-  background-image: -o-linear-gradient(top, #fafafa, #cfd8dc);
-  background-image: linear-gradient(to bottom, #fafafa, #cfd8dc);
+  background-image: -moz-linear-gradient(top, #FAFAFA, #CFD8DC);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FAFAFA), to(#CFD8DC));
+  background-image: -webkit-linear-gradient(top, #FAFAFA, #CFD8DC);
+  background-image: -o-linear-gradient(top, #FAFAFA, #CFD8DC);
+  background-image: linear-gradient(to bottom, #FAFAFA, #CFD8DC);
 }
 .krypton-ui-date-time-picker .toolbar {
   float: left;

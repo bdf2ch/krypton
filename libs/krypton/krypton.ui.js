@@ -15,13 +15,14 @@
          */
         $classes.add("DateTimePicker", {
             __dependencies__: [],
-            id: 0,
+            id: "",
             element: 0,
             title: "",
             modelValue: 0,
             isVisible: false,
             isModal: false,
             isOpened: false,
+            scope: {},
 
             open: function () {
                 this.isOpened = true;
@@ -38,24 +39,73 @@
     function dateTimePickerDirective ($log, $http, $compile, $rootScope, $window, $dateTimePicker) {
         return {
             restrict: "A",
-            requires: "ngModel",
-            //templateUrl: "templates/ui/date-time-picker.html",
+            //require: "ngModel",
             scope: {
                 dateTimePickerModelValue: "&",
-                dateTimePickerModal: "=",
+                dateTimePickerModal: "@",
                 dateTimePickerTitle: "@",
                 dateTimePickerEnableTime: "=",
                 dateTimePickerOpened: "="
             },
             link: function (scope, element, attrs, controller) {
-                var dateTimePicker;
                 var days = scope.days = new Array(35);
                 var weekdays = scope.weekdays = [["Пн", "Понедельник"], ["Вт", "Вторник"], ["Ср", "Среда"], ["Чт", "Четверг"] , ["Пт", "Пятница"], ["Сб", "Суббота"], ["Вс", "Воскресение"]];
                 var months = scope.months =  ["Январь" ,"Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-                var isModal = scope.isModal = false;
                 var selectedMonthIndex = scope.selectedMonthIndex = 1;
+                
+                var isOpened = scope.isOpened = false;
+                var isModal = scope.isModal = false;
+                var title = scope.title = "";
+                var value = scope.value = undefined;
+                var instance = $dateTimePicker.exists(angular.element(element).prop("id"));
 
 
+
+
+
+                var dateTimePicker = document.createElement("div");
+                //document.body.appendChild(dateTimePicker);
+                if (instance !== false) {
+                    //var dateTimePicker = document.createElement("div");
+                    instance.scope = scope;
+                    scope.isOpened = instance.isOpened;
+                    scope.isModal = instance.isModal;
+                    scope.title = instance.title;
+                    scope.value = instance.modelValue;
+                    dateTimePicker.setAttribute("id", instance.id);
+                    document.body.appendChild(dateTimePicker);
+                } else {
+                    var picker = $dateTimePicker.add({
+                        element: angular.element(element).prop("id"),
+                        isModal: scope.dateTimePickerModal !== null ? true : false,
+                        modelValue: scope.dateTimePickerModelValue,
+                        title: scope.dateTimePickerTitle
+                    });
+                    picker.scope = scope;
+                    scope.isOpened = picker.isOpened;
+                    scope.isModal = picker.isModal;
+                    scope.title = picker.title;
+                    scope.value = picker.modelValue;
+                    dateTimePicker.setAttribute("id", picker.id);
+                    //var dateTimePicker = document.createElement("div");
+                    //document.body.appendChild(dateTimePicker);
+                }
+
+
+                if (scope.isModal === true) {
+                    dateTimePicker.className = "krypton-ui-date-time-picker modal";
+                    var fog = document.getElementsByClassName("krypton-ui-fog");
+                    if (fog.length === 0) {
+                        var fog = document.createElement("div");
+                        fog.className = "krypton-ui-fog";
+                        document.body.appendChild(fog);    
+                    } else {
+                        angular.element(fog[0]).css("display", "block");
+                    }
+                } else {
+                    dateTimePicker.className = "krypton-ui-date-time-picker";
+                }
+                
                 var redraw = function (element) {
                     if (element !== undefined) {
                         var width = angular.element(element).prop("clientWidth");
@@ -69,52 +119,76 @@
                 };
 
 
-                if (scope.dateTimePickerModal !== undefined) {
-                    switch (scope.dateTimePickerModal) {
-                        case true:
-                            scope.isModal = true;
-                            var fog = document.createElement("div");
-                            fog.className = "krypton-ui-fog";
-                            document.body.appendChild(fog);
-                            break;
-                        default:
-                            scope.isModal = false;
-                            break;
-                    }
-                }
 
                 scope.open = function () {
-                    scope.dateTimePickerOpened = true;
-                    scope.$apply();
+                    var instance = $dateTimePicker.exists(angular.element(element).prop("id"));
+                    //$log.log("picker instance = ", instance);
+                    var picker = document.getElementById(instance.id);
+                    //$log.log("picker element = ", picker);
+                    angular.element(picker).css("display", "block");
+                    if (instance.isModal === true) {
+                        var fog = document.getElementsByClassName("krypton-ui-fog");
+                        //angular.element(fog[0]).css("display", "block");
+                        fog[0].classList.add("visible");
+                    }
                 };
 
-                $http.get("templates/ui/date-time-picker.html")
-                    .success(function (data) {
-                        if (data !== undefined) {
-                            dateTimePicker = document.createElement("div");
-                            dateTimePicker.className = scope.isModal === true ? "krypton-ui-date-time-picker modal" : "krypton-ui-date-time-picker";
-                            dateTimePicker.innerHTML = data;
-                            document.body.appendChild(dateTimePicker);
-                            $compile(dateTimePicker)(scope);
-                            $dateTimePicker.add(scope);
+                
 
-                            dateTimePicker.addEventListener("DOMSubtreeModified", function (event) {
-                                redraw(dateTimePicker);
-                            }, false);
 
-                            angular.element($window).bind("resize", function () {
-                                redraw(dateTimePicker);
-                            });
-                        }
-                    });
+                //if ($dateTimePicker.getTemplate() === "" && $dateTimePicker.loading() === false) {
+                    //$dateTimePicker.loading(true);
+                    $http.get("templates/ui/date-time-picker.html")
+                        .success(function (data) {
+                            $dateTimePicker.loading(false);
+                            if (data !== undefined) {
+                                $dateTimePicker.setTemplate(data);
+
+                               // dateTimePicker.innerHTML = data;
+                                dateTimePicker.addEventListener("DOMSubtreeModified", function (event) {
+                                    redraw(dateTimePicker);
+                                }, false);
+                                angular.element($window).bind("resize", function () {
+                                    redraw(dateTimePicker);
+                                });
+
+                                var instance = $dateTimePicker.exists(angular.element(element).prop("id"));
+                                if (instance !== false) {
+                                    var picker = document.getElementById(instance.id);
+                                    picker.innerHTML = data;
+                                    //document.body.appendChild(dateTimePicker);
+                                    $compile(dateTimePicker)(scope);
+                                } else {
+
+                                }
+                            }
+                        });
+                //} else {
+                 //   dateTimePicker.innerHTML = $dateTimePicker.getTemplate();
+                 //   dateTimePicker.addEventListener("DOMSubtreeModified", function (event) {
+                 //       redraw(dateTimePicker);
+                 //   }, false);
+                 //   angular.element($window).bind("resize", function () {
+                 //       redraw(dateTimePicker);
+                 //   });
+                    //if (instance === false) {
+                 //       document.body.appendChild(dateTimePicker);
+                 //       $compile(dateTimePicker)(scope);
+                    //}
+
+                //}
+
+
             }
         }
     };
 
 
 
-    function dateTimePickerFactory ($log, $window, $document, $errors, $factory, $compile, $rootScope) {
+    function dateTimePickerFactory ($log, $window, $document, $http, $errors, $factory, $compile, $rootScope) {
         var instances = [];
+        var template = "";
+        var isTemplateLoading = false;
         
         return {
             /**
@@ -125,54 +199,61 @@
             add: function (parameters) {
                 if (parameters !== undefined) {
                     if (typeof parameters === "object") {
-                        if (parameters["element"] !== undefined) {
+                        if (parameters.element !== undefined) {
 
-                            var element = document.getElementById(parameters["element"]);
+                            var element = document.getElementById(parameters.element);
                             $log.log("element = ", element);
                             if (element !== undefined && element !== null) {
-                                var dateTimePicker = $factory({classes: ["DateTimePicker"], base_class: "DateTimePicker"});
-                                dateTimePicker.id = "dateTimePicker" + instances.length + 1;
-                                dateTimePicker.element = element;
-                                element.setAttribute("ui-date-time-picker", "");
-                                element.setAttribute("ui-date-time-picker-opened", false);
+                                var picker = $factory({classes: ["DateTimePicker"], base_class: "DateTimePicker"});
+                                picker.id = "dateTimePicker" + instances.length;
+                                picker.element = element;
+
+                                //var instance = this.exists(angular.element(picker.element).prop("id"));
+
+                                //if (element.classList.contains("ng-isolate-scope") === true)
+                                    element.setAttribute("ui-date-time-picker", "");
+                                ///element.setAttribute("ui-date-time-picker-opened", false);
                                 //element.setAttribute("ng-if", "isOpened === true");
 
                                 for (var param in parameters) {
-                                    if (dateTimePicker.hasOwnProperty(param)) {
+                                    if (picker.hasOwnProperty(param)) {
                                         switch (param) {
                                             case "modelValue":
-                                                dateTimePicker.modelValue = parameters[param];
-                                                element.setAttribute("date-time-picker-model-value", dateTimePicker.modelValue);
+                                                picker.modelValue = parameters[param];
+                                                //element.setAttribute("date-time-picker-model-value", dateTimePicker.modelValue);
                                                 break;
                                             case "isModal":
                                                 if (typeof parameters[param] === "boolean") {
-                                                    dateTimePicker.isModal = parameters[param];
-                                                    if (dateTimePicker.isModal === true)
-                                                        element.setAttribute("date-time-picker-modal", dateTimePicker.isModal);
+                                                    picker.isModal = parameters[param];
+                                                    //if (picker.isModal === true)
+                                                    //    element.setAttribute("date-time-picker-modal", picker.isModal);
                                                 } else
-                                                    return $errors.add(ERROR_TYPE_DEFAULT, "$calendar -> add: Неверно задан тип параметра - модальный режим");
+                                                    return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> add: Неверно задан тип параметра - модальный режим");
                                                 break;
                                             case "title":
-                                                dateTimePicker.title = parameters[param] !== undefined && parameters[param] !== "" ? parameters[param] : "";
-                                                if (dateTimePicker.title !== "")
-                                                    element.setAttribute("date-time-picker-title", dateTimePicker.title);
+                                                picker.title = parameters[param] !== undefined && parameters[param] !== "" ? parameters[param] : "";
+                                                //if (picker.title !== "")
+                                                //    element.setAttribute("date-time-picker-title", picker.title);
                                                 break;
                                         }
                                     }
                                 }
 
-                                instances.push(dateTimePicker);
-                                $log.info("cal = ", dateTimePicker);
-                                $compile(dateTimePicker.element)($rootScope.$new());
-                                return dateTimePicker;
+
+                                instances.push(picker);
+                                //element.setAttribute("ui-date-time-picker", "");
+                                $log.info("dtp = ", picker);
+                                $compile(picker.element)($rootScope.$new());
+
+                                return picker;
                             } else
                                 return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> add: Элемент с идентификатором '" + parameters[param] + "' не найден");
                         } else
                             return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> add: Не задан целевой элемент");
                     } else 
-                        return $errors.add(ERROR_TYPE_DEFAULT, "$calendar -> add: Неверно задан тип параметра инициализации");                     
+                        return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> add: Неверно задан тип параметра инициализации");
                 } else
-                    return $errors.add(ERROR_TYPE_DEFAULT, "$calendar -> add: Не заданы параметры инициализации");
+                    return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> add: Не заданы параметры инициализации");
             },
 
             
@@ -182,13 +263,60 @@
                     var length = instances.length;
                     for (var i = 0; i < length; i++) {
                         var instanceFound = false;
-                        if (instances[i].element.id === elementId) {
+                        if (angular.element(instances[i].element).prop("id") === elementId) {
                             $log.log("element with id = " + elementId + " found");
-                            instances[i].open();
+                            $log.log(instances[i]);
+                            instances[i].scope.open();
                         }
                     }
                 } else
-                    return $errors.add(ERROR_TYPE_DEFAULT, "$calendar -> open: Не задан параметр - идентификатор элемента");
+                    return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> open: Не задан параметр - идентификатор элемента");
+            },
+
+
+            /**
+             * Проверяет на наличие экземпляра по идентификатору элемента
+             * @param elementId - Идкнтификатор элемента
+             * @returns {*}
+             */
+            exists: function (elementId) {
+                if (elementId !== undefined) {
+                    $log.log("elementId = ", elementId.toString());
+                    var length = instances.length;
+                    for (var i = 0; i < length; i++) {
+                        $log.log("instance element = ", instances[i].element.getAttribute("id"));
+                        if (instances[i].element.getAttribute("id").toString() === elementId) {
+                            $log.log("founded instance = ", instances[i]);
+                            return instances[i];
+                        }
+                    }
+                    return false;
+                } else
+                    return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> exists: Не задан параметр - идентификатор элкмкнта");
+            },
+
+
+            getTemplate: function () {
+                return template;
+            },
+
+
+            setTemplate: function (tpl) {
+                if (tpl !== undefined)
+                    template = tpl;
+                else
+                    return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> setTemplate: Не задан параметр - содержимое шаблона");
+            },
+
+            loading: function (flag) {
+                if (flag !== undefined) {
+                    if (typeof flag === "boolean") {
+                        isTemplateLoading = flag;
+                        return isTemplateLoading;
+                    } else
+                        return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> loading: Неверно задан тип параметр - флаг процесса загрузки шаблона");
+                } else
+                    return isTemplateLoading;
             }
 
 
