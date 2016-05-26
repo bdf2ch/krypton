@@ -2,7 +2,7 @@
     angular
         .module("krypton.ui", [])
             .factory("$dateTimePicker", dateTimePickerFactory)
-            .directive("uiDateTimePicker", dateTimePickerDirective);
+            .directive("uiDateTimePicker", dateTimePickerDirective2);
     angular.module("krypton.ui").run(kryptonUIRun);
     
     
@@ -49,8 +49,18 @@
             },
             link: function (scope, element, attrs, controller) {
                 var days = scope.days = new Array(35);
-                var weekdays = scope.weekdays = [["Пн", "Понедельник"], ["Вт", "Вторник"], ["Ср", "Среда"], ["Чт", "Четверг"] , ["Пт", "Пятница"], ["Сб", "Суббота"], ["Вс", "Воскресение"]];
-                var months = scope.months =  ["Январь" ,"Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+                var weekdays = scope.weekdays = [
+                    ["Пн", "Понедельник"], ["Вт", "Вторник"],
+                    ["Ср", "Среда"], ["Чт", "Четверг"] ,
+                    ["Пт", "Пятница"], ["Сб", "Суббота"],
+                    ["Вс", "Воскресение"]
+                ];
+                var months = scope.months =  [
+                    "Январь" ,"Февраль", "Март",
+                    "Апрель", "Май", "Июнь",
+                    "Июль", "Август", "Сентябрь",
+                    "Октябрь", "Ноябрь", "Декабрь"
+                ];
                 var selectedMonthIndex = scope.selectedMonthIndex = 1;
                 
                 var isOpened = scope.isOpened = false;
@@ -100,7 +110,7 @@
                         fog.className = "krypton-ui-fog";
                         document.body.appendChild(fog);    
                     } else {
-                        angular.element(fog[0]).css("display", "block");
+                        //angular.element(fog[0]).css("display", "block");
                     }
                 } else {
                     dateTimePicker.className = "krypton-ui-date-time-picker";
@@ -126,13 +136,28 @@
                     var picker = document.getElementById(instance.id);
                     //$log.log("picker element = ", picker);
                     angular.element(picker).css("display", "block");
+                    redraw(dateTimePicker);
                     if (instance.isModal === true) {
                         var fog = document.getElementsByClassName("krypton-ui-fog");
-                        //angular.element(fog[0]).css("display", "block");
+                        angular.element(fog[0]).css("display", "block");
                         fog[0].classList.add("visible");
+
+                        angular.element(fog[0]).on("mousedown", function () {
+                           angular.element(fog[0]).css("display", "none");
+                            scope.close();
+                        });
+
+                        //document.getElementsByTagName("body")[0].style.webkitFilter = "blur(2px)";
                     }
                 };
 
+
+                scope.close = function () {
+                    var instance = $dateTimePicker.exists(angular.element(element).prop("id"));
+                    $log.log("picker instance = ", instance);
+                    var picker = document.getElementById(instance.id);
+                    angular.element(picker).css("display", "none");
+                };
                 
 
 
@@ -152,15 +177,20 @@
                                     redraw(dateTimePicker);
                                 });
 
+                                element.on("mousedown", function (event) {
+                                    $log.log("MOUSEDOWN");
+                                    scope.open();
+                                });
+
                                 var instance = $dateTimePicker.exists(angular.element(element).prop("id"));
-                                if (instance !== false) {
+                                //if (instance !== false) {
                                     var picker = document.getElementById(instance.id);
                                     picker.innerHTML = data;
                                     //document.body.appendChild(dateTimePicker);
                                     $compile(dateTimePicker)(scope);
-                                } else {
+                                //} else {
 
-                                }
+                                //}
                             }
                         });
                 //} else {
@@ -185,12 +215,220 @@
 
 
 
+
+    function dateTimePickerDirective2 ($log, $errors, $compile, $window, $document, $dateTimePicker) {
+        return {
+            restrict: "A",
+            require: "ngModel",
+            scope: {
+                ngModel: "=",
+                dateTimePickerModal: "="
+            },
+            link: function (scope, element, attrs, controller) {
+
+                $log.log('directive start');
+
+                var template =
+                    "<div class='toolbar'>" +
+                        "<div class='control'><button class='width-100 blue' ng-click='prevMonth()'>&larr;</button></div>" +
+                        "<div class='content'>" +
+                            "<select class='width-60 no-border' ng-model='selectedMonthIndex' ng-options='month[0] as month[1] for month in months'></select>" +
+                            "<select class='width-40 no-border' ng-model='selectedYearIndex' ng-options='year as year for year in years'></select>" +
+                        "</div>" +
+                        "<div class='control'><button class='width-100 blue' ng-click='nextMonth()'>&rarr;</button></div>" +
+                    "</div>" +
+                    "<div class='weekdays'>" +
+                        "<div class='day' ng-repeat='weekday in weekdays track by $index'>" +
+                        "<span ng-if='settings.isModal === true'>{{ weekday[1] }}</span><span ng-if='settings.isModal === false'>{{ weekday[0] }}</span>" +
+                        "</div>" +
+                    "</div>" +
+                    "<div class='day' ng-class='{\"sunday\": ($index + 1) % 7 === 0}' ng-repeat='day in days track by $index'>{{ $index }}" +
+                    "</div>";
+
+                var ctrl = scope.ctrl = controller;
+                var days = scope.days = Array(35);
+                var weekdays = scope.weekdays = [
+                    ["Пн", "Понедельник"], ["Вт", "Вторник"],
+                    ["Ср", "Среда"], ["Чт", "Четверг"] ,
+                    ["Пт", "Пятница"], ["Сб", "Суббота"],
+                    ["Вс", "Воскресение"]
+                ];
+                var months = scope.months =  [
+                    [0, "Январь"] ,[1, "Февраль"], [2, "Март"],
+                    [3, "Апрель"], [4, "Май"], [5, "Июнь"],
+                    [6, "Июль"], [7, "Август"], [8, "Сентябрь"],
+                    [9, "Октябрь"], [10, "Ноябрь"], [11, "Декабрь"]
+                ];
+                var currentDate = moment(new Date());
+                var years = scope.years = [];
+                for (var i = moment(currentDate).year(); i < moment(currentDate).year() + 5; i++) {
+                    years.push(i);
+                    if (i === moment(currentDate).year())
+                        selectedYear = i;
+                }
+
+                var selectedMonthIndex = scope.selectedMonthIndex = currentDate.month();
+                var selectedYear = scope.selectedYearIndex = moment(currentDate).year();
+
+
+                var settings = scope.settings = {
+                    isModal: scope.dateTimePicker !== null && scope.dateTimePickerModal !== undefined ? true : false,
+                    isOpened: false,
+                    title: "",
+                    element: element
+                };
+
+                var redraw = function (elm) {
+                    if (elm !== undefined) {
+                        var elementWidth = angular.element(element).prop("clientWidth");
+                        var elementHeight = angular.element(element).prop("clientHeight");
+                        var elementLeft = angular.element(element).prop("offsetLeft");
+                        var elementTop = angular.element(element).prop("offsetTop");
+                        var containerWidth = angular.element(elm).prop("clientWidth");
+                        var containerHeight = angular.element(elm).prop("clientHeight");
+                        var windowWidth = $window.innerWidth;
+                        var windowHeight = $window.innerHeight;
+                        var left = 0;
+                        var top = 0;
+                        if (scope.settings.isModal === true) {
+                            left = (windowWidth / 2) - (angular.element(elm).prop("clientWidth") / 2) + "px";
+                            top = (windowHeight / 2) - (angular.element(elm).prop("clientHeight") / 2) + "px"
+                        } else {
+                            if (containerWidth > elementWidth) {
+                                if ((elementLeft > (containerWidth - elementWidth) / 2) && (elementLeft < (windowWidth - elementLeft) + containerWidth / 2))
+                                    left = elementLeft - ((containerWidth - elementWidth) / 2);
+                            } else
+                                left = angular.element(element).prop("offsetLeft") + "px";
+
+                            top = (angular.element(element).prop("offsetTop") - angular.element(elm).prop("clientHeight")) - 10 + "px";
+                        }
+                        angular.element(elm).css("left", left);
+                        angular.element(elm).css("top", top);
+                    } else
+                        return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive: Не задан параметр - HTML-элемент");
+                };
+
+                //$log.log("isModal is ", scope.dateTimePickerModal === null || scope.dateTimePickerModal === undefined ? "null" : "not null");
+                
+                controller.$parsers.push(function (value) {
+
+                });
+
+                controller.$formatters.push(function (value) {
+                    return moment.unix(value).format("DD MMM YYYY, HH:mm");
+                });
+
+
+               
+
+
+                scope.prevMonth = function () {
+                    scope.selectedMonthIndex = --scope.selectedMonthIndex < 0 ? scope.selectedMonthIndex = 11 : scope.selectedMonthIndex;
+                    moment(currentDate).subtract(1, "month");
+                };
+
+
+                scope.nextMonth = function () {
+                    scope.selectedMonthIndex = ++scope.selectedMonthIndex > 11 ? 0 : scope.selectedMonthIndex;
+                    moment(currentDate).add(1, "month");
+                };
+
+
+                var instance = $dateTimePicker.push(scope);
+                var container = document.createElement("div");
+                container.setAttribute("id", instance.id);
+                container.className = "ui-date-time-picker2";
+                container.innerHTML = template;
+                document.body.appendChild(container);
+                $compile(container)(scope);
+                angular.element(element).css("cursor", "pointer");
+                //angular.element(element).prop("disabled", "disabled");
+
+                scope.open = function () {
+                    angular.element(container).css("display", "block");
+                    scope.settings.isOpened = true;
+                    redraw(container);
+                };
+
+
+                scope.close = function () {
+                    angular.element(container).css("display", "none");
+                    scope.settings.isOpened = false;
+                };
+
+
+                container.addEventListener("DOMSubtreeModified", function () {
+                    $log.log("redraw");
+                    redraw(container);
+                }, false);
+
+
+                angular.element($window).bind("resize", function () {
+                    redraw(container);
+                });
+
+
+                angular.element($document).bind("mousedown", function (event) {
+                    if (scope.settings.isOpened === true && !container.contains(event.target) && event.target !== element[0])
+                        scope.close();
+                });
+
+                element.on("mousedown", function () {
+                    if (scope.settings.isOpened === false)
+                        scope.open();
+                });
+
+                element.on("keydown", function (event) {
+                    event.preventDefault();
+                });
+            }
+        }
+    };
+
+
+
+
     function dateTimePickerFactory ($log, $window, $document, $http, $errors, $factory, $compile, $rootScope) {
         var instances = [];
         var template = "";
         var isTemplateLoading = false;
         
         return {
+
+            push: function (scope) {
+                if (scope !== undefined) {
+                    var instance = $factory({ classes: ["DateTimePicker"], base_class: "DateTimePicker" });
+                    instance.id = "dateTimePicker" + instances.length;
+                    instance.isModal = scope.settings.isModal;
+                    instance.isOpened = scope.settings.isOpened;
+                    instance.element = scope.settings.element;
+                    instance.scope = scope;
+                    instances.push(instance);
+                    $log.log(instances);
+                    return instance;
+                } else
+                    return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive: Не задан параметр - объект с настройками директивы");
+            },
+
+
+            show: function (elementId) {
+                $log.log("instances before = ", instances);
+                if (elementId !== undefined) {
+                    var length = instances.length;
+                    for (var i = 0; i < length; i++) {
+                        if (instances[i].element.getAttribute("id") === elementId)
+                            $log.log("Element with id = " + elementId + " found!");
+                    }
+                } else
+                    return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive : Не задан параметр - идентификатор HTML_элемента");
+            },
+
+
+
+
+
+
+
             /**
              * Добавляет новый элемент в стек
              * @param parameters - Набор параметров инициализации
