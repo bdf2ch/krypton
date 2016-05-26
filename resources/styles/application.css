@@ -35,11 +35,11 @@
   float: left;
   width: 564px;
   height: 35px;
-  background-image: -moz-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FAFAFA), to(#CFD8DC));
-  background-image: -webkit-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: -o-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: linear-gradient(to bottom, #FAFAFA, #CFD8DC);
+  background-image: -moz-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#cfd8dc));
+  background-image: -webkit-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: -o-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: linear-gradient(to bottom, #fafafa, #cfd8dc);
 }
 .krypton-ui-date-time-picker .toolbar {
   float: left;

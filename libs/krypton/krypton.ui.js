@@ -26,6 +26,7 @@
 
             open: function () {
                 this.isOpened = true;
+                this.scope.open();
             },
 
             close: function () {
@@ -48,6 +49,8 @@
                 dateTimePickerOpened: "="
             },
             link: function (scope, element, attrs, controller) {
+                $log.log("dtp directive");
+
                 var days = scope.days = new Array(35);
                 var weekdays = scope.weekdays = [["Пн", "Понедельник"], ["Вт", "Вторник"], ["Ср", "Среда"], ["Чт", "Четверг"] , ["Пт", "Пятница"], ["Сб", "Суббота"], ["Вс", "Воскресение"]];
                 var months = scope.months =  ["Январь" ,"Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
@@ -122,7 +125,7 @@
 
                 scope.open = function () {
                     var instance = $dateTimePicker.exists(angular.element(element).prop("id"));
-                    //$log.log("picker instance = ", instance);
+                    $log.log("picker instance = ", instance);
                     var picker = document.getElementById(instance.id);
                     //$log.log("picker element = ", picker);
                     angular.element(picker).css("display", "block");
@@ -241,6 +244,7 @@
 
 
                                 instances.push(picker);
+                                $log.log(instances);
                                 //element.setAttribute("ui-date-time-picker", "");
                                 $log.info("dtp = ", picker);
                                 $compile(picker.element)($rootScope.$new());
@@ -261,13 +265,17 @@
             open: function (elementId) {
                 if (elementId !== undefined) {
                     var length = instances.length;
+                    $log.log("instances defore", instances);
                     for (var i = 0; i < length; i++) {
                         var instanceFound = false;
                         if (angular.element(instances[i].element).prop("id") === elementId) {
+                            instanceFound = true;
                             $log.log("element with id = " + elementId + " found");
                             $log.log(instances[i]);
                             instances[i].scope.open();
                         }
+                        if (instanceFound === false)
+                            $log.log("Element " + elementId + " not found");
                     }
                 } else
                     return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> open: Не задан параметр - идентификатор элемента");
