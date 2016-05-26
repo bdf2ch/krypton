@@ -1,5 +1,6 @@
 .krypton-ui-fog {
   position: absolute;
+  display: none;
   overflow: hidden;
   top: 0px;
   left: 0px;
@@ -126,6 +127,74 @@
 .krypton-ui-date-time-picker.modal .day.weekend:hover {
   background: #FFCDD2 !important;
 }
+.ui-date-time-picker2 {
+  position: absolute;
+  display: none;
+  width: 259px;
+  border: 1px solid lightgrey;
+  background: white;
+  box-sizing: content-box;
+  -webkit-box-shadow: 1px 1px 15px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 15px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 15px 1px rgba(0, 0, 0, 0.2);
+}
+.ui-date-time-picker2 .toolbar {
+  float: left;
+  width: 259px;
+  box-sizing: border-box;
+}
+.ui-date-time-picker2 .toolbar .control {
+  float: left;
+  width: 37px;
+}
+.ui-date-time-picker2 .toolbar .content {
+  float: left;
+  width: 185px;
+}
+.ui-date-time-picker2 .toolbar .content select {
+  font-size: 15px;
+  text-align-last: center;
+  text-align: center;
+}
+.ui-date-time-picker2 .toolbar .content select option {
+  text-align-last: center;
+  text-align: center;
+}
+.ui-date-time-picker2 .weekdays .day {
+  height: 20px;
+  font-size: 10px;
+  line-height: 20px;
+  text-transform: uppercase;
+  border-right: none;
+}
+.ui-date-time-picker2 .day {
+  display: inline-block;
+  float: left;
+  overflow: hidden;
+  width: 37px;
+  height: 37px;
+  font-family: "Roboto Regular";
+  font-size: 17px;
+  line-height: 37px;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-right: 1px solid #E0E0E0;
+  border-top: 1px solid #E0E0E0;
+}
+.ui-date-time-picker2 .day.sunday {
+  background: #FFEBEE !important;
+  border-right: none;
+}
+.ui-date-time-picker2 .day.sunday:hover {
+  background: #EF9A9A !important;
+}
+.ui-date-time-picker2.modal {
+  position: absolute;
+  left: 50px;
+  top: 50px;
+  width: 500px;
+}
 /**
 *
 **/
@@ -196,6 +265,10 @@
   float: left;
   width: 70%;
 }
+.width-65 {
+  float: left;
+  width: 65%;
+}
 .width-60 {
   float: left;
   width: 60%;
@@ -211,6 +284,10 @@
 .width-40 {
   float: left;
   width: 40%;
+}
+.width-35 {
+  float: left;
+  width: 35%;
 }
 .width-30 {
   float: left;

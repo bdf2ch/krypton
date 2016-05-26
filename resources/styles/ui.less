@@ -17,7 +17,7 @@
 
 .krypton-ui-fog {
   position: absolute;
-  //display: block;
+  display: none;
   overflow: hidden;
   top: 0px;
   left: 0px;
@@ -166,4 +166,91 @@
       }
     }
   }
+}
+
+
+
+
+@date-time-picker-width: 259px;
+@date-time-picker-width-modal: 500px;
+
+.ui-date-time-picker2 {
+  position: absolute;
+  display: none;
+  width: @date-time-picker-width;
+  border: 1px solid lightgrey;
+  background: white;
+  box-sizing: content-box;
+  .box-shadow(1px, 1px, 15px, 1px, rgba(0, 0, 0, 0.2));
+
+  .toolbar {
+    float: left;
+    width: @date-time-picker-width;
+    box-sizing: border-box;
+
+    .control {
+      float: left;
+      width: @date-time-picker-width / 7;
+    }
+
+    .content {
+      float: left;
+      width: @date-time-picker-width - (@date-time-picker-width / 7) * 2;
+
+      select {
+        font-size: 15px;
+        text-align-last: center;
+        text-align: center;
+
+        option {
+          text-align-last: center;
+          text-align: center;
+        }
+      }
+    }
+
+  }
+
+  .weekdays {
+    .day {
+      height: 20px;
+      font-size: 10px;
+      line-height: 20px;
+      text-transform: uppercase;
+      border-right: none;
+    }
+  }
+
+  .day {
+    display: inline-block;
+    float: left;
+    overflow: hidden;
+    width: @date-time-picker-width / 7;
+    height: @date-time-picker-width / 7;
+    font-family: "Roboto Regular";
+    font-size: 17px;
+    line-height: @date-time-picker-width / 7;
+    text-align: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-right: 1px solid #E0E0E0;
+    border-top: 1px solid #E0E0E0;
+
+    &.sunday {
+      background: #FFEBEE !important;
+      border-right: none;
+
+      &:hover {
+        background: #EF9A9A !important;
+      }
+    }
+  }
+
+  &.modal {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+    width: @date-time-picker-width-modal;
+  }
+
 }
