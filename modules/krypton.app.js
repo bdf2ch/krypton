@@ -59,7 +59,7 @@
             modelValue: $scope.test,
             isModal: true,
             title: "Выберите дату"
-<<<<<<< HEAD
+
         }).open();
         */
 
@@ -67,15 +67,14 @@
         //$dateTimePicker.open("testInput");
 
         //$dateTimePicker.open("testInput2");
-=======
-        });
-        */
+
+        //});
 
         //$dateTimePicker.open("testInput2");
 
         //$dateTimePicker.open("testInput");
         $dateTimePicker.show("testInput");
->>>>>>> f6be9ac749cd2afaccd8f51d02da852cf0953ad6
+
     };
 
 })();
