@@ -25,7 +25,7 @@
             <span ng-if="isModal === true">{{ weekday[1] }}</span>
         </div>
     </div>
-    <div class="day" ng-repeat="day in days track by $index" ng-class="{'weekend': ($index + 1) % 7 === 0}">
+    <div class="day" ng ng-repeat="day in days track by $index" ng-class="{'weekend': ($index + 1) % 7 === 0}">
         {{$index}}
     </div>
 

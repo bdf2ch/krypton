@@ -36,11 +36,11 @@
   float: left;
   width: 564px;
   height: 35px;
-  background-image: -moz-linear-gradient(top, #fafafa, #cfd8dc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#cfd8dc));
-  background-image: -webkit-linear-gradient(top, #fafafa, #cfd8dc);
-  background-image: -o-linear-gradient(top, #fafafa, #cfd8dc);
-  background-image: linear-gradient(to bottom, #fafafa, #cfd8dc);
+  background-image: -moz-linear-gradient(top, #FAFAFA, #CFD8DC);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FAFAFA), to(#CFD8DC));
+  background-image: -webkit-linear-gradient(top, #FAFAFA, #CFD8DC);
+  background-image: -o-linear-gradient(top, #FAFAFA, #CFD8DC);
+  background-image: linear-gradient(to bottom, #FAFAFA, #CFD8DC);
 }
 .krypton-ui-date-time-picker .toolbar {
   float: left;
@@ -185,6 +185,7 @@
   text-transform: uppercase;
   border-right: none;
   background: #FAFAFA;
+  cursor: default;
 }
 .ui-date-time-picker2 .day {
   display: inline-block;
@@ -201,12 +202,31 @@
   border-right: 1px solid #E0E0E0;
   border-top: 1px solid #E0E0E0;
 }
+.ui-date-time-picker2 .day:hover {
+  background: #F5F5F5;
+}
 .ui-date-time-picker2 .day.sunday {
   background: #FFEBEE !important;
   border-right: none;
 }
 .ui-date-time-picker2 .day.sunday:hover {
   background: #EF9A9A !important;
+}
+.ui-date-time-picker2 .day.not-this-month {
+  color: #BDBDBD;
+}
+.ui-date-time-picker2 .hour {
+  display: inline-block;
+  float: left;
+  overflow: hidden;
+  width: 51.8px;
+  height: 51.8px;
+  font-family: "Roboto Regular";
+  font-size: 19px;
+  line-height: 51.8px;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 .ui-date-time-picker2.modal {
   position: absolute;
@@ -260,16 +280,16 @@
 ** TEXT ALIGN
 **********/
 .text-left {
-  text-align: left;
+  text-align: left !important;
 }
 .text-right {
-  text-align: right;
+  text-align: right !important;
 }
 .text-center {
-  text-align: center;
+  text-align: center !important;
 }
 .text-justify {
-  text-align: justify;
+  text-align: justify !important;
 }
 /**********
 ** BLOCK FLOAT

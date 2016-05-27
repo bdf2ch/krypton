@@ -22,6 +22,8 @@
             isVisible: false,
             isModal: false,
             isOpened: false,
+            isTimeEnabled: false,
+            isMinutesEnabled: false,
             scope: {},
 
             open: function () {
@@ -225,7 +227,9 @@
             require: "ngModel",
             scope: {
                 ngModel: "=",
-                dateTimePickerModal: "="
+                dateTimePickerModal: "=",
+                dateTimePickerEnableTime: "=",
+                dateTimePickerEnableMinutes: "="
             },
             link: function (scope, element, attrs, controller) {
 
@@ -233,21 +237,22 @@
                     "<div class='toolbar'>" +
                         "<div class='control'><button class='width-100 blue' ng-click='prevMonth()'>&larr;</button></div>" +
                         "<div class='content'>" +
-                            "<select class='width-60 no-border' ng-model='selectedMonthIndex' ng-options='month[0] as month[1] for month in months'></select>" +
-                            "<select class='width-40 no-border' ng-model='selectedYear' ng-options='year as year for year in years'></select>" +
+                            "<select class='width-60 no-border' ng-model='month' ng-options='month[0] as month[1] for month in months'></select>" +
+                            "<select class='width-40 no-border' ng-model='year' ng-options='year as year for year in years'></select>" +
                         "</div>" +
                         "<div class='control'><button class='width-100 blue' ng-click='nextMonth()'>&rarr;</button></div>" +
                     "</div>" +
                     "<div class='weekdays'>" +
+                        "<span ng-if='isInTimeSelectMode5'>Выберите время</span>" +
                         "<div class='day' ng-repeat='weekday in weekdays track by $index'>" +
-                        "<span ng-if='settings.isModal === true'>{{ weekday[1] }}</span><span ng-if='settings.isModal === false'>{{ weekday[0] }}</span>" +
+                            "<span ng-if='settings.isModal === true'>{{ weekday[1] }}</span><span ng-if='settings.isModal === false'>{{ weekday[0] }}</span>" +
                         "</div>" +
                     "</div>" +
-                    "<div class='day' ng-class='{\"sunday\": ($index + 1) % 7 === 0}' ng-repeat='day in days track by $index'>{{ $index }}" +
-                    "</div>";
+                    "<div class='day' ng-if='isInTimeSelectMode === false' ng-class='{\"sunday\": ($index + 1) % 7 === 0, \"not-this-month\": day.month() !== month}' ng-repeat='day in days track by $index' ng-click='select(day.unix())'>{{ day.date() }}</div>" +
+                    "<div class='hour' ng-if='isInTimeSelectMode === true' ng-repeat='hour in hours track by $index'>{{ hour }}</div>";
 
                 var ctrl = scope.ctrl = controller;
-                var days = scope.days = Array(35);
+                var days = scope.days = [];
                 var weekdays = scope.weekdays = [
                     ["Пн", "Понедельник"], ["Вт", "Вторник"],
                     ["Ср", "Среда"], ["Чт", "Четверг"] ,
@@ -260,23 +265,80 @@
                     [6, "Июль"], [7, "Август"], [8, "Сентябрь"],
                     [9, "Октябрь"], [10, "Ноябрь"], [11, "Декабрь"]
                 ];
-                var currentDate = moment(new Date());
+                var hours = scope.hours = [
+                    "", 11, 12, 1, "",
+                    10, "", "", "", 2,
+                    9, "", "", "", 3,
+                    8, "", "", "", 4,
+                    "", 7, 6, 5, ""
+                ];
+                var now = moment(new Date());
+                var date = moment(now);
+                var month = scope.month = moment(date).month();
+                var year = scope.year = moment(date).year();
                 var years = scope.years = [];
-                for (var i = moment(currentDate).year(); i < moment(currentDate).year() + 5; i++) {
+                for (var i = moment(date).year() - 5; i < moment(date).year() + 5; i++) {
                     years.push(i);
-                    if (i === moment(currentDate).year())
+                    if (i === moment(date).year())
                         selectedYear = i;
                 }
 
-                var selectedMonthIndex = scope.selectedMonthIndex = currentDate.month();
-                var selectedYear = scope.selectedYearIndex = moment(currentDate).year();
+                var isInTimeSelectMode = scope.isInTimeSelectMode = false;
+                var isInMinutesSelectMode = scope.isInMinutesSelectMode = false;
 
 
                 var settings = scope.settings = {
-                    isModal: scope.dateTimePicker !== null && scope.dateTimePickerModal !== undefined ? true : false,
+                    isModal: scope.dateTimePickerModal !== null && scope.dateTimePickerModal !== undefined ? true : false,
                     isOpened: false,
+                    isTimeEnabled: scope.dateTimePickerEnableTime !== null && scope.dateTimePickerEnableTime !== undefined ? true : false,
                     title: "",
                     element: element
+                };
+
+
+                $log.info("settings = ", scope.settings);
+
+
+                var recalculate = function (monthNumber) {
+                    if (monthNumber !== undefined) {
+                        var daysInMonth = moment(monthNumber + "-" + scope.year, "MM-YYYY").daysInMonth();
+                        var weekDayOfFirstDay = moment("01." + monthNumber + "." + scope.year, "DD.MM.YYYY").weekday();
+                        var weekDayOfLastDay = moment(daysInMonth + "." + monthNumber + "." + scope.year, "DD.MM.YYYY").weekday();
+                        var lastDayInSelectedMonth = "";
+                        $log.log("in month number " + monthNumber + " - " + daysInMonth + " days");
+                        $log.log("first day in month = ", weekDayOfFirstDay);
+                        $log.log("last day in month = ", weekDayOfLastDay);
+
+                        days.splice(0, days.length);
+                        if (weekDayOfFirstDay > 0) {
+                            var start = moment("01." + monthNumber + "." + scope.year + " 00:00", "DD.MM.YYYY HH:mm").subtract(weekDayOfFirstDay, "days");
+                            $log.log("first day in calendar = ", moment(start).format("DD.MM.YYYY"));
+                            for (var x = 0; x < weekDayOfFirstDay; x++) {
+                                var day = moment(start).add(x, "days");
+                                days.push(day);
+                            }
+                        }
+                        for (var i = 1; i <= daysInMonth; i++) {
+                            var day = moment(i + "." + monthNumber + "." + scope.year + " 00:00", "DD.MM.YYYY HH:mm");
+                            days.push(day);
+                            if (moment(day).date() === daysInMonth) {
+                                lastDayInSelectedMonth = day;
+                                $log.log("last day = ", moment(lastDayInSelectedMonth).format("DD.MM.YYYY"));
+                            }
+
+                            $log.log("last day in month2 = ", weekDayOfLastDay);
+
+                        }
+                        if (weekDayOfLastDay < 6) {
+                            //$log.log("last day in calendar = ", moment(start).format("DD.MM.YYYY"));
+                            var start = moment(lastDayInSelectedMonth).add(1, "days");
+                            for (var i = 1; i <= (6 - weekDayOfLastDay); i++) {
+                                var day = moment(lastDayInSelectedMonth).add(i, "days");
+                                days.push(day);
+                            }
+                        }
+                    } else
+                        return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive: Не задан параметр - порядковый номер месяца");
                 };
 
 
@@ -306,6 +368,7 @@
                         }
                         angular.element(elm).css("left", left);
                         angular.element(elm).css("top", top);
+                        return true;
                     } else
                         return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive: Не задан параметр - HTML-элемент");
                 };
@@ -317,7 +380,7 @@
                 });
 
                 controller.$formatters.push(function (value) {
-                    return moment.unix(value).format("DD MMM YYYY, HH:mm");
+                    return scope.settings.isTimeEnabled === true ? moment.unix(value).format("DD MMM YYYY, HH:mm") : moment.unix(value).format("DD MMM YYYY");
                 });
 
 
@@ -325,20 +388,42 @@
 
 
                 scope.prevMonth = function () {
-                    //scope.selectedMonthIndex = --scope.selectedMonthIndex < 0 ? scope.selectedMonthIndex = 11 : scope.selectedMonthIndex;
-                    currentDate = moment(currentDate).subtract(1, "months");
-                    $log.log(moment(currentDate).format("DD.MM.YYYY"));
-                    scope.selectedMonthIndex = moment(currentDate).month();
-                    $log.log(moment(currentDate).month());
-                    scope.selectedYear = moment(currentDate).year();
+                    scope.date = moment(scope.date).subtract(1, "months");
+                    moment(scope.date).day(1);
+                    $log.log("currentDate = " + moment(scope.date).format("DD.MM.YYYY"));
+                    scope.month = moment(scope.date).month();
+                    $log.log(moment(scope.date).month());
+                    scope.year = moment(scope.date).year();
+                    recalculate(scope.month + 1);
                 };
 
 
                 scope.nextMonth = function () {
-                    scope.selectedMonthIndex = ++scope.selectedMonthIndex > 11 ? 0 : scope.selectedMonthIndex;
-                    currentDate = moment(currentDate).add(1, "month");
-                    scope.selectedMonthIndex = moment(currentDate).month();
-                    scope.selectedYear = moment(currentDate).year();
+                    scope.date = moment(scope.date).add(1, "months");
+                    moment(scope.date).day(1);
+                    $log.log("currentDate = " + moment(scope.date).format("DD.MM.YYYY"));
+                    scope.month = moment(scope.date).month();
+                    scope.year = moment(scope.date).year();
+                    recalculate(scope.month + 1);
+                };
+
+
+                scope.select = function (timestamp) {
+                    if (timestamp !== undefined) {
+                        $log.log("selected value = ", timestamp);
+                        if (scope.settings.isTimeEnabled === true) {
+                            if (scope.isInTimeSelectMode === false) {
+                                scope.isInTimeSelectMode = true;
+
+                                if (scope.settings.isMinutesEnabled === true) {
+
+                                }
+                            }
+
+                            var startOfTheDay = moment.unix(timestamp).hours(0).minutes(0).seconds(0).unix();
+                        } else
+                            scope.ngModel = timestamp;
+                    }
                 };
 
 
@@ -352,6 +437,7 @@
                 document.body.appendChild(container);
                 $compile(container)(scope);
                 angular.element(element).css("cursor", "pointer");
+                recalculate(scope.month + 1);
 
 
                 scope.open = function () {

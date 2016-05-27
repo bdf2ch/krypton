@@ -228,6 +228,7 @@
     width: @date-time-picker-width;
     box-sizing: border-box;
 
+
     .day {
       float: left;
       width: @date-time-picker-width / 7;
@@ -237,6 +238,7 @@
       text-transform: uppercase;
       border-right: none;
       background: #FAFAFA;
+      cursor: default;
     }
   }
 
@@ -255,6 +257,10 @@
     border-right: 1px solid #E0E0E0;
     border-top: 1px solid #E0E0E0;
 
+    &:hover {
+      background: #F5F5F5;
+    }
+
     &.sunday {
       background: #FFEBEE !important;
       border-right: none;
@@ -263,6 +269,25 @@
         background: #EF9A9A !important;
       }
     }
+
+    &.not-this-month {
+      color: #BDBDBD;
+    }
+  }
+
+  .hour {
+    display: inline-block;
+    float: left;
+    overflow: hidden;
+    width: @date-time-picker-width / 5;
+    height: @date-time-picker-width / 5;
+    font-family: "Roboto Regular";
+    font-size: 19px;
+    line-height: @date-time-picker-width / 5;
+    text-align: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    //border: 1px solid black;
   }
 
   &.modal {

@@ -53,6 +53,7 @@
     function testController ($scope, $dateTimePicker) {
         $scope.test = 1464249736;
 
+        $scope.test2 = 1463086800;
         /*
         $dateTimePicker.add({
             element: "testInput",
