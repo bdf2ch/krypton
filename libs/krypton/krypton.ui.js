@@ -26,6 +26,7 @@
 
             open: function () {
                 this.isOpened = true;
+                this.scope.open();
             },
 
             close: function () {
@@ -48,6 +49,8 @@
                 dateTimePickerOpened: "="
             },
             link: function (scope, element, attrs, controller) {
+                $log.log("dtp directive");
+
                 var days = scope.days = new Array(35);
                 var weekdays = scope.weekdays = [
                     ["Пн", "Понедельник"], ["Вт", "Вторник"],
@@ -132,7 +135,7 @@
 
                 scope.open = function () {
                     var instance = $dateTimePicker.exists(angular.element(element).prop("id"));
-                    //$log.log("picker instance = ", instance);
+                    $log.log("picker instance = ", instance);
                     var picker = document.getElementById(instance.id);
                     //$log.log("picker element = ", picker);
                     angular.element(picker).css("display", "block");
@@ -226,14 +229,12 @@
             },
             link: function (scope, element, attrs, controller) {
 
-                $log.log('directive start');
-
                 var template =
                     "<div class='toolbar'>" +
                         "<div class='control'><button class='width-100 blue' ng-click='prevMonth()'>&larr;</button></div>" +
                         "<div class='content'>" +
                             "<select class='width-60 no-border' ng-model='selectedMonthIndex' ng-options='month[0] as month[1] for month in months'></select>" +
-                            "<select class='width-40 no-border' ng-model='selectedYearIndex' ng-options='year as year for year in years'></select>" +
+                            "<select class='width-40 no-border' ng-model='selectedYear' ng-options='year as year for year in years'></select>" +
                         "</div>" +
                         "<div class='control'><button class='width-100 blue' ng-click='nextMonth()'>&rarr;</button></div>" +
                     "</div>" +
@@ -278,6 +279,7 @@
                     element: element
                 };
 
+
                 var redraw = function (elm) {
                     if (elm !== undefined) {
                         var elementWidth = angular.element(element).prop("clientWidth");
@@ -308,7 +310,7 @@
                         return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive: Не задан параметр - HTML-элемент");
                 };
 
-                //$log.log("isModal is ", scope.dateTimePickerModal === null || scope.dateTimePickerModal === undefined ? "null" : "not null");
+
                 
                 controller.$parsers.push(function (value) {
 
@@ -323,14 +325,20 @@
 
 
                 scope.prevMonth = function () {
-                    scope.selectedMonthIndex = --scope.selectedMonthIndex < 0 ? scope.selectedMonthIndex = 11 : scope.selectedMonthIndex;
-                    moment(currentDate).subtract(1, "month");
+                    //scope.selectedMonthIndex = --scope.selectedMonthIndex < 0 ? scope.selectedMonthIndex = 11 : scope.selectedMonthIndex;
+                    currentDate = moment(currentDate).subtract(1, "months");
+                    $log.log(moment(currentDate).format("DD.MM.YYYY"));
+                    scope.selectedMonthIndex = moment(currentDate).month();
+                    $log.log(moment(currentDate).month());
+                    scope.selectedYear = moment(currentDate).year();
                 };
 
 
                 scope.nextMonth = function () {
                     scope.selectedMonthIndex = ++scope.selectedMonthIndex > 11 ? 0 : scope.selectedMonthIndex;
-                    moment(currentDate).add(1, "month");
+                    currentDate = moment(currentDate).add(1, "month");
+                    scope.selectedMonthIndex = moment(currentDate).month();
+                    scope.selectedYear = moment(currentDate).year();
                 };
 
 
@@ -338,13 +346,25 @@
                 var container = document.createElement("div");
                 container.setAttribute("id", instance.id);
                 container.className = "ui-date-time-picker2";
+                if (scope.settings.isModal === true)
+                    container.classList.add("modal");
                 container.innerHTML = template;
                 document.body.appendChild(container);
                 $compile(container)(scope);
                 angular.element(element).css("cursor", "pointer");
-                //angular.element(element).prop("disabled", "disabled");
+
 
                 scope.open = function () {
+                    if (scope.settings.isModal === true) {
+                        var fog = document.getElementsByClassName("krypton-ui-fog");
+                        if (fog.length === 0) {
+                            var fogElement = document.createElement("div");
+                            fogElement.className = "krypton-ui-fog";
+                            document.body.appendChild(fogElement);
+                            angular.element(fogElement).css("display", "block");
+                        } else
+                            angular.element(fog[0]).css("display", "block")
+                    }
                     angular.element(container).css("display", "block");
                     scope.settings.isOpened = true;
                     redraw(container);
@@ -352,13 +372,16 @@
 
 
                 scope.close = function () {
+                    if (scope.settings.isModal === true) {
+                        var fog = document.getElementsByClassName("krypton-ui-fog");
+                        angular.element(fog[0]).css("display", "none");
+                    }
                     angular.element(container).css("display", "none");
                     scope.settings.isOpened = false;
                 };
 
 
                 container.addEventListener("DOMSubtreeModified", function () {
-                    $log.log("redraw");
                     redraw(container);
                 }, false);
 
@@ -373,10 +396,12 @@
                         scope.close();
                 });
 
+
                 element.on("mousedown", function () {
                     if (scope.settings.isOpened === false)
                         scope.open();
                 });
+
 
                 element.on("keydown", function (event) {
                     event.preventDefault();
@@ -479,6 +504,7 @@
 
 
                                 instances.push(picker);
+                                $log.log(instances);
                                 //element.setAttribute("ui-date-time-picker", "");
                                 $log.info("dtp = ", picker);
                                 $compile(picker.element)($rootScope.$new());
@@ -499,13 +525,17 @@
             open: function (elementId) {
                 if (elementId !== undefined) {
                     var length = instances.length;
+                    $log.log("instances defore", instances);
                     for (var i = 0; i < length; i++) {
                         var instanceFound = false;
                         if (angular.element(instances[i].element).prop("id") === elementId) {
+                            instanceFound = true;
                             $log.log("element with id = " + elementId + " found");
                             $log.log(instances[i]);
                             instances[i].scope.open();
                         }
+                        if (instanceFound === false)
+                            $log.log("Element " + elementId + " not found");
                     }
                 } else
                     return $errors.add(ERROR_TYPE_DEFAULT, "$dateTimePicker -> open: Не задан параметр - идентификатор элемента");

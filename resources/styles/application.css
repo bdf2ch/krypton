@@ -6,8 +6,8 @@
   left: 0px;
   bottom: 0px;
   right: 0px;
-  z-index: 1;
-  opacity: 0;
+  z-index: 1000;
+  opacity: 1;
   background: rgba(0, 0, 0, 0.2);
 }
 .krypton-ui-fog.visible {
@@ -36,11 +36,11 @@
   float: left;
   width: 564px;
   height: 35px;
-  background-image: -moz-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FAFAFA), to(#CFD8DC));
-  background-image: -webkit-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: -o-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: linear-gradient(to bottom, #FAFAFA, #CFD8DC);
+  background-image: -moz-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#cfd8dc));
+  background-image: -webkit-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: -o-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: linear-gradient(to bottom, #fafafa, #cfd8dc);
 }
 .krypton-ui-date-time-picker .toolbar {
   float: left;
@@ -131,6 +131,7 @@
   position: absolute;
   display: none;
   width: 259px;
+  z-index: 1001;
   border: 1px solid lightgrey;
   background: white;
   box-sizing: content-box;
@@ -155,17 +156,35 @@
   font-size: 15px;
   text-align-last: center;
   text-align: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 0.01px;
+  text-overflow: '';
+  -ms-appearance: none;
+  appearance: none !important;
+  background-image: url('../images/drop_down_arrow.png');
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position-x: 95%;
 }
 .ui-date-time-picker2 .toolbar .content select option {
-  text-align-last: center;
   text-align: center;
 }
+.ui-date-time-picker2 .weekdays {
+  float: left;
+  width: 259px;
+  box-sizing: border-box;
+}
 .ui-date-time-picker2 .weekdays .day {
+  float: left;
+  width: 37px;
   height: 20px;
   font-size: 11px;
   line-height: 22px;
   text-transform: uppercase;
   border-right: none;
+  background: #FAFAFA;
 }
 .ui-date-time-picker2 .day {
   display: inline-block;
@@ -191,9 +210,33 @@
 }
 .ui-date-time-picker2.modal {
   position: absolute;
-  left: 50px;
-  top: 50px;
-  width: 500px;
+  width: 522px;
+  border: none;
+}
+.ui-date-time-picker2.modal .toolbar {
+  width: 522px;
+}
+.ui-date-time-picker2.modal .toolbar .control {
+  width: 74.57142857px;
+}
+.ui-date-time-picker2.modal .toolbar .content {
+  width: 372.85714286px;
+}
+.ui-date-time-picker2.modal .weekdays {
+  width: 522px;
+  box-sizing: border-box;
+}
+.ui-date-time-picker2.modal .weekdays .day {
+  width: 74.57142857px;
+  height: 20px;
+  font-size: 9px;
+  line-height: 22px;
+}
+.ui-date-time-picker2.modal .day {
+  width: 74.57142857px;
+  height: 74.57142857px;
+  font-size: 26px;
+  line-height: 74.57142857px;
 }
 /**
 *
@@ -363,6 +406,7 @@ button {
   padding: 10px;
   border: none;
   cursor: pointer;
+  line-height: 12px;
   box-sizing: border-box;
 }
 input[type='button'].rounded,

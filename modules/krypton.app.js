@@ -16,7 +16,7 @@
 
 
 
-    function kryptonAppRun ($log, $classes, $http, $errors) {
+    function kryptonAppRun ($log, $classes, $http, $errors, $dateTimePicker) {
         $log.log("krypton.app run...");
         moment.locale("ru");
 
@@ -35,7 +35,7 @@
                 $log.log(data);
             });
 
-
+        $dateTimePicker.open("testInput2");
 
 
 
@@ -59,13 +59,22 @@
             modelValue: $scope.test,
             isModal: true,
             title: "Выберите дату"
-        });
+
+        }).open();
         */
+
+
+        //$dateTimePicker.open("testInput");
+
+        //$dateTimePicker.open("testInput2");
+
+        //});
 
         //$dateTimePicker.open("testInput2");
 
         //$dateTimePicker.open("testInput");
         $dateTimePicker.show("testInput");
+
     };
 
 })();

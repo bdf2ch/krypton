@@ -166,6 +166,7 @@ button {
   padding: 10px;
   border: none;
   cursor: pointer;
+  line-height: 12px;
   box-sizing: border-box;
 }
 input[type='button'].rounded,
