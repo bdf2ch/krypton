@@ -58,7 +58,7 @@
 **********/
 .width-100 {
   float: left;
-  width: 100%;
+  width: 100% !important;
 }
 .width-90 {
   float: left;
@@ -216,12 +216,13 @@ button.big {
   color: #1B5E20;
 }
 .krypton-ui-fog {
-  position: absolute;
+  position: fixed;
   display: none;
   overflow: hidden;
   top: 0px;
   left: 0px;
   bottom: 0px;
+  height: 100%;
   right: 0px;
   z-index: 1000;
   opacity: 1;
@@ -404,6 +405,9 @@ button.big {
   background: #FAFAFA;
   cursor: default;
 }
+.ui-date-time-picker2 .weekdays .day:hover {
+  background: #FAFAFA;
+}
 .ui-date-time-picker2 .day {
   display: inline-block;
   float: left;
@@ -432,18 +436,28 @@ button.big {
 .ui-date-time-picker2 .day.not-this-month {
   color: #BDBDBD;
 }
+.ui-date-time-picker2 .days-container .clock-face {
+  background: #E0F2F1;
+}
+.ui-date-time-picker2 .days-container .clock-face:hover {
+  background: #E0F2F1;
+}
 .ui-date-time-picker2 .hour {
   display: inline-block;
+  position: relative;
   float: left;
   overflow: hidden;
-  width: 51.8px;
-  height: 51.8px;
+  width: 25%;
+  height: 64.75px;
   font-family: "Roboto Regular";
   font-size: 19px;
-  line-height: 51.8px;
+  line-height: 64.75px;
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
+}
+.ui-date-time-picker2 .hour:hover {
+  background: #F5F5F5;
 }
 .ui-date-time-picker2.modal {
   position: absolute;

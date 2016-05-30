@@ -237,20 +237,24 @@
                     "<div class='toolbar'>" +
                         "<div class='control'><button class='width-100 blue' ng-click='prevMonth()'>&larr;</button></div>" +
                         "<div class='content'>" +
-                            "<select class='width-60 no-border' ng-model='month' ng-options='month[0] as month[1] for month in months'></select>" +
-                            "<select class='width-40 no-border' ng-model='year' ng-options='year as year for year in years'></select>" +
+                            "<select class='width-60 no-border' ng-if='isInTimeSelectMode === false' ng-model='month' ng-options='month[0] as month[1] for month in months'></select>" +
+                            "<select class='width-40 no-border' ng-if='isInTimeSelectMode === false' ng-model='year' ng-options='year as year for year in years'></select>" +
+                            "<select class='width-100 no-border' ng-if='isInTimeSelectMode === true' ng-model='dayPart' ng-options='part[0] as part[1] for part in dayParts'></select>" +
                         "</div>" +
                         "<div class='control'><button class='width-100 blue' ng-click='nextMonth()'>&rarr;</button></div>" +
                     "</div>" +
                     "<div class='weekdays'>" +
-                        "<span ng-if='isInTimeSelectMode5'>Выберите время</span>" +
-                        "<div class='day' ng-repeat='weekday in weekdays track by $index'>" +
+                        "<div class='day width-100' ng-if='isInTimeSelectMode'>Выберите время - часы</div>" +
+                        "<div class='day' ng-if='isInTimeSelectMode === false' ng-repeat='weekday in weekdays track by $index'>" +
                             "<span ng-if='settings.isModal === true'>{{ weekday[1] }}</span><span ng-if='settings.isModal === false'>{{ weekday[0] }}</span>" +
                         "</div>" +
                     "</div>" +
-                    "<div class='day' ng-if='isInTimeSelectMode === false' ng-class='{\"sunday\": ($index + 1) % 7 === 0, \"not-this-month\": day.month() !== month}' ng-repeat='day in days track by $index' ng-click='select(day.unix())'>{{ day.date() }}</div>" +
-                    "<div class='hour' ng-if='isInTimeSelectMode === true' ng-repeat='hour in hours track by $index'>{{ hour }}</div>";
+                    "<div class='days-container' style='height:{{ height }};'>" + 
+                        "<div class='day' ng-if='isInTimeSelectMode === false' ng-class='{\"sunday\": ($index + 1) % 7 === 0, \"not-this-month\": day.month() !== month}' ng-repeat='day in days track by $index' ng-click='select(day.unix())'>{{ day.date() }}</div>" +
+                        "<div class='hour' ng-if='isInTimeSelectMode === true' ng-class='{\"clock-face\": $index === 5 || $index === 6 || $index === 9 || $index === 10}' ng-repeat='hour in hours track by $index'>{{ hour }}</div>" +
+                    "</div>";
 
+                var height = 0;
                 var ctrl = scope.ctrl = controller;
                 var days = scope.days = [];
                 var weekdays = scope.weekdays = [
@@ -266,17 +270,21 @@
                     [9, "Октябрь"], [10, "Ноябрь"], [11, "Декабрь"]
                 ];
                 var hours = scope.hours = [
-                    "", 11, 12, 1, "",
-                    10, "", "", "", 2,
-                    9, "", "", "", 3,
-                    8, "", "", "", 4,
-                    "", 7, 6, 5, ""
+                    10, 11, 12, 1,
+                    9,  "", "", 2,
+                    8,  "", "", 3,
+                    7,  6,  5,  4
+                ];
+                var dayParts = scope.dayParts = [
+                    [1, "До полуночи"],
+                    [2, "После полуночи"]
                 ];
                 var now = moment(new Date());
                 var date = moment(now);
                 var month = scope.month = moment(date).month();
                 var year = scope.year = moment(date).year();
                 var years = scope.years = [];
+                var dayPart = scope.dayPart = 1;
                 for (var i = moment(date).year() - 5; i < moment(date).year() + 5; i++) {
                     years.push(i);
                     if (i === moment(date).year())
@@ -350,13 +358,14 @@
                         var elementTop = angular.element(element).prop("offsetTop");
                         var containerWidth = angular.element(elm).prop("clientWidth");
                         var containerHeight = angular.element(elm).prop("clientHeight");
+                        var containerScrollTop = document.body.scrollTop;
                         var windowWidth = $window.innerWidth;
                         var windowHeight = $window.innerHeight;
                         var left = 0;
                         var top = 0;
                         if (scope.settings.isModal === true) {
-                            left = (windowWidth / 2) - (angular.element(elm).prop("clientWidth") / 2) + "px";
-                            top = (windowHeight / 2) - (angular.element(elm).prop("clientHeight") / 2) + "px"
+                            left = (windowWidth / 2) - angular.element(elm).prop("clientWidth") / 2 + "px";
+                            top = (windowHeight / 2) - ((angular.element(elm).prop("clientHeight")) / 2) + containerScrollTop + "px"
                         } else {
                             if (containerWidth > elementWidth) {
                                 if ((elementLeft > (containerWidth - elementWidth) / 2) && (elementLeft < (windowWidth - elementLeft) + containerWidth / 2))
@@ -364,10 +373,14 @@
                             } else
                                 left = angular.element(element).prop("offsetLeft") + "px";
 
-                            top = (angular.element(element).prop("offsetTop") - angular.element(elm).prop("clientHeight")) - 10 + "px";
+                            if (((elementTop - containerHeight) - containerScrollTop) + 10 < 0) {
+                                top = elementTop + elementHeight + 10 + "px";
+                            } else
+                                top = (angular.element(element).prop("offsetTop") - angular.element(elm).prop("clientHeight")) - 10 + "px";
                         }
                         angular.element(elm).css("left", left);
                         angular.element(elm).css("top", top);
+                        scope.height = containerHeight - 35 - 20 + "px";
                         return true;
                     } else
                         return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive: Не задан параметр - HTML-элемент");
@@ -443,6 +456,7 @@
                 scope.open = function () {
                     if (scope.settings.isModal === true) {
                         var fog = document.getElementsByClassName("krypton-ui-fog");
+                        document.body.style.overflow = "hidden";
                         if (fog.length === 0) {
                             var fogElement = document.createElement("div");
                             fogElement.className = "krypton-ui-fog";
@@ -461,6 +475,7 @@
                     if (scope.settings.isModal === true) {
                         var fog = document.getElementsByClassName("krypton-ui-fog");
                         angular.element(fog[0]).css("display", "none");
+                        document.body.style.overflow = "auto";
                     }
                     angular.element(container).css("display", "none");
                     scope.settings.isOpened = false;

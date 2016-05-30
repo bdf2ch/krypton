@@ -1,10 +1,17 @@
 "use strict";
 
 
+
 const ERROR_TYPE_DEFAULT = 1;
 const ERROR_TYPE_ENGINE = 2;
 const ERROR_TYPE_DATABASE = 3;
 const ERROR_TYPE_LDAP = 4;
+
+const DATA_TYPE_INTEGER = 11;
+const DATA_TYPE_STRING = 12;
+const DATA_TYPE_FLOAT = 13;
+const DATA_TYPE_BOOLEAN = 14;
+
 
 
 /**
@@ -41,7 +48,9 @@ function Field (parameters) {
         .factory("$factory", factoryFactory)
         .factory("$errors", errorsFactory)
         .factory("$application", applicationFactory)
-        .factory("$settings", settingsFactory);
+        .factory("$settings", settingsFactory)
+        .factory("$navigation", navigationFactory)
+        .factory("$session", sessionFactory);
 
     angular.module("krypton").run(kryptonRun);
 
@@ -259,9 +268,13 @@ function Field (parameters) {
 
 
 
-    function settingsFactory ($factory) {
+    /**
+     * $settings
+     * CСервис управления настройками приложения
+     */
+    function settingsFactory ($log, $factory) {
         var items = {};
-
+        $log.log("$settings factory");
         return {
             getAll: function () {
                 return items;
@@ -270,7 +283,28 @@ function Field (parameters) {
     };
 
 
-    function kryptonRun ($log, $classes) {
+
+    /**
+     * $navigation
+     * Сервис управления навигацией и меню приложения
+     */
+    function navigationFactory () {
+        var items = [];
+
+        return {
+
+        }
+    };
+
+
+
+    function sessionFactory () {
+
+    };
+    
+    
+
+    function kryptonRun ($log, $classes, $settings) {
         $log.log("krypton run...");
 
         /**
@@ -282,6 +316,37 @@ function Field (parameters) {
             typeId: new Field({ source: "typeId", type: "integer", value: 0, default_value: 0 }),
             message: new Field({ source: "message", type: "string", value: "", default_value: "" }),
             timestamp: new Field({ source: "timestamp", type: "integer", value: 0, default_value: 0 })
+        });
+
+
+
+        /**
+         * Setting
+         * Набор свойств и методов, описывающих настройку приложения
+         */
+        $classes.add("Setting", {
+            __dependencies__: [],
+            moduleId: new Field({ source: "module_id", type: "string", value: "", default_value: "" }),
+            code: new Field({ source: "code", type: "string", value: "", default_value: "" }),
+            title: new Field({ source: "title", type: "string", value: "", default_value: "" }),
+            description: new Field({ source: "description", type: "string", value: "", default_value: "" }),
+            dataType: new Field({ source: "data_type", type: "string", value: "", default_value: "" }),
+            isSystem: new Field({ source: "is_system", type: "integer", value: 0, default_value: 0 }),
+            value: new Field({ source: "value", type: "string", value: "", default_value: "" })
+        });
+
+
+
+        /**
+         * Session
+         * Набор свойств и методов, описывающих текущую сессию пользователя
+         */
+        $classes.add("Session", {
+            __dependencies__: [],
+            userId: new Field({ source: "user_id", type: "integer", value: 0, default_value: 0 }),
+            token: new Field ({ source: "token", type: "string", value: "", default_value: "" }),
+            start: new Field({ source: "start", type: "integer", value: 0, default_value: 0 }),
+            end: new Field({ source: "end", type: "integer", value: 0, default_value: 0 })
         });
 
 

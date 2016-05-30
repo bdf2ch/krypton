@@ -16,12 +16,13 @@
 
 
 .krypton-ui-fog {
-  position: absolute;
+  position: fixed;
   display: none;
   overflow: hidden;
   top: 0px;
   left: 0px;
   bottom: 0px;
+  height: 100%;
   right: 0px;
   z-index: 1000;
   opacity: 1;
@@ -239,6 +240,10 @@
       border-right: none;
       background: #FAFAFA;
       cursor: default;
+
+      &:hover {
+        background: #FAFAFA;
+      }
     }
   }
 
@@ -275,19 +280,36 @@
     }
   }
 
+  .days-container {
+
+    .clock-face {
+      background: #E0F2F1;
+
+      &:hover {
+        background: #E0F2F1;
+      }
+    }
+
+  }
+
   .hour {
     display: inline-block;
+    position: relative;
     float: left;
     overflow: hidden;
-    width: @date-time-picker-width / 5;
-    height: @date-time-picker-width / 5;
+    width: 25%;
+    height: @date-time-picker-width / 4;
     font-family: "Roboto Regular";
     font-size: 19px;
-    line-height: @date-time-picker-width / 5;
+    line-height: @date-time-picker-width / 4;
     text-align: center;
     cursor: pointer;
     box-sizing: border-box;
     //border: 1px solid black;
+
+    &:hover {
+      background: #F5F5F5;
+    }
   }
 
   &.modal {
