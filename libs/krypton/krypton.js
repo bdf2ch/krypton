@@ -47,10 +47,10 @@ function Field (parameters) {
         .factory("$classes", classesFactory)
         .factory("$factory", factoryFactory)
         .factory("$errors", errorsFactory)
-        .factory("$application", applicationFactory)
         .factory("$settings", settingsFactory)
         .factory("$navigation", navigationFactory)
-        .factory("$session", sessionFactory);
+        .factory("$session", sessionFactory)
+        .factory("$application", applicationFactory);
 
     angular.module("krypton").run(kryptonRun);
 
@@ -64,298 +64,28 @@ function Field (parameters) {
     function classesFactory ($log) {
         var items = {};
 
-        return {
-            /**
-             * Добавляет класс в стек классов
-             * @param _class - Объект, содержащий описание и логику класса
-             * @returns {boolean}
-             */
-            add: function (className, classDefinition) {
-                if (className !== undefined && classDefinition !== undefined && typeof(classDefinition) == "object") {
-                    items[className] = classDefinition;
-                    $log.info("Класс " + className + " добавлен в стек классов");
-                    return true;
-                } else
-                    return false;
-            },
-
-            /**
-             * Возвращает все классы из стека
-             * @returns {{}}
-             */
-            getAll: function () {
-                return items;
-            }
-        };
-    };
-
-
-
-    /******************************
-     * $factory
-     * Сервис фабрики объектов
-     ******************************/
-    function factoryFactory ($log, $classes) {
-        
-        function FactoryObject (parameters) {
-            
-            var clone = function _clone(obj) {
-                if (obj instanceof Array) {
-                    var out = [];
-                    for (var i = 0, len = obj.length; i < len; i++) {
-                        var value = obj[i];
-                        out[i] = (value !== null && typeof value === "object") ? _clone(value) : value;
-                    }
-                } else {
-                    var out = new obj.constructor();
-                    for (var key in obj) {
-                        if (obj.hasOwnProperty(key)) {
-                            var value = obj[key];
-                            out[key] = (value !== null && typeof value === "object") ? _clone(value) : value;
-                        }
-                    }
-                }
-                return out;
-            };
-
-            var _clone = function (it) {
-                return this._clone({
-                    it: it
-                }).it;
-            };
-
-
-            var classes = $classes.getAll();
-            var addClass = function (className, destination) {
-                if (className !== undefined && destination !== undefined) {
-                    if (classes.hasOwnProperty(className)) {
-                        destination.init_functions = [];
-                        for (var prop in classes[className]) {
-                            if (prop !== "__dependencies__") {
-                                if (classes[className][prop].constructor !== Function) {
-                                    destination[prop] = clone(classes[className][prop]);
-                                    if (destination[prop]["__instance__"] !== undefined)
-                                        destination[prop]["__instance__"] = destination;
-                                    if (destination[prop]["_init_"] !== undefined && destination[prop]["_init_"].constructor === Function)
-                                        destination.init_functions.push(destination[prop]["_init_"]);
-                                    if (destination["_init_"] !== undefined && destination["_init_"].constructor === Function)
-                                        destination.init_functions.push(destination["_init_"]);
-
-                                } else {
-                                    destination[prop] = classes[className][prop];
-                                    if (prop === "_init_")
-                                        destination.init_functions.push(destination[prop]);
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-
-
-            if (parameters !== undefined) {
-                if (parameters.hasOwnProperty("classes")) {
-                    if (parameters["classes"].constructor === Array) {
-                        for (var parent in parameters["classes"]) {
-                            var class_name = parameters["classes"][parent];
-                            addClass(class_name, this);
-                        }
-                    }
-                }
-                if (parameters.hasOwnProperty("base_class")) {
-                    if (classes.hasOwnProperty(parameters["base_class"])) {
-                        this.__class__ = parameters["base_class"];
-                    }
-                }
-            }
-
+        /**
+         * Добавляет класс в стек классов
+         * @param className - Наименование класса
+         * @param classDefinition - Определение класса
+         * @returns {boolean}
+         */
+        var add = function (className, classDefinition) {
+            if (className !== undefined && classDefinition !== undefined && typeof(classDefinition) == "object") {
+                items[className] = classDefinition;
+                $log.info("Класс " + className + " добавлен в стек классов");
+                return true;
+            } else
+                return false;
         };
 
-        return function (parameters) {
-            var obj = new FactoryObject(parameters);
-            if (obj.init_functions.length > 0) {
-                for (var i = 0; i < obj.init_functions.length; i++) {
-                    console.log("init func = ", obj.init_functions[i]);
-                    obj.init_functions[i].call(obj);
-                }
-            }
-            //return new FactoryObject(parameters);
-            return obj;
-        };
-    };
 
 
-
-    /********************
-     * $errors
-     * Сервис, реализующий управление ошибками в ходе выполнения приложения
-     ********************/
-    function errorsFactory ($log, $factory) {
-        var errors = [];
-
-        return {
-            /**
-             * Добавляет ошибку в стек
-             * @param errorType - Тип ошибки
-             * @param errorMessage - Текст ошибки
-             * @returns {*} - Error / false
-             */
-            add: function (errorType, errorMessage) {
-                if (errorType !== undefined) {
-                    if (!isNaN(errorType)) {
-                        if (errorMessage !== undefined) {
-                            var tempError = $factory({ classes: ["Error", "Model"], base_class: "Error" });
-                            tempError.typeId.value = errorType;
-                            tempError.message.value = errorMessage;
-                            tempError.timestamp.value = Math.floor(Date.now() / 1000);
-                            errors.push(tempError);
-                            $log.error(moment.unix(tempError.timestamp.value).format("DD.MM.YYYY HH:mm") + ": " + tempError.message.value);
-                            return tempError;
-                        } else {
-                            $log.error("$errors -> add: Не задан параметр - текст ошибки");
-                            return false;
-                        }
-                    } else {
-                        $log.error("$errors -> add: Неверно задан тип параметра - тип ошибки");
-                        return false;
-                    }
-                } else {
-                    $log.error("$errors -> add: Не задан параметр - тип ошибки");
-                    return false;
-                }
-            },
-
-            /**
-             * Возвращает стек ошибок
-             * @returns {Array}
-             */
-            getAll: function () {
-                return errors;
-            },
-
-            /**
-             * Проверяет, является ли объект экземпляром ошибки
-             * @param error - Объект для проверки
-             * @returns {boolean}
-             */
-            isError: function (error) {
-                if (error !== undefined) {
-                    if (typeof error === "object" && error.typeId !== undefined && error.message !== undefined)
-                        return true;
-                    else
-                        return false;
-                } else {
-                    var tempError = $factory({ classes: ["Error", "Model"], base_class: "Error" });
-                    tempError.typeId.value = ERROR_TYPE_DEFAULT;
-                    tempError.message.value = "$errors -> isError: Не задан параметр - объект для проверки";
-                    tempError.timestamp.value = Math.floor(Date.now() / 1000);
-                    errors.push(tempError);
-                    return false;
-                }
-            }
-        }
-    };
-
-
-
-    /******************************
-     * $application
-     * Сервис приложения
-     ******************************/
-    function applicationFactory () {
-
-    };
-
-
-
-    /**
-     * $settings
-     * CСервис управления настройками приложения
-     */
-    function settingsFactory ($log, $factory) {
-        var items = {};
-        $log.log("$settings factory");
-        return {
-            getAll: function () {
-                return items;
-            }
-        }
-    };
-
-
-
-    /**
-     * $navigation
-     * Сервис управления навигацией и меню приложения
-     */
-    function navigationFactory () {
-        var items = [];
-
-        return {
-
-        }
-    };
-
-
-
-    function sessionFactory () {
-
-    };
-    
-    
-
-    function kryptonRun ($log, $classes, $settings) {
-        $log.log("krypton run...");
-
-        /**
-         * Error
-         * Набор свойств и методов, описывающий ошибку
-         */
-        $classes.add("Error", {
-            __dependencies__: [],
-            typeId: new Field({ source: "typeId", type: "integer", value: 0, default_value: 0 }),
-            message: new Field({ source: "message", type: "string", value: "", default_value: "" }),
-            timestamp: new Field({ source: "timestamp", type: "integer", value: 0, default_value: 0 })
-        });
-
-
-
-        /**
-         * Setting
-         * Набор свойств и методов, описывающих настройку приложения
-         */
-        $classes.add("Setting", {
-            __dependencies__: [],
-            moduleId: new Field({ source: "module_id", type: "string", value: "", default_value: "" }),
-            code: new Field({ source: "code", type: "string", value: "", default_value: "" }),
-            title: new Field({ source: "title", type: "string", value: "", default_value: "" }),
-            description: new Field({ source: "description", type: "string", value: "", default_value: "" }),
-            dataType: new Field({ source: "data_type", type: "string", value: "", default_value: "" }),
-            isSystem: new Field({ source: "is_system", type: "integer", value: 0, default_value: 0 }),
-            value: new Field({ source: "value", type: "string", value: "", default_value: "" })
-        });
-
-
-
-        /**
-         * Session
-         * Набор свойств и методов, описывающих текущую сессию пользователя
-         */
-        $classes.add("Session", {
-            __dependencies__: [],
-            userId: new Field({ source: "user_id", type: "integer", value: 0, default_value: 0 }),
-            token: new Field ({ source: "token", type: "string", value: "", default_value: "" }),
-            start: new Field({ source: "start", type: "integer", value: 0, default_value: 0 }),
-            end: new Field({ source: "end", type: "integer", value: 0, default_value: 0 })
-        });
-
-
-
-        /**
+        /********************
          * Model
          * Набор свойст и методов, описывающих модель данных
-         */
-        $classes.add("Model", {
+         ********************/
+        add("Model", {
             __dependencies__: [],
             _model_: {
                 __instance__: "",
@@ -380,11 +110,9 @@ function Field (parameters) {
                                     if (this.__instance__[prop].type !== undefined) {
                                         switch (this.__instance__[prop].type) {
                                             case "string":
-                                                //$log.info("string attached to " + data);
                                                 this.__instance__[prop].value = JSONdata[data].toString();
                                                 break;
                                             case "integer":
-                                                //$log.info("integer attached to " + data);
                                                 if (!isNaN(JSONdata[data])) {
                                                     this.__instance__[prop].value = parseInt(JSONdata[data]);
                                                 } else {
@@ -401,7 +129,6 @@ function Field (parameters) {
                                                 }
                                                 break;
                                             case "boolean":
-                                                //$log.info("boolean attached to " + data);
                                                 if (!isNaN(JSONdata[data])) {
                                                     var value = parseInt(JSONdata[data]);
                                                     if (value === 1 || value === 0) {
@@ -528,108 +255,10 @@ function Field (parameters) {
 
 
         /******************************
-         * States
-         * Набор свойст и методов, описывающих состояние объекта
-         ******************************/
-        $classes.add("States", {
-            __dependencies__: [],
-            _states_: {
-                isActive: false,        // Флаг, сигнализирующий, активен ли объект
-                isSelected: false,      // Флаг, сигнализирующий, выбран ли объект
-                isChanged: false,       // Флаг, сигнализирующий, был ли изменен объект
-                isLoaded: true,         // Флаг, сигнализирующий был ли объект загружен
-                isLoading: false,       // Флаг, сигнализирующий, находится ли объект в режиме загрузки
-                isInEditMode: false,    // Флаг, сигнализирующий, находится ли объект в режиме редактирования
-                isInDeleteMode: false,  // Флаг, сигнализирующий, находится ли объект в режиме удаления
-
-                /**
-                 * Устанавливает / отменяет режим активного объекта
-                 * @param flag {Boolean} - Флаг активности / неактивности объекта
-                 * @returns {boolean} - Возвращает флаг активности / неактивности объекта
-                 */
-                active: function (flag) {
-                    if (flag !== undefined && flag.constructor === Boolean)
-                        this.isActive = flag;
-                    return this.isActive;
-                },
-
-                /**
-                 * Устанавливает / отменяет режим редактирования объекта
-                 * @param flag {Boolean} - Флаг нахождения объекта в режиме редактирования
-                 * @returns {boolean} - Возвращает флаг нахождения объекта в режиме редактирования
-                 */
-                editing: function (flag) {
-                    if (flag !== undefined && flag.constructor === Boolean)
-                        this.isInEditMode = flag;
-                    return this.isInEditMode;
-                },
-
-                /**
-                 * Устанавливает / отменяет режим удаления объекта
-                 * @param flag {boolean} - Флаг нахождения объекта в режиме удаления
-                 * @returns {boolean} - Возвращает флаг нахождения объекта в режиме удаления
-                 */
-                deleting: function (flag) {
-                    if (flag !== undefined && flag.constructor === Boolean)
-                        this.isInDeleteMode = flag;
-                    return this.isInDeleteMode;
-                },
-
-                /**
-                 * Устанавливает / отменяет режим измененного объекта
-                 * @param flag {boolean} - Флаг, был ли объект изменен
-                 * @returns {boolean} - Возвращает флаг, был ли объект изменен
-                 */
-                changed: function (flag) {
-                    if (flag !== undefined && flag.constructor === Boolean)
-                        this.isChanged = flag;
-                    return this.isChanged;
-                },
-
-                /**
-                 * Устанавливает / отменяет режим выбранного объекта
-                 * @param flag {boolean} - Флаг, был ли выбран объект
-                 * @returns {boolean} - Возвращает флаг, был ли выбран объект
-                 */
-                selected: function (flag) {
-                    if (flag !== undefined && flag.constructor === Boolean) {
-                        this.isSelected = flag;
-                        //console.log("selected = ", this.isSelected);
-                    }
-                    return this.isSelected;
-                },
-
-                /**
-                 * Устанавливает / отменяет режим загруженного объекта
-                 * @param flag {boolean} - Флаг, был ли объект загружен
-                 * @returns {boolean} - Возвращает флаг, был ли объект загружен
-                 */
-                loaded: function (flag) {
-                    if (flag !== undefined && flag.constructor === Boolean)
-                        this.isLoaded = flag;
-                    return this.isLoaded;
-                },
-
-                /**
-                 * Устанавливает / отменяет режим загруженного объекта
-                 * @param flag {boolean} - Флаг, был ли объект загружен
-                 * @returns {boolean} - Возвращает флаг, был ли объект загружен
-                 */
-                loading: function (flag) {
-                    if (flag !== undefined && flag.constructor === Boolean)
-                        this.isLoading = flag;
-                    return this.isLoading;
-                }
-            }
-        });
-
-
-
-        /******************************
          * Backup
          * Набор свойств и методов, реализующих резервное копирование данных объекта
          ******************************/
-        $classes.add("Backup", {
+        add("Backup", {
             __dependencies__: [],
             _backup_: {
                 __instance__: "",
@@ -699,11 +328,12 @@ function Field (parameters) {
 
 
 
+
         /******************************
          * Collection
          * Набор свойств и методов, описывающих коллекцию элементов
          ******************************/
-        $classes.add("Collection", {
+        add("Collection", {
             items: [],
             selectedItems: [],
             allowMultipleSelect: false,
@@ -972,6 +602,463 @@ function Field (parameters) {
                 return this.selectedItems;
             }
         });
+
+
+
+        /******************************
+         * States
+         * Набор свойст и методов, описывающих состояние объекта
+         ******************************/
+        add("States", {
+            __dependencies__: [],
+            _states_: {
+                isActive: false,        // Флаг, сигнализирующий, активен ли объект
+                isSelected: false,      // Флаг, сигнализирующий, выбран ли объект
+                isChanged: false,       // Флаг, сигнализирующий, был ли изменен объект
+                isLoaded: true,         // Флаг, сигнализирующий был ли объект загружен
+                isLoading: false,       // Флаг, сигнализирующий, находится ли объект в режиме загрузки
+                isInEditMode: false,    // Флаг, сигнализирующий, находится ли объект в режиме редактирования
+                isInDeleteMode: false,  // Флаг, сигнализирующий, находится ли объект в режиме удаления
+
+                /**
+                 * Устанавливает / отменяет режим активного объекта
+                 * @param flag {Boolean} - Флаг активности / неактивности объекта
+                 * @returns {boolean} - Возвращает флаг активности / неактивности объекта
+                 */
+                active: function (flag) {
+                    if (flag !== undefined && flag.constructor === Boolean)
+                        this.isActive = flag;
+                    return this.isActive;
+                },
+
+                /**
+                 * Устанавливает / отменяет режим редактирования объекта
+                 * @param flag {Boolean} - Флаг нахождения объекта в режиме редактирования
+                 * @returns {boolean} - Возвращает флаг нахождения объекта в режиме редактирования
+                 */
+                editing: function (flag) {
+                    if (flag !== undefined && flag.constructor === Boolean)
+                        this.isInEditMode = flag;
+                    return this.isInEditMode;
+                },
+
+                /**
+                 * Устанавливает / отменяет режим удаления объекта
+                 * @param flag {boolean} - Флаг нахождения объекта в режиме удаления
+                 * @returns {boolean} - Возвращает флаг нахождения объекта в режиме удаления
+                 */
+                deleting: function (flag) {
+                    if (flag !== undefined && flag.constructor === Boolean)
+                        this.isInDeleteMode = flag;
+                    return this.isInDeleteMode;
+                },
+
+                /**
+                 * Устанавливает / отменяет режим измененного объекта
+                 * @param flag {boolean} - Флаг, был ли объект изменен
+                 * @returns {boolean} - Возвращает флаг, был ли объект изменен
+                 */
+                changed: function (flag) {
+                    if (flag !== undefined && flag.constructor === Boolean)
+                        this.isChanged = flag;
+                    return this.isChanged;
+                },
+
+                /**
+                 * Устанавливает / отменяет режим выбранного объекта
+                 * @param flag {boolean} - Флаг, был ли выбран объект
+                 * @returns {boolean} - Возвращает флаг, был ли выбран объект
+                 */
+                selected: function (flag) {
+                    if (flag !== undefined && flag.constructor === Boolean) {
+                        this.isSelected = flag;
+                        //console.log("selected = ", this.isSelected);
+                    }
+                    return this.isSelected;
+                },
+
+                /**
+                 * Устанавливает / отменяет режим загруженного объекта
+                 * @param flag {boolean} - Флаг, был ли объект загружен
+                 * @returns {boolean} - Возвращает флаг, был ли объект загружен
+                 */
+                loaded: function (flag) {
+                    if (flag !== undefined && flag.constructor === Boolean)
+                        this.isLoaded = flag;
+                    return this.isLoaded;
+                },
+
+                /**
+                 * Устанавливает / отменяет режим загруженного объекта
+                 * @param flag {boolean} - Флаг, был ли объект загружен
+                 * @returns {boolean} - Возвращает флаг, был ли объект загружен
+                 */
+                loading: function (flag) {
+                    if (flag !== undefined && flag.constructor === Boolean)
+                        this.isLoading = flag;
+                    return this.isLoading;
+                }
+            }
+        });
+
+
+        return {
+            /**
+             * Добавляет класс в стек классов
+             * @param className - Наименование класса
+             * @param classDefifnition - Определение класса
+             * @returns {boolean}
+             */
+            add: function (className, classDefinition) {
+                add(className, classDefinition);
+            },
+
+            /**
+             * Возвращает все классы из стека
+             * @returns {{}}
+             */
+            getAll: function () {
+                return items;
+            }
+        };
+    };
+
+
+
+    /******************************
+     * $factory
+     * Сервис фабрики объектов
+     ******************************/
+    function factoryFactory ($log, $classes) {
+        
+        function FactoryObject (parameters) {
+            
+            var clone = function _clone(obj) {
+                if (obj instanceof Array) {
+                    var out = [];
+                    for (var i = 0, len = obj.length; i < len; i++) {
+                        var value = obj[i];
+                        out[i] = (value !== null && typeof value === "object") ? _clone(value) : value;
+                    }
+                } else {
+                    var out = new obj.constructor();
+                    for (var key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                            var value = obj[key];
+                            out[key] = (value !== null && typeof value === "object") ? _clone(value) : value;
+                        }
+                    }
+                }
+                return out;
+            };
+
+            var _clone = function (it) {
+                return this._clone({
+                    it: it
+                }).it;
+            };
+
+
+            var classes = $classes.getAll();
+            var addClass = function (className, destination) {
+                if (className !== undefined && destination !== undefined) {
+                    if (classes.hasOwnProperty(className)) {
+                        destination.init_functions = [];
+                        for (var prop in classes[className]) {
+                            if (prop !== "__dependencies__") {
+                                if (classes[className][prop].constructor !== Function) {
+                                    destination[prop] = clone(classes[className][prop]);
+                                    if (destination[prop]["__instance__"] !== undefined)
+                                        destination[prop]["__instance__"] = destination;
+                                    if (destination[prop]["_init_"] !== undefined && destination[prop]["_init_"].constructor === Function)
+                                        destination.init_functions.push(destination[prop]["_init_"]);
+                                    if (destination["_init_"] !== undefined && destination["_init_"].constructor === Function)
+                                        destination.init_functions.push(destination["_init_"]);
+
+                                } else {
+                                    destination[prop] = classes[className][prop];
+                                    if (prop === "_init_")
+                                        destination.init_functions.push(destination[prop]);
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+
+            if (parameters !== undefined) {
+                if (parameters.hasOwnProperty("classes")) {
+                    if (parameters["classes"].constructor === Array) {
+                        for (var parent in parameters["classes"]) {
+                            var class_name = parameters["classes"][parent];
+                            addClass(class_name, this);
+                        }
+                    }
+                }
+                if (parameters.hasOwnProperty("base_class")) {
+                    if (classes.hasOwnProperty(parameters["base_class"])) {
+                        this.__class__ = parameters["base_class"];
+                    }
+                }
+            }
+
+        };
+
+        return function (parameters) {
+            var obj = new FactoryObject(parameters);
+            if (obj.init_functions.length > 0) {
+                for (var i = 0; i < obj.init_functions.length; i++) {
+                   // console.log("init func = ", obj.init_functions[i]);
+                    obj.init_functions[i].call(obj);
+                }
+            }
+            //return new FactoryObject(parameters);
+            return obj;
+        };
+    };
+
+
+
+    /********************
+     * $errors
+     * Сервис, реализующий управление ошибками в ходе выполнения приложения
+     ********************/
+    function errorsFactory ($log, $classes, $factory) {
+        /**
+         * Error
+         * Набор свойств и методов, описывающий ошибку
+         */
+        $classes.add("Error", {
+            __dependencies__: [],
+            typeId: new Field({ source: "typeId", type: "integer", value: 0, default_value: 0 }),
+            message: new Field({ source: "message", type: "string", value: "", default_value: "" }),
+            timestamp: new Field({ source: "timestamp", type: "integer", value: 0, default_value: 0 })
+        });
+
+        var items = [];
+
+        return {
+            /**
+             * Добавляет ошибку в стек
+             * @param errorType - Тип ошибки
+             * @param errorMessage - Текст ошибки
+             * @returns {*} - Error / false
+             */
+            add: function (errorType, errorMessage) {
+                if (errorType !== undefined) {
+                    if (!isNaN(errorType)) {
+                        if (errorMessage !== undefined) {
+                            var tempError = $factory({ classes: ["Error", "Model"], base_class: "Error" });
+                            tempError.typeId.value = errorType;
+                            tempError.message.value = errorMessage;
+                            tempError.timestamp.value = Math.floor(Date.now() / 1000);
+                            items.push(tempError);
+                            $log.error(moment.unix(tempError.timestamp.value).format("DD.MM.YYYY HH:mm") + ": " + tempError.message.value);
+                            return tempError;
+                        } else {
+                            $log.error("$errors -> add: Не задан параметр - текст ошибки");
+                            return false;
+                        }
+                    } else {
+                        $log.error("$errors -> add: Неверно задан тип параметра - тип ошибки");
+                        return false;
+                    }
+                } else {
+                    $log.error("$errors -> add: Не задан параметр - тип ошибки");
+                    return false;
+                }
+            },
+
+            /**
+             * Возвращает стек ошибок
+             * @returns {Array}
+             */
+            getAll: function () {
+                return items;
+            },
+
+            /**
+             * Проверяет, является ли объект экземпляром ошибки
+             * @param error - Объект для проверки
+             * @returns {boolean}
+             */
+            isError: function (error) {
+                if (error !== undefined) {
+                    if (typeof error === "object" && error.typeId !== undefined && error.message !== undefined)
+                        return true;
+                    else
+                        return false;
+                } else {
+                    var tempError = $factory({ classes: ["Error", "Model"], base_class: "Error" });
+                    tempError.typeId.value = ERROR_TYPE_DEFAULT;
+                    tempError.message.value = "$errors -> isError: Не задан параметр - объект для проверки";
+                    tempError.timestamp.value = Math.floor(Date.now() / 1000);
+                    items.push(tempError);
+                    return false;
+                }
+            }
+        }
+    };
+
+
+
+
+
+
+
+
+    /**
+     * $settings
+     * CСервис управления настройками приложения
+     */
+    function settingsFactory ($log, $classes, $factory) {
+        /**
+         * Setting
+         * Набор свойств и методов, описывающих настройку приложения
+         */
+        $classes.add("Setting", {
+            __dependencies__: [],
+            moduleId: new Field({ source: "module_id", type: "string", value: "", default_value: "" }),
+            code: new Field({ source: "code", type: "string", value: "", default_value: "" }),
+            title: new Field({ source: "title", type: "string", value: "", default_value: "" }),
+            description: new Field({ source: "description", type: "string", value: "", default_value: "" }),
+            dataType: new Field({ source: "data_type", type: "string", value: "", default_value: "" }),
+            isSystem: new Field({ source: "is_system", type: "integer", value: 0, default_value: 0 }),
+            value: new Field({ source: "value", type: "string", value: "", default_value: "" })
+        });
+
+        var items = [];
+
+        return {
+
+            init: function () {
+                if (krypton !== null && krypton !== undefined) {
+                    if (krypton.settings !== null) {
+                        var length = krypton.settings.length;
+                        for (var i = 0; i < length; i++) {
+                            var setting = $factory({ classes: ["Setting", "Model"], base_class: "Setting" });
+                            setting._model_.fromAnother(krypton.settings[i]);
+                            items.push(setting);
+                        }
+                        $log.log("settings = ", items);
+                    }
+                }
+            },
+
+            getAll: function () {
+                return items;
+            }
+        }
+    };
+
+
+
+    /**
+     * $navigation
+     * Сервис управления навигацией и меню приложения
+     */
+    function navigationFactory () {
+
+        var items = [];
+
+        return {
+
+        }
+    };
+
+
+
+    /**
+     * $session
+     * Сервис для управления текущей сессией и текущим пользователем сессии
+     */
+    function sessionFactory ($log, $classes, $factory) {
+        /********************
+         * Session
+         * Набор свойств и методов, описывающих текущую сессию пользователя
+         ********************/
+        $classes.add("Session", {
+            __dependencies__: [],
+            userId: new Field({ source: "user_id", type: "integer", value: 0, default_value: 0 }),
+            token: new Field ({ source: "token", type: "string", value: "", default_value: "" }),
+            start: new Field({ source: "start", type: "integer", value: 0, default_value: 0 }),
+            end: new Field({ source: "end", type: "integer", value: 0, default_value: 0 })
+        });
+
+
+
+        /********************
+         * User
+         * Набор свойств и методов, описывающих пользователя
+         ********************/
+        $classes.add("User", {
+            __dependencies__: [],
+            id: new Field({ source: "id", type: "integer", value: 0, default_value: 0, backupable: true}),
+            name: new Field({ source: "name", type: "string", value: "", default_value: "", backupable: true }),
+            fname: new Field({ source: "fname", type: "string", value: "", default_value: "", backupable: true }),
+            position: new Field({ source: "position", type: "string", value: "", default_value: "", backupable: true }),
+            email: new Field({ source: "email", type: "string", value: "", default_value: "", backupable: true }),
+            phone: new Field({ source: "phone", type: "string", value: "", default_value: "", backupable: true }),
+            isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true })
+        });
+
+        var session = $factory({ classes: ["Session", "Model"], base_class: "Session" });
+        var user = $factory({ classes: ["User", "Model"], base_class: "User" });
+
+        return {
+
+            init: function () {
+                if (krypton !== undefined && krypton !== null) {
+                    if (krypton.session !== null) {
+                        session._model_.fromAnother(krypton.session);
+                        $log.log("updated session = ", session);
+                    }
+                    if (krypton.user !== null) {
+                        user._model_.fromAnother(krypton.user);
+                        $log.log("updated user = ", user);
+                    }
+                }
+            },
+
+            /**
+             * Возвращает объект текущей сессии
+             * @returns {*}
+             */
+            getCurrentSession: function () {
+                return session;
+            },
+
+            /**
+             * Возвращает объект пользователя текущей сессии
+             * @returns {*}
+             */
+            getCurrentUser: function () {
+                return user;
+            }
+        }
+    };
+
+
+
+
+    /******************************
+     * $application
+     * Сервис приложения
+     ******************************/
+    function applicationFactory () {
+
+    };
+
+
+
+    /********************
+     * Запуск основного модуля библиотеки
+     ********************/
+    function kryptonRun ($log, $settings, $session) {
+        $log.log("krypton run...");
+        $session.init();
+        $settings.init();
     };
 
 

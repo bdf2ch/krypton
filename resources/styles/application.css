@@ -500,6 +500,23 @@ body {
   left: 0px;
   top: 0px;
   right: 0px;
-  height: 100px;
-  background: red;
+  height: 40px;
+  background: #0D47A1;
+}
+#app-wrapper {
+  position: absolute;
+  top: 40px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: hidden;
+  border: 1px solid green;
+}
+#app-content {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: auto;
 }

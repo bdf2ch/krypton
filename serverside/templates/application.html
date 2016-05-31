@@ -17,38 +17,42 @@
     </script>
     <script src="libs/angularjs/angular.min.js"></script>
 
-    <!--
+
     <div id="app-header">
 
     </div>
     <div id="app-wrapper">
 
+        <div id="app-content">
+            <br><br><br><br> <br><br><br><br> <br><br><br><br> <br><br><br><br>
+            <input type="text"
+                   style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
+                   id="testInput"
+                   ui-date-time-picker
+                   date-time-picker-enable-time="true"
+                   ng-model="test">
+
+
+            <br><br><br><br> <br><br><br><br> <br><br><br><br>
+            <input type="text"
+                   style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
+                   id="testInput2"
+                   ui-date-time-picker
+                   date-time-picker-modal="true"
+                   ng-model="test2">
+
+
+            <br><br><br><br> <br><br><br><br> <br><br><br><br>
+            <input type="button"
+                   style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
+                   id="testInput3"
+                   ui-date-time-picker
+                   ng-model="test2">
+        </div>
+
     </div>
-    -->
-    <br><br><br><br> <br><br><br><br> <br><br><br><br> <br><br><br><br>
-    <input type="text"
-           style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
-           id="testInput"
-           ui-date-time-picker
-           date-time-picker-enable-time="true"
-           ng-model="test">
 
 
-    <br><br><br><br> <br><br><br><br> <br><br><br><br>
-    <input type="text"
-           style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
-           id="testInput2"
-           ui-date-time-picker
-           date-time-picker-modal="true"
-           ng-model="test2">
-
-
-    <br><br><br><br> <br><br><br><br> <br><br><br><br>
-    <input type="button"
-           style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
-           id="testInput3"
-           ui-date-time-picker
-           ng-model="test2">
     <!--<input type="text" id="testInput2" ui-date-time-picker>-->
 
     <script src="libs/angularjs/angular-route.min.js"></script>

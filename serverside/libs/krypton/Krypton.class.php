@@ -92,7 +92,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
 
             session_start();
             $this -> modules = new ModuleManager();
-            var_dump(session_name());
+            //var_dump(session_name());
 
             if ($title == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Не задан параметр - наименование приложения");

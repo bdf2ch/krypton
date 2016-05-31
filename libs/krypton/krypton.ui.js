@@ -235,13 +235,13 @@
 
                 var template =
                     "<div class='toolbar'>" +
-                        "<div class='control'><button class='width-100 blue' ng-click='prevMonth()'>&larr;</button></div>" +
+                        "<div class='control'><button class='width-100 blue' ng-click='prev()'>&larr;</button></div>" +
                         "<div class='content'>" +
                             "<select class='width-60 no-border' ng-if='isInTimeSelectMode === false' ng-model='month' ng-options='month[0] as month[1] for month in months'></select>" +
                             "<select class='width-40 no-border' ng-if='isInTimeSelectMode === false' ng-model='year' ng-options='year as year for year in years'></select>" +
                             "<select class='width-100 no-border' ng-if='isInTimeSelectMode === true' ng-model='dayPart' ng-options='part[0] as part[1] for part in dayParts'></select>" +
                         "</div>" +
-                        "<div class='control'><button class='width-100 blue' ng-click='nextMonth()'>&rarr;</button></div>" +
+                        "<div class='control'><button class='width-100 blue' ng-click='next()'>&rarr;</button></div>" +
                     "</div>" +
                     "<div class='weekdays'>" +
                         "<div class='day width-100' ng-if='isInTimeSelectMode'>Выберите время - часы</div>" +
@@ -358,14 +358,45 @@
                         var elementTop = angular.element(element).prop("offsetTop");
                         var containerWidth = angular.element(elm).prop("clientWidth");
                         var containerHeight = angular.element(elm).prop("clientHeight");
-                        var containerScrollTop = document.body.scrollTop;
+                        var elementScrollTop = 0;
+                        var elementScrollLeft = 0;
                         var windowWidth = $window.innerWidth;
                         var windowHeight = $window.innerHeight;
                         var left = 0;
                         var top = 0;
+
+                        var parent = element[0].offsetParent;
+                        $log.log("parent = ", parent);
+                        //while (parent !== undefined) {
+                        //    parent = angular.element(parent).parent();
+                        //    containerScrollTop = angular.element(parent).prop("offsetTop");                         
+                        //}
+                        //$log.log(angular.element(element).parent());
+                        //$log.log(angular.element(angular.element(element).parent()).parent());
+
+                        //function position (element) {
+                        //    var top = 0, left = 0, offsetX = 0, offsetY = 0;
+
+                            
+                            while (parent) {
+                                //elementTop = elementTop + parent.offsetTop;
+                                //elementLeft = elementLeft + parent.offsetLeft;
+                                elementScrollLeft = elementScrollLeft + parent.scrollLeft;
+                                elementScrollTop = elementScrollTop + parent.scrollTop;
+                                parent = parent.offsetParent;
+                            }
+                            $log.log("containerTop = ", elementScrollTop);
+                            $log.log("containerLeft = ", elementScrollLeft);
+                        
+
+                            //return {top: Math.round(top), left: Math.round(left), offsetX: Math.round(offsetX), offsetY: Math.round(offsetY)};
+                        //};
+
+                        //$log.log(angular.element($document).parent());
+                        
                         if (scope.settings.isModal === true) {
                             left = (windowWidth / 2) - angular.element(elm).prop("clientWidth") / 2 + "px";
-                            top = (windowHeight / 2) - ((angular.element(elm).prop("clientHeight")) / 2) + containerScrollTop + "px"
+                            top = (windowHeight / 2) - ((angular.element(elm).prop("clientHeight")) / 2) + "px"
                         } else {
                             if (containerWidth > elementWidth) {
                                 if ((elementLeft > (containerWidth - elementWidth) / 2) && (elementLeft < (windowWidth - elementLeft) + containerWidth / 2))
@@ -373,10 +404,10 @@
                             } else
                                 left = angular.element(element).prop("offsetLeft") + "px";
 
-                            if (((elementTop - containerHeight) - containerScrollTop) + 10 < 0) {
+                            if ((elementTop - containerHeight) + 10 < 0) {
                                 top = elementTop + elementHeight + 10 + "px";
                             } else
-                                top = (angular.element(element).prop("offsetTop") - angular.element(elm).prop("clientHeight")) - 10 + "px";
+                                top = angular.element(elm).prop("clientHeight") - elementScrollTop - 10 + "px";
                         }
                         angular.element(elm).css("left", left);
                         angular.element(elm).css("top", top);
@@ -400,24 +431,34 @@
                
 
 
-                scope.prevMonth = function () {
-                    scope.date = moment(scope.date).subtract(1, "months");
-                    moment(scope.date).day(1);
-                    $log.log("currentDate = " + moment(scope.date).format("DD.MM.YYYY"));
-                    scope.month = moment(scope.date).month();
-                    $log.log(moment(scope.date).month());
-                    scope.year = moment(scope.date).year();
-                    recalculate(scope.month + 1);
+                scope.prev = function () {
+                    if (scope.settings.isTimeEnabled === true && scope.isInTimeSelectMode === true) {
+                        $log.log("select time");
+                    } else {
+                        scope.date = moment(scope.date).subtract(1, "months");
+                        moment(scope.date).day(1);
+                        $log.log("currentDate = " + moment(scope.date).format("DD.MM.YYYY"));
+                        scope.month = moment(scope.date).month();
+                        $log.log(moment(scope.date).month());
+                        scope.year = moment(scope.date).year();
+                        recalculate(scope.month + 1);
+                    }
+
                 };
 
 
-                scope.nextMonth = function () {
-                    scope.date = moment(scope.date).add(1, "months");
-                    moment(scope.date).day(1);
-                    $log.log("currentDate = " + moment(scope.date).format("DD.MM.YYYY"));
-                    scope.month = moment(scope.date).month();
-                    scope.year = moment(scope.date).year();
-                    recalculate(scope.month + 1);
+                scope.next = function () {
+                    if (scope.settings.isTimeEnabled === true && scope.isInTimeSelectMode === true) {
+                        $log.log("select time");
+                    } else {
+                        scope.date = moment(scope.date).add(1, "months");
+                        moment(scope.date).day(1);
+                        $log.log("currentDate = " + moment(scope.date).format("DD.MM.YYYY"));
+                        scope.month = moment(scope.date).month();
+                        scope.year = moment(scope.date).year();
+                        recalculate(scope.month + 1);
+                    }
+
                 };
 
 
@@ -428,9 +469,6 @@
                             if (scope.isInTimeSelectMode === false) {
                                 scope.isInTimeSelectMode = true;
 
-                                if (scope.settings.isMinutesEnabled === true) {
-
-                                }
                             }
 
                             var startOfTheDay = moment.unix(timestamp).hours(0).minutes(0).seconds(0).unix();
@@ -506,6 +544,11 @@
 
                 element.on("keydown", function (event) {
                     event.preventDefault();
+                });
+
+                angular.element(angular.element(element).parent()).on("scroll", function () {
+                    $log.log("parent scrolled");
+                    redraw(container);
                 });
             }
         }

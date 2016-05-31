@@ -1,7 +1,7 @@
 @import "ui.less";
 @import "utils.less";
 
-@app-header-height: 100px;
+@app-header-height: 40px;
 @app-header-color: #FFGGLL;
 
 html, body {
@@ -16,9 +16,24 @@ html, body {
   top: 0px;
   right: 0px;
   height: @app-header-height;
-  background: red;
+  background: #0D47A1;
 }
 
 #app-wrapper {
+  position: absolute;
+  top: @app-header-height;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: hidden;
+  border: 1px solid green;
+}
 
+#app-content {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: auto;
 }

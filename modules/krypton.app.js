@@ -30,10 +30,10 @@
         //$log.log("user: ", $session.getCurrentUser());
         $log.log($errors.add(50, "test error"));
 
-        $http.post("serverside/libs/krypton/controllers/appController.php", {action: "test", parameters: {first: 10, second: "secpar"}})
-            .success(function (data) {
-                $log.log(data);
-            });
+        //$http.post("serverside/libs/krypton/controllers/appController.php", {action: "test", parameters: {first: 10, second: "secpar"}})
+        //    .success(function (data) {
+        //        $log.log(data);
+        //    });
 
         $dateTimePicker.open("testInput2");
 

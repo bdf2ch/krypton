@@ -2,7 +2,7 @@
 
     class Sessions {
 
-        private static $current;
+        private static $session;
         private static $user;
 
 
@@ -53,13 +53,13 @@
         /**
         * Производит инициализацию модуля
         **/
-        public function init () {
+        public static function init () {
             global $db_host;
             global $db_user;
             global $db_password;
 
             if (isset($_COOKIE["krypton_session"])) {
-                if (!DBManager::is_connected()) {
+                if (DBManager::is_connected()) {
                     if (!DBManager::connect($db_host, $db_user, $db_password)) {
                         return Errors::push(Errors::ERROR_TYPE_DATABASE, "Sessions -> init: Не удалось установить соединение с БД");
                     } else {
@@ -67,14 +67,14 @@
                             return Errors::push(Errors::ERROR_TYPE_DATABASE, "Sessions -> init: Не удалось выбрать БД");
                         } else {
                             $s = DBManager::select("kr_sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
-                                if ($s == false) {
+                            if ($s == false) {
                                 $token = self::generate_token(32);
                                 DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
                                 $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
-                                self::$current = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                                self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                                 setcookie("krypton_session", $token);
                             } else {
-                                self::$current = new Session(
+                                self::$session = new Session (
                                     $s[0]["user_id"],
                                     $s[0]["token"],
                                     $s[0]["start"],
@@ -82,20 +82,23 @@
                                 );
                             }
 
-                            if (self::$current -> userId != 0) {
-                                $u = UsersModule::getById(self::$current -> userId);
+                            if (self::$session -> userId != 0) {
+                                $u = UsersModule::getById(self::$session -> userId);
                                 if ($u != false) {
                                     self::$user = $u;
                                 }
                             }
+
+                            var_dump(self::getCurrentSession());
                         }
                     }
-                }
+                } else
+                    return Errors::push(ERROR_TYPE_DATABASE, "Sessions -> init: Отсутсвтует соединение с БД");
             } else {
                 $token = self::generate_token(32);
                 DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
                 $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
-                self::$current = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                 setcookie("krypton_session", $token);
             }
             //$this -> setLoaded(true);
@@ -110,7 +113,7 @@
         * Возвращает объект текущей сессии
         **/
         public static function getCurrentSession () {
-           return self::$current;
+           return self::$session;
         }
 
 
@@ -169,8 +172,8 @@
                         if (!DBManager::update_row(self::$id, ["user_id"], [$userId], "token = '$currentSessionToken'")) {
                             return false;
                         } else {
-                            if (self::$current != null)
-                                self::$current -> userId = $userId;
+                            if (self::$session != null)
+                                self::$session -> userId = $userId;
                             return true;
                         }
                     }

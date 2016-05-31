@@ -58,11 +58,19 @@
         /**
         * Производит инициализацию подсистемы
         **/
-        public function init () {
+        public static function init () {
             $settings = DBManager::select("kr_settings", ["*"], "''");
             if ($settings != false) {
                 foreach ($settings as $key => $item) {
-                    $setting = new Setting($item["module_id"], $item["code"], $item["title"], $item["type"], $item["value"], $item["description"], $item["is_system"]);
+                    $setting = new Setting (
+                        $item["module_id"],
+                        $item["code"],
+                        $item["title"],
+                        $item["type"],
+                        $item["value"],
+                        $item["description"],
+                        $item["is_system"]
+                    );
                     array_push(self::$settings, $setting);
                 }
             }
