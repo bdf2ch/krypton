@@ -179,6 +179,11 @@ input[type='submit'].big,
 button.big {
   height: 45px;
 }
+input[type='button'].very-big,
+input[type='submit'].very-big,
+button.very-big {
+  height: 60px;
+}
 /**********
 ** COLORS
 **********/
@@ -217,7 +222,7 @@ button.big {
 }
 .krypton-ui-fog {
   position: fixed;
-  display: none;
+  display: block;
   overflow: hidden;
   top: 0px;
   left: 0px;
@@ -225,16 +230,17 @@ button.big {
   height: 100%;
   right: 0px;
   z-index: 1000;
-  opacity: 1;
+  opacity: 0;
+  visibility: collapse;
   background: rgba(0, 0, 0, 0.2);
+  -webkit-transition: opacity 1s ease;
+  -moz-transition: opacity 1s ease;
+  -o-transition: opacity 1s ease;
+  transition: opacity 1s ease;
 }
 .krypton-ui-fog.visible {
+  visibility: visible;
   opacity: 1;
-  -webkit-filter: blur(3px);
-  -moz-filter: blur(2px);
-  -o-filter: blur(2px);
-  -ms-filter: blur(2px);
-  filter: blur(2px);
 }
 .krypton-ui-date-time-picker {
   position: absolute;
@@ -422,6 +428,10 @@ button.big {
   box-sizing: border-box;
   border-right: 1px solid #E0E0E0;
   border-top: 1px solid #E0E0E0;
+  -webkit-transition: background 0.2s linear;
+  -moz-transition: background 0.2s linear;
+  -o-transition: background 0.2s linear;
+  transition: background 0.2s linear;
 }
 .ui-date-time-picker2 .day:hover {
   background: #F5F5F5;
@@ -447,11 +457,11 @@ button.big {
   position: relative;
   float: left;
   overflow: hidden;
-  width: 25%;
-  height: 64.75px;
+  width: 43.16666667px;
+  height: 43.16666667px;
   font-family: "Roboto Regular";
   font-size: 19px;
-  line-height: 64.75px;
+  line-height: 43.16666667px;
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
@@ -469,6 +479,10 @@ button.big {
 }
 .ui-date-time-picker2.modal .toolbar .control {
   width: 74.57142857px;
+}
+.ui-date-time-picker2.modal .toolbar select {
+  height: 60px;
+  font-size: 22px;
 }
 .ui-date-time-picker2.modal .toolbar .content {
   width: 372.85714286px;
@@ -488,4 +502,11 @@ button.big {
   height: 74.57142857px;
   font-size: 26px;
   line-height: 74.57142857px;
+}
+.ui-date-time-picker2.modal .hour {
+  width: 87px;
+  height: 87px;
+  font-family: "Roboto Regular";
+  font-size: 22px;
+  line-height: 87px;
 }

@@ -17,7 +17,7 @@
 
 .krypton-ui-fog {
   position: fixed;
-  display: none;
+  display: block;
   overflow: hidden;
   top: 0px;
   left: 0px;
@@ -25,16 +25,17 @@
   height: 100%;
   right: 0px;
   z-index: 1000;
-  opacity: 1;
+  opacity: 0;
+  visibility: collapse;
   background: rgba(0, 0, 0, 0.2);
+  -webkit-transition: opacity 1s ease;
+  -moz-transition: opacity 1s ease;
+  -o-transition: opacity 1s ease;
+  transition: opacity 1s ease;
 
   &.visible {
+    visibility: visible;
     opacity: 1;
-    -webkit-filter: blur(3px);
-    -moz-filter: blur(2px);
-    -o-filter: blur(2px);
-    -ms-filter: blur(2px);
-    filter: blur(2px);
   }
 }
 
@@ -261,6 +262,10 @@
     box-sizing: border-box;
     border-right: 1px solid #E0E0E0;
     border-top: 1px solid #E0E0E0;
+    -webkit-transition: background 0.2s linear;
+    -moz-transition: background 0.2s linear;
+    -o-transition: background 0.2s linear;
+    transition: background 0.2s linear;
 
     &:hover {
       background: #F5F5F5;
@@ -297,11 +302,11 @@
     position: relative;
     float: left;
     overflow: hidden;
-    width: 25%;
-    height: @date-time-picker-width / 4;
+    width: @date-time-picker-width / 6;
+    height: @date-time-picker-width / 6;
     font-family: "Roboto Regular";
     font-size: 19px;
-    line-height: @date-time-picker-width / 4;
+    line-height: @date-time-picker-width / 6;
     text-align: center;
     cursor: pointer;
     box-sizing: border-box;
@@ -322,6 +327,11 @@
 
       .control {
         width: @date-time-picker-width-modal / 7;
+      }
+
+      select {
+        height: 60px;
+        font-size: 22px;
       }
 
       .content {
@@ -346,6 +356,14 @@
       height: @date-time-picker-width-modal / 7;
       font-size: 26px;
       line-height: @date-time-picker-width-modal / 7;
+    }
+
+    .hour {
+      width: @date-time-picker-width-modal / 6;
+      height: @date-time-picker-width-modal / 6;
+      font-family: "Roboto Regular";
+      font-size: 22px;
+      line-height: @date-time-picker-width-modal / 6;
     }
 
   }

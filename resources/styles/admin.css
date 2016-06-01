@@ -179,6 +179,11 @@ input[type='submit'].big,
 button.big {
   height: 45px;
 }
+input[type='button'].very-big,
+input[type='submit'].very-big,
+button.very-big {
+  height: 60px;
+}
 /**********
 ** COLORS
 **********/
