@@ -239,21 +239,21 @@
                         "<div class='content'>" +
                             "<select class='width-60 no-border' ng-if='isInTimeSelectMode === false' ng-model='month' ng-options='month[0] as month[1] for month in months'></select>" +
                             "<select class='width-40 no-border' ng-if='isInTimeSelectMode === false' ng-model='year' ng-options='year as year for year in years'></select>" +
-                            "<span class='selected-date width-60' ng-if='isInTimeSelectMode === true'>ffgdfgdfg</span>" +
+                            "<span class='selected-date width-100' ng-if='isInTimeSelectMode === true'>{{ label }}</span>" +
                         "</div>" +
                         "<div class='control'><button class='width-100 blue' ng-class='{ \"very-big\": settings.isModal === true }' ng-click='next()'>&rarr;</button></div>" +
                     "</div>" +
                     "<div class='weekdays'>" +
-                        "<div class='day width-100' ng-if='isInTimeSelectMode'>Выберите время - часы</div>" +
+                        "<div class='day width-100' ng-if='isInTimeSelectMode === true && isInMinutesSelectMode === false'>Выберите время - часы</div>" +
+                        "<div class='day width-100' ng-if='isInTimeSelectMode === true && isInMinutesSelectMode === true'>Выберите время - минуты</div>" +
                         "<div class='day' ng-if='isInTimeSelectMode === false' ng-repeat='weekday in weekdays track by $index'>" +
                             "<span ng-if='settings.isModal === true'>{{ weekday[1] }}</span><span ng-if='settings.isModal === false'>{{ weekday[0] }}</span>" +
                         "</div>" +
                     "</div>" +
-                    "<div class='days-container' style='height:{{ height }};'>" + 
+                    "<div class='days-container'>" +
                         "<div class='day' ng-if='isInTimeSelectMode === false' ng-class='{\"sunday\": ($index + 1) % 7 === 0, \"not-this-month\": day.month() !== month}' ng-repeat='day in days track by $index' ng-click='select(day.unix())'>{{ day.date() }}</div>" +
-                        "<div class='hour' ng-if='isInTimeSelectMode === true' ng-repeat='hour in hours track by $index'>" +
-                            "{{ $index }}"
-                        "</div>" +
+                        "<div class='hour' ng-if='isInTimeSelectMode === true && isInMinutesSelectMode === false' ng-repeat='hour in hours track by $index' ng-click='select(hour)'>{{ $index }}</div>" +
+                        "<div class='minute' ng-if='isInTimeSelectMode === true && isInMinutesSelectMode === true' ng-repeat='minute in minutes track by $index' ng-click='select(minute)'>{{ minute }}</div>" +
                     "</div>";
 
                 var height = 0;
@@ -271,7 +271,19 @@
                     [6, "Июль"], [7, "Август"], [8, "Сентябрь"],
                     [9, "Октябрь"], [10, "Ноябрь"], [11, "Декабрь"]
                 ];
-                var hours = scope.hours = Array(24);
+                var hours = scope.hours = [
+                    [0, "часов"], [1, "час"], [2, "часа"], [3, "часа"],
+                    [4, "0часа"], [5, "часов"], [6, "часов"], [7, "часов"],
+                    [8, "часов"], [9, "часов"], [10, "часов"], [11, "часов"],
+                    [12, "часов"], [13,"часов"], [14, "часов"], [15, "часов"],
+                    [16, "часов"], [17, "часов"], [18, "часов"], [19, "часов"],
+                    [20, "часов"], [21, "час"], [22, "часа"], [23, "часа"]
+                ];
+                var minutes = scope.minutes = [
+                    0, 5, 10, 15,
+                    20, 25, 30, 35,
+                    40, 45, 50, 55
+                ];
                 var dayParts = scope.dayParts = [
                     [1, "До полуночи"],
                     [2, "После полуночи"]
@@ -282,9 +294,10 @@
                 var month = scope.month = moment(value).month();
                 var year = scope.year = moment(value).year();
                 var hour = scope.hour = moment(value).hours();
-                var minutes = scope.minutes = moment(value).minutes();
+                var minute = scope.minute = moment(value).minutes();
                 var years = scope.years = [];
                 var dayPart = scope.dayPart = 1;
+                var label = scope.label = "";
                 for (var i = moment(value).year() - 5; i < moment(value).year() + 5; i++) {
                     years.push(i);
                     if (i === moment(value).year())
@@ -366,27 +379,16 @@
                         var top = 0;
 
                         var parent = element[0].offsetParent;
-                        $log.log("parent = ", parent);
-                        //while (parent !== undefined) {
-                        //    parent = angular.element(parent).parent();
-                        //    containerScrollTop = angular.element(parent).prop("offsetTop");                         
-                        //}
-                        //$log.log(angular.element(element).parent());
-                        //$log.log(angular.element(angular.element(element).parent()).parent());
-
-                        //function position (element) {
-                        //    var top = 0, left = 0, offsetX = 0, offsetY = 0;
-
-                            
-                            while (parent) {
-                                //elementTop = elementTop + parent.offsetTop;
-                                //elementLeft = elementLeft + parent.offsetLeft;
-                                elementScrollLeft = elementScrollLeft + parent.scrollLeft;
-                                elementScrollTop = elementScrollTop + parent.scrollTop;
-                                parent = parent.offsetParent;
-                            }
-                            $log.log("containerTop = ", elementScrollTop);
-                            $log.log("containerLeft = ", elementScrollLeft);
+                        //$log.log("parent = ", parent);
+                        while (parent) {
+                            //elementTop = elementTop + parent.offsetTop;
+                            //elementLeft = elementLeft + parent.offsetLeft;
+                            elementScrollLeft = elementScrollLeft + parent.scrollLeft;
+                            elementScrollTop = elementScrollTop + parent.scrollTop;
+                            parent = parent.offsetParent;
+                        }
+                        //$log.log("containerTop = ", elementScrollTop);
+                        //$log.log("containerLeft = ", elementScrollLeft);
                         
 
                             //return {top: Math.round(top), left: Math.round(left), offsetX: Math.round(offsetX), offsetY: Math.round(offsetY)};
@@ -411,7 +413,14 @@
                         }
                         angular.element(elm).css("left", left);
                         angular.element(elm).css("top", top);
-                        //scope.height = containerHeight - 35 - 20 + "px";
+
+                        if (scope.settings.isModal === true) {
+                            //$log.log("container height = ", containerHeight);
+                            //$log.log("days height = ", containerHeight - 60 - 20 + "px");
+                            scope.height = containerHeight - 80 + "px";
+                        } else
+                            scope.height = containerHeight - 60 + "px";
+
                         return true;
                     } else
                         return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive: Не задан параметр - HTML-элемент");
@@ -462,7 +471,56 @@
                 };
 
 
-                scope.select = function (timestamp) {
+                scope.select = function (value) {
+                    if (value !== undefined) {
+                        $log.log("selected value = ", value);
+
+                        if (scope.settings.isTimeEnabled === true) {
+
+                            if (scope.isInTimeSelectMode === false) {
+                                var temp = moment.unix(value).hours(0).minutes(0).seconds(0);
+                                scope.month = temp.month();
+                                scope.day = temp.date();
+                                scope.hour = 0;
+                                scope.minute = 0;
+                                scope.value.month(scope.month).date(scope.day).hours(0).minutes(0).seconds(0);
+                                scope.ngModel = scope.value.unix();
+                                scope.label = moment(scope.value).format("DD.MM.YYYY");
+                                scope.isInTimeSelectMode = true;
+                                $log.log(scope.value.format("DD.MM.YYYY HH:mm"), scope.value.unix());
+                            } else {
+                                if (scope.isInMinutesSelectMode === false) {
+                                    scope.hour = value[0];
+                                    scope.value.hours(value[0]).minutes(0).seconds(0);
+                                    scope.ngModel = scope.value.unix();
+                                    scope.label = scope.value.format("DD.MM.YYYY, HH:mm") ;
+                                    scope.isInMinutesSelectMode = true;
+                                    $log.log(scope.value.format("DD.MM.YYYY HH:mm"), scope.value.unix());
+                                } else {
+                                    //scope.hour = value[0];
+                                    //moment(scope.value).minutes(value);
+                                    //$log.log(moment(scope.value).format("DD.MM.YYYY HH:mm"));
+                                }
+                            }
+
+                        } else {
+                            var temp = moment.unix(value).hours(0).minutes(0).seconds(0);
+                            scope.month = temp.month();
+                            scope.day = temp.date();
+                            scope.hour = 0;
+                            scope.minute = 0;
+                            scope.value.month(scope.month).date(scope.day).hours(0).minutes(0).seconds(0);
+                            scope.ngModel = scope.value.unix();
+                            $log.log(scope.value.format("DD.MM.YYYY HH:mm"), scope.value.unix());
+                            scope.value = moment(new Date());
+                            scope.close();
+                        }
+
+                    }
+
+
+
+                    /*
                     if (timestamp !== undefined) {
                         $log.log("selected value = ", timestamp);
                         if (scope.settings.isTimeEnabled === true) {
@@ -474,6 +532,7 @@
                             }
                             if (scope.isInTimeSelectMode === false) {
                                 scope.isInTimeSelectMode = true;
+                                scope.label = scope.hour;
 
                             } else {
                                 
@@ -487,6 +546,7 @@
                             scope.ngModel = timestamp;
                         }
                     }
+                    */
                 };
 
 
@@ -494,8 +554,15 @@
                 var container = document.createElement("div");
                 container.setAttribute("id", instance.id);
                 container.className = "ui-date-time-picker2";
-                if (scope.settings.isModal === true)
+                if (scope.settings.isModal === true) {
                     container.classList.add("modal");
+                    var fog = document.getElementsByClassName("krypton-ui-fog");
+                    if (fog.length === 0) {
+                        var fogElement = document.createElement("div");
+                        fogElement.className = "krypton-ui-fog";
+                        document.body.appendChild(fogElement);
+                    }
+                }
                 container.innerHTML = template;
                 document.body.appendChild(container);
                 $compile(container)(scope);
@@ -507,16 +574,7 @@
                     if (scope.settings.isModal === true) {
                         var fog = document.getElementsByClassName("krypton-ui-fog");
                         document.body.style.overflow = "hidden";
-                        if (fog.length === 0) {
-                            var fogElement = document.createElement("div");
-                            fogElement.className = "krypton-ui-fog";
-                            document.body.appendChild(fogElement);
-                            //angular.element(fogElement).css("visibility", "block");
-                            fogElement.classList.add("visible");
-                        } else {
-                            //angular.element(fog[0]).css("display", "block");
-                            fog[0].classList.add("visible");
-                        }
+                        fogElement.classList.add("visible");
                     }
                     angular.element(container).css("display", "block");
                     scope.settings.isOpened = true;
@@ -527,12 +585,14 @@
                 scope.close = function () {
                     if (scope.settings.isModal === true) {
                         var fog = document.getElementsByClassName("krypton-ui-fog");
-                        //angular.element(fog[0]).css("display", "none");
                         fog[0].classList.remove("visible");
                         document.body.style.overflow = "auto";
                     }
                     angular.element(container).css("display", "none");
                     scope.settings.isOpened = false;
+                    scope.isInMinutesSelectMode = false;
+                    scope.isInTimeSelectMode = false;
+                    scope.$apply();
                 };
 
 
@@ -547,7 +607,7 @@
 
 
                 angular.element($document).bind("mousedown", function (event) {
-                    if (scope.settings.isOpened === true && !container.contains(event.target) && event.target !== element[0])
+                    if (scope.settings.isOpened === true && container.contains(event.target) === false && event.target !== element[0])
                         scope.close();
                 });
 

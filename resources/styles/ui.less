@@ -21,20 +21,23 @@
   overflow: hidden;
   top: 0px;
   left: 0px;
-  bottom: 0px;
-  height: 100%;
-  right: 0px;
+  //bottom: 0px;
+  //height: 100%;
+  //right: 0px;
   z-index: 1000;
   opacity: 0;
-  visibility: collapse;
+  //visibility: collapse;
   background: rgba(0, 0, 0, 0.2);
-  -webkit-transition: opacity 1s ease;
-  -moz-transition: opacity 1s ease;
-  -o-transition: opacity 1s ease;
-  transition: opacity 1s ease;
+  -webkit-transition: opacity 0.4s ease;
+  -moz-transition: opacity 0.4s ease;
+  -o-transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease;
+  filter: blur(2px);
 
   &.visible {
-    visibility: visible;
+    //visibility: visible;
+    right: 0px;
+    height: 100%;
     opacity: 1;
   }
 }
@@ -221,6 +224,13 @@
           text-align: center;
         }
       }
+
+      .selected-date {
+        display: block;
+        height: 35px;
+        text-align: center;
+        line-height: 40px;
+      }
     }
 
   }
@@ -286,15 +296,9 @@
   }
 
   .days-container {
-
-    .clock-face {
-      background: #E0F2F1;
-
-      &:hover {
-        background: #E0F2F1;
-      }
-    }
-
+    float: left;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .hour {
@@ -302,7 +306,7 @@
     position: relative;
     float: left;
     overflow: hidden;
-    width: @date-time-picker-width / 6;
+    width: 16.666666666666%;//@date-time-picker-width / 6;
     height: @date-time-picker-width / 6;
     font-family: "Roboto Regular";
     font-size: 19px;
@@ -360,7 +364,7 @@
 
     .hour {
       width: @date-time-picker-width-modal / 6;
-      height: @date-time-picker-width-modal / 6;
+      height: @date-time-picker-width-modal / 5;
       font-family: "Roboto Regular";
       font-size: 22px;
       line-height: @date-time-picker-width-modal / 6;
