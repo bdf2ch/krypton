@@ -251,9 +251,9 @@
                         "</div>" +
                     "</div>" +
                     "<div class='days-container'>" +
-                        "<div class='day' ng-if='isInTimeSelectMode === false' ng-class='{\"sunday\": ($index + 1) % 7 === 0, \"not-this-month\": day.month() !== month}' ng-repeat='day in days track by $index' ng-click='select(day.unix())'>{{ day.date() }}</div>" +
-                        "<div class='hour' ng-if='isInTimeSelectMode === true && isInMinutesSelectMode === false' ng-repeat='hour in hours track by $index' ng-click='select(hour)'>{{ $index }}</div>" +
-                        "<div class='minute' ng-if='isInTimeSelectMode === true && isInMinutesSelectMode === true' ng-repeat='minute in minutes track by $index' ng-click='select(minute)'>{{ minute }}</div>" +
+                        "<div class='day' ng-if='isInTimeSelectMode === false' ng-class='{\"sunday\": ($index + 1) % 7 === 0, \"not-this-month\": day.month() !== month, \"current\": day.date() === now.date() && day.month() === value.month()}' ng-repeat='day in days track by $index' ng-click='select(day.unix())'>{{ day.date() }}</div>" +
+                        "<div class='hour' ng-if='isInTimeSelectMode === true && isInMinutesSelectMode === false' ng-class='{\"current\": value.hours() === hour[0]}' ng-repeat='hour in hours track by $index' ng-click='select(hour)'>{{ $index }}</div>" +
+                        "<div class='minute' ng-if='isInTimeSelectMode === true && isInMinutesSelectMode === true' ng-class='{\"current\": value.minutes() === minute}' ng-repeat='minute in minutes track by $index' ng-click='select(minute)'>{{ minute }}</div>" +
                     "</div>";
 
                 var height = 0;
@@ -288,7 +288,7 @@
                     [1, "До полуночи"],
                     [2, "После полуночи"]
                 ];
-                var now = moment(new Date());
+                var now = scope.now = moment(new Date());
                 var value = scope.value = moment(now);
                 var day = scope.day = moment(value).date();
                 var month = scope.month = moment(value).month();
@@ -359,7 +359,10 @@
                             }
                         }
                     } else
-                        return $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> dateTimePicker directive: Не задан параметр - порядковый номер месяца");
+                        return $errors.add(
+                            ERROR_TYPE_DEFAULT,
+                            "krypton.ui -> dateTimePicker directive: Не задан параметр - порядковый номер месяца"
+                        );
                 };
 
 
@@ -459,6 +462,12 @@
                 scope.next = function () {
                     if (scope.settings.isTimeEnabled === true && scope.isInTimeSelectMode === true) {
                         $log.log("select time");
+                        if (scope.isInMinutesSelectMode === false) {
+                            scope.value.add(1, "hours");
+                        } else {
+                            if (scope.value.minutes() >= 0 && scope.value.minutes() <= 59 )
+                                scope.value.add(5, "minutes");
+                        }
                     } else {
                         scope.date = moment(scope.date).add(1, "months");
                         moment(scope.date).day(1);
@@ -485,7 +494,7 @@
                                 scope.minute = 0;
                                 scope.value.month(scope.month).date(scope.day).hours(0).minutes(0).seconds(0);
                                 scope.ngModel = scope.value.unix();
-                                scope.label = moment(scope.value).format("DD.MM.YYYY");
+                                scope.label = scope.settings.isModal === false ? moment(scope.value).format("DD.MM.YYYY") : scope.value.format("DD MMMM YYYY, ") + scope.value.hours() + " " + scope.hours[scope.hour][1];
                                 scope.isInTimeSelectMode = true;
                                 $log.log(scope.value.format("DD.MM.YYYY HH:mm"), scope.value.unix());
                             } else {
@@ -493,7 +502,7 @@
                                     scope.hour = value[0];
                                     scope.value.hours(value[0]).minutes(0).seconds(0);
                                     scope.ngModel = scope.value.unix();
-                                    scope.label = scope.value.format("DD.MM.YYYY, HH:mm") ;
+                                    scope.label = scope.settings.isModal === false ? scope.value.format("DD.MM.YYYY, HH ") + value[1] : scope.value.format("DD MMMM YYYY, HH ") + value[1];
                                     scope.isInMinutesSelectMode = true;
                                     $log.log(scope.value.format("DD.MM.YYYY HH:mm"), scope.value.unix());
                                 } else {

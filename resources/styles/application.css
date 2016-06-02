@@ -36,11 +36,11 @@
   float: left;
   width: 564px;
   height: 35px;
-  background-image: -moz-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FAFAFA), to(#CFD8DC));
-  background-image: -webkit-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: -o-linear-gradient(top, #FAFAFA, #CFD8DC);
-  background-image: linear-gradient(to bottom, #FAFAFA, #CFD8DC);
+  background-image: -moz-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#cfd8dc));
+  background-image: -webkit-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: -o-linear-gradient(top, #fafafa, #cfd8dc);
+  background-image: linear-gradient(to bottom, #fafafa, #cfd8dc);
 }
 .krypton-ui-date-time-picker .toolbar {
   float: left;
@@ -175,7 +175,7 @@
   display: block;
   height: 35px;
   text-align: center;
-  line-height: 40px;
+  line-height: 35px;
 }
 .ui-date-time-picker2 .weekdays {
   float: left;
@@ -228,6 +228,12 @@
 .ui-date-time-picker2 .day.not-this-month {
   color: #BDBDBD;
 }
+.ui-date-time-picker2 .day.current {
+  background: #FFF3E0;
+}
+.ui-date-time-picker2 .day.current:hover {
+  background: #F5F5F5;
+}
 .ui-date-time-picker2 .days-container {
   float: left;
   width: 100%;
@@ -246,8 +252,39 @@
   text-align: center;
   cursor: pointer;
   box-sizing: border-box;
+  -webkit-transition: background 0.2s linear;
+  -moz-transition: background 0.2s linear;
+  -o-transition: background 0.2s linear;
+  transition: background 0.2s linear;
 }
 .ui-date-time-picker2 .hour:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2 .hour.current {
+  background: #FFF3E0;
+}
+.ui-date-time-picker2 .hour.current:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2 .minute {
+  float: left;
+  width: 64.75px;
+  height: 33.33333%;
+  cursor: pointer;
+  border: 1px solid red;
+  box-sizing: border-box;
+  -webkit-transition: background 0.2s linear;
+  -moz-transition: background 0.2s linear;
+  -o-transition: background 0.2s linear;
+  transition: background 0.2s linear;
+}
+.ui-date-time-picker2 .minute:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2 .minute.current {
+  background: #FFF3E0;
+}
+.ui-date-time-picker2 .minute.current:hover {
   background: #F5F5F5;
 }
 .ui-date-time-picker2.modal {
@@ -267,6 +304,10 @@
 }
 .ui-date-time-picker2.modal .toolbar .content {
   width: 372.85714286px;
+}
+.ui-date-time-picker2.modal .toolbar .content .selected-date {
+  font-size: 24px;
+  line-height: 60px;
 }
 .ui-date-time-picker2.modal .weekdays {
   width: 522px;
