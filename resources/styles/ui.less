@@ -43,138 +43,6 @@
 }
 
 
-.krypton-ui-date-time-picker {
-  position: absolute;
-  display: none;
-  overflow: auto;
-  width: @ui-date-time-picker-width;
-  height: auto;
-  box-sizing: border-box;
-  z-index: 2;
-  background: white;
-  border: 1px solid lightgray;
-  .box-shadow(1px, 1px, 15px, 1px, rgba(0, 0, 0, 0.2));
-
-  .header {
-    float: left;
-    width: @ui-date-time-picker-width-modal;
-    height: @ui-calendar-day-height - 5;
-    .gradient(#FAFAFA, #CFD8DC);
-  }
-
-  .toolbar {
-    float: left;
-    width: 100%;
-    height: 35px;
-    box-sizing: border-box;
-    //border: 1px solid black;
-  }
-
-  .weekdays {
-    float: left;
-    overflow: hidden;
-    width: @ui-date-time-picker-width;
-    height: 20px;
-    //line-height: 15px;
-    text-transform: uppercase;
-    color: darkgray;
-    box-sizing: border-box;
-  }
-
-  .day {
-    display: block;
-    float: left;
-    width: @ui-date-time-picker-day-width;
-    height: @ui-calendar-day-height;
-    padding: 5px;
-    text-align: center;
-    font-size: 26px;
-    line-height: @ui-calendar-day-height - 10;
-    cursor: pointer;
-    background: #F5F5F5;
-    box-sizing: border-box;
-    border-right: 1px solid #E0E0E0;
-    border-top: 1px solid #E0E0E0;
-
-    
-    &:hover {
-      background: #E0E0E0;
-    }
-
-    &.weekday {
-      font-size: 12px;
-      line-height: @ui-calendar-day-height - 28;
-      color: #004D40;
-      background: #D1C4E9;
-      cursor: default;
-      border-right: none;
-    }
-
-    &.weekend {
-      background: #FFEBEE !important;
-      border-right: none;
-      
-      &:hover {
-        background: #EF9A9A !important;
-      }
-    }
-  }
-
-
-
-
-  &.modal {
-    width: @ui-date-time-picker-width-modal;
-    border: none;
-
-    .toolbar {
-      float: left;
-      overflow: hidden;
-      height: 45px;
-      box-sizing: border-box;
-    }
-
-    .weekdays {
-      width: @ui-date-time-picker-width-modal;
-      height: 25px;
-    }
-
-    .day {
-      display: block;
-      float: left;
-      width: @ui-date-time-picker-day-width-modal;
-      height: @ui-calendar-day-height-modal;
-      padding: 5px;
-      text-align: center;
-      line-height: @ui-calendar-day-height-modal - 10;
-      cursor: pointer;
-      background: #F5F5F5;
-      box-sizing: border-box;
-
-      &:hover {
-        background: #E0E0E0;
-      }
-
-
-      &.weekday {
-        font-size: 10px;
-        line-height: 18px;
-        background: #E0F2F1;
-      }
-
-      &.weekend {
-        //background: #FFCDD2 !important;
-
-        &:hover {
-          background: #FFCDD2 !important;
-        }
-      }
-    }
-  }
-}
-
-
-
 
 @date-time-picker-width: 259px;
 @date-time-picker-width-modal: 522px;
@@ -314,14 +182,17 @@
     position: relative;
     float: left;
     overflow: hidden;
-    width: 16.666666666666%;//@date-time-picker-width / 6;
-    height: @date-time-picker-width / 6;
+    width: @date-time-picker-width / 6;
+    height: 25%;
     font-family: "Roboto Regular";
     font-size: 19px;
-    line-height: @date-time-picker-width / 6;
+    //line-height: 250px;
     text-align: center;
+    //vertical-align: middle;
     cursor: pointer;
     box-sizing: border-box;
+    border-right: 1px solid #E0E0E0;
+    border-top: 1px solid #E0E0E0;
     -webkit-transition: background 0.2s linear;
     -moz-transition: background 0.2s linear;
     -o-transition: background 0.2s linear;
@@ -342,12 +213,19 @@
   }
 
   .minute {
+    display: inline-block;
+    position: relative;
     float: left;
+    overflow: hidden;
     width: @date-time-picker-width / 4;
     height: 33.33333%;
+    text-align: center;
+    font-size: 19px;
+    line-height: @date-time-picker-width / 3;
     cursor: pointer;
-    border: 1px solid red;
     box-sizing: border-box;
+    border-right: 1px solid #E0E0E0;
+    border-top: 1px solid #E0E0E0;
     -webkit-transition: background 0.2s linear;
     -moz-transition: background 0.2s linear;
     -o-transition: background 0.2s linear;
@@ -356,6 +234,10 @@
     &:hover {
       background: #F5F5F5;
     }
+
+    //&:nth-last-of-type {
+    //  border-left: none;
+    //}
 
     &.current {
       background: #FFF3E0;
@@ -414,10 +296,20 @@
 
     .hour {
       width: @date-time-picker-width-modal / 6;
-      height: @date-time-picker-width-modal / 5;
+      height: 25%;
       font-family: "Roboto Regular";
       font-size: 22px;
       line-height: @date-time-picker-width-modal / 6;
+    }
+
+    .minute {
+      width: 25%;
+      height: 33.333333333333333333333333%;
+      font-size: 24px;
+      line-height: @date-time-picker-width-modal / 4 - 10px;
+      box-sizing: border-box;
+      border-right: 1px solid #E0E0E0;
+      border-top: 1px solid #E0E0E0;
     }
 
   }
