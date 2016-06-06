@@ -19,37 +19,16 @@
 
 
     <div id="app-header">
-
+        <a href="#" class="menu-item active">Главная</a>
+        <a href="#" class="menu-item">Документы</a>
+        <a href="#" class="menu-item">Телефонный справочник</a>
+        <a href="#" class="menu-item">Система учета заявок</a>
+        <a href="#" class="menu-item right" ng-cloak>{{ session.getCurrentUser().name.value + " " + session.getCurrentUser().surname.value }}</a>
     </div>
     <div id="app-wrapper">
 
-        <div id="app-content">
-            <br><br><br><br> <br><br><br><br> <br><br><br><br> <br><br><br><br>
-            <input type="text"
-                   style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
-                   id="testInput"
-                   ui-date-time-picker
-                   date-time-picker-enable-time="true"
-                   ng-model="test">
+        <div id="app-content" ng-view>
 
-
-            <br><br><br><br> <br><br><br><br> <br><br><br><br>
-            <input type="text"
-                   style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
-                   id="testInput2"
-                   ui-date-time-picker
-                   date-time-picker-modal="true"
-                   date-time-picker-through-navigation="true"
-                   date-time-picker-enable-time="true"
-                   ng-model="test2">
-
-
-            <br><br><br><br> <br><br><br><br> <br><br><br><br>
-            <input type="button"
-                   style="display: block; margin-left: auto; margin-right: auto; width: 200px;"
-                   id="testInput3"
-                   ui-date-time-picker
-                   ng-model="test2">
         </div>
 
     </div>

@@ -16,7 +16,34 @@ html, body {
   top: 0px;
   right: 0px;
   height: @app-header-height;
-  background: #0D47A1;
+  background: #1976D2;
+
+  .menu-item {
+    float: left;
+    height: @app-header-height;
+    padding: 5px 15px;
+    font-family: "Roboto Regular";
+    font-size: 16px;
+    line-height: 32px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: white;
+    box-sizing: border-box;
+    //border-bottom: 0px solid transparent;
+    //transition: border-bottom 0.2s linear;
+    transition: background 0.2s linear;
+
+    &:hover {
+      background: #1565C0;
+      //border-bottom: 3px solid #90CAF9;
+    }
+    
+    &.active {
+      background: #0D47A1;
+      font-weight: bold;
+      //border-bottom: none !important;
+    }
+  }
 }
 
 #app-wrapper {
@@ -26,7 +53,7 @@ html, body {
   right: 0px;
   bottom: 0px;
   overflow: hidden;
-  border: 1px solid green;
+  //border: 1px solid green;
 }
 
 #app-content {

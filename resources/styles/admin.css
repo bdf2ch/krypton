@@ -38,7 +38,7 @@
   float: left;
 }
 .right {
-  float: right;
+  float: right !important;
 }
 .center {
   margin-left: auto;

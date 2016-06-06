@@ -280,7 +280,7 @@
   float: left;
 }
 .right {
-  float: right;
+  float: right !important;
 }
 .center {
   margin-left: auto;
@@ -474,7 +474,27 @@ body {
   top: 0px;
   right: 0px;
   height: 40px;
+  background: #1976D2;
+}
+#app-header .menu-item {
+  float: left;
+  height: 40px;
+  padding: 5px 15px;
+  font-family: "Roboto Regular";
+  font-size: 16px;
+  line-height: 32px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: white;
+  box-sizing: border-box;
+  transition: background 0.2s linear;
+}
+#app-header .menu-item:hover {
+  background: #1565C0;
+}
+#app-header .menu-item.active {
   background: #0D47A1;
+  font-weight: bold;
 }
 #app-wrapper {
   position: absolute;
@@ -483,7 +503,6 @@ body {
   right: 0px;
   bottom: 0px;
   overflow: hidden;
-  border: 1px solid green;
 }
 #app-content {
   position: absolute;

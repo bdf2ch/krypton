@@ -958,12 +958,20 @@ function Field (parameters) {
      * $navigation
      * Сервис управления навигацией и меню приложения
      */
-    function navigationFactory () {
+    function navigationFactory ($log, $errors, $classes, $factory, $routeProvider) {
+        $classes.add("Menu", {
+            __dependencies__: [],
+            id: ""
+        });
 
         var items = [];
 
         return {
-
+            add: function (path, templateUrl, controller) {
+                $routeProvider(path, {
+                    templateUrl: templateUrl
+                });
+            }
         }
     };
 
@@ -997,10 +1005,16 @@ function Field (parameters) {
             id: new Field({ source: "id", type: "integer", value: 0, default_value: 0, backupable: true}),
             name: new Field({ source: "name", type: "string", value: "", default_value: "", backupable: true }),
             fname: new Field({ source: "fname", type: "string", value: "", default_value: "", backupable: true }),
+            surname: new Field({ source: "surname", type: "string", value: "", default_value: "", backupable: true }),
             position: new Field({ source: "position", type: "string", value: "", default_value: "", backupable: true }),
             email: new Field({ source: "email", type: "string", value: "", default_value: "", backupable: true }),
             phone: new Field({ source: "phone", type: "string", value: "", default_value: "", backupable: true }),
-            isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true })
+            isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true }),
+            fio: "",
+            
+            _init_: function () {
+                this.fio = this.name.value + " " + this.surname.value;
+            }
         });
 
         var session = $factory({ classes: ["Session", "Model"], base_class: "Session" });
@@ -1055,10 +1069,11 @@ function Field (parameters) {
     /********************
      * Запуск основного модуля библиотеки
      ********************/
-    function kryptonRun ($log, $settings, $session) {
+    function kryptonRun ($log, $settings, $session, $rootScope) {
         $log.log("krypton run...");
         $session.init();
         $settings.init();
+        $rootScope.session = $session;
     };
 
 

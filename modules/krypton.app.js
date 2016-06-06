@@ -16,7 +16,7 @@
 
 
 
-    function kryptonAppRun ($log, $classes, $http, $errors, $dateTimePicker) {
+    function kryptonAppRun ($log, $classes, $http, $routeProvider, $errors, $dateTimePicker) {
         $log.log("krypton.app run...");
         moment.locale("ru");
 
@@ -50,8 +50,9 @@
 
 
 
-    function testController ($scope, $dateTimePicker) {
+    function testController ($scope, $dateTimePicker, $session) {
         $scope.test = 1464249736;
+        $scope.session = $session;
 
         $scope.test2 = 1463086800;
         /*
