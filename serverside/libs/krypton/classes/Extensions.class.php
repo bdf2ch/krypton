@@ -21,7 +21,7 @@
                     array_push(Krypton::$extensions, $extensionTitle);
                     $extension = new $extensionTitle();
                     var_dump($extension);
-                    $extensionItem = new Extension($extension -> $id, $extension -> $description, $extension -> $clientSideExtensionUrl);
+                    $extensionItem = new Extension($extension -> id, $extension -> description, $extension -> clientSideExtensionUrl);
                     var_dump($extensionItem);
                     array_push(self::$items, $extensionItem);
                     $extension::init();

@@ -4,8 +4,7 @@
 
         public $id = "kr_ldap";
         public $description = "LDAP description";
-        public $clientSideExtensionUrl = "";
-
+        public $clientSideExtensionUrl = "dsfsdf";
 
         /**
         * Производит установку модуля в системе

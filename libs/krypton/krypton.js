@@ -1043,6 +1043,7 @@ function Field (parameters) {
                         $log.log("updated session = ", session);
                     }
                     if (krypton.user !== null) {
+                        $log.log("USER !== NULL");
                         user._model_.fromAnother(krypton.user);
                         $log.log("updated user = ", user);
                     }
