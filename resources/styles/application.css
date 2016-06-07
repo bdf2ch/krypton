@@ -289,10 +289,11 @@
 /**********
 ** GRID
 **********/
-.row-container .row {
+.row {
+  overflow: auto;
   box-sizing: border-box;
 }
-.row-container .row.split-5 {
+.row.bottom-split-5 {
   margin-bottom: 5px;
 }
 /**********
@@ -363,10 +364,10 @@
 .padding-10 {
   padding: 10px;
 }
-.split-top-5 {
+.margin-top-5 {
   margin-top: 5px;
 }
-.split-bottom-5 {
+.margin-bottom-5 {
   margin-bottom: 5px;
 }
 /**********

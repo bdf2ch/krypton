@@ -1,8 +1,11 @@
 <?php
 
-    class LDAPModule extends Module {
+    class LDAP extends ExtensionInterface {
 
-        private static $id = "kr_ldap";
+        public $id = "kr_ldap";
+        public $description = "LDAP description";
+        public $clientSideExtensionUrl = "";
+
 
         /**
         * Производит установку модуля в системе
@@ -42,7 +45,7 @@
         /**
         * Производит инициализацию модуля
         **/
-        public function init () {
+        public static function init () {
             //echo("LDAP module init");
             //self::login("kolu0897", "zx12!@#$");
         }

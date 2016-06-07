@@ -79,9 +79,10 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         private $inConstructionMode;
         private $template;
 
-        public $modules;
         public static $settings;
         public $db;
+
+        public static $extensions = array();
 
 
         function __construct($title, $description, $dbType) {
@@ -91,9 +92,6 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             global $db_password;
 
             session_start();
-            $this -> modules = new ModuleManager();
-            //var_dump(session_name());
-
             if ($title == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Не задан параметр - наименование приложения");
                 return false;
@@ -148,9 +146,11 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             Sessions::init();
 
             $this -> template = new XTemplate($template_url);
+            $this -> template -> assign("EXTENSIONS", json_encode(Extensions::getAll()));
             $this -> template -> assign("CURRENT_SESSION", json_encode(Sessions::getCurrentSession()));
             $this -> template -> assign("CURRENT_USER", json_encode(Sessions::getCurrentUser()));
             $this -> template -> assign("SETTINGS", json_encode(Settings::getAll()));
+            $this -> template -> assign("ERRORS", json_encode(Errors::getAll()));
             $this -> template -> parse("main");
             $this -> template -> out("main");
         }

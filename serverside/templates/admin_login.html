@@ -4,21 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Авторизация</title>
-    <link rel="stylesheet" href="resources/styles/admin.css">
+    <link rel="stylesheet" href="../resources/styles/admin.css">
 </head>
 <body>
-    <script src="libs/angularjs/angular.min.js"></script>
+    <script src="../libs/angularjs/angular.min.js"></script>
 
-    <div id="admin-login" class="row" ng-controller="KryptonAdminLoginController" ng-cloak="">
+    <div id="admin-login" ng-controller="KryptonAdminLoginController" ng-cloak>
         <!-- Форма авторизации в административной панели -->
-        <form id="admin-login-form" class="row-container">
+        <form id="admin-login-form">
             <div class="row">
 
             </div>
+
             <div class="row padding-10">
                 <label for="user-name">Имя пользователя</label>
                 <input type="text" id="user-name" name="user-name" class="width-100" placeholder="Имя пользователя" ng-model="userName">
             </div>
+
             <div class="row padding-10" ng-show="remindPasswordMode() === false">
                 <label for="user-password">
                     Пароль
@@ -26,6 +28,7 @@
                 </label>
                 <input type="password" id="user-password" name="user-password" class="width-100" placeholder="Пароль" ng-model="password">
             </div>
+
             <div class="row padding-10">
                 <button type="submit" class="width-100 green" ng-show="remindPasswordMode() === false" ng-click="login()">Войти</button>
                 <button type="submit" class="width-100 split-top-5 green" ng-show="remindPasswordMode() === true && isPasswordSent === false" ng-click="remindPassword()">Получить новый пароль</button>
@@ -33,25 +36,26 @@
             </div>
 
             <!-- Ошибки -->
-            <div class="row padding-10 light-red" ng-show="errors.length > 0">
-            <span ng-repeat="error in errors">
-                {{ error }}</br>
-            </span>
+            <div class="padding-10 light-red" ng-show="errors.length > 0">
+                <span ng-repeat="error in errors">
+                    {{ error }}</br>
+                </span>
             </div>
+
             <!-- Оповещение об успешной отправке пароля -->
             <div class="row light-green">
                 <div class="row padding-10">
                     Новый пароль отправлен на Ваш e-mail
                 </div>
             </div>
+
         </form>
 
     </div>
 
 
-    <script src="libs/krypton/krypton.js"></script>
-    <script src="libs/krypton/krypton.session.js"></script>
-    <script src="modules/krypton.admin.login.js"></script>
+    <script src="../libs/krypton/krypton.js"></script>
+    <script src="../modules/krypton.admin.login.js"></script>
 </body>
 </html>
 <!-- END: main -->

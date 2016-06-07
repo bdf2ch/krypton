@@ -1,8 +1,10 @@
 <?php
 
-    class UsersModule extends Module {
+    class Users extends ExtensionInterface {
 
-        private static $id = "kr_users";
+        public $id = "kr_users";
+        public $description = "Users description";
+        public $clientSideExtensionUrl = "";
         private static $users = array();
 
 
@@ -48,7 +50,7 @@
         /**
         * Производит инициализацию модуля
         **/
-        public function init () {
+        public static function init () {
             //self::add("ЛОЛ", "ЛОЛОВИЧ", "ЛОЛОВ", "ЛОЛОВИК", "lolov@kolenergo.ru", "111-333", "lolka", true);
         }
 

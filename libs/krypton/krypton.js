@@ -897,6 +897,20 @@ function Field (parameters) {
                     items.push(tempError);
                     return false;
                 }
+            },
+
+            init: function () {
+                if (window.krypton !== undefined && window.krypton !== null) {
+                    if (window.krypton.errors !== undefined) {
+                        var length = window.krypton.errors.length;
+                        for (var i =0; i < length; i++) {
+                            var error = $factory({ classes: ["Error", "Model"], base_class: "Error" });
+                            error._model_.fromAnother(window.krypton.errors[i]);
+                            items.push(error);
+                            $log.error(error.message.value);
+                        }
+                    }
+                }
             }
         }
     };
@@ -933,7 +947,7 @@ function Field (parameters) {
         return {
 
             init: function () {
-                if (krypton !== null && krypton !== undefined) {
+                if (window.krypton !== null && window.krypton !== undefined) {
                     if (krypton.settings !== null) {
                         var length = krypton.settings.length;
                         for (var i = 0; i < length; i++) {
@@ -1023,7 +1037,7 @@ function Field (parameters) {
         return {
 
             init: function () {
-                if (krypton !== undefined && krypton !== null) {
+                if (window.krypton !== undefined && window.krypton !== null) {
                     if (krypton.session !== null) {
                         session._model_.fromAnother(krypton.session);
                         $log.log("updated session = ", session);
@@ -1069,11 +1083,11 @@ function Field (parameters) {
     /********************
      * Запуск основного модуля библиотеки
      ********************/
-    function kryptonRun ($log, $settings, $session, $rootScope) {
+    function kryptonRun ($log, $errors, $settings, $session, $rootScope) {
         $log.log("krypton run...");
+        $errors.init();
         $session.init();
         $settings.init();
-        $rootScope.session = $session;
     };
 
 

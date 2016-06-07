@@ -83,7 +83,7 @@
                             }
 
                             if (self::$session -> userId != 0) {
-                                $u = UsersModule::getById(self::$session -> userId);
+                                $u = Users::getById(self::$session -> userId);
                                 if ($u != false) {
                                     self::$user = $u;
                                 }
@@ -132,7 +132,7 @@
                     Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> setCurrentUserById: Неверно задан тип параметра - идентификатор пользователя");
                     return false;
                 } else {
-                    $user = UsersModule::getById($id);
+                    $user = Users::getById($id);
                     if (!$user) {
                         Errors::push(Errors::Error_TYPE_ENGINE, "Session -> setCurrentUserById: пользователь с идентификатором ".$id." не найден");
                         return false;

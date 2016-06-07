@@ -1,14 +1,17 @@
 <?php
 
-    abstract class Module {
-        private $id;
-        private $description;
+    abstract class ExtensionInterface {
+        public $id;
+        public $description;
+        public $clientSideExtensionUrl;
         private static $isModuleInstalled = false;
         private static $isModuleLoaded = false;
 
-        public function __construct() {}
 
-        abstract public function init();
+        public function __construct() {
+        }
+
+        abstract public static function init();
         abstract public static function install();
         abstract public static function isInstalled();
 

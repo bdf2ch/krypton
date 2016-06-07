@@ -8,34 +8,43 @@
             "ngRoute",
             "ngCookies",
             "krypton",
-            "krypton.ui"]
+            "krypton.ui",
+            "krypton.app.news",
+            "krypton.app.telephones"]
         )
         .factory("$application", applicationFactory)
         .controller("testController", testController)
+        .config(function ($routeProvider) {
+            $routeProvider
+                .when("/phones", {
+                    templateUrl: "templates/app/telephones.html",
+                    controller: "TelephonesController"
+                })
+                .otherwise({
+                    templateUrl: "templates/app/news.html",
+                    controller: "NewsController"
+                });
+        })
         .run(kryptonAppRun);
 
 
 
-    function kryptonAppRun ($log, $classes, $http, $routeProvider, $errors, $dateTimePicker) {
+
+
+    function kryptonAppRun ($log, $classes, $http, $errors, $dateTimePicker) {
         $log.log("krypton.app run...");
         moment.locale("ru");
 
-        if (krypton !== undefined) {
+
+
+        if (krypton !== undefined)
             $log.info(krypton);
-            //$session.setCurrentSession(krypton.session);
-            //$session.setCurrentUser(krypton.user);
-        }
-        
-        //$log.log("session: ", $session.getCurrentSession());
-        //$log.log("user: ", $session.getCurrentUser());
-        $log.log($errors.add(50, "test error"));
+
 
         //$http.post("serverside/libs/krypton/controllers/appController.php", {action: "test", parameters: {first: 10, second: "secpar"}})
         //    .success(function (data) {
         //        $log.log(data);
         //    });
-
-        $dateTimePicker.open("testInput2");
 
 
 
