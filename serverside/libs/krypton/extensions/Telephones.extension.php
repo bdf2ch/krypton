@@ -14,8 +14,8 @@
         public static function isInstalled () {}
 
         public static function init () {
-            if ($clientSideExtensionUrl != null && $clientSideExtensionUrl != "") {
-                if (gettype($this -> clientSideExtensionUrl) != "string") {
+            if (self::$clientSideExtensionUrl != null && self::$clientSideExtensionUrl != "") {
+                if (gettype(self::$clientSideExtensionUrl) != "string") {
                     Errors::push(Errors::ERROR_TYPE_DEFAULT, "Telephones -> init: Неверно задан тип переменной - url модуля клиентской части приложения");
                 } else {
 

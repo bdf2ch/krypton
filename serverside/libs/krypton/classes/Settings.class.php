@@ -59,7 +59,6 @@
         **/
         public static function init () {
             $settings = DBManager::select("kr_settings", ["*"], "''");
-            //var_dump($settings);
             if ($settings != false) {
                 foreach ($settings as $key => $item) {
                     $setting = new Setting (
@@ -74,7 +73,6 @@
                     array_push(self::$items, $setting);
                 }
             }
-            var_dump(self::$items);
         }
 
 
@@ -166,12 +164,13 @@
                     } else {
                         $settingFound = false;
                         $settingIndex = 0;
-                        $oldValue;
+                        $oldValue = "";
+                        $newValue = "";
+
                         foreach (self::$items as $key => $setting) {
                             if ($setting -> code == $settingCode) {
                                 $settingFound = true;
                                 $settingIndex = $key;
-                                $newValue = "";
                                 $oldValue = $setting -> value;
                                 switch ($setting -> dataType) {
                                     case Krypton::DATA_TYPE_INTEGER:
@@ -179,33 +178,38 @@
                                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> setByCode: Тип значения настройки не соответствует типу данных настройки");
                                             return false;
                                         } else {
-                                            $setting -> value = intval($settingValue);
-                                            $newValue = intval($settingValue);
+                                            $setting -> value = $settingValue;
+                                            $newValue = $settingValue;
                                         }
                                         break;
                                     case Krypton::DATA_TYPE_STRING:
                                         if (gettype($settingValue) != "string") {
                                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> setByCode: Тип значения настройки не соответствует типу данных настройки");
                                             return false;
-                                        } else
+                                        } else {
                                             $setting -> value = $settingValue;
+                                            $newValue = "'".$settingValue."'";
+                                        }
                                         break;
                                     case Krypton::DATA_TYPE_FLOAT:
                                         if (gettype($settingValue) != "double") {
                                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> setByCode: Тип значения настройки не соответствует типу данных настройки");
                                             return false;
-                                        } else
-                                            $setting -> value = floatval($settingValue);
+                                        } else {
+                                            $setting -> value = $settingValue;
+                                            $newValue = $settingValue;
+                                        }
                                         break;
                                     case Krypton::DATA_TYPE_BOOLEAN:
                                         if (gettype($settingValue) != "boolean") {
                                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> setByCode: Тип значения настройки не соответствует типу данных настройки");
                                             return false;
-                                        } else
-                                            $setting -> value = boolval($settingValue);
+                                        } else {
+                                            $setting -> value = $settingValue;
+                                            $newValue = intval($settingValue);
+                                        }
                                         break;
                                 }
-                                $newValue = $setting -> value;
                             }
                         }
 

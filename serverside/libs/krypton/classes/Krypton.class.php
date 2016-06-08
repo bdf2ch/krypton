@@ -113,16 +113,16 @@ if (!defined("ENGINE_INSTALL_MODE")) {
                     } else {
                         self::$info = self::getAppInfo();
                         if (self::$info != false) {
-                            if ($appInfo["title"] != $title) {
+                            if (self::$info["title"] != $title) {
                                 Settings::setByCode("app_title", $title);
+                                self::setTitle($title);
                             }
-                            if ($appInfo["description"] != $description) {
+                            if (self::$info["description"] != $description) {
                                 Settings::setByCode("app_description", $description);
                             }
                         }
                         self::$title = $title;
                         self::$description = $description;
-
                     }
                 }
             }
@@ -167,6 +167,26 @@ if (!defined("ENGINE_INSTALL_MODE")) {
         }
 
 
+        public static function setTitle ($title) {
+            if ($title == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> setTitle: Не задан параметр - наименование приложения");
+                return false;
+            } else {
+                if (gettype($title) != "string") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> setTitle: Неверно задан тип параметра - наименование приложения");
+                    return false;
+                } else {
+                    DBManager::update("kr_app_info", ["title"], ["'".$title."'"], "");
+                }
+            }
+        }
+
+
+        public static function setDescription ($description) {
+
+        }
+
+
 
         public static function getDBType () {
             return self::$dbType;
@@ -186,6 +206,7 @@ if (!defined("ENGINE_INSTALL_MODE")) {
             //echo("libs = ".Extensions::getClientSideExtensions()."</br>");
 
             $this -> template = new XTemplate($template_url);
+            $this -> template -> assign("APPLICATION_TITLE", Krypton::$title);
             $this -> template -> assign("APPLICATION", json_encode(self::getAppInfo()));
             $this -> template -> assign("EXTENSIONS", json_encode(Extensions::getAll()));
             $this -> template -> assign("CURRENT_SESSION", json_encode(Sessions::getCurrentSession()));

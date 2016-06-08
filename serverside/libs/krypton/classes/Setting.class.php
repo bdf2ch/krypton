@@ -89,7 +89,7 @@
                                                                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Setting -> __construct: Тип значения настройки не соответствует типу данных настройки");
                                                                 return false;
                                                             } else
-                                                                $this -> value = $value;
+                                                                $this -> value = strval($value);
                                                             break;
                                                         case Krypton::DATA_TYPE_BOOLEAN:
                                                             if (gettype(boolval($value)) != "boolean") {

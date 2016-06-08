@@ -40,8 +40,8 @@
                                             return false;
                                         } else {
                                             self::$link = $link;
-                                            $encoding = mysql_query("SET NAMES utf-8");
-                                            if (!encoding) {
+                                            $encoding = mysql_query("SET NAMES utf8");
+                                            if (!$encoding) {
                                                 Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> connect: Не удалось установить кодировку соединения с БД - ".mysql_errno()." - ".mysql_error());
                                             }
                                             return $link;
