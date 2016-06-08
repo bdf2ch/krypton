@@ -2,9 +2,9 @@
 
     class Users extends ExtensionInterface {
 
-        public $id = "kr_users";
-        public $description = "Users description";
-        public $clientSideExtensionUrl = "";
+        public static $id = "kr_users";
+        public static $description = "Users description";
+        public static $clientSideExtensionUrl = "";
         private static $users = array();
 
 
@@ -13,23 +13,26 @@
         **/
         public static function install () {
             if (!DBManager::is_table_exists(self::$id)) {
-                echo("no users table</br>");
                 if (DBManager::create_table(self::$id)) {
                     if (
-                        DBManager::add_column_mysql(self::$id, "name", "varchar(200) NOT NULL") &&
-                        DBManager::add_column_mysql(self::$id, "surname", "varchar(200) NOT NULL") &&
-                        DBManager::add_column_mysql(self::$id, "fname", "varchar(200)") &&
-                        DBManager::add_column_mysql(self::$id, "email", "varchar(200) NOT NULL") &&
-                        DBManager::add_column_mysql(self::$id, "phone", "varchar(100)") &&
-                        DBManager::add_column_mysql(self::$id, "position", "varchar(500)") &&
-                        DBManager::add_column_mysql(self::$id, "password", "varchar(60) NOT NULL default ''") &&
-                        DBManager::add_column_mysql(self::$id, "is_admin", "int(11) NOT NULL default 0")
-                    )
-                        echo("Установка модуля Krypton.Users выполнена успешно</br>");
-                    else
-                        echo("Не удалось выполнить установку модуля Krypton.Users</br>");
-                } else
-                    echo("Не удалось выполнить установку модуля Krypton.Users</br>");
+                        DBManager::add_column(self::$id, "name", "varchar(200) NOT NULL") &&
+                        DBManager::add_column(self::$id, "surname", "varchar(200) NOT NULL") &&
+                        DBManager::add_column(self::$id, "fname", "varchar(200) default ''") &&
+                        DBManager::add_column(self::$id, "email", "varchar(200) NOT NULL") &&
+                        DBManager::add_column(self::$id, "phone", "varchar(100) default ''") &&
+                        DBManager::add_column(self::$id, "position", "varchar(500) default ''") &&
+                        DBManager::add_column(self::$id, "password", "varchar(60) NOT NULL default ''") &&
+                        DBManager::add_column(self::$id, "is_admin", "int(11) NOT NULL default 0")
+                    ) {
+                        return true;
+                    } else {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать структуру таблицы с информацией о пользователях");
+                        return false;
+                    }
+                } else {
+                    Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать таблицу с информацией о пользователях");
+                    return false;
+                }
             }
         }
 
@@ -51,6 +54,10 @@
         * Производит инициализацию модуля
         **/
         public static function init () {
+            if (self::isInstalled() == true) {
+
+            } else
+                self::install();
             //self::add("ЛОЛ", "ЛОЛОВИЧ", "ЛОЛОВ", "ЛОЛОВИК", "lolov@kolenergo.ru", "111-333", "lolka", true);
         }
 

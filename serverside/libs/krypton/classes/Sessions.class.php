@@ -18,7 +18,7 @@
                         DBManager::add_column("kr_sessions", "start", "int(11) NOT NULL default 0") &&
                         DBManager::add_column("kr_sessions", "end", "int(11) NOT NULL default 0")
                     ) {
-                        if (Settings::add("'krypton'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", "'integer'", 2000, 1))
+                        if (Settings::add("'krypton'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", Krypton::DATA_TYPE_INTEGER, 2000, 1))
                             return true;
                         else {
                             Errors::push(Errors::Error_TYPE_ENGINE, "Session -> install: Не удалось добавить настройку");
@@ -42,11 +42,11 @@
         * Проверяет, установлен ли модуль в системе
         **/
         //public static function isInstalled () {
-        //    if (DBManager::is_table_exists(self::$id))
+        //    if (DBManager::is_table_exists("kr_sessions"))
         //        return true;
         //    else
         //        return false;
-       // }
+        //}
 
 
 
@@ -57,6 +57,8 @@
             global $db_host;
             global $db_user;
             global $db_password;
+
+            //echo("</br>sessions init called</br>");
 
             if (isset($_COOKIE["krypton_session"])) {
                 if (DBManager::is_connected()) {
@@ -89,7 +91,7 @@
                                 }
                             }
 
-                            var_dump(self::getCurrentSession());
+                            //var_dump(self::getCurrentSession());
                         }
                     }
                 } else

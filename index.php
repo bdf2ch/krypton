@@ -9,6 +9,7 @@
     Extensions::load("Users");
     Extensions::load("LDAP");
     Extensions::load("Telephones");
+    Extensions::load("News");
     $app -> start();
 
 

@@ -447,7 +447,8 @@
                                                         // echo("</br></br>colsAndVals: ".$colsAndVals."</br>");
                                                         $query = mysql_query("UPDATE $table SET $colsAndVals", DBManager::$link);
                                                         if ($query == false) {
-                                                            Errors::push_generic_mysql();
+                                                            //Errors::push_generic_mysql();
+                                                            Errors::push(Errors::ERROR_TYPE_DATABASE, "DBManager -> update: ".mysql_errno().": ".mysql_error());
                                                             return false;
                                                         } else {
                                                             return true;

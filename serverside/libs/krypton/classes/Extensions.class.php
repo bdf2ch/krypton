@@ -4,9 +4,11 @@
         private static $items = array();
 
 
+
         public static function getAll () {
             return self::$items;
         }
+
 
 
         public static function load ($extensionTitle) {
@@ -20,14 +22,24 @@
                 } else {
                     array_push(Krypton::$extensions, $extensionTitle);
                     $extension = new $extensionTitle();
-                    var_dump($extension);
-                    $extensionItem = new Extension($extension -> id, $extension -> description, $extension -> clientSideExtensionUrl);
-                    var_dump($extensionItem);
+                    $extensionItem = new Extension($extension::$id, $extension::$description, $extension ::$clientSideExtensionUrl);
                     array_push(self::$items, $extensionItem);
                     $extension::init();
                     return true;
                 }
             }
+        }
+
+
+
+        public static function getClientSideExtensions () {
+            $extensions = "";
+            for ($i = 0; $i < sizeof(self::$items); $i++) {
+                if (self::$items[$i] -> clientSideExtensionUrl != null && self::$items[$i]  -> clientSideExtensionUrl != "") {
+                    $extensions .= "<script src='".self::$items[$i] -> clientSideExtensionUrl."'></script>\n";
+                }
+            }
+            return $extensions;
         }
 
     };

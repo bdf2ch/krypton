@@ -1,8 +1,7 @@
 <?php
 
     class Settings {
-
-        private static $settings = array();
+        private static $items = array();
 
 
         /**
@@ -15,14 +14,14 @@
                         DBManager::add_column("kr_settings", "code", "varchar(200) NOT NULL default ''") &&
                         DBManager::add_column("kr_settings", "title", "varchar(200) NOT NULL") &&
                         DBManager::add_column("kr_settings", "description", "varchar(200) default ''") &&
-                        DBManager::add_column("kr_settings", "type", "varchar(100) NOT NULL") &&
-                        DBManager::add_column("kr_settings", "value", "varchar(500)") &&
+                        DBManager::add_column("kr_settings", "type", "int(11) NOT NULL default 2") &&
+                        DBManager::add_column("kr_settings", "value", "varchar(500) NOT NULL default ''") &&
                         DBManager::add_column("kr_settings", "is_system", "int(11) NOT NULL default 1")
                     ) {
-                        if (Settings::add("'krypton'", "'app_title'", "'Наименование приложения'", "''", "'string'", "''", 1) &&
-                            Settings::add("'krypton'", "'app_description'", "'описание приложения'", "''", "'string'", "''", 1) &&
-                            Settings::add("'krypton'", "'app_debug_mode'", "'Режим отладки'", "'Приложение находится в режиме отладки'", "'boolean'", 0, 1) &&
-                            Settings::add("'krypton'", "'app_construction_mode'", "'Сервисный режим'", "'Приложение находится в сервисном режиме'", "'boolean'", 0, 1)
+                        if (Settings::add("'krypton'", "'app_title'", "'Наименование приложения'", "''", Krypton::DATA_TYPE_STRING, "''", 1) &&
+                            Settings::add("'krypton'", "'app_description'", "'Описание приложения'", "''", Krypton::DATA_TYPE_STRING, "''", 1) &&
+                            Settings::add("'krypton'", "'app_debug_mode'", "'Режим отладки'", "'Приложение находится в режиме отладки'", Krypton::DATA_TYPE_BOOLEAN, 0, 1) &&
+                            Settings::add("'krypton'", "'app_construction_mode'", "'Сервисный режим'", "'Приложение находится в сервисном режиме'", Krypton::DATA_TYPE_BOOLEAN, 0, 1)
                         )
                             return true;
                         else {
@@ -47,12 +46,12 @@
         * Проверяет, установлен ли модуль в системе
         **/
 
-        /*public static function isInstalled () {
-            if (DBManager::is_table_exists(self::$id))
-                return true;
-            else
-                return false;
-        }*/
+        //public static function isInstalled () {
+        //    if (DBManager::is_table_exists("kr_settings"))
+        //        return true;
+        //    else
+        //        return false;
+        //}
 
 
         /**
@@ -60,20 +59,22 @@
         **/
         public static function init () {
             $settings = DBManager::select("kr_settings", ["*"], "''");
+            //var_dump($settings);
             if ($settings != false) {
                 foreach ($settings as $key => $item) {
                     $setting = new Setting (
                         $item["module_id"],
                         $item["code"],
                         $item["title"],
-                        $item["type"],
+                        intval($item["type"]),
                         $item["value"],
                         $item["description"],
                         $item["is_system"]
                     );
-                    array_push(self::$settings, $setting);
+                    array_push(self::$items, $setting);
                 }
             }
+            var_dump(self::$items);
         }
 
 
@@ -82,7 +83,7 @@
         * Возвращает все настройки системы
         **/
         public static function getAll () {
-            return self::$settings;
+            return self::$items;
         }
 
 
@@ -99,14 +100,23 @@
         **/
         public static function add ($moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem) {
             if (!DBManager::insert_row (
-                    self::$id,
+                    "kr_settings",
                     ["module_id", "code", "title", "description", "type", "value", "is_system"],
                     [$moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem]
             )) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> add: Не удалось добавить настройку в систему");
                 return false;
             } else {
-                $setting = new Setting($moduleTitle, $settingCode, $settingTitle, $settingDataType, $settingValue, $settingDescription, $settingIsSystem);
+                $setting = new Setting(
+                    $moduleTitle,
+                    $settingCode,
+                    $settingTitle,
+                    $settingDataType,
+                    $settingValue,
+                    $settingDescription,
+                    $settingIsSystem
+                );
+                array_push(self::$items, $setting);
                 return true;
             }
         }
@@ -126,9 +136,9 @@
                     Errors::push(Errors::ERROR_TYE_DEFAULT, "Settings -> getByCode: Неверно задан тип параметра - код настройки");
                     return false;
                 } else {
-                    foreach (self::$settings as $key => $setting) {
+                    foreach (self::$items as $key => $setting) {
                         if ($setting -> code == $settingCode)
-                            return self::$settings[$key] -> value;
+                            return self::$items[$key] -> value;
                     }
                 }
             }
@@ -157,18 +167,21 @@
                         $settingFound = false;
                         $settingIndex = 0;
                         $oldValue;
-                        foreach (self::$settings as $key => $setting) {
+                        foreach (self::$items as $key => $setting) {
                             if ($setting -> code == $settingCode) {
                                 $settingFound = true;
                                 $settingIndex = $key;
+                                $newValue = "";
                                 $oldValue = $setting -> value;
                                 switch ($setting -> dataType) {
                                     case Krypton::DATA_TYPE_INTEGER:
                                         if (gettype($settingValue) != "integer") {
                                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> setByCode: Тип значения настройки не соответствует типу данных настройки");
                                             return false;
-                                        } else
+                                        } else {
                                             $setting -> value = intval($settingValue);
+                                            $newValue = intval($settingValue);
+                                        }
                                         break;
                                     case Krypton::DATA_TYPE_STRING:
                                         if (gettype($settingValue) != "string") {
@@ -192,6 +205,7 @@
                                             $setting -> value = boolval($settingValue);
                                         break;
                                 }
+                                $newValue = $setting -> value;
                             }
                         }
 
@@ -199,9 +213,9 @@
                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> setByCode: Настройка с кодом '".$settingCode."' не найдена");
                             return false;
                         } else {
-                            if (!DBManager::update_row("settings", ["value"], [$setting -> value], "code = '$settingCode'")) {
+                            if (!DBManager::update("kr_settings", ["value"], [$newValue], "code = '$settingCode'")) {
                                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> setByCode: Не удалось установить значение настройки");
-                                self::$settings[$settingIndex] -> value = $oldValue;
+                                self::$items[$settingIndex] -> value = $oldValue;
                                 return false;
                             } else
                                 return true;

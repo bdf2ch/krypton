@@ -1,9 +1,9 @@
 <?php
 
     abstract class ExtensionInterface {
-        public $id;
-        public $description;
-        public $clientSideExtensionUrl;
+        public static $id;
+        public static $description;
+        public static $clientSideExtensionUrl;
         private static $isModuleInstalled = false;
         private static $isModuleLoaded = false;
 

@@ -12,17 +12,19 @@
             "krypton.app.news",
             "krypton.app.telephones"]
         )
-        .factory("$application", applicationFactory)
         .controller("testController", testController)
         .config(function ($routeProvider) {
             $routeProvider
+                .when("/", {
+                    templateUrl: "templates/app/news.html",
+                    controller: "NewsController"
+                })
                 .when("/phones", {
                     templateUrl: "templates/app/telephones.html",
                     controller: "TelephonesController"
                 })
                 .otherwise({
-                    templateUrl: "templates/app/news.html",
-                    controller: "NewsController"
+                    redirectTo: "/"
                 });
         })
         .run(kryptonAppRun);
@@ -50,11 +52,6 @@
 
     };
 
-
-
-    function applicationFactory () {
-
-    };
 
 
 

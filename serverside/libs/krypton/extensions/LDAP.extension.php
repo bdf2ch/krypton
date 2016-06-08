@@ -2,9 +2,9 @@
 
     class LDAP extends ExtensionInterface {
 
-        public $id = "kr_ldap";
-        public $description = "LDAP description";
-        public $clientSideExtensionUrl = "dsfsdf";
+        public static $id = "kr_ldap";
+        public static $description = "LDAP description";
+        public static $clientSideExtensionUrl = "";
 
         /**
         * Производит установку модуля в системе
@@ -15,16 +15,20 @@
                     if (DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0") &&
                         DBManager::add_column(self::$id, "enabled", "int(11) NOT NULL default 1")
                     ) {
-                        if (Settings::isInstalled()) {
-                            if (Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", "'string'", "''", 1))
-                                echo("Модуль Krypton.LDAP успешно установлен</br>");
+                        if (Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", Krypton::DATA_TYPE_STRING, "''", 1)) {
+                            return true;
+                        } else {
+                            Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить настройку");
+                            return false;
                         }
+                    } else {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось создать структуру таблицы с информацией об LDAP");
+                        return false;
                     }
-                        //echo("Модуль Krypton.LDAP успешно установлен</br>");
-                    else
-                        echo("Не удалось выполнить установку модуля Krypton.LDAP</br>");
-                } else
-                    echo("Не удалось выполнить установку модуля Krypton.LDAP</br>");
+                } else {
+                    Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалочь создать таблицу с информацией об LDAP");
+                    return false;
+                }
             }
         }
 
@@ -47,6 +51,10 @@
         public static function init () {
             //echo("LDAP module init");
             //self::login("kolu0897", "zx12!@#$");
+            if (self::isInstalled() == true) {
+
+            } else
+                self::install();
         }
 
 

@@ -49,6 +49,7 @@ function Field (parameters) {
         .factory("$errors", errorsFactory)
         .factory("$settings", settingsFactory)
         .factory("$navigation", navigationFactory)
+        .factory("$extensions", extensionsFactory)
         .factory("$session", sessionFactory)
         .factory("$application", applicationFactory);
 
@@ -191,13 +192,13 @@ function Field (parameters) {
                             //console.log("prop = ", another_prop);
                             //console.log("prop constructor = ", obj[another_prop].constructor);
                             if (this.__instance__[another_prop].constructor === Field) {
-                                if (obj[another_prop].constructor === Field)
+                                if (obj[another_prop] !== null && obj[another_prop].constructor === Field)
                                     this.__instance__[another_prop].value = obj[another_prop].value;
                                 else
                                     this.__instance__[another_prop].value = obj[another_prop];
 
                             } else {
-                                if (obj[another_prop].constructor === Field)
+                                if (obj[another_prop] !== null && obj[another_prop].constructor === Field)
                                     this.__instance__[another_prop] = obj[another_prop].value;
                                 else
                                     this.__instance__[another_prop] = obj[another_prop];
@@ -948,11 +949,11 @@ function Field (parameters) {
 
             init: function () {
                 if (window.krypton !== null && window.krypton !== undefined) {
-                    if (krypton.settings !== null) {
-                        var length = krypton.settings.length;
+                    if (window.krypton.settings !== null) {
+                        var length = window.krypton.settings.length;
                         for (var i = 0; i < length; i++) {
                             var setting = $factory({ classes: ["Setting", "Model"], base_class: "Setting" });
-                            setting._model_.fromAnother(krypton.settings[i]);
+                            setting._model_.fromAnother(window.krypton.settings[i]);
                             items.push(setting);
                         }
                         $log.log("settings = ", items);
@@ -986,6 +987,44 @@ function Field (parameters) {
                     templateUrl: templateUrl
                 });
             }
+        }
+    };
+
+
+    /**
+     * $extensions
+     * Сеовис управления загруженными расширениями
+     */
+    function extensionsFactory ($log, $classes, $factory) {
+
+        $classes.add("Extension", {
+            __dependencies__: [],
+            id: new Field({ source: "id", type: "string", value: "", default_value: "" }),
+            description: new Field({ source: "description", type: "string", value: "", default_value: "" }),
+            url: new Field({ source: "url", type: "string", value: "", default_value: "" })
+        });
+
+        var items = [];
+
+        return {
+            init: function () {
+                if (window.krypton !== null && window.krypton !== undefined) {
+                    if (window.krypton.extensions !== null && window.krypton.extensions !== undefined) {
+                        var length = window.krypton.exyensions.length;
+                        for (var i = 0; i < length; i++) {
+                            var extension = $factory({ classes: ["Extension", "Model"], base_class: "Extension" });
+                            extension._model_.fromAnother(window.krypron.extensions[i]);
+                            items.push(extension);
+                        }
+                    }
+                }
+            },
+
+            getAll: function () {
+                return items;
+            }
+
+
         }
     };
 
@@ -1075,8 +1114,35 @@ function Field (parameters) {
      * $application
      * Сервис приложения
      ******************************/
-    function applicationFactory () {
+    function applicationFactory ($log, $classes, $factory) {
+        /**
+         * Application
+         * Набор свойств и метлодов, описывающих приложение
+         */
+        $classes.add("Application", {
+            __dependencies__: [],
+            title: new Field({ source: "title", type: "string", value: "", default_value: "", back: true }),
+            description: new Field({ source: "description", type: "string", value: "", default_value: "", backupable: true }),
+            inDebugMode: new Field({ source: "is_in_debug_mode", type: "boolean", value: false, default_value: false, backupable: true }),
+            inConstructionMode: new Field({ source: "is_in_construction_mode", type: "boolean", value: false, default_value: false, backupable: true })
+        });
 
+        var app = $factory({ classes: ["Application", "Model", "States", "Backup"], base_class: "Application" });
+
+        return {
+            init: function () {
+                if (window.krypton !== null && window.krypton !== undefined) {
+                    if (window.krypton.application !== null && window.krypton.application !== undefined) {
+                        app._model_.fromJSON(window.krypton.application);
+                        app._backup_.setup();
+                    }
+                }
+            },
+
+            get: function () {
+                return app;
+            }
+        }
     };
 
 
@@ -1084,8 +1150,9 @@ function Field (parameters) {
     /********************
      * Запуск основного модуля библиотеки
      ********************/
-    function kryptonRun ($log, $errors, $settings, $session, $rootScope) {
+    function kryptonRun ($log, $application, $errors, $settings, $session) {
         $log.log("krypton run...");
+        $application.init();
         $errors.init();
         $session.init();
         $settings.init();
