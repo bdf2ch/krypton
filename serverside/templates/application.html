@@ -3,7 +3,7 @@
 <html lang="en" ng-app="krypton.app">
 <head>
     <meta charset="UTF-8">
-    <title>{APPLICATION_TITILE}</title>
+    <title>{APPLICATION_TITLE}</title>
     <link type="text/css" rel="stylesheet" href="resources/styles/application.css">
 </head>
 <body ng-controller="testController">
@@ -14,7 +14,8 @@
             session: {CURRENT_SESSION},
             user: {CURRENT_USER},
             settings: {SETTINGS},
-            errors: {ERRORS}
+            errors: {ERRORS},
+            users: {USERS}
         };
         console.log(krypton);
     </script>
@@ -26,7 +27,7 @@
         <a href="#" class="menu-item">Документы</a>
         <a href="#" class="menu-item">Телефонный справочник</a>
         <a href="#" class="menu-item">Система учета заявок</a>
-        <a href="#" class="menu-item right" ng-if="session.getCurrentSession().userId.value !== 0" ng-cloak>{{ session.getCurrentUser().name.value + " " + session.getCurrentUser().surname.value }}</a>
+        <a href="#" class="menu-item right" ng-if="session.getCurrentSession().userId.value !== 0">Личный кабинет</a>
         <a href="#" class="menu-item right" ng-if="session.getCurrentSession().userId.value === 0">Войти</a>
     </div>
     <div id="app-wrapper">
@@ -49,6 +50,7 @@
 
 
     {CLIENT_SIDE_EXTENSIONS}
+    <script src="modules/app/krypton.app.users.js"></script>
     <script src="modules/app/krypton.app.js"></script>
 </body>
 </html>

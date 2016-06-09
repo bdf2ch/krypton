@@ -205,6 +205,11 @@ function Field (parameters) {
                             }
                         }
                     }
+                    if (this.__instance__["onInitModel"] !== undefined) {
+                        if (this.__instance__["onInitModel"].constructor === Function) {
+                            this.__instance__.onInitModel();
+                        }
+                    }
                 },
 
 
@@ -1065,8 +1070,9 @@ function Field (parameters) {
             isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true }),
             fio: "",
             
-            _init_: function () {
-                this.fio = this.name.value + " " + this.surname.value;
+            onInitModel: function () {
+                this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
+                this.search = this.fio + " " + this.email.value;
             }
         });
 
@@ -1133,8 +1139,9 @@ function Field (parameters) {
             init: function () {
                 if (window.krypton !== null && window.krypton !== undefined) {
                     if (window.krypton.application !== null && window.krypton.application !== undefined) {
-                        app._model_.fromJSON(window.krypton.application);
+                        app._model_.fromAnother(window.krypton.application);
                         app._backup_.setup();
+                        $log.log("app = ", app);
                     }
                 }
             },

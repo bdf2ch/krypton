@@ -277,14 +277,15 @@
 ** BLOCK FLOAT
 **********/
 .left {
-  float: left;
+  float: left !important;
 }
 .right {
   float: right !important;
 }
 .center {
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  float: none !important;
 }
 /**********
 ** GRID
@@ -306,6 +307,10 @@
 .width-90 {
   float: left;
   width: 90%;
+}
+.width-80 {
+  float: left;
+  width: 80%;
 }
 .width-70 {
   float: left;
@@ -364,6 +369,9 @@
 .padding-10 {
   padding: 10px;
 }
+.padding-20 {
+  padding: 20px;
+}
 .margin-top-5 {
   margin-top: 5px;
 }
@@ -374,6 +382,7 @@
 ** FORMS
 **********/
 input {
+  display: block;
   font-family: "Roboto Regular";
   font-size: 18px;
   border: 1px solid lightgrey;
@@ -512,4 +521,46 @@ body {
   right: 0px;
   bottom: 0px;
   overflow: auto;
+}
+/********** TELEPHONES **********/
+#telephones-search-box {
+  padding-top: 30px;
+}
+.nothing-found {
+  padding-top: 50px;
+  font-size: 18px;
+  color: #BDBDBD;
+}
+.telephones-user {
+  margin-bottom: 25px;
+}
+.telephones-user .user-photo {
+  display: block;
+  float: left;
+  width: 120px;
+  height: 150px;
+  margin-right: 20px;
+  border: 1px solid lightgray;
+}
+.telephones-user .user-info .fio {
+  font-size: 25px;
+}
+.telephones-user .user-info .position {
+  font-size: 18px;
+  color: #1A237E;
+}
+.telephones-user .user-info .phones {
+  margin-top: 10px;
+  color: black;
+}
+.telephones-user .user-info .phones .phone {
+  font-size: 18px;
+  color: #263238;
+}
+/********** ACCOUNT **********/
+#user-account .account-user-photo img {
+  display: block;
+  height: 350px;
+  margin-bottom: 10px;
+  border: 1px solid lightgray;
 }

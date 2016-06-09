@@ -171,7 +171,7 @@
                         return false;
                     } else {
                         $currentSessionToken = self::getCurrentSession() -> token;
-                        if (!DBManager::update_row(self::$id, ["user_id"], [$userId], "token = '$currentSessionToken'")) {
+                        if (!DBManager::update("kr_sessions", ["user_id"], [$userId], "token = '$currentSessionToken'")) {
                             return false;
                         } else {
                             if (self::$session != null)
@@ -198,15 +198,58 @@
                         Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> login: Не задан параметр - пароль");
                         return false;
                     } else {
-                        if (gettype($password) != "string") {
+                        if (gettype(strval($password)) != "string") {
                             Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> login: Неверно задан тип параметра - пароль");
                             return false;
                         } else {
 
-                            if (LDAPModule::isInstalled() == true) {
+
+                            if (LDAP::isInstalled()) {
+
                                 if (self::getCurrentUser() != null) {
-                                    if(LDAPModule::isLDAPEnabled(self::getCurrentUser() -> id) == true) {
-                                        var_dump(LDAPModule::login($login, $password));
+                                    //echo("current user is not null");
+                                } else {
+                                    $ADUser = LDAP::login($login, $password);
+                                    var_dump($ADUser);
+                                    if ($ADUser != false) {
+
+
+                                            $isUserExists = Users::getByEmail($ADUser -> email);
+                                            if ($isUserExists == false) {
+                                                $addedUser = Users::add(
+                                                    $ADUser -> name,
+                                                    $ADUser -> fname,
+                                                    $ADUser -> surname,
+                                                    $ADUser -> position,
+                                                    $ADUser -> email,
+                                                    $ADUser -> phone,
+                                                    $password,
+                                                    false
+                                                );
+                                                if ($addedUser != false) {
+                                                    self::setCurrentUserById($addedUser);
+                                                    self::assignCurrentSessionToUser($addedUser);
+                                                    $newUser = Users::getById($addedUser);
+                                                    array_push(self::$items, $newUser);
+                                                }
+
+                                            }
+
+
+
+                                    }
+                                }
+
+                            } else {
+
+                            }
+
+
+                            /*
+                            if (LDAP::isInstalled() == true) {
+                                if (self::getCurrentUser() != null) {
+                                    if(LDAP::isLDAPEnabled(self::getCurrentUser() -> id) == true) {
+                                        var_dump(LDAP::login($login, $password));
                                     } else {
                                         echo("LDAP is disabled for user id=".self::getCurrentUser() -> id."</br>");
                                     }
@@ -214,25 +257,26 @@
                                     echo("current user is null");
                                 }
 
-                                /***** Если модуль Krypton.LDAP установлен *****/
+
 
                             } else {
                                  echo("LDAP not installed</br>");
-                                /***** Если модуль Krypton.LDAP не установлен *****/
+
                                 $encodedPassword = md5($password);
                                 $user = DBManager::select("kr_users", ["*"], "email = '$login' AND password = '$encodedPassword' LIMIT 1");
                                 var_dump($user);
 
                                 if ($user != false) {
-                                    /**** Пользователь найден *****/
+
                                     $currentSessionToken = self::getCurrentSession() -> token;
-                                    DBManager::update_row(self::$id, ["user_id"], [intval($user[0]["id"])]);
+                                    DBManager::update(self::$id, ["user_id"], [intval($user[0]["id"]), "token = "."'".$currentSessionToken."'"]);
                                     var_dump($user);
                                 } else {
-                                    /***** Пользователь не найден *****/
+
                                     echo(json_encode("Нет такого пользователя: ".$login.", ".$password));
                                 }
-                            }
+
+                            }*/
                         }
                     }
                 }

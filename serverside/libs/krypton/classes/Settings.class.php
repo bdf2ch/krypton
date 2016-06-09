@@ -158,8 +158,8 @@
                     Errors::push(Errors::ERROR_TYE_DEFAULT, "Settings -> setByCode: Неверно задан тип параметра - кодл настройки");
                     return false;
                 } else {
-                    if ($settingValue == null) {
-                        Errors::push(Errors::ERROR_TYE_DEFAULT, "Settings -> setByCode: Не задан параметр - значение настройки");
+                    if ($settingValue == null && gettype($settingValue) != "boolean") {
+                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Settings -> setByCode: Не задан параметр - значение настройки");
                         return false;
                     } else {
                         $settingFound = false;

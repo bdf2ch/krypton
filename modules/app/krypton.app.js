@@ -9,6 +9,7 @@
             "ngCookies",
             "krypton",
             "krypton.ui",
+            "krypton.app.users",
             "krypton.app.news",
             "krypton.app.telephones"]
         )
@@ -22,6 +23,10 @@
                 .when("/phones", {
                     templateUrl: "templates/app/telephones.html",
                     controller: "TelephonesController"
+                })
+                .when("/account", {
+                    templateUrl: "templates/app/account.html",
+                    controller: "UserAccountController"
                 })
                 .otherwise({
                     redirectTo: "/"

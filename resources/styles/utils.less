@@ -74,7 +74,7 @@
 **********/
 
 .left {
-  float: left;
+  float: left !important;
 }
 
 .right {
@@ -82,8 +82,9 @@
 }
 
 .center {
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  float: none !important;
 }
 
 
@@ -118,6 +119,11 @@
 .width-90 {
   float: left;
   width: 90%;
+}
+
+.width-80 {
+  float: left;
+  width: 80%;
 }
 
 .width-70 {
@@ -193,6 +199,10 @@
   padding: 10px;
 }
 
+.padding-20 {
+  padding: 20px;
+}
+
 .margin-top-5 {
   margin-top: 5px;
 }
@@ -208,6 +218,7 @@
 **********/
 
 input {
+  display: block;
   font-family: "Roboto Regular";
   font-size: 18px;
   border: 1px solid @ui-border-color;

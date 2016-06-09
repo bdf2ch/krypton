@@ -7,6 +7,7 @@
         const ERROR_TYPE_LDAP = 4;
 
         public static $errors = array();
+        private static $lastError;
 
 
 
@@ -41,6 +42,7 @@
                             return false;
                         } else {
                             $error = new Error($type, $message);
+                            self::$lastError = $error;
                             array_push(Errors::$errors, $error);
                             $error -> send();
                             return $error;
@@ -70,10 +72,15 @@
                 die("Errors -> isError: Не задан параметр - объект для проверки");
             } else {
                 if (gettype($error) != "object")
-                    die("Errors -> isError: Неверно задан тип параметра - объект дял проверки");
+                    return false;
                 else
                     return get_class($error) == "Error" ? true : false;
             }
+        }
+
+
+        public static function getLastError () {
+            return self::$lastError;
         }
 
     };

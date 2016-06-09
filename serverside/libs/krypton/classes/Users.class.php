@@ -1,28 +1,28 @@
 <?php
 
-    class Users extends ExtensionInterface {
+    class Users {
 
-        public static $id = "kr_users";
+        //public static $id = "kr_users";
         public static $description = "Users description";
-        public static $clientSideExtensionUrl = "";
-        private static $users = array();
+        public static $clientSideExtensionUrl = "modules/app/krypton.app.users.js";
+        private static $items = array();
 
 
         /**
         * Производит установку модуля в системе
         **/
         public static function install () {
-            if (!DBManager::is_table_exists(self::$id)) {
-                if (DBManager::create_table(self::$id)) {
+            if (!DBManager::is_table_exists("kr_users")) {
+                if (DBManager::create_table("kr_users")) {
                     if (
-                        DBManager::add_column(self::$id, "name", "varchar(200) NOT NULL") &&
-                        DBManager::add_column(self::$id, "surname", "varchar(200) NOT NULL") &&
-                        DBManager::add_column(self::$id, "fname", "varchar(200) default ''") &&
-                        DBManager::add_column(self::$id, "email", "varchar(200) NOT NULL") &&
-                        DBManager::add_column(self::$id, "phone", "varchar(100) default ''") &&
-                        DBManager::add_column(self::$id, "position", "varchar(500) default ''") &&
-                        DBManager::add_column(self::$id, "password", "varchar(60) NOT NULL default ''") &&
-                        DBManager::add_column(self::$id, "is_admin", "int(11) NOT NULL default 0")
+                        DBManager::add_column("kr_users", "name", "varchar(200) NOT NULL") &&
+                        DBManager::add_column("kr_users", "surname", "varchar(200) NOT NULL") &&
+                        DBManager::add_column("kr_users", "fname", "varchar(200) default ''") &&
+                        DBManager::add_column("kr_users", "email", "varchar(200) NOT NULL") &&
+                        DBManager::add_column("kr_users", "phone", "varchar(100) default ''") &&
+                        DBManager::add_column("kr_users", "position", "varchar(500) default ''") &&
+                        DBManager::add_column("kr_users", "password", "varchar(60) NOT NULL default ''") &&
+                        DBManager::add_column("kr_users", "is_admin", "int(11) NOT NULL default 0")
                     ) {
                         return true;
                     } else {
@@ -41,12 +41,14 @@
         /**
         * Проверяет, установлен ли модуль в системе
         **/
+        /*
         public static function isInstalled () {
-            if (DBManager::is_table_exists(self::$id))
+            if (DBManager::is_table_exists("kr_users"))
                 return true;
             else
                 return false;
         }
+        */
 
 
 
@@ -54,11 +56,29 @@
         * Производит инициализацию модуля
         **/
         public static function init () {
-            if (self::isInstalled() == true) {
-
-            } else
-                self::install();
             //self::add("ЛОЛ", "ЛОЛОВИЧ", "ЛОЛОВ", "ЛОЛОВИК", "lolov@kolenergo.ru", "111-333", "lolka", true);
+            $users = DBManager::select("kr_users", ["*"], "''");
+            if ($users != false) {
+                foreach ($users as $key => $item) {
+                    $user = new User (
+                        intval($item["id"]),
+                        $item["surname"],
+                        $item["name"],
+                        $item["fname"],
+                        $item["position"],
+                        $item["email"],
+                        $item["phone"],
+                        boolval($item["is_admin"])
+                    );
+                    array_push(self::$items, $user);
+                }
+            }
+        }
+
+
+
+        public static function getAll () {
+            return self::$items;
         }
 
 
@@ -131,9 +151,9 @@
                                                                             Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - является ли пользователь администратором");
                                                                             return false;
                                                                         } else {
-                                                                            if (self::isInstalled() == true) {
+                                                                            //if (self::isInstalled() == true) {
                                                                                 $result = DBManager::insert_row(
-                                                                                    self::$id,
+                                                                                    "kr_users",
                                                                                     ["name", "surname", "fname", "email", "phone", "position", "password", "is_admin"],
                                                                                     ["'".$name."'", "'".$surname."'", "'".$fname."'", "'".$email."'", "'".$phone."'", "'".$position."'", "'".md5($password)."'", intval($isAdmin)]
                                                                                 );
@@ -144,7 +164,7 @@
                                                                                     $id = mysql_insert_id();
                                                                                     return $id != null && $id != 0 ? $id : false;
                                                                                 }
-                                                                            }
+                                                                            //}
                                                                         }
                                                                     }
                                                                 }
@@ -212,7 +232,7 @@
                     Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getByEmail: Неверно задан типа параметра - email пользователя");
                     return false;
                 } else {
-                    $user = DBManager::select(self::$id, ["*"], "email = '$email' LIMIT 1");
+                    $user = DBManager::select("kr_users", ["*"], "email = '$email' LIMIT 1");
                     return $user;
                 }
             }

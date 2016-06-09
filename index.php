@@ -5,8 +5,8 @@
 
 
     /*** Создание и инициализация нового приложения Krypton ***/
-    $app = new Krypton("test app", "test app description", Krypton::DB_TYPE_MYSQL);
-    Extensions::load("Users");
+    $app = new Krypton("tezt application", "tezt application description", Krypton::DB_TYPE_MYSQL);
+    //Extensions::load("Users");
     Extensions::load("LDAP");
     Extensions::load("Telephones");
     Extensions::load("News");

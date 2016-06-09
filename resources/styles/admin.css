@@ -35,14 +35,15 @@
 ** BLOCK FLOAT
 **********/
 .left {
-  float: left;
+  float: left !important;
 }
 .right {
   float: right !important;
 }
 .center {
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  float: none !important;
 }
 /**********
 ** GRID
@@ -64,6 +65,10 @@
 .width-90 {
   float: left;
   width: 90%;
+}
+.width-80 {
+  float: left;
+  width: 80%;
 }
 .width-70 {
   float: left;
@@ -122,6 +127,9 @@
 .padding-10 {
   padding: 10px;
 }
+.padding-20 {
+  padding: 20px;
+}
 .margin-top-5 {
   margin-top: 5px;
 }
@@ -132,6 +140,7 @@
 ** FORMS
 **********/
 input {
+  display: block;
   font-family: "Roboto Regular";
   font-size: 18px;
   border: 1px solid lightgrey;
@@ -254,11 +263,11 @@ body label {
   min-width: 1200px;
   box-sizing: border-box;
   border-bottom: 1px solid #d4d4d4;
-  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
 }
 #app-header #app-logo {
   position: relative;

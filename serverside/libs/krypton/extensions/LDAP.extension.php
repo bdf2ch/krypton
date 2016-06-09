@@ -37,10 +37,7 @@
         * Проверяет, установлен ли модуль в системе
         **/
         public static function isInstalled () {
-            if (DBManager::is_table_exists(self::$id))
-                return true;
-            else
-                return false;
+            return DBManager::is_table_exists(self::$id);
         }
 
 
@@ -49,8 +46,7 @@
         * Производит инициализацию модуля
         **/
         public static function init () {
-            //echo("LDAP module init");
-            //self::login("kolu0897", "zx12!@#$");
+            //var_dump(self::login("kolu0897", "zx12!@#$"));
             if (self::isInstalled() == true) {
 
             } else

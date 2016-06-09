@@ -8,7 +8,8 @@
 
 
 
-    function TelephonesController () {
-        
+    function TelephonesController ($log, $scope, $users) {
+        $scope.person = "";
+        $scope.users = $users;
     };
 })();
