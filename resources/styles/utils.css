@@ -56,7 +56,7 @@
   margin-bottom: 5px;
 }
 /**********
-** WIDTH
+** WIDTH & height
 **********/
 .width-100 {
   float: left;
@@ -81,14 +81,11 @@
 .width-60 {
   float: left;
   width: 60%;
+  box-sizing: border-box;
 }
 .width-50 {
   float: left;
   width: 50%;
-}
-.width-33 {
-  float: left;
-  width: 33%;
 }
 .width-40 {
   float: left;
@@ -98,9 +95,14 @@
   float: left;
   width: 35%;
 }
+.width-33 {
+  float: left;
+  width: 33%;
+}
 .width-30 {
   float: left;
   width: 30%;
+  box-sizing: border-box;
 }
 .width-25 {
   float: left;
@@ -118,6 +120,9 @@
   float: left;
   width: 10%;
 }
+.height-100 {
+  height: 100%;
+}
 /**********
 ** PADDINGS & MARGINS
 **********/
@@ -134,7 +139,13 @@
   margin-top: 5px;
 }
 .margin-bottom-5 {
-  margin-bottom: 5px;
+  margin-bottom: 5px !important;
+}
+.margin-bottom-10 {
+  margin-bottom: 10px !important;
+}
+.margin-bottom-20 {
+  margin-bottom: 20px !important;
 }
 /**********
 ** FORMS
@@ -149,6 +160,16 @@ input[type='text'],
 input[type='password'] {
   padding: 7px;
   box-sizing: border-box;
+}
+input[type='text'].label,
+input[type='password'].label {
+  padding-left: 0px !important;
+  border: 1px solid transparent;
+  background: transparent;
+}
+input[type='text'].label.border-top,
+input[type='password'].label.border-top {
+  border-top: 1px solid lightgrey;
 }
 select {
   height: 35px;
@@ -182,7 +203,14 @@ button {
 input[type='button'].rounded,
 input[type='submit'].rounded,
 button.rounded {
-  border-radius: 5px;
+  border-radius: 50%;
+}
+input[type='button'].small,
+input[type='submit'].small,
+button.small {
+  height: 20px;
+  padding: 7px;
+  line-height: 8px;
 }
 input[type='button'].big,
 input[type='submit'].big,
@@ -193,6 +221,15 @@ input[type='button'].very-big,
 input[type='submit'].very-big,
 button.very-big {
   height: 60px;
+}
+/**********
+* LINKS
+*********/
+a {
+  color: #64B5F6;
+}
+a:hover {
+  color: #1565C0;
 }
 /**********
 ** COLORS
@@ -230,3 +267,6 @@ button.very-big {
   background-color: #C8E6C9;
   color: #1B5E20;
 }
+/**********
+** CUSTOM CONTROLS
+*********/

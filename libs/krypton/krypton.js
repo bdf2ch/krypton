@@ -277,7 +277,7 @@ function Field (parameters) {
                 setup: function () {
                     var result = 0;
                     for (var prop in this.__instance__) {
-                        if (this.__instance__[prop].constructor === Field && this.__instance__[prop].backupable !== undefined && this.__instance__[prop].backupable === true) {
+                        if (this.__instance__[prop].constructor === Field && this.__instance__[prop].backupable !== undefined && this.__instance__[prop].backupable === true && this.__instance__[prop] !== null) {
 
                             if (this.__instance__[prop].type !== undefined) {
                                 switch (this.__instance__[prop].type) {
@@ -1077,7 +1077,7 @@ function Field (parameters) {
         });
 
         var session = $factory({ classes: ["Session", "Model"], base_class: "Session" });
-        var user = $factory({ classes: ["User", "Model"], base_class: "User" });
+        var user = $factory({ classes: ["User", "Model", "States"], base_class: "User" });
 
         return {
 

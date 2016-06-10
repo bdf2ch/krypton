@@ -2,7 +2,8 @@
     angular
         .module("krypton.ui", [])
             .factory("$dateTimePicker", dateTimePickerFactory)
-            .directive("uiDateTimePicker", dateTimePickerDirective);
+            .directive("uiDateTimePicker", dateTimePickerDirective)
+            .directive("uiDataField", dataFieldDirective);
     angular.module("krypton.ui").run(kryptonUIRun);
     
     
@@ -623,4 +624,45 @@
 
         }
     }
+    
+    
+    
+    
+    function dataFieldDirective ($log) {
+        var template = 
+            "<div class='ui-data-field {{ class }}'>" +
+                "<div class='input-container'><input type='text' value='{{ ngModel }}'/></div>" +
+                "<div class='controls-container'>" +
+                    "<button class='green' title='Сохранить изменения'>&#10003;</button>" +
+                    "<button class='red' title='Отменить изменения' ng-click='cancel()'>&times;</button>" +
+                "</div>" +
+            "</div>";
+        
+        return {
+            restrict: "E",
+            require: "ngModel",
+            template: template,
+            replace: true,
+            scope: {
+                ngModel: "=",
+                class: "@",
+                dataFieldOnCancel: "&"
+            },
+            link: function (scope, element, attrs, ctrl) {
+                var controller = scope.controller = ctrl;
+
+                $log.log("onCancel = ", scope.dataFieldOnCancel);
+                scope.dataFieldOnCancel();
+
+                scope.cancel = function () {
+                    $log.log("onCancel");
+                    if (scope.dataFieldOnCancel !== null && scope.dataFieldOnCancel !== undefined) {
+                        $log.log("not null");
+                        scope.dataFieldOnCancel();
+                        //scope.$apply();
+                    }
+                };
+            }
+        }
+    };
 })();

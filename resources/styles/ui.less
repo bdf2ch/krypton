@@ -315,3 +315,54 @@
   }
 
 }
+
+
+
+
+
+.ui-data-field {
+  position: relative;
+  overflow: hidden;
+  height: 40px;
+  box-sizing: border-box;
+  //border: 1px solid green;
+
+  .input-container {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    right: 80px;
+    bottom: 0px;
+
+    input {
+      width: 100%;
+      border-right: none !important;
+      box-sizing: border-box;
+    }
+  }
+
+  .controls-container {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    width: 80px;
+    box-sizing: border-box;
+
+    button {
+      display: inline-block;
+      float: left;
+      width: 40px;
+      height: 38px;
+
+      &.green {
+        font-size: 20px;
+      }
+
+      &.red {
+        font-size: 27px;
+      }
+    }
+  }
+
+}

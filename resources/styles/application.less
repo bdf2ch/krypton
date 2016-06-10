@@ -3,6 +3,7 @@
 
 @app-header-height: 40px;
 @app-header-color: #FFGGLL;
+@app-top-padding: 50px;
 
 html, body {
   height: 100%;
@@ -16,7 +17,8 @@ html, body {
   top: 0px;
   right: 0px;
   height: @app-header-height;
-  background: #1976D2;
+  background: #0D47A1;
+  border-bottom: 5px solid #1E88E5;
 
   .menu-item {
     float: left;
@@ -39,7 +41,7 @@ html, body {
     }
     
     &.active {
-      background: #0D47A1;
+      background: #1E88E5;
       font-weight: bold;
       //border-bottom: none !important;
     }
@@ -120,15 +122,63 @@ html, body {
 
 /********** ACCOUNT **********/
 #user-account {
-  .account-user-photo {
+  height: 100% - @app-header-height;
+  padding-top: @app-top-padding;
+  box-sizing: border-box;
+
+
+  #user-photo {
+    padding-right: 30px;
 
     img {
       display: block;
-      height: 350px;
+      //width: 200px;
+      //height: 350px;
       margin-bottom: 10px;
       border: 1px solid lightgray;
+      box-sizing: border-box;
+    }
+
+  }
+
+  #user-info {
+    padding-left: 30px;
+    box-sizing: border-box;
+    border-left: 1px dotted @ui-border-color;
+
+    .field-label {
+      display: block;
+      margin-bottom: 5px;
+      //padding-bottom: 2px;
+      font-size: 15px;
+      //border-bottom: 1px solid @ui-border-color;
+    }
+
+    .field-value {
+      display: block;
+      height: 40px;
+      font-size: 18px;
+      color: #01579B;
+    }
+
+    .surname {
+      display: block;
+      font-size: 40px;
+      line-height: 35px;
+    }
+
+    .name-fname {
+      display: block;
+      font-size: 28px;
+    }
+
+    .position {
+      display: block;
+      font-size: 18px;
+      color: #01579B;
     }
   }
+
 }
 
 

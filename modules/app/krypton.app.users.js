@@ -48,7 +48,13 @@
 
 
     function UserAccountController ($scope, $session) {
-        $scope.session = $session;
+        $scope.user = $session.getCurrentUser();
+        
+        $scope.cancelEdit = function () {
+            $log.log("cancel called");
+            $scope.user._states_.editing(false);
+            $scope.$apply();
+        };
     };
     
 })();

@@ -240,6 +240,44 @@
   border-right: 1px solid #E0E0E0;
   border-top: 1px solid #E0E0E0;
 }
+.ui-data-field {
+  position: relative;
+  overflow: hidden;
+  height: 40px;
+  box-sizing: border-box;
+}
+.ui-data-field .input-container {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 80px;
+  bottom: 0px;
+}
+.ui-data-field .input-container input {
+  width: 100%;
+  border-right: none !important;
+  box-sizing: border-box;
+}
+.ui-data-field .controls-container {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 80px;
+  box-sizing: border-box;
+}
+.ui-data-field .controls-container button {
+  display: inline-block;
+  float: left;
+  width: 40px;
+  height: 38px;
+}
+.ui-data-field .controls-container button.green {
+  font-size: 20px;
+}
+.ui-data-field .controls-container button.red {
+  font-size: 27px;
+}
 /**
 *
 **/
@@ -298,7 +336,7 @@
   margin-bottom: 5px;
 }
 /**********
-** WIDTH
+** WIDTH & height
 **********/
 .width-100 {
   float: left;
@@ -323,14 +361,11 @@
 .width-60 {
   float: left;
   width: 60%;
+  box-sizing: border-box;
 }
 .width-50 {
   float: left;
   width: 50%;
-}
-.width-33 {
-  float: left;
-  width: 33%;
 }
 .width-40 {
   float: left;
@@ -340,9 +375,14 @@
   float: left;
   width: 35%;
 }
+.width-33 {
+  float: left;
+  width: 33%;
+}
 .width-30 {
   float: left;
   width: 30%;
+  box-sizing: border-box;
 }
 .width-25 {
   float: left;
@@ -360,6 +400,9 @@
   float: left;
   width: 10%;
 }
+.height-100 {
+  height: 100%;
+}
 /**********
 ** PADDINGS & MARGINS
 **********/
@@ -376,7 +419,13 @@
   margin-top: 5px;
 }
 .margin-bottom-5 {
-  margin-bottom: 5px;
+  margin-bottom: 5px !important;
+}
+.margin-bottom-10 {
+  margin-bottom: 10px !important;
+}
+.margin-bottom-20 {
+  margin-bottom: 20px !important;
 }
 /**********
 ** FORMS
@@ -391,6 +440,16 @@ input[type='text'],
 input[type='password'] {
   padding: 7px;
   box-sizing: border-box;
+}
+input[type='text'].label,
+input[type='password'].label {
+  padding-left: 0px !important;
+  border: 1px solid transparent;
+  background: transparent;
+}
+input[type='text'].label.border-top,
+input[type='password'].label.border-top {
+  border-top: 1px solid lightgrey;
 }
 select {
   height: 35px;
@@ -424,7 +483,14 @@ button {
 input[type='button'].rounded,
 input[type='submit'].rounded,
 button.rounded {
-  border-radius: 5px;
+  border-radius: 50%;
+}
+input[type='button'].small,
+input[type='submit'].small,
+button.small {
+  height: 20px;
+  padding: 7px;
+  line-height: 8px;
 }
 input[type='button'].big,
 input[type='submit'].big,
@@ -435,6 +501,15 @@ input[type='button'].very-big,
 input[type='submit'].very-big,
 button.very-big {
   height: 60px;
+}
+/**********
+* LINKS
+*********/
+a {
+  color: #64B5F6;
+}
+a:hover {
+  color: #1565C0;
 }
 /**********
 ** COLORS
@@ -472,6 +547,9 @@ button.very-big {
   background-color: #C8E6C9;
   color: #1B5E20;
 }
+/**********
+** CUSTOM CONTROLS
+*********/
 html,
 body {
   height: 100%;
@@ -484,7 +562,8 @@ body {
   top: 0px;
   right: 0px;
   height: 40px;
-  background: #1976D2;
+  background: #0D47A1;
+  border-bottom: 5px solid #1E88E5;
 }
 #app-header .menu-item {
   float: left;
@@ -503,7 +582,7 @@ body {
   background: #1565C0;
 }
 #app-header .menu-item.active {
-  background: #0D47A1;
+  background: #1E88E5;
   font-weight: bold;
 }
 #app-wrapper {
@@ -558,9 +637,47 @@ body {
   color: #263238;
 }
 /********** ACCOUNT **********/
-#user-account .account-user-photo img {
+#user-account {
+  height: 60%;
+  padding-top: 50px;
+  box-sizing: border-box;
+}
+#user-account #user-photo {
+  padding-right: 30px;
+}
+#user-account #user-photo img {
   display: block;
-  height: 350px;
   margin-bottom: 10px;
   border: 1px solid lightgray;
+  box-sizing: border-box;
+}
+#user-account #user-info {
+  padding-left: 30px;
+  box-sizing: border-box;
+  border-left: 1px dotted lightgrey;
+}
+#user-account #user-info .field-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 15px;
+}
+#user-account #user-info .field-value {
+  display: block;
+  height: 40px;
+  font-size: 18px;
+  color: #01579B;
+}
+#user-account #user-info .surname {
+  display: block;
+  font-size: 40px;
+  line-height: 35px;
+}
+#user-account #user-info .name-fname {
+  display: block;
+  font-size: 28px;
+}
+#user-account #user-info .position {
+  display: block;
+  font-size: 18px;
+  color: #01579B;
 }

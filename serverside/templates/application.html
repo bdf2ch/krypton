@@ -20,14 +20,13 @@
         console.log(krypton);
     </script>
     <script src="libs/angularjs/angular.min.js"></script>
-
-
+    
     <div id="app-header">
         <a href="#" class="menu-item active">Главная</a>
         <a href="#" class="menu-item">Документы</a>
         <a href="#" class="menu-item">Телефонный справочник</a>
         <a href="#" class="menu-item">Система учета заявок</a>
-        <a href="#" class="menu-item right" ng-if="session.getCurrentSession().userId.value !== 0">Личный кабинет</a>
+        <a href="#" class="menu-item right active" ng-if="session.getCurrentSession().userId.value !== 0">Личный кабинет</a>
         <a href="#" class="menu-item right" ng-if="session.getCurrentSession().userId.value === 0">Войти</a>
     </div>
     <div id="app-wrapper">
