@@ -1069,10 +1069,14 @@ function Field (parameters) {
             phone: new Field({ source: "phone", type: "string", value: "", default_value: "", backupable: true }),
             isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true }),
             fio: "",
+            phones: [],
             
             onInitModel: function () {
                 this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
                 this.search = this.fio + " " + this.email.value;
+
+                this.phones = this.phone.value.replace(/\s/g, '').split(",");
+                $log.log("phones = ", this.phones);
             }
         });
 

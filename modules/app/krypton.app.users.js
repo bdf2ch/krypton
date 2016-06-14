@@ -47,13 +47,34 @@
     };
 
 
-    function UserAccountController ($scope, $session) {
+    function UserAccountController ($log, $scope, $session) {
         $scope.user = $session.getCurrentUser();
+        $scope.inEditPositionMode = false;
+        $scope.inPhonesEditMode = false;
+        $scope.inPhonesAddMode = false;
         
-        $scope.cancelEdit = function () {
+        
+        $scope.editPositionMode = function (flag) {
+            if (flag !== undefined && typeof (flag) === "boolean") {
+                $scope.inEditPositionMode = flag;
+                $log.log("inEditPositionMode = ", $scope.inEditPositionMode);
+            }
+        };
+
+        $scope.editPhonesMode = function (flag) {
+            if (flag !== undefined && typeof flag === "boolean") {
+                $scope.inPhonesEditMode = true;
+            }
+        };
+
+
+        $scope.onChange = function () {
+            $log.log("onChange from scope, ", $scope.user.position.value);
+        };
+        
+        $scope.cancel = function () {
             $log.log("cancel called");
             $scope.user._states_.editing(false);
-            $scope.$apply();
         };
     };
     

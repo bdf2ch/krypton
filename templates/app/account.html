@@ -10,81 +10,25 @@
     <!-- Личные данные пользователя -->
     <div id="user-info" class="width-70">
         <span class="surname">{{ user.surname.value }}</span>
-        <span class="name-fname">{{ user.name.value + " " + user.fname.value }}</span><br><br>
+        <span class="name-fname">{{ user.name.value + " " + user.fname.value }}</span>
+        <br><br>
 
-
-        <!--
-        <div class="row margin-bottom-20">
-            <div class="field-label">
-                Должность &nbsp; &nbsp; &nbsp;
-                <a href="" class="button" ng-click="user._states_.editing(true)" ng-show="user._states_.editing() === false">изменить</a>
-            </div>
-
-
-            <input type="text"
-                   class="width-8   0 left"
-                   id="user-account-position"
-                   name="user-account-position"
-                   ng-model="user.position.value"
-                   ng-show="user._states_.editing() === true">
-            <button class="green left">Сохранить</button>
-            <span class="position" ng-show="user._states_.editing() === false">{{ user.position.value }}</span>
-            <span class="position empty" ng-if="user.position.value === '' && user._states_.editing() === false">Должность не указана</span>
-        </div>
-
-        <div class="row margin-bottom-20">
-            <div class="field-label">
-                Структурное подразделение &nbsp; &nbsp; &nbsp;
-                <a href="" class="button" ng-click="user._states_.editing(true)" ng-show="user._states_.editing() === false">Изменить</a>
-            </div>
-            <input type="text"
-                   class="width-100"
-                   id="user-account-division"
-                   name="user-account-division"
-                   ng-class="{ 'label': user._states_.editing() === false, 'position': user._states_.editing() === false }"
-                   value="Отдел корпоративных информационных систем управления">
-            <span class="position empty" ng-if="user.position.value === '' && user._states_.editing() === false">Должность не указана</span>
-        </div>
-
-        <div class="row margin-bottom-20">
-            <div class="field-label">
-                E-mail
-            </div>
-            <input type="text"
-                   class="width-100"
-                   id="user-account-email"
-                   name="user-account-email"
-                   ng-class="{ 'label': user._states_.editing() === false, 'position': user._states_.editing() === false }"
-                   ng-model="user.email.value">
-            <span class="position empty" ng-if="user.position.value === '' && user._states_.editing() === false">Должность не указана</span>
-        </div>
-
-        <div class="row margin-bottom-20">
-            <div class="field-label">
-                Телефон
-            </div>
-            <input type="text"
-                   class="width-100"
-                   id="user-account-email"
-                   name="user-account-email"
-                   ng-class="{ 'label': user._states_.editing() === false, 'position': user._states_.editing() === false }"
-                   ng-model="user.email.value">
-            <span class="position empty" ng-if="user.position.value === '' && user._states_.editing() === false">Должность не указана</span>
-        </div>
-        -->
 
         <div class="row">
             <div class="field-label">
                 Должность &nbsp; &nbsp; &nbsp;
-                <a href="" class="button" ng-click="user._states_.editing(true)" ng-show="user._states_.editing() === false">изменить</a>
+                <a href="" class="button" ng-click="editPositionMode(true)" ng-show="inEditPositionMode === false">изменить</a>
             </div>
-            <span class="field-value" ng-show="user._states_.editing() === false">{{ user.position.value }}</span>
-            <ui-data-field
+            <span class="field-value" ng-show="inEditPositionMode === false">{{ user.position.value }}</span>
+            <ui-model-field
                     class="width-100"
                     ng-model="user.position.value"
-                    ng-show="user._states_.editing() === true"
-                    data-field-on-cancel="cancelEdit()">
-            </ui-data-field>
+                    ng-show="inEditPositionMode === true"
+                    model-field-cancel-title="Отменить измененеия"
+                    model-field-ok-title="Сохранить изменения"
+                    model-field-on-change="onChange()"
+                    model-field-on-cancel="editPositionMode(false)">
+            </ui-model-field>
         </div></br>
 
 
@@ -105,12 +49,27 @@
 
         <div class="row">
             <div class="field-label">
-                Телефон &nbsp; &nbsp; &nbsp;
-                <a href="" class="button" ng-click="user._states_.editing(true)" ng-show="user._states_.editing() === false">изменить</a>&nbsp; &nbsp;
-                <a href="" class="button" ng-click="user._states_.editing(true)" ng-show="user._states_.editing() === false">добавить</a>
+                Телефон<span ng-show="user.phones.length > 1">ы</span> &nbsp; &nbsp; &nbsp;
+                <a href="" class="button" ng-click="editPhonesMode(true)" ng-show="inPhonesEditMode === false">изменить</a>&nbsp; &nbsp;
+                <a href="" class="button" ng-click="user._states_.editing(true)" ng-show="inPhonesEditMode === false">добавить</a>
             </div>
-            <span class="field-value">24-69</span>
+
+            <span class="field-value" ng-show="inPhonesEditMode === false">{{ user.phone.value }}</span>
+            <div class="row" ng-repeat="phone in user.phones" ng-show="inPhonesEditMode === true">
+                <ui-model-field
+                        class="width-100"
+                        ng-model="phone"
+                        model-field-cancel-title="Отменить измененеия"
+                        model-field-ok-title="Сохранить изменения"
+                        model-field-on-change="onChange()"
+                        model-field-on-cancel="editPositionMode(false)">
+                </ui-model-field>
+            </div>
         </div></br>
+
+        <div class="row">
+            <button class="blue big">Выйти из системы</button>
+        </div>
 
     </div>
 </div>

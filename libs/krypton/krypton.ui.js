@@ -3,7 +3,7 @@
         .module("krypton.ui", [])
             .factory("$dateTimePicker", dateTimePickerFactory)
             .directive("uiDateTimePicker", dateTimePickerDirective)
-            .directive("uiDataField", dataFieldDirective);
+            .directive("uiModelField", modelFieldDirective);
     angular.module("krypton.ui").run(kryptonUIRun);
     
     
@@ -628,41 +628,61 @@
     
     
     
-    function dataFieldDirective ($log) {
-        var template = 
-            "<div class='ui-data-field {{ class }}'>" +
-                "<div class='input-container'><input type='text' value='{{ ngModel }}'/></div>" +
-                "<div class='controls-container'>" +
-                    "<button class='green' title='Сохранить изменения'>&#10003;</button>" +
-                    "<button class='red' title='Отменить изменения' ng-click='cancel()'>&times;</button>" +
-                "</div>" +
-            "</div>";
-        
+    function modelFieldDirective ($log) {
         return {
             restrict: "E",
             require: "ngModel",
-            template: template,
-            replace: true,
+            template:
+                "<div class='ui-data-field {{ class }}'>" +
+                    "<div class='input-container'><input type='text'  ng-model='ngModel' ng-change='onChange()'/></div>" +
+                    "<div class='controls-container'>" +
+                        "<button class='green' title='{{ okTitle }}' ng-class='{\"disabled\": isOkButtonDisabled === true}' ng-disabled='isOkButtonDisabled === true'>&#10003;</button>" +
+                        "<button class='red' title='{{ cancelTitle }}' ng-click='cancel()'>&times;</button>" +
+                    "</div>" +
+                "</div>",
             scope: {
                 ngModel: "=",
-                class: "@",
-                dataFieldOnCancel: "&"
+                //class: "@",
+                modelFieldCancelTitle: "@",
+                modelFieldOkTitle: "@",
+                modelFieldOnCancel: "&",
+                modelFieldOnChange: "&"
             },
-            link: function (scope, element, attrs, ctrl) {
-                var controller = scope.controller = ctrl;
 
-                $log.log("onCancel = ", scope.dataFieldOnCancel);
-                scope.dataFieldOnCancel();
+            link: function (scope, element, attrs, ctrl) {
+                scope.controller = ctrl;
+                var okTitle = scope.okTitle = scope.modelFieldOkTitle !== undefined && scope.modelFieldOkTitle !== null ? scope.modelFieldOkTitle : "";
+                var cancelTitle = scope.cancelTitle = scope.modelFieldCancelTitle !== undefined && scope.modelFieldCancelTitle !== null ? scope.modelFieldCancelTitle : "";
+                var isChanged = scope.isChanged = false;
+                var isOkButtonDisabled = scope.isOkButtonDisabled = true;
+                var oldValue = angular.copy(scope.ngModel);
+
+                
+                
+                scope.onChange = function () {
+                    $log.log("changed");
+                    isChanged = true;
+                    scope.isOkButtonDisabled = false;
+                    if (scope.modelFieldOnChange !== null && scope.modelFieldOnChange !== undefined && typeof scope.modelFieldOnChange === "function") {
+                        scope.modelFieldOnChange();
+                    }
+                    $log.log("changed model = ", scope.ngModel);
+                };
+                
+                
 
                 scope.cancel = function () {
                     $log.log("onCancel");
-                    if (scope.dataFieldOnCancel !== null && scope.dataFieldOnCancel !== undefined) {
-                        $log.log("not null");
-                        scope.dataFieldOnCancel();
-                        //scope.$apply();
+                    if (scope.modelFieldOnCancel !== null && scope.modelFieldOnCancel !== undefined) {
+                        scope.modelFieldOnCancel();
                     }
+                    if (isChanged === true)
+                        scope.ngModel = oldValue;
+                    scope.isChanged = false;
+                    scope.isOkButtonDisabled = true;
                 };
             }
+
         }
     };
 })();

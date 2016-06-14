@@ -263,6 +263,10 @@ a:hover {
 .green:hover {
   background-color: #388E3C;
 }
+.green.disabled {
+  background: #C8E6C9;
+  color: #BDBDBD;
+}
 .light-green {
   background-color: #C8E6C9;
   color: #1B5E20;
