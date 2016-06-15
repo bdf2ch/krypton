@@ -132,14 +132,20 @@
                             }
                         }
 
+                        /*
                         if (Settings::install() == true) {
                             echo("Установка подсистемы настроек выполнена успешно</br>");
                             return true;
                         }
                         if (Sessions::install() == true) {
-                            echo("Установка подсистемы учета сессий выполнена успешно</br>");
+                            echo("Установка подсистемы управыления сессиями выполнена успешно</br>");
                             return true;
                         }
+                        if (Users::install() == true) {
+                            echo("Установка подсистемы пользователей успешно</br>");
+                            return true;
+                        }
+                        */
                     } else {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось выбрать БД");
                         return false;

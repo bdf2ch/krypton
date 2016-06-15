@@ -130,7 +130,7 @@
                                     Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
                                     return false;
                                 } else {
-                                    $attributes = array("name", "mail", "samaccountname", "cn", "telephonenumber");
+                                    $attributes = array("name", "mail", "samaccountname", "cn", "telephonenumber", "mobile");
                                     $filter = "(&(objectCategory=person)(sAMAccountName=$login))";
                                     $userInfo = ldap_search($link, ('OU=02_USERS,OU=Kolenergo,DC=nw,DC=mrsksevzap,DC=ru'), $filter, $attributes);
                                     if (!userInfo) {
@@ -148,6 +148,7 @@
                                             $name = $fio[1];
                                             $fname = $fio[2];
                                             $phone = "";
+                                            $mobile = $info[0]["mobile"][0];
                                             $email = $info[0]["mail"][0];
 
                                             if ($info[0]["telephonenumber"]["count"] > 0) {
@@ -161,7 +162,17 @@
                                             //var_dump($email);echo("</br>");
                                             //var_dump($info);
 
-                                            $user = new User(-1, $surname, $name, $fname, " ", $email, strval($phone), false);
+                                            //$user = new User(-1, $surname, $name, $fname, " ", $email, strval($phone), false);
+
+                                            $user = new User(array (
+                                                "id" => -1,
+                                                "surname" => $surname,
+                                                "name" => $name,
+                                                "fname" => $fname,
+                                                "email" => $email,
+                                                "phone" => strval($phone),
+                                                "mobile" => strval($mobile)
+                                            ));
                                             //var_dump($user);echo("</br>");
                                             return $user;
 

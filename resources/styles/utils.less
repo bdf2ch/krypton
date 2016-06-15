@@ -97,7 +97,7 @@
   .row {
     //border: 1px solid black;
     overflow: auto;
-    box-sizing: border-box;
+    //box-sizing: border-box;
 
     &.bottom-split-5 {
       margin-bottom: 5px;
@@ -145,6 +145,11 @@
 .width-50 {
   float: left;
   width: 50%;
+}
+
+.width-45 {
+  float: left;
+  width: 45%;
 }
 
 .width-40 {
@@ -225,6 +230,14 @@
   margin-bottom: 20px !important;
 }
 
+.margin-right-5 {
+  margin-right: 5px !important;
+}
+
+.margin-right-10 {
+  margin-right: 10px !important;
+}
+
 
 
 /**********
@@ -236,9 +249,11 @@ input {
   font-family: "Roboto Regular";
   font-size: 18px;
   border: 1px solid @ui-border-color;
+  box-sizing: border-box;
 }
 
 input[type='text'], input[type='password'] {
+  height: @ui-input-height;
   padding: 7px;
   box-sizing: border-box;
 
@@ -278,7 +293,7 @@ select {
 **********/
 
 input[type='button'], input[type='submit'], button {
-  height: 35px;
+  height: @ui-input-height;
   padding: 10px;
   border: none;
   cursor: pointer;
@@ -290,9 +305,15 @@ input[type='button'], input[type='submit'], button {
   }
 
   &.small {
+    display: inline-block;
+    width: 20px;
     height: 20px;
-    padding: 7px;
-    line-height: 8px;
+    padding: 0px !important;
+    font-size: 11px;
+    //line-height: 8px;
+    text-align: center !important;
+    vertical-align: middle;
+    box-sizing: border-box;
   }
 
   &.big {
@@ -302,7 +323,36 @@ input[type='button'], input[type='submit'], button {
   &.very-big {
     height: 60px;
   }
+
+  &[disabled='true'] {
+    cursor: default;
+  }
+
+  &.blue {
+    color: white;
+    background: @color-blue;
+    &:hover {
+      background: @color-blue-hover;
+    }
+  }
+
+  &.green {
+    color: white;
+    background: @color-green;
+    &:hover {
+      background: @color-green-hover;
+    }
+  }
+
+  &.red {
+    color: white;
+    background: @color-red;
+    &:hover {
+      background: @color-red-hover;
+    }
+  }
 }
+
 
 
 
@@ -312,18 +362,51 @@ input[type='button'], input[type='submit'], button {
 *********/
  a {
    color: #64B5F6;
-   //text-decoration: none;
    &:hover {
      color: #1565C0;
    }
+
+   &.green {
+     color: @color-green;
+     &:hover {
+       color: @color-green-hover;
+     }
+   }
+
+   &.red {
+    color: @color-red;
+     &:hover {
+       color: @color-red-hover;
+     }
+   }
+
+   &.blue {
+     color: @color-blue;
+     &:hover {
+       color: @color-blue-hover;
+     }
+   }
  }
+
+
+
 
 
 /**********
 ** COLORS
 **********/
+@color-red: #F44336;
+@color-red-hover: #D32F2F;
+@color-light-red: #FFCDD2;
+@color-green: #4CAF50;
+@color-green-hover: #388E3C;
+@color-light-green: #C8E6C9;
+@color-blue: #2196F3;
+@color-blue-hover: #1976D2;
+@color-light-blue: #BBDEFB;
 
-.red {
+
+/*.red {
   background-color: #F44336;
   color: white;
   &:hover {
@@ -366,6 +449,7 @@ input[type='button'], input[type='submit'], button {
   background-color: #C8E6C9;
   color: #1B5E20;
 }
+*/
 
 
 

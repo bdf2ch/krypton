@@ -19,14 +19,15 @@ html, body {
   height: @app-header-height;
   background: #0D47A1;
   border-bottom: 5px solid #1E88E5;
+  box-sizing: border-box;
 
   .menu-item {
     float: left;
-    height: @app-header-height;
+    height: @app-header-height - 5px;
     padding: 5px 15px;
     font-family: "Roboto Regular";
     font-size: 16px;
-    line-height: 32px;
+    line-height: 25px;
     text-transform: uppercase;
     text-decoration: none;
     color: white;
@@ -55,6 +56,7 @@ html, body {
   right: 0px;
   bottom: 0px;
   overflow: hidden;
+  min-width: 1200px;
   //border: 1px solid green;
 }
 
@@ -146,19 +148,27 @@ html, body {
     box-sizing: border-box;
     border-left: 1px dotted @ui-border-color;
 
+
+
     .field-label {
       display: block;
-      margin-bottom: 5px;
-      //padding-bottom: 2px;
+      margin-bottom: 7px;
+
+      padding-bottom: 2px;
       font-size: 15px;
-      //border-bottom: 1px solid @ui-border-color;
+      border-bottom: 1px dotted #E0E0E0;
     }
 
     .field-value {
       display: block;
-      height: 40px;
+      //float: left;
+      min-height: 35px;
       font-size: 18px;
       color: #01579B;
+
+      &.empty {
+        color: #9E9E9E;
+      }
     }
 
     .surname {

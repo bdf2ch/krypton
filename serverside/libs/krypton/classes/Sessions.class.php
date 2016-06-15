@@ -4,6 +4,7 @@
 
         private static $session;
         private static $user;
+        public static $items;
 
 
 
@@ -209,13 +210,14 @@
                                 if (self::getCurrentUser() != null) {
                                     //echo("current user is not null");
                                 } else {
-                                    $ADUser = LDAP::login($login, $password);
-                                    var_dump($ADUser);
-                                    if ($ADUser != false) {
+                                    $activeDirectoryUser = LDAP::login($login, $password);
+                                    var_dump($activeDirectoryUser);
+                                    if ($activeDirectoryUser != false) {
 
 
-                                            $isUserExists = Users::getByEmail($ADUser -> email);
+                                            $isUserExists = Users::getByEmail($activeDirectoryUser -> email);
                                             if ($isUserExists == false) {
+                                                /*
                                                 $addedUser = Users::add(
                                                     $ADUser -> name,
                                                     $ADUser -> fname,
@@ -226,12 +228,26 @@
                                                     $password,
                                                     false
                                                 );
+                                                */
+
+                                                $addedUser = Users::add($activeDirectoryUser);
+                                                if (Errors::isError($addedUser) == false) {
+                                                    if ($addedUser != false) {
+                                                        self::setCurrentUserById($addedUser);
+                                                        self::assignCurrentSessionToUser($addedUser);
+                                                        $newUser = Users::getById($addedUser);
+                                                    }
+                                                } else
+                                                    return Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> login: Не удалось выполнить авттризацию пользователя с логином '".$login."'");
+
+                                                /*
                                                 if ($addedUser != false) {
                                                     self::setCurrentUserById($addedUser);
                                                     self::assignCurrentSessionToUser($addedUser);
                                                     $newUser = Users::getById($addedUser);
-                                                    array_push(self::$items, $newUser);
+                                                    //array_push(Users::$items, $newUser);
                                                 }
+                                                */
 
                                             }
 

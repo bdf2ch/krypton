@@ -50,7 +50,6 @@
 **********/
 .row {
   overflow: auto;
-  box-sizing: border-box;
 }
 .row.bottom-split-5 {
   margin-bottom: 5px;
@@ -86,6 +85,10 @@
 .width-50 {
   float: left;
   width: 50%;
+}
+.width-45 {
+  float: left;
+  width: 45%;
 }
 .width-40 {
   float: left;
@@ -147,6 +150,12 @@
 .margin-bottom-20 {
   margin-bottom: 20px !important;
 }
+.margin-right-5 {
+  margin-right: 5px !important;
+}
+.margin-right-10 {
+  margin-right: 10px !important;
+}
 /**********
 ** FORMS
 **********/
@@ -155,9 +164,11 @@ input {
   font-family: "Roboto Regular";
   font-size: 18px;
   border: 1px solid lightgrey;
+  box-sizing: border-box;
 }
 input[type='text'],
 input[type='password'] {
+  height: 35px;
   padding: 7px;
   box-sizing: border-box;
 }
@@ -208,9 +219,14 @@ button.rounded {
 input[type='button'].small,
 input[type='submit'].small,
 button.small {
+  display: inline-block;
+  width: 20px;
   height: 20px;
-  padding: 7px;
-  line-height: 8px;
+  padding: 0px !important;
+  font-size: 11px;
+  text-align: center !important;
+  vertical-align: middle;
+  box-sizing: border-box;
 }
 input[type='button'].big,
 input[type='submit'].big,
@@ -222,6 +238,44 @@ input[type='submit'].very-big,
 button.very-big {
   height: 60px;
 }
+input[type='button'][disabled='true'],
+input[type='submit'][disabled='true'],
+button[disabled='true'] {
+  cursor: default;
+}
+input[type='button'].blue,
+input[type='submit'].blue,
+button.blue {
+  color: white;
+  background: #2196F3;
+}
+input[type='button'].blue:hover,
+input[type='submit'].blue:hover,
+button.blue:hover {
+  background: #1976D2;
+}
+input[type='button'].green,
+input[type='submit'].green,
+button.green {
+  color: white;
+  background: #4CAF50;
+}
+input[type='button'].green:hover,
+input[type='submit'].green:hover,
+button.green:hover {
+  background: #388E3C;
+}
+input[type='button'].red,
+input[type='submit'].red,
+button.red {
+  color: white;
+  background: #F44336;
+}
+input[type='button'].red:hover,
+input[type='submit'].red:hover,
+button.red:hover {
+  background: #D32F2F;
+}
 /**********
 * LINKS
 *********/
@@ -231,46 +285,71 @@ a {
 a:hover {
   color: #1565C0;
 }
+a.green {
+  color: #4CAF50;
+}
+a.green:hover {
+  color: #388E3C;
+}
+a.red {
+  color: #F44336;
+}
+a.red:hover {
+  color: #D32F2F;
+}
+a.blue {
+  color: #2196F3;
+}
+a.blue:hover {
+  color: #1976D2;
+}
 /**********
 ** COLORS
 **********/
-.red {
+/*.red {
   background-color: #F44336;
   color: white;
+  &:hover {
+    background-color: #D32F2F;
+  }
 }
-.red:hover {
-  background-color: #D32F2F;
-}
+
 .light-red {
   background-color: #FFCDD2;
   color: #D50000;
 }
+
 .blue {
   background-color: #2196F3;
   color: white;
+  &:hover {
+    background-color: #1976D2;
+  }
 }
-.blue:hover {
-  background-color: #1976D2;
-}
+
 .light-blue {
   background-color: #BBDEFB;
   color: #0D47A1;
 }
+
 .green {
   background-color: #4CAF50;
   color: white;
+  &:hover {
+    background-color: #388E3C;
+  }
+  
+  &.disabled {
+    background: #C8E6C9;
+    color: #BDBDBD;
+  }
 }
-.green:hover {
-  background-color: #388E3C;
-}
-.green.disabled {
-  background: #C8E6C9;
-  color: #BDBDBD;
-}
+
 .light-green {
   background-color: #C8E6C9;
   color: #1B5E20;
 }
+*/
 /**********
 ** CUSTOM CONTROLS
 *********/
@@ -307,11 +386,11 @@ body label {
   min-width: 1200px;
   box-sizing: border-box;
   border-bottom: 1px solid #d4d4d4;
-  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
 }
 #app-header #app-logo {
   position: relative;

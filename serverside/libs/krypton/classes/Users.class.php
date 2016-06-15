@@ -20,6 +20,7 @@
                         DBManager::add_column("kr_users", "fname", "varchar(200) default ''") &&
                         DBManager::add_column("kr_users", "email", "varchar(200) NOT NULL") &&
                         DBManager::add_column("kr_users", "phone", "varchar(100) default ''") &&
+                        DBManager::add_column("kr_users", "mobile_phone", "varchar(200) default ''") &&
                         DBManager::add_column("kr_users", "position", "varchar(500) default ''") &&
                         DBManager::add_column("kr_users", "password", "varchar(60) NOT NULL default ''") &&
                         DBManager::add_column("kr_users", "is_admin", "int(11) NOT NULL default 0")
@@ -60,6 +61,7 @@
             $users = DBManager::select("kr_users", ["*"], "''");
             if ($users != false) {
                 foreach ($users as $key => $item) {
+                    /*
                     $user = new User (
                         intval($item["id"]),
                         $item["surname"],
@@ -70,6 +72,18 @@
                         $item["phone"],
                         boolval($item["is_admin"])
                     );
+                    */
+                    $user = new User($p = array(
+                        "id" => intval($item["id"]),
+                        "surname" => $item["surname"],
+                        "name" => $item["name"],
+                        "fname" => $item["fname"],
+                        "position" => $item["position"],
+                        "email" => $item["email"],
+                        "phone" => $item["phone"],
+                        "mobile" => $item["mobile_phone"],
+                        "isAdmin" => boolval($item["is_admin"])
+                    ));
                     array_push(self::$items, $user);
                 }
             }
@@ -86,6 +100,34 @@
         /**
         * Добавляет нового пользователя
         **/
+        public static function add ($user) {
+            if ($user == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - экземпляр класса User");
+            else {
+                if (gettype($user) != "object" && get_class($user) != "User")
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип парметра - экземпляр класса User");
+                else {
+                    $result = DBManager::insert_row(
+                        "kr_users",
+                        ["name", "surname", "fname", "email", "phone", "mobile_phone", "position", "password", "is_admin"],
+                        ["'".$user -> name."'", "'".$user -> surname."'", "'".$user -> fname."'", "'".$user -> email."'", "'".$user -> phone."'", "'".$user -> mobile."'", "'".$user -> position."'", "'".md5($password)."'", intval($user -> isAdmin)]
+                    );
+                    if ($result == false)
+                        return Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> add: ".mysql_errno()." - ".mysql_error());
+                    else {
+                        $id = mysql_insert_id();
+                        $user -> id = intval($id);
+                        return $id != null && $id != 0 ? $id : false;
+                    }
+                    array_push(self::$items, $user);
+                }
+            }
+        }
+
+
+
+
+        /*
         public static function add ($name, $fname, $surname, $position, $email, $phone, $password, $isAdmin) {
             if ($name == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - имя пользователя");
@@ -111,11 +153,11 @@
                                     Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - фамилия пользователя");
                                     return false;
                                 } else {
-                                    if ($position == null) {
-                                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - должность пользователя");
-                                        return false;
-                                    } else {
-                                        if (gettype($position) != "string") {
+                                    //if ($position == null) {
+                                    //    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - должность пользователя");
+                                    //    return false;
+                                    //} else {
+                                        if ($position != null && gettype($position) != "string") {
                                             Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - должность пользователя");
                                             return false;
                                         } else {
@@ -174,7 +216,7 @@
                                                 }
                                             }
                                         }
-                                    }
+                                    //}
                                 }
                             }
                         }
@@ -182,6 +224,7 @@
                 }
             }
         }
+        */
 
 
 
@@ -200,6 +243,7 @@
                 } else {
                     $u = DBManager::select("kr_users", ["*"], "id = $id LIMIT 1");
                     if ($u) {
+                        /*
                         $user = new User(
                             intval($u[0]["id"]),
                             $u[0]["surname"],
@@ -210,6 +254,19 @@
                             $u[0]["phone"],
                             boolval($u[0]["is_admin"])
                         );
+                        */
+
+                        $user = new User(array(
+                            "id" => intval($u[0]["id"]),
+                            "surname" => $u[0]["surname"],
+                            "name" => $u[0]["name"],
+                            "fname" => $u[0]["fname"],
+                            "position" => $u[0]["position"],
+                            "email" => $u[0]["email"],
+                            "phone" => $u[0]["phone"],
+                            "mobile" => $u[0]["mobile_phone"],
+                            "isAdmin" => boolval($u[0]["is_admin"])
+                        ));
                         return $user;
                     } else
                         return false;

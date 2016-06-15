@@ -6,6 +6,7 @@
     Krypton::install();
     Settings::install();
     Sessions::install();
+    Users::install();
 
     $template = new XTemplate("../serverside/templates/install.html");
     $template -> parse("krypton_install");

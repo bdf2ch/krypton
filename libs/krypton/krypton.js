@@ -20,6 +20,9 @@ const DATA_TYPE_BOOLEAN = 14;
  * @constructor
  */
 function Field (parameters) {
+    var isChanged = false;
+    var beforeChange = "";
+
     this.source = "";           // Наименование поля-источника данных в БД
     this.value = undefined;     // Значение поля
     this.default_value = "";    // Значение поля по умолчанию
@@ -30,12 +33,44 @@ function Field (parameters) {
     this.raw = false;
     this.type = undefined;
 
+    this._change_ = function (flag) {
+        if (flag !== undefined && typeof flag === "boolean")
+            isChanged = flag;
+        return isChanged;
+    };
+
+    this._backup_ = function (value) {
+        if (value !== undefined)
+            beforeChange = value;
+        else {
+            switch (this.type) {
+                case "string":
+                    this.value = beforeChange.toString();
+                    break;
+                case "integer":
+                    this.value = parseInt(beforeChange);
+                    break;
+                case "float":
+                    this.value =+ parseFloat(beforeChange).toFixed(6);
+                    break;
+                case "boolean":
+                    this.value = new Boolean(beforeChange);
+                    break;
+                default:
+                    this.value = beforeChange;
+                    break;
+            }
+            this._change_(false);
+        }
+    };
+
     if (parameters !== undefined) {
         for (var param in parameters) {
             if (this.hasOwnProperty(param)) {
                 this[param] = parameters[param];
             }
         }
+        beforeChange = this.value;
     }
 };
 
@@ -112,21 +147,26 @@ function Field (parameters) {
                                         switch (this.__instance__[prop].type) {
                                             case "string":
                                                 this.__instance__[prop].value = JSONdata[data].toString();
+                                                this.__instance__[prop]._backup_(JSONdata[data].toString());
                                                 break;
                                             case "integer":
                                                 if (!isNaN(JSONdata[data])) {
                                                     this.__instance__[prop].value = parseInt(JSONdata[data]);
+                                                    this.__instance__[prop]._backup_(parseInt(JSONdata[data]));
                                                 } else {
                                                     $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
                                                     this.__instance__[prop].value = 0;
+                                                    this.__instance__[prop]._backup_(0);
                                                 }
                                                 break;
                                             case "float":
                                                 if (!isNaN(JSONdata[data])) {
                                                     this.__instance__[prop].value = +parseFloat(JSONdata[data]).toFixed(6);
+                                                    this.__instance__[prop]._backup_(+parseFloat(JSONdata[data]).toFixed(6));
                                                 } else {
                                                     $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
                                                     this.__instance__[prop].value = 0.0;
+                                                    this.__instance__[prop]._backup_(0.0);
                                                 }
                                                 break;
                                             case "boolean":
@@ -134,17 +174,21 @@ function Field (parameters) {
                                                     var value = parseInt(JSONdata[data]);
                                                     if (value === 1 || value === 0) {
                                                         this.__instance__[prop].value = value === 1 ? true : false;
+                                                        this.__instance__[prop]._backup_(this.__instance__[prop].value);
                                                     } else {
                                                         $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
                                                         this.__instance__[prop].value = false;
+                                                        this.__instance__[prop]._backup_(false);
                                                     }
                                                 } else {
                                                     var value = JSONdata[data].toString().toLowerCase();
                                                     if (value === "true" || value === "false") {
                                                         this.__instance__[prop].value = value === "true" ? true : false;
+                                                        this.__instance__[prop]._backup_(this.__instance__[prop].value);
                                                     } else {
                                                         $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
                                                         this.__instance__[prop].value = false;
+                                                        this.__instance__[prop]._backup_(false);
                                                     }
                                                 }
                                                 break;
@@ -192,10 +236,13 @@ function Field (parameters) {
                             //console.log("prop = ", another_prop);
                             //console.log("prop constructor = ", obj[another_prop].constructor);
                             if (this.__instance__[another_prop].constructor === Field) {
-                                if (obj[another_prop] !== null && obj[another_prop].constructor === Field)
+                                if (obj[another_prop] !== null && obj[another_prop].constructor === Field) {
                                     this.__instance__[another_prop].value = obj[another_prop].value;
-                                else
+                                    this.__instance__[another_prop]._backup_(obj[another_prop].value);
+                                } else {
                                     this.__instance__[another_prop].value = obj[another_prop];
+                                    this.__instance__[another_prop]._backup_(obj[another_prop]);
+                                }
 
                             } else {
                                 if (obj[another_prop] !== null && obj[another_prop].constructor === Field)
@@ -1067,6 +1114,7 @@ function Field (parameters) {
             position: new Field({ source: "position", type: "string", value: "", default_value: "", backupable: true }),
             email: new Field({ source: "email", type: "string", value: "", default_value: "", backupable: true }),
             phone: new Field({ source: "phone", type: "string", value: "", default_value: "", backupable: true }),
+            mobile: new Field({ source: "mobile_phone", type: "string", value: "", default_value: "", backupable: true }),
             isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true }),
             fio: "",
             phones: [],
@@ -1074,9 +1122,7 @@ function Field (parameters) {
             onInitModel: function () {
                 this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
                 this.search = this.fio + " " + this.email.value;
-
                 this.phones = this.phone.value.replace(/\s/g, '').split(",");
-                $log.log("phones = ", this.phones);
             }
         });
 

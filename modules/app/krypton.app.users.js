@@ -49,16 +49,52 @@
 
     function UserAccountController ($log, $scope, $session) {
         $scope.user = $session.getCurrentUser();
-        $scope.inEditPositionMode = false;
-        $scope.inPhonesEditMode = false;
-        $scope.inPhonesAddMode = false;
-        
-        
-        $scope.editPositionMode = function (flag) {
-            if (flag !== undefined && typeof (flag) === "boolean") {
-                $scope.inEditPositionMode = flag;
-                $log.log("inEditPositionMode = ", $scope.inEditPositionMode);
+        var position = false;
+        var positionEdited = false;
+        var editingPhones = false;
+
+
+        $scope.phone = {
+            editing: false,
+            adding: false,
+            edit: function (flag) {
+                if (flag !== undefined && typeof flag === "boolean")
+                    this.editing = flag;
+                else
+                    return this.editing;
+            },
+            add: function (flag) {
+                if (flag !== undefined && typeof flag === "boolean")
+                    this.adding = flag;
+                else
+                    return this.adding;
             }
+        };
+
+        
+        $scope.mobile = {
+            editing: false,
+            adding: false,
+            edit: function (flag) {
+                if (flag !== undefined && typeof flag === "boolean")
+                    this.editing = flag;
+                else    
+                    return this.editing;
+            },
+            add: function (flag) {
+                if (flag !== undefined && typeof flag === "boolean")
+                    this.adding = flag;
+                else
+                    return this.adding;
+            }
+        };
+        
+        
+        $scope.position = function (flag) {
+            if (flag !== undefined && typeof (flag) === "boolean") {
+                position = flag;
+            } else
+                return position;
         };
 
         $scope.editPhonesMode = function (flag) {
@@ -66,6 +102,8 @@
                 $scope.inPhonesEditMode = true;
             }
         };
+
+
 
 
         $scope.onChange = function () {

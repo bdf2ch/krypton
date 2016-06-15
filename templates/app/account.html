@@ -1,5 +1,5 @@
 <div class="width-20">&nbsp;</div>
-<div id="user-account" class="width-60 height-100">
+<div id="user-account" class="width-60">
 
     <!-- Фотография пользователя -->
     <div id="user-photo" class="width-30">
@@ -14,31 +14,31 @@
         <br><br>
 
 
+
         <div class="row">
             <div class="field-label">
-                Должность &nbsp; &nbsp; &nbsp;
-                <a href="" class="button" ng-click="editPositionMode(true)" ng-show="inEditPositionMode === false">изменить</a>
+                Должность &nbsp; &nbsp;
+                <a href class="right" ng-show="position() === false" ng-click="position(true)">изменить</a>
+                <a href class="right red" ng-show="position() === true" ng-click="position(false); user.position._backup_()">отмена</a>
+                <a href class="right margin-right-10 green" ng-show="user.position._change_() === true" ng-click="position(true)">сохранить изменения</a>
             </div>
-            <span class="field-value" ng-show="inEditPositionMode === false">{{ user.position.value }}</span>
-            <ui-model-field
-                    class="width-100"
-                    ng-model="user.position.value"
-                    ng-show="inEditPositionMode === true"
-                    model-field-cancel-title="Отменить измененеия"
-                    model-field-ok-title="Сохранить изменения"
-                    model-field-on-change="onChange()"
-                    model-field-on-cancel="editPositionMode(false)">
-            </ui-model-field>
-        </div></br>
+            <span class="field-value" ng-show="user.position.value !== '' && position() === false">{{ user.position.value }}</span>
+            <span class="field-value empty" ng-show="user.position.value === '' && position() === false">не указана</span>
+            <input type="text" class="width-100" ng-model="user.position.value" ng-change="user.position._change_(true)" ng-show="position() === true">
+        </div>
+        </br>
+
 
 
         <div class="row">
             <div class="field-label">
-                Структурное подразделение &nbsp; &nbsp; &nbsp;
-                <a href="" class="button" ng-click="user._states_.editing(true)" ng-show="user._states_.editing() === false">изменить</a>
+                Структурное подразделение &nbsp; &nbsp;
+                <a href class="right" ng-show="position() === false" ng-click="position(true)">изменить</a>
             </div>
             <span class="field-value">Отдел корпоративных информационных систем управления</span>
+            <span class="field-value empty">не указано</span>
         </div></br>
+
 
 
         <div class="row">
@@ -47,14 +47,19 @@
         </div></br>
 
 
+
         <div class="row">
             <div class="field-label">
-                Телефон<span ng-show="user.phones.length > 1">ы</span> &nbsp; &nbsp; &nbsp;
-                <a href="" class="button" ng-click="editPhonesMode(true)" ng-show="inPhonesEditMode === false">изменить</a>&nbsp; &nbsp;
-                <a href="" class="button" ng-click="user._states_.editing(true)" ng-show="inPhonesEditMode === false">добавить</a>
-            </div>
+                <span ng-show="user.phone.value === '' || user.phones.length === 1">Служебный телефон</span>
+                <span ng-show="user.phones.length > 1">Служебные телефоны</span> &nbsp; &nbsp;
+                <a href class="right" ng-show="phone.add() === false && phone.edit() === false" ng-click="phone.add(true)">добавить</a>
 
-            <span class="field-value" ng-show="inPhonesEditMode === false">{{ user.phone.value }}</span>
+                <a href class="right margin-right-10" ng-show="phone.add() === false && phone.edit() === false" ng-click="phone.edit(true)">изменить</a>
+                <a href class="right red" ng-show="phone.edit() === true" ng-click="phone.edit(false); user.phone._backup_()">отмена</a>
+            </div>
+            <span class="field-value" ng-show="user.phone.value !== '' && phone.add() === false && phone.edit() === false">{{ user.phone.value }}</span>
+            <span class="field-value empty" ng-show="user.phone.value === '' && phone.add() === false && phone.add() === false">не указан</span>
+
             <div class="row" ng-repeat="phone in user.phones" ng-show="inPhonesEditMode === true">
                 <ui-model-field
                         class="width-100"
@@ -66,6 +71,23 @@
                 </ui-model-field>
             </div>
         </div></br>
+
+
+
+        <div class="row">
+            <div class="field-label">
+                Мобильный телефон &nbsp; &nbsp;
+                <a href class="right" ng-show="mobile.add() === false && mobile.edit() === false" ng-click="mobile.edit(true)">изменить</a>
+                <a href class="right red" ng-show="mobile.edit() === true" ng-click="mobile.edit(false); user.mobile._backup_()">отмена</a>
+                <a href class="right margin-right-10 green" ng-show="user.mobile._change_() === true">сохранить изменения</a>
+            </div>
+            <span class="field-value" ng-show="user.mobile.value != '' && mobile.add() === false && mobile.edit() === false">{{ user.mobile.value }}</span>
+            <span class="field-value empty" ng-show="user.mobile.value === '' && mobile.add() === false && mobile.edit() === false">не указан</span>
+            <input type="text" class="width-100" ng-model="user.mobile.value" ng-change="user.mobile._change_(true)" ng-show="mobile.edit() === true">
+        </div>
+        </br>
+
+
 
         <div class="row">
             <button class="blue big">Выйти из системы</button>
