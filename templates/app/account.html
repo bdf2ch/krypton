@@ -77,7 +77,8 @@
         <div class="row">
             <div class="field-label">
                 Мобильный телефон &nbsp; &nbsp;
-                <a href class="right" ng-show="mobile.add() === false && mobile.edit() === false" ng-click="mobile.edit(true)">изменить</a>
+                <a href class="right" ng-show="user.mobile.value === '' && mobile.add() === false && mobile.edit() === false" ng-click="mobile.edit(true)">добавить</a>
+                <a href class="right" ng-show="user.mobile.value !== '' && mobile.add() === false && mobile.edit() === false" ng-click="mobile.edit(true)">изменить</a>
                 <a href class="right red" ng-show="mobile.edit() === true" ng-click="mobile.edit(false); user.mobile._backup_()">отмена</a>
                 <a href class="right margin-right-10 green" ng-show="user.mobile._change_() === true">сохранить изменения</a>
             </div>
