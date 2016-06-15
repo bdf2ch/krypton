@@ -307,11 +307,11 @@ body label {
   min-width: 1200px;
   box-sizing: border-box;
   border-bottom: 1px solid #d4d4d4;
-  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
+  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
 }
 #app-header #app-logo {
   position: relative;

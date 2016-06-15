@@ -15,7 +15,9 @@
                     if (DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0") &&
                         DBManager::add_column(self::$id, "enabled", "int(11) NOT NULL default 1")
                     ) {
-                        if (Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", Krypton::DATA_TYPE_STRING, "''", 1)) {
+                        if (Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", Krypton::DATA_TYPE_STRING, "''", 1) &&
+                            Settings::add("'".self::$id."'", "'ldap_enabled'", "'Авторизация LDAP включена'", "'Авторизация пользователей посредством Active Directory включена'", Krypton::DATA_TYPE_BOOLEAN, 1, 0)
+                        ) {
                             return true;
                         } else {
                             Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить настройку");
