@@ -57,6 +57,7 @@
         $scope.phone = {
             editing: false,
             adding: false,
+            loading: true,
             edit: function (flag) {
                 if (flag !== undefined && typeof flag === "boolean")
                     this.editing = flag;
@@ -71,10 +72,49 @@
             }
         };
 
+        $scope.mobile = {
+            editing: true,
+            adding: false,
+            loading: true,
+            new: "",
+            edit: function (flag) {
+                if (flag !== undefined && typeof flag === "boolean")
+                    this.editing = flag;
+                else
+                    return this.editing;
+            },
+            add: function (flag) {
+                if (flag !== undefined && typeof flag === "boolean")
+                    this.adding = flag;
+                else
+                    return this.adding;
+            },
+            cancel: function () {
+                if (this.edit() === true) {
+                    this.edit(false);
+                    $scope.user.mobile._change_(false);
+                    $scope.user.mobile._backup_();
+                }
+                if (this.add() === true) {
+                    this.add(false);
+                    this.new = "";
+                }
+            },
+            save: function () {
+                if (this.edit() === true) {
+
+                }
+                if (this.add() === true) {
+
+                }
+            }
+        };
         
         $scope.mobile = {
-            editing: false,
+            editing: true,
             adding: false,
+            loading: true,
+            new: "",
             edit: function (flag) {
                 if (flag !== undefined && typeof flag === "boolean")
                     this.editing = flag;
@@ -86,6 +126,25 @@
                     this.adding = flag;
                 else
                     return this.adding;
+            },
+            cancel: function () {
+                if (this.edit() === true) {
+                    this.edit(false);
+                    $scope.user.mobile._change_(false);
+                    $scope.user.mobile._backup_();
+                }
+                if (this.add() === true) {
+                    this.add(false);
+                    this.new = "";
+                }
+            },
+            save: function () {
+                if (this.edit() === true) {
+
+                }
+                if (this.add() === true) {
+
+                }
             }
         };
         
