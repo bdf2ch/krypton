@@ -86,6 +86,7 @@ function Field (parameters) {
         .factory("$navigation", navigationFactory)
         .factory("$extensions", extensionsFactory)
         .factory("$session", sessionFactory)
+        .factory("$users", usersFactory)
         .factory("$application", applicationFactory);
 
     angular.module("krypton").run(kryptonRun);
@@ -236,12 +237,125 @@ function Field (parameters) {
                             //console.log("prop = ", another_prop);
                             //console.log("prop constructor = ", obj[another_prop].constructor);
                             if (this.__instance__[another_prop].constructor === Field) {
+                                //console.log(another_prop);
+
                                 if (obj[another_prop] !== null && obj[another_prop].constructor === Field) {
-                                    this.__instance__[another_prop].value = obj[another_prop].value;
-                                    this.__instance__[another_prop]._backup_(obj[another_prop].value);
+
+
+                                    //console.log("another prop is field");
+                                    if (this.__instance__[another_prop].type !== undefined) {
+                                        switch (this.__instance__[another_prop].type) {
+                                            case "string":
+                                                this.__instance__[another_prop].value = obj[another_prop].toString();
+                                                this.__instance__[another_prop]._backup_(obj[another_prop].toString());
+                                                break;
+                                            case "integer":
+                                                if (!isNaN(obj[another_prop])) {
+                                                    this.__instance__[another_prop].value = parseInt(obj[another_prop]);
+                                                    this.__instance__[another_prop]._backup_(parseInt(obj[another_prop]));
+                                                } else {
+                                                    $log.error("$classes [Model]: Значение поля '" + another_prop + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                    this.__instance__[another_prop].value = 0;
+                                                    this.__instance__[another_prop]._backup_(0);
+                                                }
+                                                break;
+                                            case "float":
+                                                if (!isNaN(obj[another_prop])) {
+                                                    this.__instance__[another_prop].value = +parseFloat(obj[another_prop]).toFixed(6);
+                                                    this.__instance__[another_prop]._backup_(+parseFloat(obj[another_prop]).toFixed(6));
+                                                } else {
+                                                    $log.error("$classes [Model]: Значение поля '" + another_prop + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                    this.__instance__[another_prop].value = 0.0;
+                                                    this.__instance__[another_prop]._backup_(0.0);
+                                                }
+                                                break;
+                                            case "boolean":
+                                                if (!isNaN(obj[another_prop])) {
+                                                    var value = parseInt(obj[another_prop]);
+                                                    if (value === 1 || value === 0) {
+                                                        this.__instance__[another_prop].value = value === 1 ? true : false;
+                                                        this.__instance__[another_prop]._backup_(this.__instance__[another_prop].value);
+                                                    } else {
+                                                        $log.error("$classes [Model]: Значение поля '" + another_prop + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                        this.__instance__[another_prop].value = false;
+                                                        this.__instance__[another_prop]._backup_(false);
+                                                    }
+                                                } else {
+                                                    var value = obj[another_prop].toString().toLowerCase();
+                                                    if (value === "true" || value === "false") {
+                                                        this.__instance__[another_prop].value = value === "true" ? true : false;
+                                                        this.__instance__[another_prop]._backup_(this.__instance__[another_prop].value);
+                                                    } else {
+                                                        $log.error("$classes [Model]: Значение поля '" + another_prop + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                        this.__instance__[another_prop].value = false;
+                                                        this.__instance__[another_prop]._backup_(false);
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                    }
+
+
+                                    //this.__instance__[another_prop].value = obj[another_prop].value;
+                                    this.__instance__[another_prop]._backup_(this.__instance__[another_prop].value);
                                 } else {
-                                    this.__instance__[another_prop].value = obj[another_prop];
-                                    this.__instance__[another_prop]._backup_(obj[another_prop]);
+                                    console.log("another prop is field");
+                                    if (this.__instance__[another_prop].type !== undefined) {
+                                        switch (this.__instance__[another_prop].type) {
+                                            case "string":
+                                                this.__instance__[another_prop].value = obj[another_prop].toString();
+                                                this.__instance__[another_prop]._backup_(obj[another_prop].toString());
+                                                break;
+                                            case "integer":
+                                                if (!isNaN(obj[another_prop])) {
+                                                    this.__instance__[another_prop].value = parseInt(obj[another_prop]);
+                                                    this.__instance__[another_prop]._backup_(parseInt(obj[another_prop]));
+                                                } else {
+                                                    $log.error("$classes [Model]: Значение поля '" + another_prop + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                    this.__instance__[another_prop].value = 0;
+                                                    this.__instance__[another_prop]._backup_(0);
+                                                }
+                                                break;
+                                            case "float":
+                                                if (!isNaN(JSONdata[data])) {
+                                                    this.__instance__[another_prop].value = +parseFloat(obj[another_prop]).toFixed(6);
+                                                    this.__instance__[another_prop]._backup_(+parseFloat(obj[another_prop]).toFixed(6));
+                                                } else {
+                                                    $log.error("$classes [Model]: Значение поля '" + another_prop + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                    this.__instance__[another_prop].value = 0.0;
+                                                    this.__instance__[another_prop]._backup_(0.0);
+                                                }
+                                                break;
+                                            case "boolean":
+                                                if (!isNaN(obj[another_prop])) {
+                                                    var value = parseInt(obj[another_prop]);
+                                                    if (value === 1 || value === 0) {
+                                                        this.__instance__[another_prop].value = value === 1 ? true : false;
+                                                        this.__instance__[another_prop]._backup_(this.__instance__[another_prop].value);
+                                                    } else {
+                                                        $log.error("$classes [Model]: Значение поля '" + another_prop + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                        this.__instance__[another_prop].value = false;
+                                                        this.__instance__[another_prop]._backup_(false);
+                                                    }
+                                                } else {
+                                                    var value = obj[another_prop].toString().toLowerCase();
+                                                    if (value === "true" || value === "false") {
+                                                        this.__instance__[another_prop].value = value === "true" ? true : false;
+                                                        this.__instance__[another_prop]._backup_(this.__instance__[another_prop].value);
+                                                    } else {
+                                                        $log.error("$classes [Model]: Значение поля '" + another_prop + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                        this.__instance__[another_prop].value = false;
+                                                        this.__instance__[another_prop]._backup_(false);
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                    }
+
+
+
+                                    //this.__instance__[another_prop].value = obj[another_prop];
+                                    this.__instance__[another_prop]._backup_(this.__instance__[another_prop].value);
                                 }
 
                             } else {
@@ -1126,12 +1240,15 @@ function Field (parameters) {
             }
         });
 
-        var session = $factory({ classes: ["Session", "Model"], base_class: "Session" });
-        var user = $factory({ classes: ["User", "Model", "States"], base_class: "User" });
+        var session = undefined;
+        var user = undefined;
 
         return {
 
             init: function () {
+                session = $factory({ classes: ["Session", "Model"], base_class: "Session" });
+                user = $factory({ classes: ["User", "Model", "States"], base_class: "User" });
+
                 if (window.krypton !== undefined && window.krypton !== null) {
                     if (krypton.session !== null) {
                         session._model_.fromAnother(krypton.session);
@@ -1165,7 +1282,38 @@ function Field (parameters) {
 
 
 
+    /******************************
+     * $users
+     * Сервис для управления пользователями
+     ******************************/
+    function usersFactory ($log, $factory) {
+        var items = [];
 
+        return {
+            init: function () {
+                if (window.krypton !== null && window.krypton !== undefined) {
+                    if (window.krypton.users !== null && window.krypton.users !== undefined) {
+                        var length = window.krypton.users.length;
+                        for (var i = 0; i < length; i++) {
+                            var user = $factory({ classes: ["User", "Model", "States", "Backup"], base_class: "User" });
+                            user._model_.fromAnother(window.krypton.users[i]);
+                            user._backup_.setup();
+                            items.push(user);
+                        }
+                        $log.log("users = ", items);
+                    }
+                }
+            },
+
+
+            getAll: function () {
+                return items;
+            }
+        }
+    };
+
+
+    
     /******************************
      * $application
      * Сервис приложения
@@ -1208,11 +1356,11 @@ function Field (parameters) {
      * Запуск основного модуля библиотеки
      ********************/
     function kryptonRun ($log, $application, $errors, $settings, $session) {
-        $log.log("krypton run...");
-        $application.init();
-        $errors.init();
-        $session.init();
-        $settings.init();
+        $log.log("krypton.js run...");
+        //$application.init();
+        //$errors.init();
+        //$session.init();
+        //$settings.init();
     };
 
 

@@ -10,6 +10,7 @@
     Extensions::load("LDAP");
     Extensions::load("Telephones");
     Extensions::load("News");
+    Extensions::load("Kolenergo");
     $app -> start();
 
 

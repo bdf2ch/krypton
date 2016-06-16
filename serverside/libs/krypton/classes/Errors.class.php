@@ -68,7 +68,7 @@
         * @error - объект для проверки
         **/
         public static function isError ($error) {
-            if ($error == null) {
+            if ($error == null && gettype($error) != "boolean") {
                 die("Errors -> isError: Не задан параметр - объект для проверки");
             } else {
                 if (gettype($error) != "object")

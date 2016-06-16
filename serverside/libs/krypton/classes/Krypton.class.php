@@ -93,6 +93,7 @@
             $this -> template -> assign("SETTINGS", json_encode(Settings::getAll()));
             $this -> template -> assign("ERRORS", json_encode(Errors::getAll()));
             $this -> template -> assign("USERS", json_encode(Users::getAll()));
+            $this -> template -> assign("DEPARTMENTS", json_encode(Kolenergo::getDepartments()));
             $this -> template -> assign("CLIENT_SIDE_EXTENSIONS", Extensions::getClientSideExtensions());
             $this -> template -> parse("main");
             $this -> template -> out("main");

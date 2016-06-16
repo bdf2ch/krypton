@@ -7,6 +7,7 @@
     Settings::install();
     Sessions::install();
     Users::install();
+    //Kolenergo::install();
 
     $template = new XTemplate("../serverside/templates/install.html");
     $template -> parse("krypton_install");

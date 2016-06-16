@@ -284,7 +284,7 @@
 
 
         /**
-        * производит проверку на наличие таблицы в БД
+        * Производит проверку на наличие таблицы в БД
         * @tableName - Наименование таблицы
         **/
         public static function is_table_exists ($tableName) {
@@ -313,6 +313,45 @@
                                 break;
                         }
                     }
+                }
+            }
+        }
+
+
+
+        /**
+        * Производит проверку на наличие столбца в таблице
+        * @table - наименование таблицы
+        * @column - наименование столбца
+        **/
+        public static function is_column_exists ($table, $column) {
+            if ($table == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "DBManager -> is_column_exists: Не задан параметр - наименование таблицы");
+            else {
+                if (gettype($table) != "string")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "DBManager -> is_column_exists: Неверно задан тип параметра - наименование таблицы");
+            }
+
+            if ($column == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "DBManager -> is_column_exists: Не задан параметр - наименование столбца");
+            else {
+                if (gettype($column) != "string")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "DBManager -> is_column_exists: Неверно задан тип параметра - наименование столбца");
+            }
+
+            if (!self::is_connected())
+                return Errors::push(Errors::ERROR_TYPE_DATABASE, "DBManager -> is_column_exists: Отсутствует соединение с БД");
+            else {
+                switch (Krypton::getDBType()) {
+                    case Krypton::DB_TYPE_MYSQL:
+                        $query = mysql_query("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = 'krypton' AND TABLE_NAME = '$table' AND COLUMN_NAME = '$column'", self::$link);
+                        if (!$query)
+                            return Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> is_table_exists: ".mysql_errno()." - ".mysql_error());
+                        else
+                            return mysql_num_rows($query) > 0 ? true : false;
+                        break;
+                    case Krypton::DB_TYPE_ORACLE:
+                        break;
                 }
             }
         }

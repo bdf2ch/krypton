@@ -9,7 +9,7 @@
             "ngCookies",
             "krypton",
             "krypton.ui",
-            "krypton.app.users",
+            "krypton.app.kolenergo",
             "krypton.app.news",
             "krypton.app.telephones"]
         )
@@ -38,9 +38,18 @@
 
 
 
-    function kryptonAppRun ($log, $classes, $http, $errors, $dateTimePicker) {
+    function kryptonAppRun ($log, $classes, $session, $settings, $application, $http, $errors, $users) {
         $log.log("krypton.app run...");
         moment.locale("ru");
+
+        $classes.getAll().User.departmentId = new Field({ source: "department_id", type: "integer", value: 0, default_value: 0, backupable: true });
+        $classes.getAll().User.divisionId = new Field({ source: "division_id", type: "integer", value: 0, default_value: 0, backupable: true });
+
+        $application.init();
+        $errors.init();
+        $session.init();
+        $settings.init();
+        $users.init();
 
 
 

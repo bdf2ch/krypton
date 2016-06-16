@@ -73,7 +73,7 @@
                         boolval($item["is_admin"])
                     );
                     */
-                    $user = new User($p = array(
+                    $user = new User(array(
                         "id" => intval($item["id"]),
                         "surname" => $item["surname"],
                         "name" => $item["name"],
