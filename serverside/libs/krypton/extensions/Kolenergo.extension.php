@@ -10,14 +10,13 @@
 
 
         public static function install () {
-            User::addProperty("departmentId", 0);
             if (DBManager::is_table_exists("kr_users")) {
                 if (
                     DBManager::add_column("kr_users", "department_id", "int(11) NOT NULL default 0") &&
                     DBManager::add_column("kr_users", "division_id", "int(11) NOT NULL default 0")
                 ) {
-                    $departmentIdProperty = User::addProperty("departmentId", 0);
-                    $divisionIdProperty = User::addProperty("divisionId", 0);
+                    $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "departmentId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
+                    $divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "divisionId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
                     if (Errors::isError($departmentIdProperty) && Errors::isError($divisionIdProperty))
                         return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойства в класс User");
                     else {
@@ -42,6 +41,7 @@
                     return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбцы в таблицу ползователей");
             } else
                 return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Таблица с пользователями не найдена");
+
         }
 
 
@@ -54,6 +54,13 @@
 
 
         public static function init () {
+            //echo("kolenergo init</br>");
+
+            $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "departmentId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
+            $divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "divisionId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            if (Errors::isError($departmentIdProperty) && Errors::isError($divisionIdProperty))
+                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойства в класс User");
+
             if (self::isInstalled() == true) {
                 $departments = DBManager::select("departments", ["*"], "''");
                 if ($departments != false) {

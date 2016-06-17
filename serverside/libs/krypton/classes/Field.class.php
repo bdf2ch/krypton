@@ -40,7 +40,7 @@
                     }
 
 
-                    if ($parameters["value"] == null)
+                    if ($parameters["value"] == null && $parameters["value"] != 0 && $parameters["value"] != "" && gettype($parameters["value"]) != "boolean")
                         return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Field -> __construct: Не задан параметр - значение поля");
                     else {
                         switch ($this -> type) {
@@ -71,7 +71,7 @@
                         }
                     }
 
-                    if ($parameters["defaultValue"] == null)
+                    if ($parameters["defaultValue"] == null && gettype($parameters["defaultValue"]) != "boolean" && $parameters["defaultValue"] != 0)
                         return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Field -> __construct: Не задан параметр - значение поля по умолчанию");
                     else {
                         switch ($this -> type) {

@@ -5,12 +5,18 @@
 
 
     /*** Создание и инициализация нового приложения Krypton ***/
-    $app = new Krypton("tezt application", "tezt application description", Krypton::DB_TYPE_MYSQL);
-    //Extensions::load("Users");
-    Extensions::load("LDAP");
-    Extensions::load("Telephones");
-    Extensions::load("News");
-    Extensions::load("Kolenergo");
+    //$app = new Krypton("tezt application", "tezt application description", Krypton::DB_TYPE_MYSQL);
+    $app = new Krypton(array(
+        "title" => "new test app",
+        "description" => "new description",
+        "extensions" => array(
+            "Kolenergo",
+            "LDAP",
+            "News",
+            "Telephones"
+        )
+    ));
+
     $app -> start();
 
 

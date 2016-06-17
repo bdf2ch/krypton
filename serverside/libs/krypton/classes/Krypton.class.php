@@ -26,7 +26,7 @@
 
 
 
-        function __construct($title, $description, $dbType) {
+        function __construct($parameters) {
             global $db_host;
             global $db_name;
             global $db_user;
@@ -36,10 +36,72 @@
             DBManager::connect($db_host, $db_user, $db_password);
             DBManager::select_db("krypton");
 
+
+            self::$app = new Application();
+            self::$app -> init();
+
+            if (is_null($parameters))
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Не задан параметр - массив параметров инициализации");
+            else {
+                if (gettype($parameters) != "array")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Неверно задан тип параметра - массив параметров инициализации");
+            }
+
+
+            if (is_null($parameters["title"]))
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Не задлан параметр - наименование приложения");
+            else {
+                if (gettype($parameters["title"]) != "string")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Неверно задан тип параметра - наименование приложения");
+                else {
+                    if (self::$app -> title != $parameters["title"])
+                        if ($parameters["title"] != "")
+                            self::$app -> set("title", $parameters["title"]);
+                        else
+                            self::$app -> set("title", " ");
+                }
+            }
+
+
+            if (!is_null($parameters["description"])) {
+                if (gettype($parameters["description"]) != "string")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Неверно задан тип параметра - описание приложения");
+                else {
+                    if (self::$app -> description != $parameters["description"])
+                        if ($parameters["description"] != "")
+                            self::$app -> set("description", $parameters["description"]);
+                        else
+                            self::$app -> set("description", " ");
+                }
+            } else
+                self::$app -> set("description", " ");
+
+
+            if (!is_null($parameters["extensions"])) {
+                if (gettype($parameters["extensions"]) != "array")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Неверно задан тип параметра - список используемых расширений");
+                else {
+                    if (sizeof($parameters["extensions"]) > 0) {
+                        foreach ($parameters["extensions"] as $key => $extension) {
+                            if (file_exists( $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$extension.".extension.php")) {
+                                require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$extension.".extension.php";
+                                //$ext = new $extension($parameters);
+                                $ext = new Extension($extension::$id, $extension::$description, $extension::$clientSideExtensionUrl);
+                                array_push(Extensions::$items, $ext);
+                                $extension::init();
+                            } else
+                                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Расширение '".$extension."' не найдено");
+                        }
+                    }
+                }
+            }
+
             Settings::init();
             Users::init();
             Sessions::init();
 
+
+            /*
             if ($title == null)
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Не задан параметр - наименование приложения");
             else {
@@ -64,6 +126,9 @@
                     }
                 }
             }
+            */
+
+
         }
 
 
@@ -89,11 +154,12 @@
             $this -> template -> assign("APPLICATION", json_encode(self::$app));
             $this -> template -> assign("EXTENSIONS", json_encode(Extensions::getAll()));
             $this -> template -> assign("CURRENT_SESSION", json_encode(Sessions::getCurrentSession()));
-            $this -> template -> assign("CURRENT_USER", json_encode(Sessions::getCurrentUser()));
+            $this -> template -> assign("CURRENT_USER", Sessions::getCurrentUser() -> toJSON());
             $this -> template -> assign("SETTINGS", json_encode(Settings::getAll()));
             $this -> template -> assign("ERRORS", json_encode(Errors::getAll()));
             $this -> template -> assign("USERS", json_encode(Users::getAll()));
-            $this -> template -> assign("DEPARTMENTS", json_encode(Kolenergo::getDepartments()));
+            //$this -> template -> assign("DEPARTMENTS", json_encode(Kolenergo::getDepartments()));
+            $this -> template -> assign("DEPARTMENTS", Model::fromSourceArrayToJSON(Kolenergo::getDepartments()));
             $this -> template -> assign("CLIENT_SIDE_EXTENSIONS", Extensions::getClientSideExtensions());
             $this -> template -> parse("main");
             $this -> template -> out("main");

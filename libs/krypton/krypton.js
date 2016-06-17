@@ -1070,7 +1070,7 @@ function Field (parameters) {
                 if (window.krypton !== undefined && window.krypton !== null) {
                     if (window.krypton.errors !== undefined) {
                         var length = window.krypton.errors.length;
-                        for (var i =0; i < length; i++) {
+                        for (var i = 0; i < length; i++) {
                             var error = $factory({ classes: ["Error", "Model"], base_class: "Error" });
                             error._model_.fromAnother(window.krypton.errors[i]);
                             items.push(error);

@@ -1,12 +1,20 @@
 <?php
 
     class Extensions {
-        private static $items = array();
+        public static $items = array();
 
 
 
         public static function getAll () {
             return self::$items;
+        }
+
+
+        public static function init () {
+            foreach (Krypton::$extensions as $key => $ext) {
+                $extension = new $ext();
+                $extension::init();
+            }
         }
 
 
@@ -22,8 +30,9 @@
                 } else {
                     array_push(Krypton::$extensions, $extensionTitle);
                     $extension = new $extensionTitle();
-                    $extensionItem = new Extension($extension::$id, $extension::$description, $extension ::$clientSideExtensionUrl);
+                    $extensionItem = new Extension($extension::$id, $extension::$description, $extension::$clientSideExtensionUrl);
                     array_push(self::$items, $extensionItem);
+                    echo("from extensions</br>");
                     $extension::init();
                     return true;
                 }

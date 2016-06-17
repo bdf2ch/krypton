@@ -58,6 +58,7 @@
         * Производит инициализацию подсистемы
         **/
         public static function init () {
+            //echo("settings init</br>");
             $settings = DBManager::select("kr_settings", ["*"], "''");
             if ($settings != false) {
                 foreach ($settings as $key => $item) {

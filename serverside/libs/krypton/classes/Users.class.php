@@ -57,6 +57,7 @@
         * Производит инициализацию модуля
         **/
         public static function init () {
+            //echo("users init</br>");
             //self::add("ЛОЛ", "ЛОЛОВИЧ", "ЛОЛОВ", "ЛОЛОВИК", "lolov@kolenergo.ru", "111-333", "lolka", true);
             $users = DBManager::select("kr_users", ["*"], "''");
             if ($users != false) {
@@ -73,6 +74,7 @@
                         boolval($item["is_admin"])
                     );
                     */
+                    /*
                     $user = new User(array(
                         "id" => intval($item["id"]),
                         "surname" => $item["surname"],
@@ -84,6 +86,11 @@
                         "mobile" => $item["mobile_phone"],
                         "isAdmin" => boolval($item["is_admin"])
                     ));
+                    */
+
+                    $user = Models::construct("User1", false);
+                    $user -> fromSource($item);
+
                     array_push(self::$items, $user);
                 }
             }
@@ -256,6 +263,7 @@
                         );
                         */
 
+                        /*
                         $user = new User(array(
                             "id" => intval($u[0]["id"]),
                             "surname" => $u[0]["surname"],
@@ -267,6 +275,11 @@
                             "mobile" => $u[0]["mobile_phone"],
                             "isAdmin" => boolval($u[0]["is_admin"])
                         ));
+                        */
+
+                        $user = Models::construct("User1", false);
+                        $user -> fromSource($u[0]);
+
                         return $user;
                     } else
                         return false;
