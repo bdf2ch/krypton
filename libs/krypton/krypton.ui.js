@@ -387,7 +387,7 @@
                     if (scope.settings.isModal === true) {
                         var fog = document.getElementsByClassName("krypton-ui-fog");
                         document.body.style.overflow = "hidden";
-                        fogElement.classList.add("visible");
+                        fog[0].classList.add("visible");
                     }
                     angular.element(container).css("display", "block");
                     scope.settings.isOpened = true;

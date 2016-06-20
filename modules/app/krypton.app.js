@@ -14,8 +14,13 @@
             "krypton.app.telephones"]
         )
         .controller("testController", testController)
+        .controller("adminLoginController", adminLoginController)
         .config(function ($routeProvider) {
             $routeProvider
+                .when("/admin", {
+                    templateUrl: "templates/app/admin_login.html",
+                    controller: "adminLoginController"
+                })
                 .when("/", {
                     templateUrl: "templates/app/news.html",
                     controller: "NewsController"
@@ -35,6 +40,11 @@
         .run(kryptonAppRun);
 
 
+
+
+    function adminLoginController ($log) {
+
+    };
 
 
 

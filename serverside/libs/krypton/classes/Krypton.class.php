@@ -148,6 +148,10 @@
 
             Sessions::login("kolu0897", "zx12!@#$");
 
+            //var_dump(Models::load("Department", false));
+            //$temp = new Department(false);
+            //var_dump($temp::$fields);
+
 
             $this -> template = new XTemplate($template_url);
             $this -> template -> assign("APPLICATION_TITLE", self::$app -> get("title"));
@@ -158,8 +162,7 @@
             $this -> template -> assign("SETTINGS", json_encode(Settings::getAll()));
             $this -> template -> assign("ERRORS", json_encode(Errors::getAll()));
             $this -> template -> assign("USERS", json_encode(Users::getAll()));
-            //$this -> template -> assign("DEPARTMENTS", json_encode(Kolenergo::getDepartments()));
-            $this -> template -> assign("DEPARTMENTS", Model::fromSourceArrayToJSON(Kolenergo::getDepartments()));
+            $this -> template -> assign("DEPARTMENTS", json_encode(Kolenergo::getDepartments()));
             $this -> template -> assign("CLIENT_SIDE_EXTENSIONS", Extensions::getClientSideExtensions());
             $this -> template -> parse("main");
             $this -> template -> out("main");

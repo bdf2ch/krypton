@@ -33,11 +33,14 @@
         <div class="row">
             <div class="field-label">
                 Производственное отделение
-                <a href class="right">изменить</a>
+                <i class="fa fa-spinner fa-spin right" ng-show="department.loading === true"></i>
+                <a href class="right" ng-show="department.edit() === false" ng-click="department.edit(true)">изменить</a>
+                <a href class="right red" ng-show="department.edit() === true && department.loading === false" ng-click="department.cancel()">отмена</a>
+                <a href class="right margin-right-10 green" ng-show="department.edit() === true && user.departmentId._change_() === true" ng-click="department.save()">сохранить</a>
             </div>
-            <span class="field-value">{{ kolenergo.getDepartmentById(user.departmentId.value) }}</span>
-            <span class="field-value empty">отсутствует</span>
-
+            <span class="field-value" ng-show="user.departmentId.value !== 0 && department.edit() === false">{{ kolenergo.getDepartmentById(user.departmentId.value).title.value }}</span>
+            <span class="field-value empty" ng-show="user.departmentId.value === 0 && department.edit() === false">отсутствует</span>
+            <select name="" id="" class="width-100" ng-model="user.departmentId.value" ng-options="department.id.value as department.title.value for department in kolenergo.getDepartments()" ng-change="user.departmentId._change_(true)" ng-show="department.edit() === true" ng-disabled="department.loading === true"></select>
         </div></br>
 
 
@@ -48,7 +51,6 @@
             </div>
             <span class="field-value">Отдел корпоративных информационных систем управления</span>
             <span class="field-value empty">отсутствует</span>
-
         </div></br>
 
 

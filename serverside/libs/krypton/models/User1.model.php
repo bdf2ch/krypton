@@ -1,6 +1,7 @@
 <?php
 
     class User1 extends Model {
+        public static $fields = array();
 
         public function __construct ($parameters) {
             self::field("id", new Field(array( "source" => "id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));

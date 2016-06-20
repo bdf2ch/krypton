@@ -54,10 +54,11 @@
 
 
         public static function init () {
-            //echo("kolenergo init</br>");
+            echo("kolenergo init</br>");
 
-            $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "departmentId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
-            $divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "divisionId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
+            $divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "division_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+
             if (Errors::isError($departmentIdProperty) && Errors::isError($divisionIdProperty))
                 return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойства в класс User");
 
@@ -65,9 +66,12 @@
                 $departments = DBManager::select("departments", ["*"], "''");
                 if ($departments != false) {
                     foreach ($departments as $key => $item) {
-                        array_push(self::$departments, $item);
+                        $department = Models::load("Department", false);
+                        $department -> fromSource($item);
+                        array_push(self::$departments, $department);
                     }
                 }
+                //var_dump(self::$departments);
             } else
                 self::install();
         }

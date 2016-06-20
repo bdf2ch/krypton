@@ -32,6 +32,18 @@ function Field (parameters) {
     this.isValid = false;
     this.raw = false;
     this.type = undefined;
+    
+    this._fromAnother_ = function (parameters) {
+        if (parameters == undefined || parameters === null) {
+            $errors.add(ERROR_TYPE_DEFAULT, "Field -> fromAnother: Не задан параметр - параметры инициализации");
+            return false;
+        } else {
+            for (var param in parameters) {
+                if (this.hasOwnProperty(param))
+                    this[param] = parameters[param];
+            }
+        }
+    };
 
     this._change_ = function (flag) {
         if (flag !== undefined && typeof flag === "boolean")
@@ -71,6 +83,24 @@ function Field (parameters) {
             }
         }
         beforeChange = this.value;
+    }
+};
+
+
+
+function isField (obj) {
+    if (obj === undefined && obj === null) {
+        $errors.add(ERROR_TYPE_DEFAULT, "isField: Не задан параметр - объект для проверки на экзмпляр класса Field");
+        return false;
+    } else {
+        if (typeof obj === "object") {
+            if (obj.hasOwnProperty("type") && obj.hasOwnProperty("source") && obj.hasOwnProperty("value")) {
+                //console.log("field, ", obj);
+                return true;
+            } else
+                return false;
+        } else
+            return false;
     }
 };
 
@@ -232,6 +262,190 @@ function Field (parameters) {
                  * @param obj {object} - Объект, на основе которого требуется произвести инициализацию
                  */
                 fromAnother: function (obj) {
+                    if (obj === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "Model -> fromAnother: Не задан параметр - объект, на основе которого трекуется провести инициализацию");
+                        return false;
+                    } else {
+
+                        for (var anotherProp in obj) {
+                            if (obj[anotherProp] === null) {
+                                $errors.add(ERROR_TYPE_DEFAULT, "Model -> fromAnother: Отсутствует значение (null) свойста '" + anotherProp + "' объекта, на основе которого требуется провести инициализаццию");
+                                return false;
+                            } else {
+
+                                if (this.__instance__.hasOwnProperty(anotherProp)) {
+
+                                    //if (this.__instance__[anotherProp].constructor === Field) {
+                                    if (isField(this.__instance__[anotherProp])) {
+
+                                        if (this.__instance__[anotherProp].type !== undefined) {
+                                            switch (this.__instance__[anotherProp].type) {
+                                                case "string":
+                                                    //if (obj[anotherProp].constructor === Field) {
+                                                    if (isField(obj[anotherProp])) {
+                                                        //console.log(anotherProp + " (string) = " + obj[anotherProp].value.toString());
+                                                        this.__instance__[anotherProp]._fromAnother_(obj[anotherProp]);
+                                                        //this.__instance__[anotherProp].value = obj[anotherProp].value.toString();
+                                                        this.__instance__[anotherProp]._backup_(obj[anotherProp].value.toString());
+                                                    } else {
+                                                        this.__instance__[anotherProp].value = obj[anotherProp].toString();
+                                                        this.__instance__[anotherProp]._backup_(obj[anotherProp].toString());
+                                                    }
+                                                    //this.__instance__[anotherProp].value = obj[anotherProp].constructor === Field ? obj[anotherProp].value.toString() : obj[anotherProp].toString();
+                                                    //this.__instance__[anotherProp]._backup_(obj[anotherProp].toString());
+                                                    break;
+                                                case "integer":
+                                                    var value = isField(obj[anotherProp]) ? obj[anotherProp].value : obj[anotherProp];
+
+
+                                                    if (!isNaN(value)) {
+                                                        //if (obj[anotherProp].constructor === Field) {
+                                                        if (isField(obj[anotherProp])) {
+                                                            //console.log(anotherProp + " (integer) = " + parseInt(obj[anotherProp].value));
+                                                            //this.__instance__[anotherProp].value = parseInt(obj[anotherProp].value);
+                                                            this.__instance__[anotherProp]._fromAnother_(obj[anotherProp]);
+                                                            this.__instance__[anotherProp]._backup_(parseInt(obj[anotherProp].value));
+                                                        } else {
+                                                            //console.log(anotherProp + " (integer) = " + parseInt(obj[anotherProp]));
+                                                            this.__instance__[anotherProp].value = parseInt(obj[anotherProp]);
+                                                            this.__instance__[anotherProp]._backup_(parseInt(obj[anotherProp]));
+                                                        }
+                                                    } else {
+                                                        $log.info("$classes -> Model: Значение поля '" + anotherProp + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                        this.__instance__[anotherProp].value = 0;
+                                                        this.__instance__[anotherProp]._backup_(0);
+                                                    }
+                                                    break;
+                                                case "float":
+                                                    if (!isNaN(obj[anotherProp])) {
+                                                        //if (obj[anotherProp].constructor === Field) {
+                                                        if (isField(obj[fromAnother()])) {
+                                                            //this.__instance__[anotherProp].value = +parseFloat(obj[anotherProp].value).toFixed(6);
+                                                            this.__instance__[anotherProp]._fromAnother_(obj[anotherProp]);
+                                                            this.__instance__[anotherProp]._backup_(+parseFloat(obj[anotherProp].value).toFixed(6));
+                                                        } else {
+                                                            this.__instance__[anotherProp].value = +parseFloat(obj[anotherProp]).toFixed(6);
+                                                            this.__instance__[anotherProp]._backup_(+parseFloat(obj[anotherProp]).toFixed(6));
+                                                        }
+                                                    } else {
+                                                        $log.info("$classes -> Model: Значение поля '" + anotherProp + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                        this.__instance__[anotherProp].value = 0.0;
+                                                        this.__instance__[anotherProp]._backup_(0.0);
+                                                    }
+                                                    break;
+                                                case "boolean":
+                                                    if (!isNaN(obj[anotherProp])) {
+                                                        //var value = obj[anotherProp].constructor === Field ? parseInt(obj[anotherProp].value) : parseInt(obj[anotherProp]);
+                                                        var value = isField(obj[anotherProp]) ? parseInt(obj[anotherProp].value) : parseInt(obj[anotherProp]);
+                                                        if (value === 1 || value === 0) {
+                                                            this.__instance__[anotherProp].value = value === 1 ? true : false;
+                                                            this.__instance__[anotherProp]._backup_(this.__instance__[anotherProp].value);
+                                                        } else {
+                                                            $log.info("$classes -> Model: Значение поля '" + anotherProp + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                            this.__instance__[anotherProp].value = false;
+                                                            this.__instance__[anotherProp]._backup_(false);
+                                                        }
+                                                    } else {
+                                                        //var value = obj[anotherProp].constructor === Field ? obj[anotherProp].value.toString().toLowerCase() : obj[anotherProp].toString().toLowerCase();
+                                                        var value = isField(obj[anotherProp]) ? obj[anotherProp].value.toString().toLowerCase() : obj[anotherProp].toString().toLowerCase();
+
+                                                        if (value === "true" || value === "false") {
+                                                            this.__instance__[anotherProp].value = value === "true" ? true : false;
+                                                            this.__instance__[anotherProp]._backup_(this.__instance__[anotherProp].value);
+                                                        } else {
+                                                            $log.info("$classes -> Model: Значение поля '" + anotherProp + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                            this.__instance__[anotherProp].value = false;
+                                                            this.__instance__[anotherProp]._backup_(false);
+                                                        }
+                                                    }
+                                                    break;
+                                            }
+
+                                        } else {
+                                            //if (obj[anotherProp].constructor === Field) {
+                                            if (isField(obj[anotherProp])) {
+                                                this.__instance__[anotherProp].value = obj[anotherProp].value;
+                                                this.__instance__[anotherProp]._backup_(obj[anotherProp].value);
+                                            } else {
+
+                                                this.__instance__[anotherProp].value = obj[anotherProp];
+                                                this.__instance__[anotherProp]._backup_(obj[anotherProp]);
+                                            }
+                                        }
+
+                                    } else {
+                                        //if (obj[anotherProp].constructor === Field)
+                                        console.log(anotherProp + " not a field");
+                                        if (isField(obj[anotherProp]))
+                                            this.__instance__[anotherProp] = obj[anotherProp].value;
+                                        else
+                                            this.__instance__[anotherProp] = obj[anotherProp];
+                                    }
+                                }
+
+
+
+
+                                /*
+                                if (obj[anotherProp].constructor === "Field") {
+
+                                    if (obj[anotherProp].type !== undefined) {
+                                        switch (this.__instance__[anotherProp].type) {
+                                            case "string":
+                                                properties[anotherProp] = obj[anotherProp].toString();
+                                                break;
+                                            case "integer":
+                                                if (!isNaN(obj[anotherProp])) {
+                                                    properties[anotherProp] = parseInt(obj[anotherProp]);
+                                                } else {
+                                                    $log.info("$classes -> Model: Значение поля '" + anotherProp + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                    properties[anotherProp] = 0;
+                                                }
+                                                break;
+                                            case "float":
+                                                if (!isNaN(obj[anotherProp]))
+                                                    properties[anotherProp] = +parseFloat(obj[anotherProp]).toFixed(6);
+                                                else {
+                                                    $log.info("$classes -> Model: Значение поля '" + anotherProp + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                    properties[anotherProp] = 0.0;
+                                                }
+                                                break;
+                                            case "boolean":
+                                                if (!isNaN(obj[anotherProp])) {
+                                                    var value = parseInt(obj[anotherProp]);
+                                                    if (value === 1 || value === 0)
+                                                        properties[anotherProp] = value === 1 ? true : false;
+                                                    else {
+                                                        $log.info("$classes -> Model: Значение поля '" + anotherProp + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                        properties[anotherProp] = false;
+                                                    }
+                                                } else {
+                                                    var value = obj[anotherProp].toString().toLowerCase();
+                                                    if (value === "true" || value === "false")
+                                                        properties[anotherProp] = value === "true" ? true : false;
+                                                    else {
+                                                        $log.info("$classes -> Model: Значение поля '" + anotherProp + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                        properties[anotherProp] = false;
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                    } else
+                                        properties[anotherProp] = obj[anotherProp].value;
+                                } else
+                                    properties[anotherProp] = obj[anotherProp];
+
+                                */
+                            }
+                        }
+                    }
+
+
+
+
+
+
+                    /*
                     for (var another_prop in obj) {
                         if (this.__instance__.hasOwnProperty(another_prop)) {
                             //console.log("prop = ", another_prop);
@@ -366,6 +580,8 @@ function Field (parameters) {
                             }
                         }
                     }
+                    */
+
                     if (this.__instance__["onInitModel"] !== undefined) {
                         if (this.__instance__["onInitModel"].constructor === Function) {
                             this.__instance__.onInitModel();

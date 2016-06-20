@@ -89,6 +89,31 @@
         $scope.kolenergo = $kolenergo;
 
 
+        $scope.department = {
+            editing: false,
+            loading: false,
+            edit: function (flag) {
+                if (flag !== undefined && typeof flag === "boolean")
+                    this.editing = flag;
+                else
+                    return this.editing;
+            },
+            cancel: function () {
+                if (this.edit() === true) {
+                    this.edit(false);
+                    $scope.user.departmentId._change_(false);
+                    $scope.user.departmentId._backup_();
+                }
+            },
+            save: function () {
+                if (this.edit() === true) {
+
+                }
+            }
+        };
+        
+        
+        
         $scope.position = {
             editing: false,
             adding: false,

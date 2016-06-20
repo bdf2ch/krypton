@@ -1,12 +1,14 @@
 <?php
 
         class Model {
-            public static $fields = array();
+            //public static $fields = array();
 
 
 
             public function __construct () {
-                foreach (self::$fields as $key => $property) {
+                $class = get_called_class();
+                //echo("MODEL construct called class = ".$class."</br>");
+                foreach ($class::$fields as $key => $property) {
                     $this -> {$key} = $property;
                 }
             }
@@ -34,8 +36,12 @@
                     else {
                         if (get_class($field) != "Field")
                             return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> field: Неверно задан тип параметра - экземпляр класса Field");
-                        else
-                            self::$fields[$title] = $field;
+                        else {
+                            $class = get_called_class();
+                            $class::$fields[$title] = $field;
+                            //echo($class." -> ".$title."</br>");
+                            //var_dump($class::$fields);
+                        }
                     }
                 }
             }
@@ -48,40 +54,40 @@
                 else
                     if (gettype($data) != "array")
                         return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> fromSource: Неверно задан тип параметра - набор данных");
-
-                foreach (self::$fields as $key => $field) {
-                    if (array_key_exists($key, $data)) {
-                        switch (self::$fields[$key] -> type) {
+                $class = get_called_class();
+                foreach ($class::$fields as $key => $field) {
+                    if (array_key_exists($field -> source, $data)) {
+                        switch ($field -> type) {
                             case Krypton::DATA_TYPE_INTEGER:
-                                if (!is_numeric($data[$key]))
+                                if (!is_numeric($data[$field -> source]))
                                     return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> fromSource: Тип значения параметра в наборе данных не соответствует типу значения свойства модели данных (int)");
                                 else {
-                                    self::$fields[$key] -> value = intval($data[$key]);
-                                    $this -> $key -> value = intval($data[$key]);
+                                    $field -> value = intval($data[$field -> source]);
+                                    $this -> $key -> value = intval($data[$field -> source]);
                                 }
                                 break;
                             case Krypton::DATA_TYPE_FLOAT:
-                                if (gettype($data[$key]) != "double")
+                                if (gettype($data[$field -> source]) != "double")
                                     return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> fromSource: Тип значения параметра в наборе данных не соответствует типу значения свойства модели данных (float)");
                                 else {
-                                    self::$fields[$key] -> value = floatval($data[$key]);
-                                    $this -> $key -> value = floatval($data[$key]);
+                                    $field -> value = floatval($data[$field -> source]);
+                                    $this -> $key -> value = floatval($data[$field -> source]);
                                 }
                                 break;
                             case Krypton::DATA_TYPE_STRING:
-                                if (gettype($data[$key]) != "string")
+                                if (gettype($data[$field -> source]) != "string")
                                     return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> fromSource: Тип значения параметра в наборе данных не соответствует типу значения свойства модели данных {string}");
                                 else {
-                                    self::$fields[$key] -> value = strval($data[$key]);
-                                    $this -> $key -> value = strval($data[$key]);
+                                    $field -> value = strval($data[$field -> source]);
+                                    $this -> $key -> value = strval($data[$field -> source]);
                                 }
                                 break;
                             case Krypton::DATA_TYPE_BOOLEAN:
-                                if (gettype($data[$key]) != "boolean")
+                                if (!is_numeric($data[$field -> source]))
                                     return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> fromSource: Тип значения параметра в наборе данных не соответствует типу значения свойства модели данных (bool)");
                                 else {
-                                    self::$fields[$key] -> value = boolval($data[$key]);
-                                    $this -> $key -> value = boolval($data[$key]);
+                                    $field -> value = boolval($data[$field -> source]);
+                                    $this -> $key -> value = boolval($data[$field -> source]);
                                 }
                                 break;
                         }
@@ -89,19 +95,18 @@
                         //$this -> $key -> value = $data[$key];
                         //$this -> __set($key, );
                     } else {
-                        self::$fields[$key] -> value = self::$fields[$key] -> defaultValue;
-                        $this -> $key -> value  = self::$fields[$key] -> defaultValue;
+                        $class::$fields[$key] -> value = $class::$fields[$key] -> defaultValue;
+                        $this -> $key -> value  = $class::$fields[$key] -> defaultValue;
                     }
                 }
             }
 
 
 
-
-
             public static function toJSON () {
                 $obj = new stdClass();
-                foreach (self::$fields as $key => $field) {
+                $class = get_called_class();
+                foreach ($class::$fields as $key => $field) {
                     if (get_class($field) == "Field") {
                         $obj -> $key = $field -> value;
                     }
@@ -110,11 +115,11 @@
             }
 
 
+
             public static function fromSourceArrayToJSON ($array) {
                 $collection = array();
                 foreach ($array as $key => $element) {
                     $class = get_called_class();
-                    $temp = new $class();
                     $temp = Models::construct($class, false);
                     $temp -> fromSource($element);
                     array_push($collection, $temp);

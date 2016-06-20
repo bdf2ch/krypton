@@ -13,7 +13,10 @@
             if (in_array($class, Krypton::$extensions))
                 require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$class.".extension.php";
             else {
-                require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/classes/".$class.".class.php";
+                if (file_exists($_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/classes/".$class.".class.php"))
+                    require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/classes/".$class.".class.php";
+                else if (file_exists($_SERVER["DOCUMENT_ROOT"])."/serverside/libs/krypton/models/".$class.".model.php")
+                    require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/models/".$class.".model.php";
                     //if (method_exists($class, "init") && is_callable($class."::init"))
                     //    call_user_func($class."::init");
             }

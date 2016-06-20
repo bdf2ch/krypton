@@ -52,7 +52,29 @@
                 require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/models/".$model.".model.php";
                 //$temp = new $model();
                 $model::field($title, $field);
+                //var_dump($model." -> ".$title);
                 return true;
+            } else
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Models -> load: Модель '".$model."' не найдена");
+        }
+
+
+
+        public static function load ($model) {
+            if ($model == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Models -> load: Не задан параметр - наименование модели");
+            else {
+                if (gettype($model) != "string")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Models -> load: Неверно задан тип параметра - наименование модели");
+            }
+
+            //echo("loaded model = ".$model);
+
+            if (file_exists($_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/models/".$model.".model.php")) {
+                require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/models/".$model.".model.php";
+                $temp = new $model(false);
+                //var_dump($temp);
+                return $temp;
             } else
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Models -> load: Модель '".$model."' не найдена");
         }

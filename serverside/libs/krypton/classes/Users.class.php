@@ -57,7 +57,7 @@
         * Производит инициализацию модуля
         **/
         public static function init () {
-            //echo("users init</br>");
+            echo("users init</br>");
             //self::add("ЛОЛ", "ЛОЛОВИЧ", "ЛОЛОВ", "ЛОЛОВИК", "lolov@kolenergo.ru", "111-333", "lolka", true);
             $users = DBManager::select("kr_users", ["*"], "''");
             if ($users != false) {
@@ -88,8 +88,12 @@
                     ));
                     */
 
-                    $user = Models::construct("User1", false);
+                    //$user = Models::construct("User1", false);
+                    //$user -> fromSource($item);
+
+                    $user = Models::load("User1", false);
                     $user -> fromSource($item);
+                    //var_dump($user);
 
                     array_push(self::$items, $user);
                 }
