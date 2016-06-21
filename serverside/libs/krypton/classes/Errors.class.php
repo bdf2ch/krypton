@@ -44,7 +44,7 @@
                             $error = new Error($type, $message);
                             self::$lastError = $error;
                             array_push(Errors::$errors, $error);
-                            $error -> send();
+                            //$error -> send();
                             return $error;
                         }
                     }
@@ -68,7 +68,7 @@
         * @error - объект для проверки
         **/
         public static function isError ($error) {
-            if ($error == null && gettype($error) != "boolean") {
+            if ($error == null && gettype($error) != "boolean" && $error != false) {
                 die("Errors -> isError: Не задан параметр - объект для проверки");
             } else {
                 if (gettype($error) != "object")

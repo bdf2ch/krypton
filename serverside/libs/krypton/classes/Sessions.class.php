@@ -74,19 +74,30 @@
                                 $token = self::generate_token(32);
                                 DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
                                 $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
-                                self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                                if ($s != false) {
+                                    $session = Models::load("Session", false);
+                                    $session -> fromSource($s[0]);
+                                    self::$session = $session;
+                                } else
+                                    self::$session = false;
+                                //self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                                 setcookie("krypton_session", $token);
                             } else {
+                                /*
                                 self::$session = new Session (
                                     $s[0]["user_id"],
                                     $s[0]["token"],
                                     $s[0]["start"],
                                     $s[0]["end"]
                                 );
+                                */
+                                $session = Models::load("Session", false);
+                                $session -> fromSource($s[0]);
+                                self::$session = $session;
                             }
-
-                            if (self::$session -> userId != 0) {
-                                $u = Users::getById(self::$session -> userId);
+                            //var_dump(self::$session);
+                            if (self::$session -> userId -> value != 0) {
+                                $u = Users::getById(self::$session -> userId -> value);
                                 if ($u != false) {
                                     self::$user = $u;
                                 }
@@ -325,6 +336,22 @@
                 $pass .= $arr[$index];
             }
             return $pass;
+        }
+
+
+
+        public static function isValidToken ($token) {
+            if ($token == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Sessions -> isValidToken: Не задан параметр - токен сессии пользователя");
+            else
+                if (gettype($token) != "string")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Sessions -> isValidToken: Неверно задан тип параметра - токен секссии пользователя");
+
+            $result = DBManager::select("kr_sessions", ["*"], "token = '$token' LIMIT 1");
+            if (!Errors::isError($result)) {
+                return sizeof($result) > 0 ? true : false;
+            } else
+                return $result;
         }
 
 

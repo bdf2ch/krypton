@@ -8,7 +8,7 @@
     $ldap_host = "10.50.0.1";
 
     function __autoload($class) {
-        if (!defined("ENGINE_INSTALL_MODE")) {
+        if (!defined("ENGINE_INSTALL_MODE") && !defined("KRYPTON_API")) {
             //var_dump(Krypton::$extensions);
             if (in_array($class, Krypton::$extensions))
                 require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$class.".extension.php";

@@ -7,6 +7,7 @@
         .module("krypton.app", [
             "ngRoute",
             "ngCookies",
+            "ngSanitize",
             "krypton",
             "krypton.ui",
             "krypton.app.kolenergo",
@@ -15,10 +16,15 @@
         )
         .controller("testController", testController)
         .controller("adminLoginController", adminLoginController)
+        .provider('$routeProvider', function() {
+            this.$get = function($http) {
+                return $routeProvider;
+            };
+        })
         .config(function ($routeProvider) {
             $routeProvider
                 .when("/admin", {
-                    templateUrl: "templates/app/admin_login.html",
+                    template: "",
                     controller: "adminLoginController"
                 })
                 .when("/", {
@@ -42,13 +48,22 @@
 
 
 
-    function adminLoginController ($log) {
+    function getAdminTemplate ($http) {
+        $http.post("serverside/libs/krypton/api.php", { action: "getAdminTemplate" })
+            .success(function (data) {
+                $log.log(data);
+                if ($errors.isError(data))
+                    $log.error(data);
+            });
+    };
 
+    function adminLoginController ($log, $scope) {
+        $scope.test = "test scope";
     };
 
 
 
-    function kryptonAppRun ($log, $classes, $session, $settings, $application, $http, $errors, $users) {
+    function kryptonAppRun ($log, $classes, $session, $settings, $navigation, $application, $http, $errors, $users) {
         $log.log("krypton.app run...");
         moment.locale("ru");
 

@@ -231,6 +231,24 @@
         }
 
 
+
+        public static function getAdminTemplate () {
+            if (Sessions::getCurrentUser() != false) {
+                //echo ("user = ".json_encode(Sessions::getCurrentUser()));
+                if (Sessions::getCurrentUser() -> isAdmin -> value === true) {
+                    if (file_exists($_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin.html")) {
+                        echo(file_get_contents($_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin.html"));
+                        return true;
+                    } else {
+                        echo(json_encode(Errors::push(Errors::ERROR_TYPE_ENGINE, "Файл с шаблоном панели администрирования не найден")));
+                        return false;
+                    }
+                } else
+                    echo("serverside/template/admin_login.html");
+            }
+        }
+
+
     };
 
 ?>
