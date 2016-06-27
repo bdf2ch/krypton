@@ -24,7 +24,7 @@
         .config(function ($routeProvider) {
             $routeProvider
                 .when("/admin", {
-                    template: "",
+                    //template: "",
                     controller: "adminLoginController"
                 })
                 .when("/", {
@@ -71,6 +71,7 @@
         $classes.getAll().User.divisionId = new Field({ source: "division_id", type: "integer", value: 0, default_value: 0, backupable: true });
 
         $application.init();
+        $navigation.init();
         $errors.init();
         $session.init();
         $settings.init();

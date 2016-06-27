@@ -10,6 +10,7 @@
 <body ng-controller="testController">
     <script id="krypton_init_data">
         var krypton = {
+            admin: {ADMIN_TEMPLATE},
             application: {APPLICATION},
             extensions: {EXTENSIONS},
             session: {CURRENT_SESSION},
@@ -22,6 +23,9 @@
         console.log(krypton);
     </script>
     <script src="libs/angularjs/angular.min.js"></script>
+    <script type="text/ng-template" id="adminPanelTemplate">
+        <b>beatch!</b>
+    </script>
     
     <div id="app-header">
         <a href="#" class="menu-item active">Главная</a>

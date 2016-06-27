@@ -3,7 +3,8 @@
         .module("krypton.ui", [])
             .factory("$dateTimePicker", dateTimePickerFactory)
             .directive("uiDateTimePicker", dateTimePickerDirective)
-            .directive("uiModelField", modelFieldDirective);
+            .directive("uiModelField", modelFieldDirective)
+            .directive("dataGrid", modelGridDirective);
     angular.module("krypton.ui").run(kryptonUIRun);
     
     
@@ -685,4 +686,21 @@
 
         }
     };
+    
+    
+    
+    
+    function modelGridDirective ($log) {
+        return {
+            restrict: "E",
+            require: "ngModel",
+            template: "",
+            scope: {
+                ngModel: "="
+            },
+            link: function (scope, element, attrs, ctrl) {
+                $log.log("ngModel = ", scope.ngModel);
+            }
+        }
+    }
 })();

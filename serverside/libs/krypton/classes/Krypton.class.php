@@ -140,11 +140,38 @@
 
 
         public function start () {
+        /*
+            if (defined("ENGINE_ADMIN_MODE")) {
+                echo("ADMIN MODE</br>");
+                if (Sessions::getCurrentUser() != false && Sessions::getCurrentUser() -> isAdmin -> value == true)
+                    $template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin.html";
+                else
+                    $template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin_login.html";
+
+            }
+            */
+
             $path = explode("/", $_SERVER["REQUEST_URI"]);
-            if ((count($path) == 3 && $path[1] == "admin") || (count($path) == 2 && $path[1] == "admin")) {
-                $template_url = "serverside/templates/admin_login.html";
+            if (isset($path[1]) && $path[1] != "") {
+                switch ($path[1]) {
+                    case "admin":
+                        //if (isset($path[2]))
+                        //    header("Location: /admin/");
+                        //else {
+                            if (Sessions::getCurrentUser() != false && Sessions::getCurrentUser() -> isAdmin -> value == true)
+                                $template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin.html";
+                            else
+                                $template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin_login.html";
+                        //}
+                        break;
+                    default:
+                        header("Location: /");
+                        break;
+                }
             } else
-                $template_url = "serverside/templates/application.html";
+                $template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/application.html";
+
+
 
             Sessions::login("kolu0897", "zx12!@#$");
 
@@ -154,6 +181,7 @@
 
 
             $this -> template = new XTemplate($template_url);
+            $this -> template -> assign("ADMIN_TEMPLATE", self::getAdminTemplate());
             $this -> template -> assign("APPLICATION_TITLE", self::$app -> get("title"));
             $this -> template -> assign("APPLICATION", json_encode(self::$app));
             $this -> template -> assign("EXTENSIONS", json_encode(Extensions::getAll()));
@@ -237,14 +265,20 @@
                 //echo ("user = ".json_encode(Sessions::getCurrentUser()));
                 if (Sessions::getCurrentUser() -> isAdmin -> value === true) {
                     if (file_exists($_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin.html")) {
-                        echo(file_get_contents($_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin.html"));
-                        return true;
+                        return json_encode(file_get_contents($_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin.html"));
                     } else {
                         echo(json_encode(Errors::push(Errors::ERROR_TYPE_ENGINE, "Файл с шаблоном панели администрирования не найден")));
                         return false;
                     }
-                } else
-                    echo("serverside/template/admin_login.html");
+                } else {
+                    if (file_exists($_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin_login.html")) {
+                        echo(file_get_contents($_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin_login.html"));
+                        return true;
+                    } else {
+                        echo(json_encode(Errors::push(Errors::ERROR_TYPE_ENGINE, "Файл с шаблоном авторизации в панели администрирования не найден не найден")));
+                        return false;
+                    }
+                }
             }
         }
 

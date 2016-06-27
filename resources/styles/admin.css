@@ -362,25 +362,12 @@ body {
   margin: 0px;
   padding: 0px;
   font-family: "Roboto Regular";
-  font-size: 15px;
-}
-html a,
-body a {
-  color: #64B5F6;
-  text-decoration: none;
-}
-html a:hover,
-body a:hover {
-  color: #1E88E5;
-}
-html label,
-body label {
-  color: #BDBDBD;
+  font-size: 14px;
 }
 #app-header {
   position: absolute;
   top: 0px;
-  left: 0px;
+  left: 200px;
   right: 0px;
   height: 45px;
   min-width: 1200px;
@@ -392,21 +379,21 @@ body label {
   background-image: -o-linear-gradient(top, #fff, #f2f2f2);
   background-image: linear-gradient(to bottom, #fff, #f2f2f2);
 }
-#app-header #app-logo {
-  position: relative;
-  width: 200px;
-  height: 100%;
+#app-header #current-menu {
+  margin-left: 10px;
   box-sizing: border-box;
 }
-#app-content-wrapper {
-  position: absolute;
-  top: 45px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  min-width: 1200px;
+#app-header #current-menu #current-menu-title {
+  display: block;
+  font-size: 20px;
+  color: black;
 }
-#app-content-wrapper #app-menu {
+#app-header #current-menu #current-menu-description {
+  display: block;
+  font-size: 15px;
+  color: gray;
+}
+#app-menu {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -414,12 +401,46 @@ body label {
   width: 200px;
   background: url("../images/menu_background.png");
 }
-#app-content-wrapper #app-content {
+#app-menu #current-user {
+  width: 200px;
+  height: 45px;
+  border-right: 1px solid lightgray;
+  box-sizing: border-box;
+  background-image: -moz-linear-gradient(top, #E3F2FD, #BBDEFB);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#E3F2FD), to(#BBDEFB));
+  background-image: -webkit-linear-gradient(top, #E3F2FD, #BBDEFB);
+  background-image: -o-linear-gradient(top, #E3F2FD, #BBDEFB);
+  background-image: linear-gradient(to bottom, #E3F2FD, #BBDEFB);
+}
+#app-menu .menu-item {
+  display: block;
+  width: 100%;
+  float: left;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+  box-sizing: border-box;
+  border-bottom: 1px solid lightgray;
+  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
+}
+#app-menu .menu-item.active {
+  background-image: -moz-linear-gradient(top, #EEEEEE, #E0E0E0);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#EEEEEE), to(#E0E0E0));
+  background-image: -webkit-linear-gradient(top, #EEEEEE, #E0E0E0);
+  background-image: -o-linear-gradient(top, #EEEEEE, #E0E0E0);
+  background-image: linear-gradient(to bottom, #EEEEEE, #E0E0E0);
+}
+#app-content {
   position: absolute;
+  top: 45px;
   left: 200px;
-  top: 0px;
   right: 0px;
   bottom: 0px;
+  min-width: 1200px;
 }
 /**********
 ** KRYPTON ADMINISTRATION PANEL LOGIN

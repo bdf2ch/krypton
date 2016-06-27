@@ -113,11 +113,110 @@ function isField (obj) {
         .factory("$factory", factoryFactory)
         .factory("$errors", errorsFactory)
         .factory("$settings", settingsFactory)
-        .factory("$navigation", navigationFactory)
         .factory("$extensions", extensionsFactory)
         .factory("$session", sessionFactory)
         .factory("$users", usersFactory)
         .factory("$application", applicationFactory)
+        .config(function ($provide, $routeProvider) {
+
+
+            /*******************
+             * $navigation
+             * Сервис управления меню
+             *******************/
+            $provide.factory("$navigation", function ($log, $classes, $rootScope, $errors) {
+
+                /**
+                 * Menu
+                 * набор свойств и методов, описывающих пункт меню
+                 */
+                $classes.add("Menu", {
+                    __dependencies__: [],
+                    id: "",
+                    parentId: "",
+                    url: "",
+                    title: "",
+                    description: "",
+                    templateUrl: "",
+                    controller: "",
+                    isActive: false,
+                    isDefault: false,
+
+
+                    init: function (parameters) {
+                        if (parameters !== undefined) {
+                            for (var param in parameters) {
+                                if (this.hasOwnProperty(param))
+                                    this[param] = parameters[param];
+                            }
+                        } else
+                            return $errors.add(ERROR_TYPE_DEFAULT, "$classes -> Menu -> init: Не задан параметр - параметры инициализации");
+                    }
+                });
+
+                $rootScope.$on("$routeChangeSuccess", function (prev, next) {
+                    var length = items.length;
+                    for (var i = 0; i < length; i++) {
+                        if (items[i].url === next.$$route.originalPath) {
+                            items[i].isActive = true;
+                            currentMenuItem = items[i];
+                        } else
+                            items[i].isActive = false;
+                    }
+                });
+
+                var items = [];
+                var currentMenuItem = undefined;
+
+                return {
+                    init: function () {
+                        if (window.krypton !== null && window.krypton !== undefined) {
+                            if (window.krypton.admin !== null && window.krypton.admin !== undefined) {
+
+                            }
+                        }
+                    },
+
+                    getAll: function () {
+                        return items;
+                    },
+
+                    getCurrent: function () {
+                        return currentMenuItem;
+                    },
+
+                    /**
+                     * Добавляет пункт меню
+                     * @param menuItem {FactoryObject} - Добавляемый пункт меню
+                     * @returns {*}
+                     */
+                    add: function (menuItem) {
+                        if (menuItem !== undefined) {
+                            if (menuItem.__class__ !== undefined && menuItem.__class__ === "Menu") {
+                                $routeProvider
+                                    .when(menuItem.url, {
+                                        templateUrl: menuItem.templateUrl,
+                                        controller: menuItem.controller
+                                    });
+                                if (menuItem.isDefault === true) {
+                                    $routeProvider
+                                        .when("/", {
+                                            templateUrl: menuItem.templateUrl,
+                                            controller: menuItem.controller
+                                        });
+                                    currentMenuItem = menuItem;
+                                }
+                                items.push(menuItem);
+                                return menuItem;
+                            } else
+                                $errors.add(ERROR_TYPE_DEFAULT, "$navigation -> add: Параметр не является экземпляром класса Menu");
+                        } else
+                            return $errors.add(ERROR_TYPE_DEFAULT, "$navigation -> add: Не задан параметр - пункт меню, который требуется добавить");
+                    }
+                }
+            });
+
+        })
         .run(kryptonRun);
 
 
@@ -1086,9 +1185,6 @@ function isField (obj) {
 
 
 
-
-
-
     /**
      * $settings
      * CСервис управления настройками приложения
@@ -1135,48 +1231,6 @@ function isField (obj) {
 
 
 
-    /**
-     * $navigation
-     * Сервис управления навигацией и меню приложения
-     */
-    function navigationFactory ($log, $errors, $classes, $factory, $rootScope, $http, $session, $route, $sanitize, $templateCache) {
-        $classes.add("Menu", {
-            __dependencies__: [],
-            id: ""
-        });
-
-        $rootScope.$on("$routeChangeStart", function (event, next, prev) {
-            $log.log("route changed to " + next);
-            $log.log(event);
-            $log.log(next);
-            if (next.originalPath === "/admin") {
-                $log.log("ADMIN CALLED");
-                $templateCache.put("admin.html", "dasdsadsadasdasdas");
-                //next.$$route.template = $sanitize("<i>sadsada</i>");;
-
-                $http.post("serverside/libs/krypton/api.php", { action: "getAdminTemplate" })
-                    .success(function (data) {
-                        $log.log(data);
-                        //if (data !== undefined)
-                            //next.$$route.template = $sanitize(data);
-
-                        $templateCache.put(data);
-
-                        //if ($errors.isError(data))
-                        //    $log.error(data);
-                        //else
-                        //    next.$$route.template = $sanitize(data);
-                    });
-            }
-
-        });
-
-        var items = [];
-
-        return {
-
-        }
-    };
 
 
     /**

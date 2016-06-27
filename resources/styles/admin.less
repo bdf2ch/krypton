@@ -19,26 +19,14 @@ html, body {
   margin: 0px;
   padding: 0px;
   font-family: "Roboto Regular";
-  font-size: 15px;
-
-  a {
-    color: #64B5F6;
-    text-decoration: none;
-    &:hover {
-      color: #1E88E5;
-    }
-  }
-
-  label {
-    color: #BDBDBD;
-  }
+  font-size: 14px;
 }
 
 
 #app-header {
   position: absolute;
   top: 0px;
-  left: 0px;
+  left: @app-menu-width;
   right: 0px;
   height: @app-header-height;
   min-width: @app-min-width;
@@ -46,39 +34,72 @@ html, body {
   border-bottom: 1px solid #d4d4d4;
   .gradient(#fff, #f2f2f2);
 
-  #app-logo {
-    position: relative;
-    width: @app-menu-width;
-    height: 100%;
+
+  #current-menu {
+    margin-left: 10px;
     box-sizing: border-box;
+
+    #current-menu-title {
+      display: block;
+      font-size: 20px;
+      color: black;
+    }
+
+    #current-menu-description {
+      display: block;
+      font-size: 15px;
+      color: gray;
+    }
+
   }
 }
 
 
-#app-content-wrapper {
+#app-menu {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: @app-menu-width;
+  background: url("../images/menu_background.png");
+
+
+  #current-user {
+    width: @app-menu-width;
+    height: @app-header-height;
+    //border: 1px solid black;
+    border-right: 1px solid lightgray;
+    box-sizing: border-box;
+    .gradient(#E3F2FD, #BBDEFB);
+  }
+
+
+  .menu-item {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    box-sizing: border-box;
+    border-bottom: 1px solid lightgray;
+    .gradient(#fff, #f2f2f2);
+
+    &.active {
+      .gradient(#EEEEEE, #E0E0E0);
+    }
+  }
+}
+
+
+#app-content {
   position: absolute;
   top: @app-header-height;
-  left: 0px;
+  left: @app-menu-width;
   right: 0px;
   bottom: 0px;
   min-width: @app-min-width;
 
-  #app-menu {
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    bottom: 0px;
-    width: @app-menu-width;
-    background: url("../images/menu_background.png");
-  }
-
-  #app-content {
-    position: absolute;
-    left: @app-menu-width;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-  }
 }
 
 
