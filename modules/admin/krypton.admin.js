@@ -3,22 +3,11 @@
 
 (function () {
     angular
-        .module("krypton.admin", ["ngRoute", "ngCookies", "krypton"])
-        .config(function ($routeProvider, $locationProvider) {
-            //$locationProvider.html5Mode(true);
-            /*
-            $routeProvider
-                .when("/", {
-                    templateUrl: "../../templates/admin/dashboard/dashboard.html",
-                    controller: adminDashboardController
-                })
-                .when("/users", {
-                    templateUrl: "../../templates/admin/users/users.html",
-                    controller: usersController
-                });
-                */
+        .module("krypton.admin", ["ngRoute", "ngCookies", "krypton", "krypton.ui"])
+        .config(function ($routeProvider) {
         })
         .run(kryptonAdminRun);
+
 
 
     function dashboardController ($log, $scope) {
@@ -27,8 +16,8 @@
 
 
 
-    function usersController ($log, $scope) {
-
+    function usersController ($log, $scope, $users) {
+        $scope.users = $users.getAll();
     };
 
 

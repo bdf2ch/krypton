@@ -28,6 +28,7 @@ function Field (parameters) {
     this.value = undefined;     // Значение поля
     this.default_value = "";    // Значение поля по умолчанию
     this.backupable = false;    // Флаг, требуется ли резервировать значение поля
+    this.displayable = true;    // Флаг, требуется ли отображать поле
     this.required = false;      // Флаг, является ли поле обязательным для заполнения
     this.title = "";
     this.isValid = false;

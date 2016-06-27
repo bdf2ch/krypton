@@ -4,7 +4,7 @@
             .factory("$dateTimePicker", dateTimePickerFactory)
             .directive("uiDateTimePicker", dateTimePickerDirective)
             .directive("uiModelField", modelFieldDirective)
-            .directive("dataGrid", modelGridDirective);
+            .directive("modelGrid", modelGridDirective);
     angular.module("krypton.ui").run(kryptonUIRun);
     
     
@@ -690,17 +690,51 @@
     
     
     
-    function modelGridDirective ($log) {
+    function modelGridDirective ($log, $errors) {
         return {
             restrict: "E",
             require: "ngModel",
-            template: "",
+            template:
+                "<table>" +
+                    "<thead>" +
+                        "<tr>" +
+                            "<th ng-repeat='header in headers track by $index'>{{ header }}</th>" +
+                        "</tr>" +
+                    "</thead>" +
+                    "<tbody>" +
+                        "<tr ng-repeat='row in ngModel track by $index'>" +
+                            "<td>{{ $index }}</td>" +
+                        "</tr>" +
+                    "</tbody>" +
+                "</table>",
             scope: {
-                ngModel: "="
+                ngModel: "=",
+                columns: "@"
             },
             link: function (scope, element, attrs, ctrl) {
                 $log.log("ngModel = ", scope.ngModel);
+
+                var headers = scope.headers = [];
+
+                if (scope.ngModel !== null && scope.ngModel !== undefined) {
+                    if (typeof scope.ngModel !== "object" && scope.ngModel.constructor !== "boolean")
+                        return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> model-grid -> Источник данных (ngModel) не является массивом");
+                    else {
+                        for (var property in scope.ngModel[0]) {
+                            if (property.constructor !== undefined) {
+                                if (property.constructor === "FactoryObject" && property.title !== "")
+                                    scope.headers.push(property.title);
+                                else if (property.constructor !== "Function")
+                                    scope.headers.push(property);
+                            }
+                        }
+                        $log.log("headers = ", scope.headers);
+                    }
+                }
             }
         }
-    }
+    };
+
+
+
 })();
