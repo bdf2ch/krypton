@@ -12,8 +12,8 @@
         "extensions" => array(
             "Kolenergo",
             "LDAP",
-            "News",
-            "Telephones"
+            //"News",
+            //"Telephones"
         )
     ));
 

@@ -1,4 +1,5 @@
-@import "utils";
+@import "ui.less";
+@import "utils.less";
 
 @app-min-width: 1200px;
 @app-header-height: 45px;
@@ -32,7 +33,9 @@ html, body {
   min-width: @app-min-width;
   box-sizing: border-box;
   border-bottom: 1px solid #d4d4d4;
+  border-left: 1px solid #d4d4d4;
   .gradient(#fff, #f2f2f2);
+  //.gradient(#E3F2FD, #BBDEFB);
 
 
   #current-menu {
@@ -42,7 +45,8 @@ html, body {
     #current-menu-title {
       display: block;
       font-size: 20px;
-      color: black;
+      color: black
+    ;
     }
 
     #current-menu-description {
@@ -68,7 +72,7 @@ html, body {
     width: @app-menu-width;
     height: @app-header-height;
     //border: 1px solid black;
-    border-right: 1px solid lightgray;
+    //border-right: 1px solid lightgray;
     box-sizing: border-box;
     .gradient(#ECEFF1, #CFD8DC);
   }
@@ -99,7 +103,7 @@ html, body {
   right: 0px;
   bottom: 0px;
   min-width: @app-min-width;
-
+  border-left: 1px solid lightgray;
 }
 
 

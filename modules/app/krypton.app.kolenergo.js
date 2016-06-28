@@ -2,20 +2,21 @@
 
 (function () {
     angular
-        .module("krypton.app.kolenergo", [])
+        .module("krypton.app.kolenergo", ["krypton"])
         .factory("$kolenergo", kolenergoFactory)
         .run(kolenergoRun)
         .controller("UserAccountController", UserAccountController);
 
 
 
-    function kolenergoFactory ($log, $classes, $factory, $errors) {
+    function kolenergoFactory ($log, $classes, $factory, $errors, $navigation) {
         /**
          * Department
          * Набор свойств и методов, описывающих производственное отделение
          */
         $classes.add("Department", {
             __dependencies__: [],
+            __icon__: "",
             id: new Field({ source: "id", type: "integer", value: 0, default_value: 0 }),
             title: new Field({ source: "title", type: "string", value: "", default_value: "", backupable: true })
         });
@@ -49,6 +50,18 @@
                         $log.log("departments = ", departments);
                     }
                 }
+
+                $classes.getAll().User.departmentId = new Field({ source: "departementId", type: "integer", value: 0, default_value: 0, backupable: true, displayable: true, title: "Произв. отделение" });
+
+                var temp = $factory({ classes: ["Menu", "Model"], base_class: "Menu" });
+                temp.init({
+                    url: "/company",
+                    templateUrl: "../../templates/admin/kolenergo/company.html",
+                    controller: companyController,
+                    title: "Структура организации",
+                    description: "Управление организационной структурой предприятия"
+                });
+                $navigation.add(temp);
             },
             
             getDepartments: function () {
@@ -77,10 +90,9 @@
 
 
 
-    function kolenergoRun ($log, $kolenergo) {
+    function kolenergoRun ($log, $kolenergo, $classes) {
         $log.log("krypton.app.kolenergo run...");
         $kolenergo.init();
-        
     };
 
 
@@ -229,5 +241,26 @@
             $log.log("cancel called");
             $scope.user._states_.editing(false);
         };
+    };
+
+
+
+
+    function companyController ($scope) {
+        $scope.company = [
+            {
+                id: 1, 
+                parentId: 0
+            }, 
+            {id: 2, parentId: 0}, 
+            {id: 3, parentId: 0}, 
+            {id: 4, parentId: 1}, 
+            {id: 5, parentId: 1}, 
+            {id: 6, parentId: 1}, 
+            {id: 7, parentId: 2}, 
+            {id: 8, parentId: 2}, 
+            {id: 9, parentId: 2}, 
+            {id: 10, parentId: 3}
+        ];
     };
 })();

@@ -309,6 +309,7 @@ input[type='button'], input[type='submit'], button {
     display: inline-block;
     width: 20px;
     height: 20px;
+    margin-left: 5px;
     padding: 0px !important;
     font-size: 11px;
     //line-height: 8px;
@@ -352,9 +353,50 @@ input[type='button'], input[type='submit'], button {
       background: @color-red-hover;
     }
   }
+
+  &.transparent {
+    background: transparent;
+  }
 }
 
 
+
+
+/*********
+* TABLES
+*********/
+table {
+  width: 100%;
+  border-spacing: 0px;
+  //border: 1px solid lightgrey;
+
+  thead {
+    th {
+      padding: 10px;
+      box-sizing: border-box;
+      background: #E0F2F1;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid black;
+
+      td {
+        padding: 10px;
+        box-sizing: border-box;
+      }
+    }
+  }
+
+  &.stripped {
+    tbody {
+      tr:nth-child(even) {
+        background: #FAFAFA;
+      }
+    }
+  }
+}
 
 
 

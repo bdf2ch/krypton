@@ -30,7 +30,7 @@
                 } else {
                     array_push(Krypton::$extensions, $extensionTitle);
                     $extension = new $extensionTitle();
-                    $extensionItem = new Extension($extension::$id, $extension::$description, $extension::$clientSideExtensionUrl);
+                    $extensionItem = new Extension($extension::$id, $extension::$title, $extension::$url, $extension::$description);
                     array_push(self::$items, $extensionItem);
                     echo("from extensions</br>");
                     $extension::init();
@@ -41,12 +41,11 @@
 
 
 
-        public static function getClientSideExtensions () {
+        public static function getExtensionsUrls () {
             $extensions = "";
             for ($i = 0; $i < sizeof(self::$items); $i++) {
-                if (self::$items[$i] -> clientSideExtensionUrl != null && self::$items[$i]  -> clientSideExtensionUrl != "") {
-                    $extensions .= "<script src='".self::$items[$i] -> clientSideExtensionUrl."'></script>\n";
-                }
+                if (self::$items[$i] -> url != null && self::$items[$i]  -> url != "")
+                    $extensions .= "<script src='".self::$items[$i] -> getUrl()."'></script>\n";
             }
             return $extensions;
         }

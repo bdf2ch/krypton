@@ -10,17 +10,13 @@
             "ngSanitize",
             "krypton",
             "krypton.ui",
-            "krypton.app.kolenergo",
-            "krypton.app.news",
-            "krypton.app.telephones"]
+            "krypton.app.kolenergo"
+            //"krypton.app.news",
+            //"krypton.app.telephones"
+             ]
         )
         .controller("testController", testController)
         .controller("adminLoginController", adminLoginController)
-        .provider('$routeProvider', function() {
-            this.$get = function($http) {
-                return $routeProvider;
-            };
-        })
         .config(function ($routeProvider) {
             $routeProvider
                 .when("/admin", {

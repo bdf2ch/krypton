@@ -1298,10 +1298,10 @@ function isField (obj) {
          ********************/
         $classes.add("User", {
             __dependencies__: [],
-            id: new Field({ source: "id", type: "integer", value: 0, default_value: 0, backupable: true}),
-            name: new Field({ source: "name", type: "string", value: "", default_value: "", backupable: true }),
-            fname: new Field({ source: "fname", type: "string", value: "", default_value: "", backupable: true }),
-            surname: new Field({ source: "surname", type: "string", value: "", default_value: "", backupable: true }),
+            id: new Field({ source: "id", type: "integer", value: 0, default_value: 0, backupable: true, displayable: true, title: "#"}),
+            name: new Field({ source: "name", type: "string", value: "", default_value: "", backupable: true, displayable: true, title: "Имя" }),
+            fname: new Field({ source: "fname", type: "string", value: "", default_value: "", backupable: true, displayable: true, title: "Отчество" }),
+            surname: new Field({ source: "surname", type: "string", value: "", default_value: "", backupable: true, displayable: true, title: "Фамилия" }),
             position: new Field({ source: "position", type: "string", value: "", default_value: "", backupable: true }),
             email: new Field({ source: "email", type: "string", value: "", default_value: "", backupable: true }),
             phone: new Field({ source: "phone", type: "string", value: "", default_value: "", backupable: true }),

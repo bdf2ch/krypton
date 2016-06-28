@@ -3,7 +3,7 @@
     class Telephones extends ExtensionInterface {
         public static $id = "kr_telephones";
         public static $description = "Telephones description";
-        public static $clientSideExtensionUrl = "modules/app/krypton.app.telephones.js";
+        public static $clientSideExtensionUrl = $_SERVER["DOCUMENT_ROOT"]."/modules/app/krypton.app.telephones.js";
 
         public function __construct () {
             //parent::__construct(self::$id, self::$description, self::$clientSideExtensionUrl);

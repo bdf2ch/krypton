@@ -222,6 +222,7 @@ button.small {
   display: inline-block;
   width: 20px;
   height: 20px;
+  margin-left: 5px;
   padding: 0px !important;
   font-size: 11px;
   text-align: center !important;
@@ -275,6 +276,33 @@ input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
   background: #D32F2F;
+}
+input[type='button'].transparent,
+input[type='submit'].transparent,
+button.transparent {
+  background: transparent;
+}
+/*********
+* TABLES
+*********/
+table {
+  width: 100%;
+  border-spacing: 0px;
+}
+table thead th {
+  padding: 10px;
+  box-sizing: border-box;
+  background: #E0F2F1;
+}
+table tbody tr {
+  border-bottom: 1px solid black;
+}
+table tbody tr td {
+  padding: 10px;
+  box-sizing: border-box;
+}
+table.stripped tbody tr:nth-child(even) {
+  background: #FAFAFA;
 }
 /**********
 * LINKS

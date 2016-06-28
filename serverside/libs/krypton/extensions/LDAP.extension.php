@@ -3,8 +3,9 @@
     class LDAP extends ExtensionInterface {
 
         public static $id = "kr_ldap";
+        public static $title = "LDAP";
         public static $description = "LDAP description";
-        public static $clientSideExtensionUrl = "";
+        public static $url = "";
 
         /**
         * Производит установку модуля в системе

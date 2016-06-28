@@ -2,31 +2,49 @@
 
     class Extension {
         public $id;
-        public $description;
-        public $clientSideExtensionUrl;
+        public $title;
+        public $description = "";
+        public $url = "";
 
-        public function __construct ($extId, $extDescription, $extClientSideUrl) {
-            if ($extId == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Не задан параметр - идентификатор расширения");
-                return false;
-            } else {
-                if (gettype($extId) != "string") {
-                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Неверно задан тип параметра - идентификатор расширения");
-                    return false;
-                } else {
-                    $this -> id = $extId;
+        public function __construct ($id, $title, $url, $description) {
+            if ($id == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Не задан параметр - идентификатор расширения");
+            else
+                if (gettype($id) != "string")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Неверно задан тип параметра - идентификатор расширения");
+            $this -> id = $id;
 
-                    if ($extDescription != null && gettype($extDescription) != "string")
-                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Неверно задан тип параметра - описание расширения");
-                    else
-                        $this -> description = $extDescription;
 
-                    if ($extClientSideUrl != null && gettype($extClientSideUrl) != "string")
-                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Неверно задан тип параметра - url расширения для клиентской части приложения");
-                    else
-                        $this -> clientSideExtensionUrl = $extClientSideUrl;
-                }
-            }
+            if ($title == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Не задан параметр - наименование расширения");
+            else
+                if (gettype($title) != "string")
+                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Неверно задан тип параметра - наименование расширения");
+            $this -> title = $title;
+
+
+            if ($url != null && gettype($url) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Неверно задан тип параметра - описание расширения");
+            else
+                $this -> url = $url;
+
+
+            if ($description != null && gettype($description) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Extension -> __construct: Неверно задан тип параметра - описание расширения");
+            else
+                $this -> description = $description;
+        }
+
+
+        public function getUrl () {
+
+            if (defined("ENGINE_ADMIN_MODE"))
+                return "../../".$this -> url;
+            else
+                return $this -> url;
+
+
+            //return defined("ENGINE_ADMIN_MODE") ? "../../".$this -> url : $this -> url;
         }
 
     };

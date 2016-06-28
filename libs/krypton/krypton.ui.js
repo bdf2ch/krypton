@@ -4,8 +4,12 @@
             .factory("$dateTimePicker", dateTimePickerFactory)
             .directive("uiDateTimePicker", dateTimePickerDirective)
             .directive("uiModelField", modelFieldDirective)
-            .directive("modelGrid", modelGridDirective);
-    angular.module("krypton.ui").run(kryptonUIRun);
+            .directive("modelGrid", modelGridDirective)
+            .directive("columns", columnsDirective)
+            .directive("column", columnDirective)
+            .directive("columnControl", columnControlDirective)
+            .directive("hierarchy", hierarchyDirective)
+            .run(kryptonUIRun);
     
     
     
@@ -695,15 +699,15 @@
             restrict: "E",
             require: "ngModel",
             template:
-                "<table>" +
+                "<table class='stripped'>" +
                     "<thead>" +
                         "<tr>" +
-                            "<th ng-repeat='header in headers track by $index'>{{ header }}</th>" +
+                            "<th ng-repeat='header in headers track by $index'>{{ header.title }}</th>" +
                         "</tr>" +
                     "</thead>" +
                     "<tbody>" +
                         "<tr ng-repeat='row in ngModel track by $index'>" +
-                            "<td>{{ $index }}</td>" +
+                            "<td ng-repeat='header in headers track by $index'>{{ row[header.property].value }}</td>" +
                         "</tr>" +
                     "</tbody>" +
                 "</table>",
@@ -717,16 +721,31 @@
                 var headers = scope.headers = [];
 
                 if (scope.ngModel !== null && scope.ngModel !== undefined) {
-                    if (typeof scope.ngModel !== "object" && scope.ngModel.constructor !== "boolean")
+                    if (typeof scope.ngModel !== "object" && scope.ngModel.constructor !== "array")
                         return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> model-grid -> Источник данных (ngModel) не является массивом");
                     else {
                         for (var property in scope.ngModel[0]) {
-                            if (property.constructor !== undefined) {
-                                if (property.constructor === "FactoryObject" && property.title !== "")
-                                    scope.headers.push(property.title);
-                                else if (property.constructor !== "Function")
-                                    scope.headers.push(property);
-                            }
+                            //$log.log(property + " = " + typeof scope.ngModel[0][property]);
+                            //$log.log(property + " = " + scope.ngModel[0][property].constructor);
+                            //if (typeof property === "object") {
+                                if (scope.ngModel[0][property].constructor !== undefined && scope.ngModel[0][property].constructor === Field) {
+                                    if (property !== "__class__" && property !== "init_functions" && property !== "_model_" && property !== "_states_" && property !== "_backup_") {
+                                        var header = {
+                                            title: "",
+                                            property: property
+                                        };
+                                        if (scope.ngModel[0][property].displayable === true) {
+                                            header.title = scope.ngModel[0][property].title !== "" ? scope.ngModel[0][property].title : property;
+                                            headers.push(header);
+                                        } else {
+                                            header.title = property;
+                                            scope.headers.push(property);
+                                        }
+                                    }
+                                }
+                            //} else {
+                                //scope.headers.push(property);
+                            //}
                         }
                         $log.log("headers = ", scope.headers);
                     }
@@ -736,5 +755,264 @@
     };
 
 
+
+
+
+
+
+    function columnsDirective () {
+        return {
+            restrict: "E",
+            transclude: true,
+            scope: {
+                id: "@"
+            },
+            template:
+                "<div class='krypton-columns'>" +
+                    "<div class='columns-row' ng-transclude></div>" +
+                "</div>",
+            controller: function ($scope) {
+                var columns = $scope.columns = [];
+
+                this.add = function (column) {
+                    column.isMaximized = false;
+                    column.isMinimized = false;
+                    columns.push(column);
+                };
+
+                this.maximize = function (id) {
+                    if (id !== undefined) {
+                        var length = columns.length;
+                        for (var i = 0; i < length; i++) {
+                            if (columns[i].id === id) {
+                                columns[i].currentWidth = 100;
+                                columns[i].isMaximized = true;
+                                if (columns[i].onMaximize !== undefined && typeof columns[i].onMaximize === "function")
+                                    columns[i].onMaximize();
+                            } else {
+                                columns[i].currentWidth = 0;
+                                columns[i].isMinimized = true;
+                            }
+                        }
+                    }
+                };
+
+                this.restore = function () {
+                    var length = columns.length;
+                    for (var i = 0; i < length; i ++) {
+                        columns[i].currentWidth = columns[i].width;
+                        columns[i].isMaximized = false;
+                        columns[i].isMinimized = false;
+                        if (columns[i].onMinimize !== undefined && typeof columns[i].onMinimize === "function")
+                            columns[i].onMinimize();
+                    }
+                };
+
+                //$columns.register($scope);
+
+            }
+        }
+    };
+
+
+
+
+    function columnDirective () {
+        return {
+            restrict: "E",
+            require: "^columns",
+            transclude: true,
+            template: 
+                "<div class='columns-column' style='width: {{currentWidth}}%;'>" +
+                    "<div class='column-header' ng-show='isMinimized === false'>" +
+                        "<div class='left'>" +
+                            "<span class='header-caption' ng-show='showCaption === true'>{{ caption }}</span>" +
+                            "<button class='small transparent' ng-show='showMaximizeButton === true && isMaximized === false' ng-click='max()' title='Развернуть колонку'><span class='fa fa-arrows-h' area-hidden='true'></span></button>" +
+                            "<button class='small transparent' ng-show='isMaximized' ng-click='min()' title='Свернуть колонку'><span class='fa fa-long-arrow-right' area-hidden='true'></span></button>" +
+                        "</div>" +
+                        "<div class='right'>" + 
+                            "<button ng-repeat='control in controls' ng-show='control.isVisible' class='{{ \"small rounded \" +  control.class }}' ng-click='control.action()' title='{{ control.title }}'><span class='{{ control.content }}'></span></button>" +
+                        "</div>" +
+                "   </div>" +
+                    "<div class='column-content' ng-show='isMinimized === false' ng-transclude></div>" +
+                "</div>",
+            replace: true,
+            scope: {
+                id: "@",
+                caption: "@",
+                width: "@",
+                maximizable: "@",
+                onMaximize: "&",
+                onMinimize: "&"
+            },
+            controller: function ($scope) {
+                var controls = $scope.controls = [];
+
+                this.addControl = function (control) {
+                    if (control !== undefined) {
+                        controls.push(control);
+                    }
+                };
+            },
+            link: function (scope, element, attrs, ctrl) {
+                var showCaption = scope.showCaption = false;
+                var showMaximizeButton = scope.showMaximizeButton = false;
+                var currentWidth = scope.currentWidth = parseInt(scope.width);
+
+                scope.showCaption = scope.caption !== undefined && scope.caption !== "" ? true : false;
+                scope.showMaximizeButton = scope.maximizable !== undefined && scope.maximizable === "1" ? true : false;
+
+                scope.scroll = function (anchor) {
+                    if (anchor !== undefined) {
+                        var column_content = angular.element(element).children()[1];
+                        var anchor_element = document.getElementById(anchor);
+                        if (anchor_element !== undefined && anchor_element !== null) {
+                            column_content.scrollTop = anchor_element.offsetTop - 5;
+                            return true;
+                        } else
+                            return false;
+                    }
+                };
+
+                scope.max = function () {
+                    ctrl.maximize(scope.id);
+                };
+
+                scope.min = function () {
+                    ctrl.restore();
+                };
+
+                ctrl.add(scope);
+            }
+        }
+    };
+
+
+
+    function columnControlDirective () {
+        return {
+            restrict: "E",
+            require: "^column",
+            //template:
+            //    "<button class='{{ class }}'><span class='{{ caption }}'></span></button>",
+            transclude: true,
+            scope: {
+                content: "@",
+                action: "&",
+                class: "@",
+                icon: "@",
+                title: "@",
+                ngShow: "="
+            },
+            link: function (scope, element, attrs, ctrl) {
+                scope.isVisible = scope.ngShow !== undefined ? scope.ngShow : true;
+                scope.$watch("ngShow", function (value) {
+                    if (value !== undefined)
+                        scope.isVisible = value;
+                });
+                ctrl.addControl(scope);
+            }
+        }
+    };
+
+
+
+
+
+    function hierarchyDirective ($errors) {
+        return {
+            restrict: "E",
+            require: "ngModel",
+            template: 
+                "<ul>" +
+                    "<li ng-repeat='node in initial track by $index'>" +
+                        "<span ng-if='getChildren(node[key]) !== false' ng-click='expand(node[key])'>+</span><span>{{ node }}</span>" +
+                        "<ul ng-if='node.expanded === true'><li ng-repeat='sub in node.children'></li></ul>" +
+                    "</li>" +
+                "</ul>",
+            scope: {
+                ngModel: "=",
+                key: "@",
+                parentKey: "@"
+            },
+            link: function (scope, element, attrs, ctrl) {
+                var stack = scope.stack = [];
+                var initial = scope.initial = [];
+
+                var findByKey = function (key) {
+                    if (key !== undefined) {
+                        var length = scope.stack.length;
+                        for (var i = 0; i < length; i++) {
+                            if (scope.stack[i][scope.key] !== undefined) {
+                                if (scope.stack[i][scope.key] === key)
+                                    return scope.stack[i];
+                            }
+                        }
+                        return false;
+                    }
+                };
+
+                scope.getChildren = function (key) {
+                    if (key !== undefined) {
+                        var length = scope.stack.length;
+                        for (var i = 0; i < length; i++) {
+                            if (scope.stack[i][scope.key] !== undefined) {
+                                if (scope.stack[i][scope.key] === key)
+                                    return scope.stack[i].children !== undefined ? scope.stack[i].children : false;
+                            }
+                        }
+                        return false;
+                    }
+                };
+
+
+                scope.expand = function (key) {
+                    if (key !== undefined) {
+                        var length = scope.stack.length;
+                        for (var i = 0; i < length; i ++) {
+                            scope.stack[i].expanded = true;
+                        }
+                    }
+                };
+
+
+                if (scope.ngModel !== null && scope.ngModel !== undefined) {
+                    if (typeof scope.ngModel.constructor !== undefined && scope.ngModel.constructor === Array) {
+                        if (scope.key !== undefined && scope.key !== "") {
+
+                            if (scope.parentKey !== undefined && scope.parentKey !== "") {
+
+                                var length = scope.ngModel.length;
+                                for (var i = 0; i < length; i++) {
+
+                                    if (scope.ngModel[i][scope.key] !== undefined) {
+
+                                        if (scope.ngModel[i][scope.parentKey] !== undefined && scope.ngModel[i][scope.parentKey] === 0) {
+                                            scope.ngModel[i].expanded = false;
+                                            scope.initial.push(scope.ngModel[i]);
+                                            scope.stack.push(scope.ngModel[i]);
+
+
+                                            for (var x = 0; x < length; x ++) {
+                                                if (scope.ngModel[x][scope.parentKey] !== undefined && scope.ngModel[x][scope.parentKey] !== 0)
+                                                    scope.initial[scope.initial.length - 1].children = [];
+                                            }
+
+                                        }
+
+                                    } else
+                                        $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не найдено поле связи в источнике данных (" + scope.key + ")");
+
+                                }
+
+                            }
+                        } else
+                            return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не задан аттрибут - поле связи иерархии");
+                    } else
+                        return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Источник данных (ngModel) не является массивом");
+                }
+            }
+        }
+    };
 
 })();

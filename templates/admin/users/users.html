@@ -1,1 +1,42 @@
-<model-grid ng-model="users"></model-grid>
+
+
+
+
+
+
+<columns id="users">
+    <column id="user-groups" width="20" caption="группы" >
+        <column-control class="green round" content="fa fa-plus" title="Добавить группу"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу"></column-control>
+    </column>
+    <column id="users" width="80" caption="пользователи" maximizable="1">
+        <column-control class="green round" content="fa fa-plus" title="Добавить пользователя"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать пользователя"></column-control>
+        <div class="padding-5">
+            <table class="stripped">
+                <thead>
+                <tr>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Отчество</th>
+                    <th>Должность</th>
+                    <th>E-mail</th>
+                    <th>Телефон</th>
+                    <th>Произв. отд.</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="user in users.getAll() track by $index">
+                    <td>{{ user.surname.value }}</td>
+                    <td>{{ user.name.value }}</td>
+                    <td>{{ user.fname.value }}</td>
+                    <td>{{ user.position.value }}</td>
+                    <td>{{ user.email.value }}</td>
+                    <td>{{ user.phone.value }}</td>
+                    <td>{{ kolenergo.getDepartmentById(user.departmentId.value).title.value }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </column>
+</columns>

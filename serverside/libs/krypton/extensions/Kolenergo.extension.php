@@ -1,9 +1,10 @@
 <?php
 
     class Kolenergo extends ExtensionInterface {
-        public static $id = "kr_kolenergo";
-        public static $description = "kolenergo extension";
-        public static $clientSideExtensionUrl = "modules/app/krypton.app.kolenergo.js";
+        public static $id = "krypton.app.kolenergo";
+        public static $title = "Колэнерго";
+        public static $description = "Модуль портала Колэнерго";
+        public static $url = "modules/app/krypton.app.kolenergo.js";
 
         public static $departments = array();
 
@@ -58,6 +59,8 @@
 
             $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
             $divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "division_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+
+            if (!defined("ENGINE_ADMIN_MODE"))
 
             if (Errors::isError($departmentIdProperty) && Errors::isError($divisionIdProperty))
                 return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойства в класс User");

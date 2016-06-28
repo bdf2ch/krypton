@@ -3,7 +3,7 @@
 
 (function () {
     angular
-        .module("krypton.admin", ["ngRoute", "ngCookies", "krypton", "krypton.ui"])
+        .module("krypton.admin", ["ngRoute", "ngCookies", "krypton", "krypton.ui", "krypton.app.kolenergo"])
         .config(function ($routeProvider) {
         })
         .run(kryptonAdminRun);
@@ -16,8 +16,9 @@
 
 
 
-    function usersController ($log, $scope, $users) {
-        $scope.users = $users.getAll();
+    function usersController ($log, $scope, $users, $kolenergo) {
+        $scope.users = $users;
+        $scope.kolenergo = $kolenergo;
     };
 
 

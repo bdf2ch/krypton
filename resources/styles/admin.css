@@ -1,3 +1,357 @@
+.krypton-ui-fog {
+  position: fixed;
+  display: block;
+  overflow: hidden;
+  top: 0px;
+  left: 0px;
+  z-index: 1000;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.2);
+  -webkit-transition: opacity 0.4s ease;
+  -moz-transition: opacity 0.4s ease;
+  -o-transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease;
+  filter: blur(2px);
+}
+.krypton-ui-fog.visible {
+  right: 0px;
+  height: 100%;
+  opacity: 1;
+}
+.ui-date-time-picker2 {
+  position: absolute;
+  display: none;
+  width: 259px;
+  z-index: 1001;
+  border: 1px solid lightgrey;
+  background: white;
+  box-sizing: content-box;
+  -webkit-box-shadow: 1px 1px 15px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 15px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 15px 1px rgba(0, 0, 0, 0.2);
+}
+.ui-date-time-picker2 .toolbar {
+  float: left;
+  width: 259px;
+  box-sizing: border-box;
+}
+.ui-date-time-picker2 .toolbar .control {
+  float: left;
+  width: 37px;
+}
+.ui-date-time-picker2 .toolbar .content {
+  float: left;
+  width: 185px;
+}
+.ui-date-time-picker2 .toolbar .content select {
+  font-size: 15px;
+  text-align-last: center;
+  text-align: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 0.01px;
+  text-overflow: '';
+  -ms-appearance: none;
+  appearance: none !important;
+  background-image: url('../images/drop_down_arrow.png');
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position-x: 95%;
+}
+.ui-date-time-picker2 .toolbar .content select option {
+  text-align: center;
+}
+.ui-date-time-picker2 .toolbar .content .selected-date {
+  display: block;
+  height: 35px;
+  text-align: center;
+  line-height: 35px;
+}
+.ui-date-time-picker2 .weekdays {
+  float: left;
+  width: 259px;
+  box-sizing: border-box;
+}
+.ui-date-time-picker2 .weekdays .day {
+  float: left;
+  width: 37px;
+  height: 20px;
+  font-size: 11px;
+  line-height: 22px;
+  text-transform: uppercase;
+  border-right: none;
+  background: #FAFAFA;
+  cursor: default;
+}
+.ui-date-time-picker2 .weekdays .day:hover {
+  background: #FAFAFA;
+}
+.ui-date-time-picker2 .day {
+  display: inline-block;
+  float: left;
+  overflow: hidden;
+  width: 37px;
+  height: 37px;
+  font-family: "Roboto Regular";
+  font-size: 17px;
+  line-height: 37px;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-right: 1px solid #E0E0E0;
+  border-top: 1px solid #E0E0E0;
+  -webkit-transition: background 0.2s linear;
+  -moz-transition: background 0.2s linear;
+  -o-transition: background 0.2s linear;
+  transition: background 0.2s linear;
+}
+.ui-date-time-picker2 .day:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2 .day.sunday {
+  background: #FFEBEE !important;
+  border-right: none;
+}
+.ui-date-time-picker2 .day.sunday:hover {
+  background: #EF9A9A !important;
+}
+.ui-date-time-picker2 .day.not-this-month {
+  color: #BDBDBD;
+}
+.ui-date-time-picker2 .day.current {
+  background: #FFF3E0;
+}
+.ui-date-time-picker2 .day.current:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2 .days-container {
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+.ui-date-time-picker2 .hour {
+  display: inline-block;
+  position: relative;
+  float: left;
+  overflow: hidden;
+  width: 43.16666667px;
+  height: 25%;
+  font-family: "Roboto Regular";
+  font-size: 19px;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-right: 1px solid #E0E0E0;
+  border-top: 1px solid #E0E0E0;
+  -webkit-transition: background 0.2s linear;
+  -moz-transition: background 0.2s linear;
+  -o-transition: background 0.2s linear;
+  transition: background 0.2s linear;
+}
+.ui-date-time-picker2 .hour:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2 .hour.current {
+  background: #FFF3E0;
+}
+.ui-date-time-picker2 .hour.current:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2 .minute {
+  display: inline-block;
+  position: relative;
+  float: left;
+  overflow: hidden;
+  width: 64.75px;
+  height: 33.33333%;
+  text-align: center;
+  font-size: 19px;
+  line-height: 86.33333333px;
+  cursor: pointer;
+  box-sizing: border-box;
+  border-right: 1px solid #E0E0E0;
+  border-top: 1px solid #E0E0E0;
+  -webkit-transition: background 0.2s linear;
+  -moz-transition: background 0.2s linear;
+  -o-transition: background 0.2s linear;
+  transition: background 0.2s linear;
+}
+.ui-date-time-picker2 .minute:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2 .minute.current {
+  background: #FFF3E0;
+}
+.ui-date-time-picker2 .minute.current:hover {
+  background: #F5F5F5;
+}
+.ui-date-time-picker2.modal {
+  position: absolute;
+  width: 522px;
+  border: none;
+}
+.ui-date-time-picker2.modal .toolbar {
+  width: 522px;
+}
+.ui-date-time-picker2.modal .toolbar .control {
+  width: 74.57142857px;
+}
+.ui-date-time-picker2.modal .toolbar select {
+  height: 60px;
+  font-size: 22px;
+}
+.ui-date-time-picker2.modal .toolbar .content {
+  width: 372.85714286px;
+}
+.ui-date-time-picker2.modal .toolbar .content .selected-date {
+  font-size: 24px;
+  line-height: 60px;
+}
+.ui-date-time-picker2.modal .weekdays {
+  width: 522px;
+  box-sizing: border-box;
+}
+.ui-date-time-picker2.modal .weekdays .day {
+  width: 74.57142857px;
+  height: 20px;
+  font-size: 9px;
+  line-height: 22px;
+}
+.ui-date-time-picker2.modal .day {
+  width: 74.57142857px;
+  height: 74.57142857px;
+  font-size: 26px;
+  line-height: 74.57142857px;
+}
+.ui-date-time-picker2.modal .hour {
+  width: 87px;
+  height: 25%;
+  font-family: "Roboto Regular";
+  font-size: 22px;
+  line-height: 87px;
+}
+.ui-date-time-picker2.modal .minute {
+  width: 25%;
+  height: 33.333333333333333333333333%;
+  font-size: 24px;
+  line-height: 120.5px;
+  box-sizing: border-box;
+  border-right: 1px solid #E0E0E0;
+  border-top: 1px solid #E0E0E0;
+}
+.ui-data-field {
+  position: relative;
+  overflow: hidden;
+  height: 40px;
+  box-sizing: border-box;
+}
+.ui-data-field .input-container {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 80px;
+  bottom: 0px;
+}
+.ui-data-field .input-container input {
+  width: 100%;
+  border-right: none !important;
+  box-sizing: border-box;
+}
+.ui-data-field .controls-container {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  width: 80px;
+  box-sizing: border-box;
+}
+.ui-data-field .controls-container button {
+  display: inline-block;
+  float: left;
+  width: 40px;
+  height: 38px;
+}
+.ui-data-field .controls-container button.green {
+  font-size: 20px;
+}
+.ui-data-field .controls-container button.red {
+  font-size: 27px;
+}
+/******************
+* COLUMNS
+******************/
+.krypton-columns {
+  position: relative;
+  display: table;
+  width: 100%;
+  height: 100%;
+  border-bottom: 1px solid #E3E3E3;
+}
+.krypton-columns .columns-row {
+  position: relative;
+  display: table-row;
+  width: 100%;
+  box-sizing: border-box;
+}
+.krypton-columns .columns-column {
+  position: relative;
+  display: table-cell;
+  overflow: hidden;
+  height: 100%;
+  border-right: 1px solid #E3E3E3;
+}
+.krypton-columns .columns-column:last-of-type {
+  border-right: none;
+}
+.krypton-columns .columns-column .column-header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 30px;
+  padding: 5px;
+  vertical-align: bottom;
+  box-sizing: border-box;
+  background-color: #fafafa;
+  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  border-bottom: 1px solid lightgrey;
+}
+.krypton-columns .columns-column .column-header .header-caption {
+  display: inline-block;
+  margin-right: 5px;
+  line-height: 22px;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: gray;
+}
+.krypton-columns .columns-column .column-header .service-button {
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 14px;
+  color: darkgray;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.krypton-columns .columns-column .column-header .service-button:hover {
+  color: black;
+}
+.krypton-columns .columns-column .column-content {
+  position: absolute;
+  top: 30px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: auto;
+}
 /**
 *
 **/
@@ -222,6 +576,7 @@ button.small {
   display: inline-block;
   width: 20px;
   height: 20px;
+  margin-left: 5px;
   padding: 0px !important;
   font-size: 11px;
   text-align: center !important;
@@ -247,34 +602,61 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
+}
+input[type='button'].transparent,
+input[type='submit'].transparent,
+button.transparent {
+  background: transparent;
+}
+/*********
+* TABLES
+*********/
+table {
+  width: 100%;
+  border-spacing: 0px;
+}
+table thead th {
+  padding: 10px;
+  box-sizing: border-box;
+  background: #E0F2F1;
+}
+table tbody tr {
+  border-bottom: 1px solid black;
+}
+table tbody tr td {
+  padding: 10px;
+  box-sizing: border-box;
+}
+table.stripped tbody tr:nth-child(even) {
+  background: #FAFAFA;
 }
 /**********
 * LINKS
@@ -286,22 +668,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4caf50;
+  color: #4CAF50;
 }
 a.green:hover {
-  color: #388e3c;
+  color: #388E3C;
 }
 a.red {
-  color: #f44336;
+  color: #F44336;
 }
 a.red:hover {
-  color: #d32f2f;
+  color: #D32F2F;
 }
 a.blue {
-  color: #2196f3;
+  color: #2196F3;
 }
 a.blue:hover {
-  color: #1976d2;
+  color: #1976D2;
 }
 /**********
 ** COLORS
@@ -373,11 +755,12 @@ body {
   min-width: 1200px;
   box-sizing: border-box;
   border-bottom: 1px solid #d4d4d4;
-  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  border-left: 1px solid #d4d4d4;
+  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
 }
 #app-header #current-menu {
   margin-left: 10px;
@@ -386,7 +769,8 @@ body {
 #app-header #current-menu #current-menu-title {
   display: block;
   font-size: 20px;
-  color: black;
+  color: black
+    ;
 }
 #app-header #current-menu #current-menu-description {
   display: block;
@@ -404,13 +788,12 @@ body {
 #app-menu #current-user {
   width: 200px;
   height: 45px;
-  border-right: 1px solid lightgray;
   box-sizing: border-box;
-  background-image: -moz-linear-gradient(top, #eceff1, #cfd8dc);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#eceff1), to(#cfd8dc));
-  background-image: -webkit-linear-gradient(top, #eceff1, #cfd8dc);
-  background-image: -o-linear-gradient(top, #eceff1, #cfd8dc);
-  background-image: linear-gradient(to bottom, #eceff1, #cfd8dc);
+  background-image: -moz-linear-gradient(top, #ECEFF1, #CFD8DC);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ECEFF1), to(#CFD8DC));
+  background-image: -webkit-linear-gradient(top, #ECEFF1, #CFD8DC);
+  background-image: -o-linear-gradient(top, #ECEFF1, #CFD8DC);
+  background-image: linear-gradient(to bottom, #ECEFF1, #CFD8DC);
 }
 #app-menu .menu-item {
   display: block;
@@ -421,18 +804,18 @@ body {
   color: black;
   box-sizing: border-box;
   border-bottom: 1px solid lightgray;
-  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
 }
 #app-menu .menu-item.active {
-  background-image: -moz-linear-gradient(top, #eeeeee, #e0e0e0);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#eeeeee), to(#e0e0e0));
-  background-image: -webkit-linear-gradient(top, #eeeeee, #e0e0e0);
-  background-image: -o-linear-gradient(top, #eeeeee, #e0e0e0);
-  background-image: linear-gradient(to bottom, #eeeeee, #e0e0e0);
+  background-image: -moz-linear-gradient(top, #EEEEEE, #E0E0E0);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#EEEEEE), to(#E0E0E0));
+  background-image: -webkit-linear-gradient(top, #EEEEEE, #E0E0E0);
+  background-image: -o-linear-gradient(top, #EEEEEE, #E0E0E0);
+  background-image: linear-gradient(to bottom, #EEEEEE, #E0E0E0);
 }
 #app-content {
   position: absolute;
@@ -441,6 +824,7 @@ body {
   right: 0px;
   bottom: 0px;
   min-width: 1200px;
+  border-left: 1px solid lightgray;
 }
 /**********
 ** KRYPTON ADMINISTRATION PANEL LOGIN

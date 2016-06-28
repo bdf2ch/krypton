@@ -1,13 +1,9 @@
 <?php
 
         class Model {
-            //public static $fields = array();
-
-
 
             public function __construct () {
                 $class = get_called_class();
-                //echo("MODEL construct called class = ".$class."</br>");
                 foreach ($class::$fields as $key => $property) {
                     $this -> {$key} = $property;
                 }

@@ -86,7 +86,7 @@
                             if (file_exists( $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$extension.".extension.php")) {
                                 require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$extension.".extension.php";
                                 //$ext = new $extension($parameters);
-                                $ext = new Extension($extension::$id, $extension::$description, $extension::$clientSideExtensionUrl);
+                                $ext = new Extension($extension::$id, $extension::$title, $extension::$url, $extension::$description);
                                 array_push(Extensions::$items, $ext);
                                 $extension::init();
                             } else
@@ -158,6 +158,7 @@
                         //if (isset($path[2]))
                         //    header("Location: /admin/");
                         //else {
+                            define("ENGINE_ADMIN_MODE", 1);
                             if (Sessions::getCurrentUser() != false && Sessions::getCurrentUser() -> isAdmin -> value == true)
                                 $template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/admin.html";
                             else
@@ -165,6 +166,8 @@
                         //}
                         break;
                     default:
+                        if (defined("ENGINE_ADMIN_MODE"))
+                            runkit_constant_remove("ENGINE_ADMIN_MODE");
                         header("Location: /");
                         break;
                 }
@@ -181,7 +184,7 @@
 
 
             $this -> template = new XTemplate($template_url);
-            $this -> template -> assign("ADMIN_TEMPLATE", self::getAdminTemplate());
+            //$this -> template -> assign("ADMIN_TEMPLATE", self::getAdminTemplate());
             $this -> template -> assign("APPLICATION_TITLE", self::$app -> get("title"));
             $this -> template -> assign("APPLICATION", json_encode(self::$app));
             $this -> template -> assign("EXTENSIONS", json_encode(Extensions::getAll()));
@@ -191,7 +194,7 @@
             $this -> template -> assign("ERRORS", json_encode(Errors::getAll()));
             $this -> template -> assign("USERS", json_encode(Users::getAll()));
             $this -> template -> assign("DEPARTMENTS", json_encode(Kolenergo::getDepartments()));
-            $this -> template -> assign("CLIENT_SIDE_EXTENSIONS", Extensions::getClientSideExtensions());
+            $this -> template -> assign("CLIENT_SIDE_EXTENSIONS", Extensions::getExtensionsUrls());
             $this -> template -> parse("main");
             $this -> template -> out("main");
         }
