@@ -919,23 +919,34 @@
 
 
 
-    function hierarchyDirective ($errors) {
+    function hierarchyDirective ($log, $errors, $compile, $templateCache) {
+        var template =
+            "<span ng-if='getChildren(node[key]).length > 0' ng-click='expand(node[key])'>+</span>{{ node.id }}" +
+            "<ul ng-if='node.expanded === true'>" +
+                "<span ng-if='getChildren(node[key]) !== false' ng-click='expand(node[key])'>+</span>{{ node.id }}" +
+                //"<li ng-repeat='node in branches' ng-init='branches = getChildren(item[key])' ng-include=\"\'hierarchy.html'\">" +
+                //"<div ng-init='branches = getChildren(item[key])' ng-include=\"\'hierarchy.html'\"></div>" +
+                "</li>" +
+            "</ul>";
+        $templateCache.put("hierarchy.html", template);
         return {
             restrict: "E",
-            require: "ngModel",
-            template: 
-                "<ul>" +
-                    "<li ng-repeat='node in initial track by $index'>" +
-                        "<span ng-if='getChildren(node[key]) !== false' ng-click='expand(node[key])'>+</span><span>{{ node }}</span>" +
-                        "<ul ng-if='node.expanded === true'><li ng-repeat='sub in node.children'></li></ul>" +
-                    "</li>" +
-                "</ul>",
             scope: {
                 ngModel: "=",
                 key: "@",
-                parentKey: "@"
+                parentKey: "@",
             },
+            template:
+
+                "<ul>" +
+                    "<li ng-repeat='node in initial' ng-init='this.branches = getChildren(node[key])'>" +
+                        "<span ng-if='getChildren(node[key]).length > 0' ng-click='expand(node[key])'>+</span>{{ node.id }}" +
+                        "<div ng-include=\"\'hierarchy.html'\"></div>" +
+
+                    "</li>" +
+                "</ul>",
             link: function (scope, element, attrs, ctrl) {
+
                 var stack = scope.stack = [];
                 var initial = scope.initial = [];
 
@@ -952,16 +963,20 @@
                     }
                 };
 
+
                 scope.getChildren = function (key) {
                     if (key !== undefined) {
+                        var children = [];
                         var length = scope.stack.length;
                         for (var i = 0; i < length; i++) {
-                            if (scope.stack[i][scope.key] !== undefined) {
-                                if (scope.stack[i][scope.key] === key)
-                                    return scope.stack[i].children !== undefined ? scope.stack[i].children : false;
+                            if (scope.stack[i][scope.parentKey] !== undefined) {
+                                if (scope.stack[i][scope.parentKey] === key) {
+                                    children.push(scope.stack[i]);
+                                }
                             }
                         }
-                        return false;
+                        $log.log("children = ", children);
+                        return children;
                     }
                 };
 
@@ -970,7 +985,8 @@
                     if (key !== undefined) {
                         var length = scope.stack.length;
                         for (var i = 0; i < length; i ++) {
-                            scope.stack[i].expanded = true;
+                            if (scope.stack[i][scope.key] === key)
+                                scope.stack[i].expanded = true;
                         }
                     }
                 };
@@ -985,27 +1001,30 @@
                                 var length = scope.ngModel.length;
                                 for (var i = 0; i < length; i++) {
 
-                                    if (scope.ngModel[i][scope.key] !== undefined) {
+                                    if (scope.ngModel[i][scope.key] !== undefined && scope.ngModel[i][scope.key] !== "") {
 
-                                        if (scope.ngModel[i][scope.parentKey] !== undefined && scope.ngModel[i][scope.parentKey] === 0) {
-                                            scope.ngModel[i].expanded = false;
-                                            scope.initial.push(scope.ngModel[i]);
+                                        if (scope.ngModel[i][scope.parentKey] !== undefined && scope.ngModel[i][scope.parentKey] !== "") {
                                             scope.stack.push(scope.ngModel[i]);
-
+                                            scope.stack[scope.stack.length - 1].expanded = false;
+                                            scope.stack[scope.stack.length - 1].children = [];
+                                            if (scope.ngModel[i][scope.parentKey] === 0)
+                                                scope.initial.push(scope.ngModel[i]);
 
                                             for (var x = 0; x < length; x ++) {
-                                                if (scope.ngModel[x][scope.parentKey] !== undefined && scope.ngModel[x][scope.parentKey] !== 0)
-                                                    scope.initial[scope.initial.length - 1].children = [];
+                                                if (scope.ngModel[x][scope.parentKey] === scope.ngModel[i][scope.key])
+                                                    scope.stack[scope.stack.length - 1].children.push(scope.ngModel[x]);
                                             }
+                                        } else
+                                            $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не найдено поле родительской связи в источнике данных (" + scope.parentKey + ")");
 
-                                        }
 
                                     } else
                                         $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не найдено поле связи в источнике данных (" + scope.key + ")");
 
                                 }
 
-                            }
+                            } else
+                                $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не задан аттрибут - поле родительской связи");
                         } else
                             return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не задан аттрибут - поле связи иерархии");
                     } else
