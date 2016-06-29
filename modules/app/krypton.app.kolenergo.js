@@ -272,17 +272,31 @@
 
 
 
-    function companyController ($log, $scope, $kolenergo) {
+    function companyController ($log, $scope, $kolenergo, $filter, $modals) {
         $scope.kolenergo = $kolenergo;
         $scope.departments = $kolenergo.getDepartments();
         $scope.divisions = $kolenergo.getDivisions();
-        $scope.currentDepartment = undefined;
-        
+        $scope.currentDepartmentId = undefined;
+        $scope.currentDivision = undefined;
+
+
         $scope.onSelectDepartment = function (department) {
             $log.log("onSelect fired");
-            if (department !== undefined)
+            if (department !== undefined) {
                 $scope.currentDepartment = department;
+                $scope.divisions = $filter("byDepartmentId")($scope.divisions, department.id.value);
+                $log.log("filter = ", $scope.divisions);
+            }
         };
+
+
+        $scope.onSelectDivision = function (division) {
+            if (division !== undefined) {
+                $log.log("onSelectHierarchyItem", division);
+                $scope.currentDivision = division;
+            }
+        };
+
 
         $scope.company = [
             {
@@ -301,16 +315,18 @@
             {id: 10, parentId: 3, title: "Отдел " + this.id},
             {id: 11, parentId: 10, title: "Отдел " + this.id}
         ];
+
+        $modals.open("test-modal");
     };
 
 
     function byDepartmentIdFilter () {
         return function (input, id) {
-            if (id !== undefined) {
+            if (id !== undefined || id !== 0) {
                 var result = [];
                 var length = input.length;
                 for (var i = 0; i < length; i++) {
-                    if (input[i].departmentId.value == id)
+                    if (input[i].departmentId.value === id)
                         result.push(input[i]);
                 }
                 return result;

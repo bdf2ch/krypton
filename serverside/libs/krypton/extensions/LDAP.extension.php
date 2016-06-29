@@ -7,33 +7,45 @@
         public static $description = "LDAP description";
         public static $url = "";
 
+
+
         /**
-        * Производит установку модуля в системе
+        * Производит установку модуля
         **/
         public static function install () {
-            if (!DBManager::is_table_exists(self::$id)) {
-                if (DBManager::create_table(self::$id)) {
-                    if (DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0") &&
-                        DBManager::add_column(self::$id, "enabled", "int(11) NOT NULL default 1")
-                    ) {
-                        if (Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", Krypton::DATA_TYPE_STRING, "''", 1) &&
-                            Settings::add("'".self::$id."'", "'ldap_enabled'", "'Авторизация LDAP включена'", "'Авторизация пользователей посредством Active Directory включена'", Krypton::DATA_TYPE_BOOLEAN, 1, 0)
-                        ) {
-                            return true;
-                        } else {
-                            Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить настройку");
-                            return false;
-                        }
-                    } else {
-                        Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось создать структуру таблицы с информацией об LDAP");
-                        return false;
-                    }
-                } else {
-                    Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалочь создать таблицу с информацией об LDAP");
-                    return false;
-                }
+            $result = DBManager::is_table_exists(self::$id);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалочь создать таблицу с информацией об LDAP");
+                return false;
             }
+
+            $result = DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить столбец 'user_id' в таблицу с информацией об LDAP");
+                return false;
+            }
+
+            $result = DBManager::add_column(self::$id, "enabled", "int(11) NOT NULL default 1");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить столбец 'enabled' в таблицу с информацией об LDAP");
+                return false;
+            }
+
+            $result = Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", Krypton::DATA_TYPE_STRING, "''", 1);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить настройку 'ldap_server'");
+                return false;
+            }
+
+            $result = Settings::add("'".self::$id."'", "'ldap_enabled'", "'Авторизация LDAP включена'", "'Авторизация пользователей посредством Active Directory включена'", Krypton::DATA_TYPE_BOOLEAN, 1, 0);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить настройку 'ldap_enabled'");
+                return false;
+            }
+
+            return true;
         }
+
 
 
         /**

@@ -469,7 +469,9 @@
   margin-bottom: 0px;
 
   ul.nested {
-    margin-left: 5px;
+    margin-left: 5px !important;
+    margin-top: 5px !important;
+    border-left: 1px dotted lightgray;
   }
 
   .expand {
@@ -513,7 +515,8 @@
 .krypton-ui-model-list {
 
   .model-item {
-    height: @model-list-item-height;
+    min-height: @model-list-item-height;
+    overflow: visible;
     padding: 10px;
     margin-bottom: 5px;
     box-sizing: border-box;
@@ -536,4 +539,24 @@
     font-size: 16px;
   }
 
+}
+
+
+
+
+
+
+
+/********************
+** MODAL
+********************/
+@modal-default-width: 400px;
+@modal-defaul-height: 400px;
+
+.krypton-ui-modal {
+  display: none;
+  width: @modal-default-width;
+  height: @modal-defaul-height;
+  box-sizing: border-box;
+  border: 1px solid red;
 }
