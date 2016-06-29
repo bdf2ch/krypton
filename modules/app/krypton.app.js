@@ -24,8 +24,8 @@
                     controller: "adminLoginController"
                 })
                 .when("/", {
-                    templateUrl: "templates/app/news.html",
-                    controller: "NewsController"
+                    templateUrl: "templates/app/account.html",
+                    controller: "UserAccountController"
                 })
                 .when("/phones", {
                     templateUrl: "templates/app/telephones.html",

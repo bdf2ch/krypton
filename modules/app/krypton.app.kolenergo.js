@@ -4,8 +4,9 @@
     angular
         .module("krypton.app.kolenergo", ["krypton"])
         .factory("$kolenergo", kolenergoFactory)
-        .run(kolenergoRun)
-        .controller("UserAccountController", UserAccountController);
+        .controller("UserAccountController", UserAccountController)
+        .filter("byDepartmentId", byDepartmentIdFilter)
+        .run(kolenergoRun);
 
 
 
@@ -30,7 +31,7 @@
             id: new Field({ source: "id", type: "integer", value: 0, default_value: 0 }),
             departmentId: new Field({ source: "department_id", type: "integer", value: 0, default_value: 0, backupable: true }),
             parentId: new Field({ source: "parent_id", type: "integer", value: 0, default_value: 0, backupable: true }),
-            title: new Field({ source: "title", type: "integer", value: 0, default_value: 0, backupable: true })
+            title: new Field({ source: "title", type: "string", value: "", default_value: "", backupable: true })
         });
 
         var departments = [];
@@ -48,6 +49,17 @@
                             departments.push(department);
                         }
                         $log.log("departments = ", departments);
+                    }
+
+                    if (window.krypton.divisions !== null && window.krypton.divisions !== undefined) {
+                        var length = window.krypton.divisions.length;
+                        for (var i = 0; i < length; i++) {
+                            var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+                            division._model_.fromAnother(window.krypton.divisions[i]);
+                            division._backup_.setup();
+                            divisions.push(division);
+                        }
+                        $log.log("divisions = ", divisions);
                     }
                 }
 
@@ -84,6 +96,20 @@
 
             getDivisions: function () {
                 return divisions;
+            },
+
+            getDivisionById: function (id) {
+                if (id !== undefined) {
+                    var length = divisions.length;
+                    for (var i = 0; i < length; i++) {
+                        if (divisions[i].id.value === id)
+                            return divisions[i];
+                    }
+                    return false;
+                } else {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> getDivisionById: Не задан параметр - идентификатор структурного подразделения");
+                    return false
+                }
             }
         }
     };
@@ -246,22 +272,49 @@
 
 
 
-    function companyController ($scope) {
+    function companyController ($log, $scope, $kolenergo) {
+        $scope.kolenergo = $kolenergo;
+        $scope.departments = $kolenergo.getDepartments();
+        $scope.divisions = $kolenergo.getDivisions();
+        $scope.currentDepartment = undefined;
+        
+        $scope.onSelectDepartment = function (department) {
+            $log.log("onSelect fired");
+            if (department !== undefined)
+                $scope.currentDepartment = department;
+        };
+
         $scope.company = [
             {
                 id: 1, 
-                parentId: 0
+                parentId: 0,
+                title: "Отдел " + this.id
             }, 
-            {id: 2, parentId: 0}, 
-            {id: 3, parentId: 0}, 
-            {id: 4, parentId: 1}, 
-            {id: 5, parentId: 1}, 
-            {id: 6, parentId: 1}, 
-            {id: 7, parentId: 2}, 
-            {id: 8, parentId: 2}, 
-            {id: 9, parentId: 2}, 
-            {id: 10, parentId: 3},
-            {id: 11, parentId: 10}
+            {id: 2, parentId: 0, title: "Отдел " + this.id},
+            {id: 3, parentId: 0, title: "Отдел " + this.id},
+            {id: 4, parentId: 1, title: "Отдел " + this.id},
+            {id: 5, parentId: 1, title: "Отдел " + this.id},
+            {id: 6, parentId: 1, title: "Отдел " + this.id},
+            {id: 7, parentId: 2, title: "Отдел " + this.id},
+            {id: 8, parentId: 2, title: "Отдел " + this.id},
+            {id: 9, parentId: 2, title: "Отдел " + this.id},
+            {id: 10, parentId: 3, title: "Отдел " + this.id},
+            {id: 11, parentId: 10, title: "Отдел " + this.id}
         ];
+    };
+
+
+    function byDepartmentIdFilter () {
+        return function (input, id) {
+            if (id !== undefined) {
+                var result = [];
+                var length = input.length;
+                for (var i = 0; i < length; i++) {
+                    if (input[i].departmentId.value == id)
+                        result.push(input[i]);
+                }
+                return result;
+            }
+        }
     };
 })();

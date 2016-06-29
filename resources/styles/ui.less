@@ -457,3 +457,83 @@
   }
 
 }
+
+
+
+
+/***************
+** HIERARCHY
+***************/
+.krypton-ui-hierarchy {
+  margin-top: 0px;
+  margin-bottom: 0px;
+
+  ul.nested {
+    margin-left: 5px;
+  }
+
+  .expand {
+    padding-right: 10px;
+    font-size: 13px;
+    cursor: pointer;
+
+    &.invisible {
+      visibility: hidden;
+    }
+  }
+
+  .collapse {
+    padding-right: 10px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .item-lines {
+    float: left;
+    width: 10px;
+    height: 100%;
+    border: 1px solid black;
+  }
+  .item-content {
+    float: left;
+    height: 100%;
+    border: 1px solid red;
+  }
+
+}
+
+
+
+
+/********************
+** MODEL-LIST
+********************/
+@model-list-item-height: 45px;
+
+.krypton-ui-model-list {
+
+  .model-item {
+    height: @model-list-item-height;
+    padding: 10px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+    background: #FAFAFA;
+    border: 1px solid lightgray;
+    //.gradient(#ECEFF1, #E1EBF0);
+
+    &:hover {
+      border: 1px solid darkgray;
+      background: #F5F5F5;
+    }
+
+    &.selected {
+      background: #E0E0E0;
+    }
+  }
+
+  .item-primary-label {
+    font-size: 16px;
+  }
+
+}

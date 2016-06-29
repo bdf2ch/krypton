@@ -32,7 +32,7 @@
                     $extension = new $extensionTitle();
                     $extensionItem = new Extension($extension::$id, $extension::$title, $extension::$url, $extension::$description);
                     array_push(self::$items, $extensionItem);
-                    echo("from extensions</br>");
+                    //echo("from extensions</br>");
                     $extension::init();
                     return true;
                 }

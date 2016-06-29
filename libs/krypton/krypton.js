@@ -368,7 +368,7 @@ function isField (obj) {
 
                         for (var anotherProp in obj) {
                             if (obj[anotherProp] === null) {
-                                $errors.add(ERROR_TYPE_DEFAULT, "Model -> fromAnother: Отсутствует значение (null) свойста '" + anotherProp + "' объекта, на основе которого требуется провести инициализаццию");
+                                $log.info("Model -> fromAnother: Отсутствует значение (null) свойста '" + anotherProp + "' объекта, на основе которого требуется провести инициализаццию");
                                 return false;
                             } else {
 

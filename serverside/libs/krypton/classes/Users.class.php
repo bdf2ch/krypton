@@ -121,13 +121,13 @@
                     $result = DBManager::insert_row(
                         "kr_users",
                         ["name", "surname", "fname", "email", "phone", "mobile_phone", "position", "password", "is_admin"],
-                        ["'".$user -> name."'", "'".$user -> surname."'", "'".$user -> fname."'", "'".$user -> email."'", "'".$user -> phone."'", "'".$user -> mobile."'", "'".$user -> position."'", "'".md5($password)."'", intval($user -> isAdmin)]
+                        ["'".$user -> name -> value."'", "'".$user -> surname -> value."'", "'".$user -> fname -> value."'", "'".$user -> email -> value."'", "'".$user -> phone -> value."'", "'".$user -> mobile -> value."'", "'".$user -> position -> value."'", "'".md5($password)."'", intval($user -> isAdmin -> value)]
                     );
                     if ($result == false)
                         return Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> add: ".mysql_errno()." - ".mysql_error());
                     else {
                         $id = mysql_insert_id();
-                        $user -> id = intval($id);
+                        $user -> id -> value = intval($id);
                         return $id != null && $id != 0 ? $id : false;
                     }
                     array_push(self::$items, $user);
@@ -137,105 +137,6 @@
 
 
 
-
-        /*
-        public static function add ($name, $fname, $surname, $position, $email, $phone, $password, $isAdmin) {
-            if ($name == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - имя пользователя");
-                return false;
-            } else {
-                if (gettype($name) != "string") {
-                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - имя пользователя");
-                    return false;
-                } else {
-                    if ($fname == null) {
-                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - отчество пользователя");
-                        return false;
-                    } else {
-                        if (gettype($fname) != "string") {
-                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - отчество пользователя");
-                            return false;
-                        } else {
-                            if ($surname == null) {
-                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - фамилия пользователя");
-                                return false;
-                            } else {
-                                if (gettype($surname) != "string") {
-                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - фамилия пользователя");
-                                    return false;
-                                } else {
-                                    //if ($position == null) {
-                                    //    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - должность пользователя");
-                                    //    return false;
-                                    //} else {
-                                        if ($position != null && gettype($position) != "string") {
-                                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - должность пользователя");
-                                            return false;
-                                        } else {
-                                            if ($email == null) {
-                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - email пользователя");
-                                                return false;
-                                            } else {
-                                                if (gettype($email) != "string") {
-                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - email пользователя");
-                                                    return false;
-                                                } else {
-                                                    if ($phone == null) {
-                                                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - телефон пользователя");
-                                                        return false;
-                                                    } else {
-                                                        if (gettype($phone) != "string") {
-                                                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - телефон пользователя");
-                                                            return false;
-                                                        } else {
-                                                            if ($password == null) {
-                                                                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - пароль пользователя");
-                                                                return false;
-                                                            } else {
-                                                                if (gettype($password) != "string") {
-                                                                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - пароль пользователя");
-                                                                    return false;
-                                                                } else {
-                                                                    if ($isAdmin == null && $isAdmin !== false) {
-                                                                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - является ли пользователь администратором");
-                                                                        return false;
-                                                                    } else {
-                                                                        if (gettype($isAdmin) != "boolean") {
-                                                                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип параметра - является ли пользователь администратором");
-                                                                            return false;
-                                                                        } else {
-                                                                            //if (self::isInstalled() == true) {
-                                                                                $result = DBManager::insert_row(
-                                                                                    "kr_users",
-                                                                                    ["name", "surname", "fname", "email", "phone", "position", "password", "is_admin"],
-                                                                                    ["'".$name."'", "'".$surname."'", "'".$fname."'", "'".$email."'", "'".$phone."'", "'".$position."'", "'".md5($password)."'", intval($isAdmin)]
-                                                                                );
-                                                                                if ($result == false) {
-                                                                                    Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> add: ".mysql_errno()." - ".mysql_error());
-                                                                                    return false;
-                                                                                } else {
-                                                                                    $id = mysql_insert_id();
-                                                                                    return $id != null && $id != 0 ? $id : false;
-                                                                                }
-                                                                            //}
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    //}
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        */
 
 
 
@@ -254,36 +155,8 @@
                 } else {
                     $u = DBManager::select("kr_users", ["*"], "id = $id LIMIT 1");
                     if ($u) {
-                        /*
-                        $user = new User(
-                            intval($u[0]["id"]),
-                            $u[0]["surname"],
-                            $u[0]["name"],
-                            $u[0]["fname"],
-                            $u[0]["position"],
-                            $u[0]["email"],
-                            $u[0]["phone"],
-                            boolval($u[0]["is_admin"])
-                        );
-                        */
-
-                        /*
-                        $user = new User(array(
-                            "id" => intval($u[0]["id"]),
-                            "surname" => $u[0]["surname"],
-                            "name" => $u[0]["name"],
-                            "fname" => $u[0]["fname"],
-                            "position" => $u[0]["position"],
-                            "email" => $u[0]["email"],
-                            "phone" => $u[0]["phone"],
-                            "mobile" => $u[0]["mobile_phone"],
-                            "isAdmin" => boolval($u[0]["is_admin"])
-                        ));
-                        */
-
                         $user = Models::construct("User1", false);
                         $user -> fromSource($u[0]);
-
                         return $user;
                     } else
                         return false;

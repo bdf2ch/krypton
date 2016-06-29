@@ -4,8 +4,10 @@
         private static $entries = array();
 
 
+        public static function init () {}
 
-        public static add ($entry, $class, $method) {
+
+        public static function add ($entry, $class, $method) {
             if ($entry == null)
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> add: Не задан параметр - точка входа");
             else
@@ -29,25 +31,27 @@
                     if (method_exists($class, $method) == false)
                         return Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> add: Метод '".$method."' не найден");
 
-            $entry = new stdClass();
-            $entry -> entry = $entry;
-            $entry -> class = $class;
-            $entry -> method = $method;
-            array_push(self::$entries, $entry);
+            $newEntry = new stdClass();
+            $newEntry -> entry = $entry;
+            $newEntry -> class = $class;
+            $newEntry -> method = $method;
+            array_push(self::$entries, $newEntry);
+            //var_dump(self::$entries);
         }
 
 
 
-        public function entryExists ($entry) {
+        public static function getEntry ($entry) {
             if ($entry == null)
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> entryExists: Не задан параметр - точка входа");
             else
                 if (gettype($entry) != "string")
                     return Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> entryExists: Неверно задан тип параметра - точка входа");
                 else {
-                    for ($ent in self::$entries) {
-                        if ($ent -> entry == $entry)
-                            return true;
+                    //var_dump(self::$entries);
+                    foreach (self::$entries as $key => $apiEntry) {
+                        if ($apiEntry -> entry == $entry)
+                            return $apiEntry;
                     }
                     return false;
                 }
@@ -55,7 +59,31 @@
 
 
 
-        public static getAll () {
+        public static function call ($entry, $data) {
+            if ($entry == null) {
+                echo(json_encode(Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> call: Не задан параметр - точка входа")));
+                return false;
+            } else
+                if (gettype($entry) != "string") {
+                    echo(json_encode(Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> call: Неверно задан тип параметра - точка входа")));
+                    return false;
+                } else {
+                    //echo("4ntry = ".$entry);
+                    $isEntryExists = self::getEntry($entry);
+                    //var_dump($isEntryExists);
+                    if ($isEntryExists != false) {
+                        $callable = $isEntryExists -> class."::".$isEntryExists -> method;
+                        //echo($callable."</br>");
+                        $result = call_user_func(array($isEntryExists -> class, $isEntryExists -> method));
+                        echo(json_encode($result));
+                    }
+                }
+
+        }
+
+
+
+        public static function getAll () {
             return self::$entries;
         }
     };

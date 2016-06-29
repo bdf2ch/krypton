@@ -189,11 +189,13 @@
             $this -> template -> assign("APPLICATION", json_encode(self::$app));
             $this -> template -> assign("EXTENSIONS", json_encode(Extensions::getAll()));
             $this -> template -> assign("CURRENT_SESSION", json_encode(Sessions::getCurrentSession()));
-            $this -> template -> assign("CURRENT_USER", Sessions::getCurrentUser() -> toJSON());
+            if (Sessions::getCurrentUser() != false)
+                $this -> template -> assign("CURRENT_USER", Sessions::getCurrentUser() -> toJSON());
             $this -> template -> assign("SETTINGS", json_encode(Settings::getAll()));
             $this -> template -> assign("ERRORS", json_encode(Errors::getAll()));
             $this -> template -> assign("USERS", json_encode(Users::getAll()));
             $this -> template -> assign("DEPARTMENTS", json_encode(Kolenergo::getDepartments()));
+            $this -> template -> assign("DIVISIONS", json_encode(Kolenergo::getDivisions()));
             $this -> template -> assign("CLIENT_SIDE_EXTENSIONS", Extensions::getExtensionsUrls());
             $this -> template -> parse("main");
             $this -> template -> out("main");

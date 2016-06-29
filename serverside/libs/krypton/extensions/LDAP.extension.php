@@ -165,15 +165,24 @@
 
                                             //$user = new User(-1, $surname, $name, $fname, " ", $email, strval($phone), false);
 
-                                            $user = new User(array (
-                                                "id" => -1,
-                                                "surname" => $surname,
-                                                "name" => $name,
-                                                "fname" => $fname,
-                                                "email" => $email,
-                                                "phone" => strval($phone),
-                                                "mobile" => strval($mobile)
-                                            ));
+                                            $user = Models::construct("User1", false);
+                                            $user -> id -> value = -1;
+                                            $user -> surname -> value = $surname;
+                                            $user -> name -> value = $name;
+                                            $user -> fname -> value  = $fname;
+                                            $user -> email -> value = $email;
+                                            $user -> phone -> value = strval($phone);
+                                            $user -> mobile -> value = strval($mobile);
+
+                                            //$user = new User(array (
+                                            //    "id" => -1,
+                                            //    "surname" => $surname,
+                                            //    "name" => $name,
+                                            //   "fname" => $fname,
+                                            //    "email" => $email,
+                                            //    "phone" => strval($phone),
+                                            //    "mobile" => strval($mobile)
+                                            //));
                                             //var_dump($user);echo("</br>");
                                             return $user;
 

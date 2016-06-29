@@ -2,8 +2,8 @@
 
     class Sessions {
 
-        private static $session;
-        private static $user;
+        private static $session = false;
+        private static $user = false;
         public static $items;
 
 
@@ -60,6 +60,7 @@
             global $db_password;
 
             //echo("</br>sessions init called</br>");
+            //if (!defined("ENGINE_API")) {
 
             if (isset($_COOKIE["krypton_session"])) {
                 if (DBManager::is_connected()) {
@@ -83,14 +84,6 @@
                                 //self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
                                 setcookie("krypton_session", $token);
                             } else {
-                                /*
-                                self::$session = new Session (
-                                    $s[0]["user_id"],
-                                    $s[0]["token"],
-                                    $s[0]["start"],
-                                    $s[0]["end"]
-                                );
-                                */
                                 $session = Models::load("Session", false);
                                 $session -> fromSource($s[0]);
                                 self::$session = $session;
@@ -109,12 +102,16 @@
                 } else
                     return Errors::push(ERROR_TYPE_DATABASE, "Sessions -> init: Отсутсвтует соединение с БД");
             } else {
-                $token = self::generate_token(32);
-                DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
-                $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
-                self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
-                setcookie("krypton_session", $token);
+                if (!defined("ENGINE_API_MODE")) {
+                    $token = self::generate_token(32);
+                    DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
+                    $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
+                    self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
+                    setcookie("krypton_session", $token);
+                }
             }
+
+            //}
             //$this -> setLoaded(true);
 
             //var_dump(LDAP::login("kolu0897", "zx12!@#$"));
@@ -182,12 +179,12 @@
                         Errors::push(Error_TYPE_ENGINE, "Session -> assignSessionToUser: Текущая сессия не определена");
                         return false;
                     } else {
-                        $currentSessionToken = self::getCurrentSession() -> token;
+                        $currentSessionToken = self::getCurrentSession() -> token -> value;
                         if (!DBManager::update("kr_sessions", ["user_id"], [$userId], "token = '$currentSessionToken'")) {
                             return false;
                         } else {
                             if (self::$session != null)
-                                self::$session -> userId = $userId;
+                                self::$session -> userId -> value = $userId;
                             return true;
                         }
                     }
@@ -226,7 +223,7 @@
                                     if ($activeDirectoryUser != false) {
 
 
-                                            $isUserExists = Users::getByEmail($activeDirectoryUser -> email);
+                                            $isUserExists = Users::getByEmail($activeDirectoryUser -> email -> value);
                                             if ($isUserExists == false) {
                                                 /*
                                                 $addedUser = Users::add(

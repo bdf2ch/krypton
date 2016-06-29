@@ -23,7 +23,7 @@
 
 
 
-    function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users) {
+    function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $http) {
         $log.log("krypton admin run");
         //$location.url("/users");
         $rootScope.navigation = $navigation;
@@ -51,5 +51,13 @@
             isDefault: true
         });
         $navigation.add(temp2);
+
+
+        $http.post("../../serverside/libs/krypton/api.php", { action: "test", data: {} })
+            .success(function (data) {
+                $log.log(data);
+            });
+
+        $log.log(window.krypton);
     };
 })();

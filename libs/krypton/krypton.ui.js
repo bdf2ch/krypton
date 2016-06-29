@@ -9,6 +9,7 @@
             .directive("column", columnDirective)
             .directive("columnControl", columnControlDirective)
             .directive("hierarchy", hierarchyDirective)
+            .directive("modelList", modelListDirective)
             .run(kryptonUIRun);
     
     
@@ -920,33 +921,35 @@
 
 
     function hierarchyDirective ($log, $errors, $compile, $templateCache) {
-        var template =
-            "<span ng-if='getChildren(node[key]).length > 0' ng-click='expand(node[key])'>+</span>{{ node.id }}" +
-            "<ul ng-if='node.expanded === true'>" +
-                "<span ng-if='getChildren(node[key]) !== false' ng-click='expand(node[key])'>+</span>{{ node.id }}" +
-                //"<li ng-repeat='node in branches' ng-init='branches = getChildren(item[key])' ng-include=\"\'hierarchy.html'\">" +
-                //"<div ng-init='branches = getChildren(item[key])' ng-include=\"\'hierarchy.html'\"></div>" +
-                "</li>" +
-            "</ul>";
-        $templateCache.put("hierarchy.html", template);
         return {
             restrict: "E",
             scope: {
                 ngModel: "=",
+                class: "@",
                 key: "@",
                 parentKey: "@",
+                displayField: "@"
             },
             template:
-
-                "<ul>" +
-                    "<li ng-repeat='node in initial' ng-init='this.branches = getChildren(node[key])'>" +
-                        "<span ng-if='getChildren(node[key]).length > 0' ng-click='expand(node[key])'>+</span>{{ node.id }}" +
-                        "<div ng-include=\"\'hierarchy.html'\"></div>" +
-
+                "<ul class='{{ \"krypton-ui-hierarchy \" + class }}'>" +
+                    "<li ng-repeat='node in initial track by $id(node)' ng-init='this.branches = getChildren(node)'>" +
+                        "<span class='expand fa fa-plus-circle' ng-class='{\"invisible\": node.children.length > 0}' ng-if='node.expanded === false' ng-click='expand(node)'></span>" +
+                        "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>{{ node.display }}" +
+                        "<div ng-if='branches.length > 0' ng-include=\"\'hierarchy.html'\"></div>" +
                     "</li>" +
                 "</ul>",
             link: function (scope, element, attrs, ctrl) {
 
+                var template =
+                    "<ul class='{{ \"krypton-ui-hierarchy nested \" + class }}' ng-if='node.expanded === true'>" +
+                        "<li ng-repeat='node in branches' ng-init='branches = getChildren(node)'>" +
+                            "<span class='expand fa fa-plus-circle' ng-if='getChildren(node).length > 0 && node.expanded === false' ng-click='expand(node)'></span>" +
+                            "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>{{ node.display }}" +
+                            "<div ng-init='this.branches = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
+                        "</li>" +
+                    "</ul>";
+
+                $templateCache.put("hierarchy.html", template);
                 var stack = scope.stack = [];
                 var initial = scope.initial = [];
 
@@ -964,34 +967,108 @@
                 };
 
 
-                scope.getChildren = function (key) {
-                    if (key !== undefined) {
+                scope.getChildren = function (node) {
+                    if (node !== undefined) {
                         var children = [];
                         var length = scope.stack.length;
                         for (var i = 0; i < length; i++) {
-                            if (scope.stack[i][scope.parentKey] !== undefined) {
-                                if (scope.stack[i][scope.parentKey] === key) {
-                                    children.push(scope.stack[i]);
-                                }
+                            var temp = scope.stack[i];
+                            var nodeKey = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
+                            var parentKey = temp[scope.parentKey].constructor === Field ? temp[scope.parentKey].value : temp[scope.parentKey];
+                            if (parentKey === nodeKey) {
+                                children.push(scope.stack[i]);
                             }
                         }
-                        $log.log("children = ", children);
+                        //$log.log("children = ", children);
                         return children;
                     }
                 };
 
 
-                scope.expand = function (key) {
-                    if (key !== undefined) {
+                scope.expand = function (node) {
+                    if (node !== undefined) {
                         var length = scope.stack.length;
                         for (var i = 0; i < length; i ++) {
-                            if (scope.stack[i][scope.key] === key)
+                            var nodeKey = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
+                            var tempKey = scope.stack[i][scope.key].constructor === Field ? scope.stack[i][scope.key].value : scope.stack[i][scope.key];
+                            if (nodeKey === tempKey)
                                 scope.stack[i].expanded = true;
                         }
                     }
                 };
 
+                scope.collapse = function (node) {
+                    if (node !== undefined) {
+                        var length = scope.stack.length;
+                        for (var i = 0; i < length; i ++) {
+                            var nodeKey = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
+                            var tempKey = scope.stack[i][scope.key].constructor === Field ? scope.stack[i][scope.key].value : scope.stack[i][scope.key];
+                            if (nodeKey === tempKey)
+                                scope.stack[i].expanded = false;
+                        }
+                    }
+                };
 
+
+                var init = function () {
+                    if (scope.ngModel.constructor === undefined || scope.ngModel.constructor !== Array) {
+                        $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Источник данных (ngModel) не является массивом");
+                        return false;
+                    }
+
+                    if (scope.key === undefined && scope.key === "") {
+                        $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не задан аттрибут - поле связи иерархии");
+                        return false;
+                    }
+
+                    if (scope.parentKey === undefined && scope.parentKey === "") {
+                        $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не задан аттрибут - поле родительской связи");
+                        return false;
+                    }
+
+                    var length = scope.ngModel.length;
+                    for (var i = 0; i < length; i++) {
+                        var first = scope.ngModel[i];
+
+                        if (first[scope.key] == undefined) {
+                            $log.info("krypton.ui -> hierarchy -> Не найдено поле связи в источнике данных (" + scope.key + ")");
+                            continue;
+                        }
+                        var firstKey = first[scope.key].constructor === Field ? first[scope.key].value : first[scope.key];
+
+                        if (first[scope.parentKey] === undefined) {
+                            $log.info("krypton.ui -> hierarchy -> Не найдено поле связи в источнике данных (" + scope.key + ")");
+                            continue;
+                        }
+                        var firstParentKey = first[scope.parentKey].constructor === Field ? first[scope.parentKey].value : first[scope.parentKey];
+
+                        first.expanded = false;
+                        first.children = [];
+                        if (first[scope.displayField] !== undefined && first[scope.displayField] !== "") {
+                            first.display = first[scope.displayField].constructor === Field ? first[scope.displayField].value : first[scope.displayField];
+                        }
+                        scope.stack.push(first);
+                        if (firstParentKey === 0 || firstParentKey === "")
+                            scope.initial.push(first);
+
+                        for (var x = 0; x < length; x ++) {
+                            var second = scope.ngModel[x];
+                            var secondParentKey = second[scope.parentKey].constructor === Field ? second[scope.parentKey].value : second[scope.parentKey];
+
+                            if (firstKey === secondParentKey)
+                                scope.stack[scope.stack.length - 1].children.push(second);
+
+                        }
+
+                    }
+
+                };
+
+                init();
+                $log.log("stack = ", scope.stack);
+                $log.log("initial = ", scope.initial);
+
+                /*
                 if (scope.ngModel !== null && scope.ngModel !== undefined) {
                     if (typeof scope.ngModel.constructor !== undefined && scope.ngModel.constructor === Array) {
                         if (scope.key !== undefined && scope.key !== "") {
@@ -1004,6 +1081,7 @@
                                     if (scope.ngModel[i][scope.key] !== undefined && scope.ngModel[i][scope.key] !== "") {
 
                                         if (scope.ngModel[i][scope.parentKey] !== undefined && scope.ngModel[i][scope.parentKey] !== "") {
+
                                             scope.stack.push(scope.ngModel[i]);
                                             scope.stack[scope.stack.length - 1].expanded = false;
                                             scope.stack[scope.stack.length - 1].children = [];
@@ -1030,6 +1108,64 @@
                     } else
                         return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Источник данных (ngModel) не является массивом");
                 }
+                */
+            }
+        }
+    };
+
+
+
+
+    function modelListDirective ($log, $errors) {
+        return {
+            restrict: "E",
+            require: "ngModel",
+            template:
+                "<div class='krypton-ui-model-list'>" +
+                    "<div class='model-item' ng-class='{\"selected\" : model._states_.selected() === true}' ng-repeat='model in ngModel track by $id(model)' ng-click='select(model)'>" +
+                        "<div class='model-item-icon'></div>" +
+                        "<div class='model-item-content'>" +
+                            "<div class='model-item-model item-primary-label' ng-if='primaryLabel !== undefined && primaryLabel !== \"\" && model[primaryLabel] !== undefined'>{{ model[primaryLabel].value }}</div>" +
+                            "<div class='model-item-secondary-label' ng-if='secondaryLabel !== undefined && secondaryLabel !== \"\" && model[secondaryLabel] !== undefined'>{{ model[secondaryLabel].value }}</div>" +
+                        "</div>" +
+                    "</div>" +
+                "</div>",
+            scope: {
+                ngModel: "=",
+                modelId: "@",
+                primaryLabel: "@",
+                secondaryLabel: "@",
+                onSelect: "="
+            },
+            link: function (scope, element, attrs, ctrl) {
+
+                if (scope.ngModel.constructor !== undefined && scope.ngModel.constructor === Array ) {
+
+                } else
+                    return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> model-list ->  Источник данных (ngModel) не является массивом");
+
+                scope.select = function (model) {
+                    if (scope.modelId !== undefined && scope.modelId !== "") {
+                        if (model[scope.modelId] !== undefined) {
+                            var selectedModelIdValue = model[scope.modelId].constructor === Field ? model[scope.modelId].value : model[scope.modelId];
+                            var length = scope.ngModel.length;
+                            for (var i = 0; i < length; i++) {
+                                if (scope.ngModel[i][scope.modelId] !== undefined) {
+                                    var modelIdValue = scope.ngModel[i][scope.modelId].constructor === Field ? scope.ngModel[i][scope.modelId].value : scope.ngModel[i][scope.modelId];
+                                    if (modelIdValue === selectedModelIdValue) {
+                                        if (scope.ngModel[i]._states_ !== undefined)
+                                            scope.ngModel[i]._states_.selected(true);
+                                        if (scope.onSelect !== undefined)
+                                            scope.onSelect(model);
+                                    } else
+                                        if (scope.ngModel[i]._states_ !== undefined)
+                                            scope.ngModel[i]._states_.selected(false);
+                                }
+                            }
+                        }
+                    }
+                };
+                
             }
         }
     };
