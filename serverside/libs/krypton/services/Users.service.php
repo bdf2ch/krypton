@@ -1,11 +1,14 @@
 <?php
 
-    class Users {
+    class Users extends Service {
 
         //public static $id = "kr_users";
         public static $description = "Users description";
         public static $clientSideExtensionUrl = "modules/app/krypton.app.users.js";
         private static $items = array();
+
+
+
 
 
         /**

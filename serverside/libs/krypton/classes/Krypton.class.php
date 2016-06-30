@@ -83,6 +83,8 @@
                 else {
                     if (sizeof($parameters["extensions"]) > 0) {
                         foreach ($parameters["extensions"] as $key => $extension) {
+                            Extensions::load($extension);
+                        /*
                             if (file_exists( $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$extension.".extension.php")) {
                                 require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$extension.".extension.php";
                                 //$ext = new $extension($parameters);
@@ -91,6 +93,7 @@
                                 $extension::init();
                             } else
                                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Krypton -> __construct: Расширение '".$extension."' не найдено");
+                        */
                         }
                     }
                 }
@@ -209,6 +212,55 @@
             global $db_user;
             global $db_password;
 
+
+            $result = DBManager::connect($db_host, $db_user, $db_password);
+            if (!$result)
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось подключиться к БД");
+
+            $result = DBManager::create_db("krypton");
+            if (!$result)
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось создать БД");
+
+            $result = DBManager::select_db("krypton");
+            if (!$result)
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось выбрать БД");
+
+            $result = DBManager::create_table("kr_app_info");
+            if (!$result)
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось создать таблицу с информацией о приложении");
+
+            $result = DBManager::add_column("kr_app_info", "title", "varchar(200) NOT NULL default ''");
+            if (!$result)
+                 Errors::push(Errors::Error_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'title' в таблшицу с информацией о приложении");
+
+            $result = DBManager::add_column("kr_app_info", "description", "varchar(200) default ''");
+            if (!$result)
+                Errors::push(Errors::Error_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'description' в таблшицу с информацией о приложении");
+
+            $result = DBManager::add_column("kr_app_info", "is_in_debug_mode", "int(11) NOT NULL default 0");
+            if (!$result)
+                Errors::push(Errors::Error_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'is_in_debug_mode' в таблшицу с информацией о приложении");
+
+            $result = DBManager::add_column("kr_app_info", "is_in_construction_mode", "int(11) NOT NULL default 0");
+            if (!$result)
+                Errors::push(Errors::Error_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'is_in_construction_mode' в таблшицу с информацией о приложении");
+
+            $result = DBManager::create_table("kr_app_extensions");
+            if (!$result)
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось создать таблицу с информацией об используемых расширениях");
+
+            $result = DBManager::add_column("kr_app_extensions", "extension_id", "varchar(200) NOT NULL default ''");
+            if (!$result)
+                Errors::push(Errors::Error_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'extension_id' в таблшицу с информацией об используемых расширениях");
+
+            $result = DBManager::add_column("kr_app_extensions", "enabled", "int(11) NOT NULL default '1'");
+            if (!$result)
+                Errors::push(Errors::Error_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'enabled' в таблшицу с информацией об используемых расширениях");
+
+            return true;
+
+
+            /*
             if (DBManager::connect($db_host, $db_user, $db_password)) {
                 if (DBManager::create_db("krypton")) {
                     if (DBManager::select_db("krypton")) {
@@ -235,20 +287,6 @@
                             }
                         }
 
-                        /*
-                        if (Settings::install() == true) {
-                            echo("Установка подсистемы настроек выполнена успешно</br>");
-                            return true;
-                        }
-                        if (Sessions::install() == true) {
-                            echo("Установка подсистемы управыления сессиями выполнена успешно</br>");
-                            return true;
-                        }
-                        if (Users::install() == true) {
-                            echo("Установка подсистемы пользователей успешно</br>");
-                            return true;
-                        }
-                        */
                     } else {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось выбрать БД");
                         return false;
@@ -261,6 +299,7 @@
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось подключиться к БД");
                 return false;
             }
+            */
         }
 
 

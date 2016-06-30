@@ -2,7 +2,7 @@
 
     class LDAP extends ExtensionInterface {
 
-        public static $id = "kr_ldap";
+        public static $id = "ldap";
         public static $title = "LDAP";
         public static $description = "LDAP description";
         public static $url = "";

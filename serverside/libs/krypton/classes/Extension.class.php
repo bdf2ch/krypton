@@ -5,6 +5,7 @@
         public $title;
         public $description = "";
         public $url = "";
+        public $enabled = false;
 
         public function __construct ($id, $title, $url, $description) {
             if ($id == null)
@@ -34,6 +35,17 @@
             else
                 $this -> description = $description;
         }
+
+
+        public function enable () {
+            $result = DBManager::update("kr_extensions", ["enabled"], [1], "id = '".$this -> id."'");
+            if (!$result)
+                return Errors::push(Errors::ERROR_TYPE_DATABASE, "Extension -> enable: Не удалось включить расширение '".$this -> id."'");
+
+            $this -> enabled = true;
+        }
+
+
 
 
         public function getUrl () {

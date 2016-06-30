@@ -279,6 +279,8 @@
         $scope.currentDepartmentId = undefined;
         $scope.currentDivision = undefined;
 
+        $log.log("company controller");
+
 
         $scope.onSelectDepartment = function (department) {
             $log.log("onSelect fired");
@@ -295,6 +297,12 @@
                 $log.log("onSelectHierarchyItem", division);
                 $scope.currentDivision = division;
             }
+        };
+
+
+        $scope.addDivision = function () {
+            $log.log("add division called");
+            $modals.open("test");
         };
 
 
@@ -316,7 +324,7 @@
             {id: 11, parentId: 10, title: "Отдел " + this.id}
         ];
 
-        $modals.open("test-modal");
+        //$modals.open("test-modal");
     };
 
 

@@ -464,18 +464,49 @@
 /***************
 ** HIERARCHY
 ***************/
+@hierarchy-item-height: 40px;
+
 .krypton-ui-hierarchy {
   margin-top: 0px;
   margin-bottom: 0px;
+  padding-left: 0px;
+  border: 1px solid black;
 
+
+
+
+/*
   ul.nested {
-    margin-left: 5px !important;
-    margin-top: 5px !important;
-    border-left: 1px dotted lightgray;
+    display: block;
+    margin-left: 7px !important;
+    margin-top: 20px !important;
+    padding-left: 0px !important;
+    //border-left: 1px dotted black;
+
+    ul {
+      margin-left: 15px !important;
+    }
+
+    li {
+      display: block;
+      //min-height: @hierarchy-item-height;
+      box-sizing: border-box;
+      padding-left: 0px !important;
+      //padding-top: 10px;
+      //padding-bottom: 5px;
+      background: lightblue;
+      border: 1px solid black;
+    }
+  }
+
+  li {
+    overflow: visible;
+    min-height: @hierarchy-item-height;
+    padding: 10px;
+    //border: 1px solid lightgray;
   }
 
   .expand {
-    padding-right: 10px;
     font-size: 13px;
     cursor: pointer;
 
@@ -485,7 +516,6 @@
   }
 
   .collapse {
-    padding-right: 10px;
     font-size: 13px;
     cursor: pointer;
   }
@@ -494,13 +524,40 @@
     float: left;
     width: 10px;
     height: 100%;
-    border: 1px solid black;
+    //box-sizing: border-box;
+    //border: 1px solid blue;
+
+    .lines-top {
+      height: 19px;
+      margin-top: -10px;
+      //background: yellow;
+      border-left: 1px dotted lightgray;
+      border-bottom: 1px dotted lightgray;
+    }
+
+    .lines-bottom {
+      height: 19px;
+      //margin-bottom: -5px;
+      //background: orange;
+    }
   }
+
+  .item-controls {
+    float: left;
+    width: 15px;
+    height: 20px;
+    //margin-left: 5px;
+    text-align: center;
+    box-sizing: border-box;
+    border: 1px solid green;
+  }
+
   .item-content {
     float: left;
     height: 100%;
     border: 1px solid red;
   }
+  */
 
 }
 
@@ -550,13 +607,19 @@
 /********************
 ** MODAL
 ********************/
+@modal-z-index: 5000;
 @modal-default-width: 400px;
-@modal-defaul-height: 400px;
+@modal-default-height: 400px;
 
 .krypton-ui-modal {
-  display: none;
+  //display: none;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: @modal-z-index;
   width: @modal-default-width;
-  height: @modal-defaul-height;
+  height: @modal-default-height;
   box-sizing: border-box;
+  background: white;
   border: 1px solid red;
 }

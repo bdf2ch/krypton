@@ -1,0 +1,25 @@
+<columns id="settings">
+    <column id="settings-settings" caption="настройки" width="100">
+
+        <div class="padding-10">
+            <table class="width-100">
+                <caption>Система</caption>
+                <thead>
+                <tr>
+                    <th>Наменование</th>
+                    <th>Описание</th>
+                    <th>Значение</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="setting in settings.getAll() track by $index">
+                    <td>{{ setting.title.value }}</td>
+                    <td>{{ setting.description.value }}</td>
+                    <td>{{ setting.value.value }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </column>
+</columns>

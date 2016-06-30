@@ -150,6 +150,7 @@ function isField (obj) {
                                 if (this.hasOwnProperty(param))
                                     this[param] = parameters[param];
                             }
+                            return this;
                         } else
                             return $errors.add(ERROR_TYPE_DEFAULT, "$classes -> Menu -> init: Не задан параметр - параметры инициализации");
                     }

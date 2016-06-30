@@ -901,7 +901,7 @@
             transclude: true,
             scope: {
                 content: "@",
-                action: "&",
+                action: "=",
                 class: "@",
                 icon: "@",
                 title: "@",
@@ -936,8 +936,12 @@
             template:
                 "<ul class='{{ \"krypton-ui-hierarchy \" + class }}'>" +
                     "<li ng-repeat='node in initial track by $id(node)' ng-init='this.children = getChildren(node)' ng-click='select(node)'>" +
-                        "<span class='expand fa fa-plus-circle' ng-class='{\"invisible\": node.children.length === 0}' ng-if='node.expanded === false' ng-click='expand(node)'></span>" +
-                        "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>{{ node.display }}" +
+                        "<div class='item-controls'>" +
+                            "<span class='expand fa fa-plus-circle' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                            "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                        "</div>" +
+                        "<div class='item-content'>{{ node.display }}</div>" +
+
                         "<div  ng-include=\"\'hierarchy.html'\"></div>" +
                     "</li>" +
                 "</ul>",
@@ -946,8 +950,14 @@
                 var template =
                     "<ul class='{{ \"krypton-ui-hierarchy nested \" + class }}' ng-if='node.expanded === true'>" +
                         "<li ng-repeat='node in children' ng-init='children = getChildren(node)' ng-click='select(node)'>" +
-                            "<span class='expand fa fa-plus-circle' ng-class='{\"invisible\": node.children.length === 0}' ng-if='node.expanded === false' ng-click='expand(node)'></span>" +
-                            "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>{{ node.display }}" +
+                    "<div class='item-lines'>" +
+                    "<div class='lines-top'></div><div class='lines-bottom'></div>" +
+                    "</div>" +
+                    "<div class='item-controls'>" +
+                    "<span class='expand fa fa-plus-circle' ng-class='{\"invisible\": node.children.length === 0}' ng-if='node.expanded === false' ng-click='expand(node)'></span>" +
+                    "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                    "</div>" +
+                    "<div class='item-content'>{{ node.display }}</div>" +
                             "<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
                         "</li>" +
                     "</ul>";
@@ -1185,30 +1195,67 @@
     
     
     
-    function modalsFactory ($log) {
+    function modalsFactory ($log, $compile, $parse, $sanitize) {
         var items = [];
-        var element = undefined;
+
+        var template =
+            //"<div class='krypton-ui-modal' id='{{id}}' ng-show='isVisible === true'>" +
+                "<div class='modal-header'></div>" +
+                "<div class='modal-content'>{{transcluded}}</div>";
+            //"</div>";
+
+        var addModalToDocument = function (scope) {
+            if (scope !== undefined) {
+                var modal = document.createElement("div");
+                //modal.setAttribute("id", scope.id);
+                modal.className = "krypton-ui-modal";
+                if (scope.width !== undefined)
+                    angular.element(modal).css("width", scope.actualWidth + "px");
+                if (scope.height !== undefined)
+                    angular.element(modal).css("height", scope.actualHeight + "px");
+                modal.innerHTML = template;
+                document.body.appendChild(modal);
+                $compile(modal)(scope);
+                items.push(scope);
+            }
+        };
+
+        $log.log("factory");
+
+
+
         return {
             register: function (scope) {
                 if (scope !== undefined) {
-                    var modal = document.createElement("div");
-                    modal.setAttribute("id", scope.id);
-                    modal.className = "krypton-ui-modal";
-                    if (scope.width !== undefined)
-                        angular.element(modal).css("width", scope.actualWidth + "px");
-                    if (scope.height !== undefined)
-                        angular.element(modal).css("height", scope.actualHeight + "px");
-                    document.body.appendChild(modal);
+                    var modals = document.getElementsByClassName("krypton-ui-modal");
+                    if (modals.length === 0)
+                        addModalToDocument(scope);
+                    else {
+                        var length = modals.length;
+                        var modalFound = false;
+                        for (var i = 0; i < length; i++) {
+                            if (modals[i].getAttribute("id") === scope.id)
+                                modalFound = true;
+                        }
+                        if (modalFound === false) {
+                            addModalToDocument(scope);
+                        }
+                    }
+
                     items.push(scope);
+                    $log.log("register = ", items);
                 }
             },
 
             open: function (id) {
+                $log.log("items = ", items);
                 if (id !== undefined) {
                     var length = items.length;
                     for (var i = 0; i < length; i++) {
-                        if (items[i].id === id)
-                            items.open();
+                        //var temp = items[i].id.replace(/\s+/g, '');
+                        //$log.log("trimmed = '", temp + "'");
+                        if (items[i].id === id + " ")
+                            items[i].open();
                         else
                             items[i].close();
                     }
@@ -1220,7 +1267,7 @@
                     var length = items.length;
                     for (var i = 0; i < length; i++) {
                         if (items[i].id === id)
-                            items.close();
+                            items[i].close();
                     }
                 }
             }
@@ -1233,50 +1280,54 @@
         return {
             restrict: "E",
             transclude: true,
+            //template:
+            //    "<div class='krypton-ui-modal' id='{{id}}' ng-show='isVisible === true'>" +
+            //        "<div class='modal-header'></div>" +
+            //        "<div class='modal-content' ng-transclude></div>" +
+            //    "</div>",
+            //replace: true,
             scope: {
                 id: "@",
                 width: "@",
                 height: "@",
                 caption: "@"
             },
-            link: function (scope, element, attrs) {
-                var template =
-                    "<div class='modal-header'></div>" +
-                    "<div class='modal-content' ng-transclude></div>";
-                var actualWidth = "0px";
-                var actualHeight = "0px";
-                var isVisible = scope.isVisible = false;
-                var modal = undefined;
-                
-                var init = function () {
-                    if (scope.width !== undefined && scope.width !== "" && !isNaN(scope.width))
-                        scope.actualWidth = parseInt(scope.width);
-                    else
-                        scope.width = undefined;
-                    $log.log("width = ", scope.actualWidth);
+            controller: function ($log, $scope, $modals, $attrs, $transclude) {
+            //    $log.log("modal controller");
 
-                    if (scope.height !== undefined && scope.height !== "" && !isNaN(scope.height))
-                        scope.actualHeight = parseInt(scope.height);
-                    else
-                        scope.height = undefined;
-                    $log.log("height = ", scope.actualHeight);
+                //$modals.register($scope);
 
-                    $modals.register(scope);
-                    
+                $transclude($scope, function (content) {
+                    $log.log("transcluded = ", content);
+                    $scope.transcluded = content;
+                });
+
+                $log.log($transclude);
+                $log.log($attrs);
+
+                $scope.isVisible = false;
+
+                //if ($attrs.id !== undefined && $attrs.id !== "")
+                //    $scope.id = $attrs.id.trim();
+
+                $scope.open = function () {
+                    $scope.isVisible = true;
                 };
 
-                scope.open = function () {
-                    scope.isVisible = true;
-                    var modal = document.getElementById(scope.id);
-                    $log.log(modal);
-                    angular.element(modal)[0].css("display", "block");
+                $scope.close = function () {
+                    $scope.isVisible = false;
                 };
 
-                scope.close = function () {
-                    scope.isVisible = false;
-                };
+                $log.log("scope = ", $scope);
+                $modals.register($scope);
 
-                init();
+            },
+            link: function (scope, element, attrs, ctrlm, transclude) {
+
+                $log.log(transclude);
+
+
+
             }
         }    
     };

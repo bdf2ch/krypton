@@ -5,6 +5,7 @@
         public $description;
         public $inDebugMode = false;
         public $inConstructionMode = false;
+        public $extensions = array();
 
 
 
@@ -38,9 +39,15 @@
                     $this -> description = $info[0]["description"];
                     $this -> inDebugMode = boolval($info[0]["is_in_debug_mode"]);
                     $this -> inConstructionMode = boolval($info[0]["is_in_construction_mode"]);
-                    return true;
                 } else
                     return false;
+
+                $extensions = DBManager::select("kr_app_extensions", ["*"], "''");
+                if ($extensions != false) {
+                    foreach ($extensions as $key => $ext) {
+
+                    }
+                }
             }
         }
 

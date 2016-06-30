@@ -104,6 +104,7 @@
                 return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойства в класс User");
 
             API::add("test", "Kolenergo", "getDepartments");
+            API::add("addDivision", "Kolenergo", "addDivision");
 
             if (!self::isInstalled())
                 self::install();
@@ -138,6 +139,12 @@
 
         public static function getDivisions () {
             return self::$divisions;
+        }
+
+
+
+        public static function addDivision ($data) {
+
         }
 
     };
