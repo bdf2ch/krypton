@@ -212,14 +212,15 @@
                             return false;
                         } else {
 
-
-                            if (LDAP::isInstalled()) {
+                            //echo("before ldap</br>");
+                            //var_dump(Extensions::get("LDAP"));
+                            if (Extensions::get("LDAP")->isInstalled()) {
 
                                 if (self::getCurrentUser() != null) {
                                     //echo("current user is not null");
                                 } else {
                                     $activeDirectoryUser = LDAP::login($login, $password);
-                                    var_dump($activeDirectoryUser);
+                                    //var_dump($activeDirectoryUser);
                                     if ($activeDirectoryUser != false) {
 
 

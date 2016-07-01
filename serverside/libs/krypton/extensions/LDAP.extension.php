@@ -2,18 +2,22 @@
 
     class LDAP extends ExtensionInterface {
 
-        public static $id = "ldap";
+        //public static $id = "";
         public static $title = "LDAP";
         public static $description = "LDAP description";
         public static $url = "";
 
 
+        public function __construct () {
+            parent::__construct();
+        }
+
 
         /**
         * Производит установку модуля
         **/
-        public static function install () {
-            $result = DBManager::is_table_exists(self::$id);
+        public function install () {
+            $result = DBManager::create_table(self::$id);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалочь создать таблицу с информацией об LDAP");
                 return false;
@@ -51,7 +55,7 @@
         /**
         * Проверяет, установлен ли модуль в системе
         **/
-        public static function isInstalled () {
+        public function isInstalled () {
             return DBManager::is_table_exists(self::$id);
         }
 
@@ -60,7 +64,8 @@
         /**
         * Производит инициализацию модуля
         **/
-        public static function init () {
+        public function init () {
+            parent::_init_();
             //var_dump(self::login("kolu0897", "zx12!@#$"));
             if (self::isInstalled() == true) {
 
@@ -170,12 +175,6 @@
                                                     $phone += $i < $info[0]["telephonenumber"]["count"] ? ";" : "";
                                                 }
                                             }
-                                            //var_dump($fio);echo("</br>");
-                                            //var_dump($phone);echo("</br>");
-                                            //var_dump($email);echo("</br>");
-                                            //var_dump($info);
-
-                                            //$user = new User(-1, $surname, $name, $fname, " ", $email, strval($phone), false);
 
                                             $user = Models::construct("User1", false);
                                             $user -> id -> value = -1;
@@ -186,16 +185,6 @@
                                             $user -> phone -> value = strval($phone);
                                             $user -> mobile -> value = strval($mobile);
 
-                                            //$user = new User(array (
-                                            //    "id" => -1,
-                                            //    "surname" => $surname,
-                                            //    "name" => $name,
-                                            //   "fname" => $fname,
-                                            //    "email" => $email,
-                                            //    "phone" => strval($phone),
-                                            //    "mobile" => strval($mobile)
-                                            //));
-                                            //var_dump($user);echo("</br>");
                                             return $user;
 
                                             /*

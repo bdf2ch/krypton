@@ -9,46 +9,26 @@
 
 
 
-        /*
-        public function __construct ($appTitle, $appDescription) {
-            if ($appTitle == null)
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> __construct: Не задан параметр - наименование приложения");
-            else {
-                if (gettype($appTitle) != "string")
-                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> __construct: Неверно задан тип параметра - наименование приложения");
-                else {
-                    $this -> title = $appTitle;
-
-                    if (appDescription != null && gettype($appDescription) != "string")
-                        return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> __construct: Неверно задан тип параметра - описание приложения");
-                    else
-                        $this -> description = $appDescription;
-                }
-            }
-        }
-        */
-
-        public function __construct (){}
-
-
         public function init () {
-            if (DBManager::is_connected()) {
-                $info = DBManager::select("kr_app_info", ["*"], "''");
-                if ($info != false) {
-                    $this -> title = $info[0]["title"];
-                    $this -> description = $info[0]["description"];
-                    $this -> inDebugMode = boolval($info[0]["is_in_debug_mode"]);
-                    $this -> inConstructionMode = boolval($info[0]["is_in_construction_mode"]);
-                } else
-                    return false;
+            $info = DBManager::select("kr_app_info", ["*"], "''");
+            if ($info != false) {
+                $this -> title = $info[0]["title"];
+                $this -> description = $info[0]["description"];
+                $this -> inDebugMode = boolval($info[0]["is_in_debug_mode"]);
+                $this -> inConstructionMode = boolval($info[0]["is_in_construction_mode"]);
+            }
 
                 $extensions = DBManager::select("kr_app_extensions", ["*"], "''");
+                //var_dump($extensions);
                 if ($extensions != false) {
                     foreach ($extensions as $key => $ext) {
-
+                        $extension = Models::construct("Extension", false);
+                        $extension -> fromSource($ext);
+                        array_push($this -> extensions, $extension);
                     }
-                }
-            }
+                    //var_dump($this -> extensions);
+                } else
+                    return false;
         }
 
 

@@ -1,7 +1,6 @@
 <?php
 
     class Kolenergo extends ExtensionInterface {
-        public static $id = "krypton.app.kolenergo";
         public static $title = "Колэнерго";
         public static $description = "Модуль портала Колэнерго";
         public static $url = "modules/app/krypton.app.kolenergo.js";
@@ -10,8 +9,11 @@
         public static $divisions = array();
 
 
+        public function __construct () {
+            parent::__construct();
+        }
 
-        public static function install () {
+        public function install () {
             $result = DBManager::is_table_exists("kr_users");
             if (!$result)
                 return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Таблица с пользователями не найдена");
@@ -85,14 +87,14 @@
 
 
 
-        public static function isInstalled () {
+        public function isInstalled () {
             $check = DBManager::is_column_exists("kr_users", "department_id");
             return $check;
         }
 
 
 
-        public static function init () {
+        public function init () {
             //echo("kolenergo init</br>");
 
             $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
@@ -131,7 +133,7 @@
 
 
 
-        public static function getDepartments () {
+        public function getDepartments () {
             return self::$departments;
         }
 

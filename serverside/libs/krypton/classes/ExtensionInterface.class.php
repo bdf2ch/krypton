@@ -3,21 +3,26 @@
     abstract class ExtensionInterface {
         public static $id;
         public static $description;
-        public static $clientSideExtensionUrl;
+        public static $url;
         private static $isModuleInstalled = false;
         private static $isModuleLoaded = false;
+        private static $isLoaded = false;
 
 
-        public function __construct() {
+        abstract public function init();
+        abstract public function install();
+        abstract public function isInstalled();
+
+
+        public function __construct () {
+            $class = get_called_class();
+            self::$id = $class;
         }
 
-        abstract public static function init();
-        abstract public static function install();
-        abstract public static function isInstalled();
 
-
-        private static function getClassName () {
-            return get_class($this);
+        public static function _init_ () {
+            $class = get_called_class();
+            $class::$id = $class;
         }
 
 
@@ -68,6 +73,43 @@
         public static function isLoaded () {
             return self::$isModuleLoaded;
         }
+
+
+
+        public function load () {
+            $class = get_called_class();
+            //var_dump($class);
+            $result = DBManager::select("kr_app_extensions", ["*"], "''");
+            if ($result != false)
+                foreach ($result as $key => $ext) {
+                    $extension = Models::construct("Extension", false);
+                    $extension -> fromSource($ext);
+                    if ($extension -> id -> value == $class)
+                        return true;
+                }
+            $result = DBManager::insert_row(
+                "kr_app_extensions",
+                ["extension_id", "extension_title", "extension_description", "extension_url", "enabled"],
+                ["'".$class::$id."'", "'".$class::$title."'", "'".$class::$description."'", "'".$class::$url."'", 1]
+            );
+            if (!$result)
+                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Extension -> load: Не удалось подключить расширение '".$class."' к приложению");
+
+            $extension = Models::load("Extension", false);
+            $extension -> id -> value = $class::$id;
+            $extension -> title -> value = $class::$title;
+            $extension -> description -> value = $class::$description;
+            $extension -> url -> value = $class::$url;
+            array_push(Krypton::$app -> extensions, $extension);
+
+            return true;
+        }
+
+
+        public function getUrl () {
+            return self::$url != "" ? self::$url : false;
+        }
+
     };
 
 ?>
