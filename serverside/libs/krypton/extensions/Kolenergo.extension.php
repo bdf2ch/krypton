@@ -149,6 +149,32 @@
 
         }
 
+
+        public function login ($login, $password) {
+            if ($login == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - логин пользователя");
+
+            if (gettype($login) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - логин пользователя");
+
+            if ($password == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - пароль пользователя");
+
+            if (gettype($password) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - пароль пользователя");
+
+
+            $result = Extensions::get("LDAP") -> get("enabled");
+            if (Errors::isError($result))
+                return false;
+
+            $result = Extensions::get("LDAP") -> login($login, $password);
+            if (Errors::isError($result))
+                return false;
+
+            return $result;
+        }
+
     };
 
 ?>

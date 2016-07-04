@@ -14,15 +14,15 @@
         const DATA_TYPE_FLOAT = 4;
 
         private static $dbType = self::DB_TYPE_MYSQL;
-        public static $title;
-        public static $description;
-        public static $inDebugMode;
-        public static $inConstructionMode;
-        public static $info;
+        //public static $title;
+        //public static $description;
+        //public static $inDebugMode;
+        //public static $inConstructionMode;
+        //public static $info;
         private $template;
 
         public static $app;
-        public static $extensions = array();
+        //public static $extensions = array();
 
 
 
@@ -36,9 +36,9 @@
             DBManager::connect($db_host, $db_user, $db_password);
             DBManager::select_db("krypton");
 
-
             self::$app = new Application();
             self::$app -> init();
+            $this -> template = new XTemplate($_SERVER["DOCUMENT_ROOT"]."/serverside/templates/application.html");
 
 
             if (is_null($extensions))
@@ -59,6 +59,8 @@
             Sessions::init();
             //Kolenergo::init();
             //LDAP::init();
+
+            //$this -> start();
 
         }
 
@@ -106,7 +108,7 @@
             } else
                 $template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/application.html";
             */
-            $template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/application.html";
+            //$template_url = $_SERVER["DOCUMENT_ROOT"]."/serverside/templates/application.html";
 
 
             Sessions::login("kolu0897", "zx12!@#$");
@@ -118,7 +120,6 @@
 
             //var_dump(Krypton::$app->extensions);
 
-            $this -> template = new XTemplate($template_url);
             //$this -> template -> assign("ADMIN_TEMPLATE", self::getAdminTemplate());
             $this -> template -> assign("APPLICATION_TITLE", self::$app -> get("title"));
             $this -> template -> assign("APPLICATION", json_encode(self::$app));

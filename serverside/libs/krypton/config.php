@@ -18,11 +18,13 @@
                 Services::register($class);
                 }
         }
+
         if (!defined("ENGINE_API_MODE") && !defined("ENGINE_INSTALL_MODE")) {
             //var_dump(Krypton::$extensions);
-            if (in_array($class, Krypton::$extensions))
-                require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$class.".extension.php";
-            else {
+
+            //if (in_array($class, Krypton::$extensions))
+            //    require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$class.".extension.php";
+            //else {
                 if (file_exists($_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/classes/".$class.".class.php"))
                     require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/classes/".$class.".class.php";
                 //else if (file_exists($_SERVER["DOCUMENT_ROOT"])."/serverside/libs/krypton/models/".$class.".model.php")
@@ -31,7 +33,7 @@
                     require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/services/".$class.".service.php";
                     Services::register($class);
                 }
-            }
+            //}
         }
 
         if (defined("ENGINE_API_MODE")) {

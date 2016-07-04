@@ -1,8 +1,6 @@
 <?php
 
     class LDAP extends ExtensionInterface {
-
-        //public static $id = "";
         public static $title = "LDAP";
         public static $description = "LDAP description";
         public static $url = "";
@@ -121,117 +119,65 @@
         public static function login ($login, $password) {
             global $ldap_host;
 
-            if ($login == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан прараметр - логин пользователя");
-                return false;
-            } else {
-                if (gettype($login) != "string") {
-                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра - логин пользователя");
-                    return false;
-                } else {
-                    if ($password == null) {
-                        Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан параметр - пароль пользователя");
-                        return false;
-                    } else {
-                        if (gettype($password) != "string") {
-                            Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра  пароль пользователя");
-                            return false;
-                        } else {
-                            $link = ldap_connect($ldap_host);
-                            ldap_set_option($link, LDAP_OPT_PROTOCOL_VERSION, 3);
-                            if (!$link) {
-                                Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: Не удалось подключиться к серверу LDAP");
-                                return false;
-                            } else {
-                                $bind = ldap_bind($link, "NW\\".$login, $password);
-                                if (!$bind) {
-                                    Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
-                                    return false;
-                                } else {
-                                    $attributes = array("name", "mail", "samaccountname", "cn", "telephonenumber", "mobile");
-                                    $filter = "(&(objectCategory=person)(sAMAccountName=$login))";
-                                    $userInfo = ldap_search($link, ('OU=02_USERS,OU=Kolenergo,DC=nw,DC=mrsksevzap,DC=ru'), $filter, $attributes);
-                                    if (!userInfo) {
-                                        Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
-                                        return false;
-                                    } else {
-                                        $info = ldap_get_entries($link, $userInfo);
-                                        if (!$info) {
-                                            Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
-                                            return false;
-                                        } else {
-                                            //var_dump($info);
-                                            $fio = explode(" ", $info[0]["name"][0]);
-                                            $surname = $fio[0];
-                                            $name = $fio[1];
-                                            $fname = $fio[2];
-                                            $phone = "";
-                                            $mobile = $info[0]["mobile"][0];
-                                            $email = $info[0]["mail"][0];
+            if ($login == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан прараметр - логин пользователя");
 
-                                            if ($info[0]["telephonenumber"]["count"] > 0) {
-                                                for ($i = 0; $i < $info[0]["telephonenumber"]["count"]; $i++) {
-                                                    $phone += strval($info[0]["telephonenumber"][$i]);
-                                                    $phone += $i < $info[0]["telephonenumber"]["count"] ? ";" : "";
-                                                }
-                                            }
+            if (gettype($login) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра - логин пользователя");
 
-                                            $user = Models::construct("User1", false);
-                                            $user -> id -> value = -1;
-                                            $user -> surname -> value = $surname;
-                                            $user -> name -> value = $name;
-                                            $user -> fname -> value  = $fname;
-                                            $user -> email -> value = $email;
-                                            $user -> phone -> value = strval($phone);
-                                            $user -> mobile -> value = strval($mobile);
+            if ($password == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан параметр - пароль пользователя");
 
-                                            return $user;
+            if (gettype($password) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра  пароль пользователя");
 
-                                            /*
-                                            if (!Users::getByEmail($email)) {
-                                                echo("пользовател ь с email = ".$email." не найден</br>");
+            $link = ldap_connect($ldap_host);
+            if (!$link)
+                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: Не удалось подключиться к серверу LDAP");
 
-                                                $newUserId = Users::add($name, $fname, $surname, " ", $email, strval($phone), $password, false);
-                                                if ($newUserId != false) {
-                                                    echo("Пользователь добавлен</br>");
-                                                    self::enableLDAP($newUserId);
-                                                        if (!Session::assignCurrentSessionToUser($newUserId)) {
-                                                            echo("не удалось привязать текущкю сессию к пользователю ".$newUserId."</br>");
-                                                        } else {
-                                                            echo("текущая сессия привязана к пользователю</br>");
-                                                            if(!Session::setCurrentUserById($newUserId)) {
-                                                                echo("не удалось установить текущего пользователя сессии</br>");
-                                                            }
-                                                        }
+            $result = ldap_set_option ($link, LDAP_OPT_PROTOCOL_VERSION, 3);
+            if (!$result)
+                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
 
-                                                } else {
+            $result = ldap_bind($link, "NW\\".$login, $password);
+            if (!$result)
+                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
 
-                                                }
-                                            } else {
-                                                echo("Пользователь с email = ".$email." уже сущетсвует</br>");
-                                                if (!self::isLDAPEnabled(Session::getCurrentUser() -> id)) {
-                                                    echo("для пользователя id = ".Session::getCurrentUser() -> id." запрещена LDAP-аутентификация</br>");
-                                                } else {
-                                                    if (!Session::assignCurrentSessionToUser(Session::getCurrentUser() -> id)) {
-                                                        echo("не удалось привязать текущую сессию к пользователю ".$newUserId."</br>");
-                                                    } else {
-                                                        echo("текущая сессия привязана к пользователю</br>");
-                                                        if(!Session::setCurrentUserById(Session::getCurrentUser() -> id)) {
-                                                            echo("не удалось установить текущего пользователя сессии</br>");
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            var_dump($user);echo("</br>");
-                                            */
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+            $attributes = array("name", "mail", "samaccountname", "cn", "telephonenumber", "mobile");
+            $filter = "(&(objectCategory=person)(sAMAccountName=$login))";
+            $search = ldap_search($link, ('OU=02_USERS,OU=Kolenergo,DC=nw,DC=mrsksevzap,DC=ru'), $filter, $attributes);
+            if (!$search)
+                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+
+            $result = ldap_get_entries($link, $search);
+            if (!$result)
+                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+
+            $fio = explode(" ", $info[0]["name"][0]);
+            $surname = $fio[0];
+            $name = $fio[1];
+            $fname = $fio[2];
+            $phone = "";
+            $mobile = $info[0]["mobile"][0];
+            $email = $info[0]["mail"][0];
+
+            if ($info[0]["telephonenumber"]["count"] > 0) {
+                for ($i = 0; $i < $info[0]["telephonenumber"]["count"]; $i++) {
+                    $phone += strval($info[0]["telephonenumber"][$i]);
+                    $phone += $i < $info[0]["telephonenumber"]["count"] ? ";" : "";
                 }
             }
+
+            $user = Models::construct("User1", false);
+            $user -> id -> value = -1;
+            $user -> surname -> value = $surname;
+            $user -> name -> value = $name;
+            $user -> fname -> value  = $fname;
+            $user -> email -> value = $email;
+            $user -> phone -> value = strval($phone);
+            $user -> mobile -> value = strval($mobile);
+
+            return $user;
         }
 
 

@@ -33,6 +33,27 @@
 
 
 
+        /**
+        * Проверяет, загружено ли расширение
+        * @extension {string} - наименование расширения
+        **/
+        public function isExtensionLoaded ($extension) {
+            if ($extension == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> isExtensionLoaded: Не задан параметр - наименование расширения");
+
+            if (gettype($extension) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> isExtensionLoaded: Неверно задан тип параметра - наименование расширения");
+
+            foreach ($this -> extensions as $key => $ext) {
+                if ($ext -> id -> value == $extension)
+                    return true;
+            }
+
+            return false;
+        }
+
+
+
         public function get ($property) {
             if ($property == null)
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> get: Не задан параметр - наименование свойства");
