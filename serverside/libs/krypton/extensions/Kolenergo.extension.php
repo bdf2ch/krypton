@@ -9,9 +9,12 @@
         public static $divisions = array();
 
 
+
         public function __construct () {
             parent::__construct();
         }
+
+
 
         public function install () {
             $result = DBManager::is_table_exists("kr_users");
@@ -99,6 +102,7 @@
 
             $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
             $divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "division_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            $ldapEnabledProperty = Models::extend("User1", "ldapEnabled", new Field(array( "source" => "ldap_enabled", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
 
             //if (!defined("ENGINE_ADMIN_MODE"))
 
@@ -150,6 +154,7 @@
         }
 
 
+
         public function login ($login, $password) {
             if ($login == null)
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - логин пользователя");
@@ -163,17 +168,24 @@
             if (gettype($password) != "string")
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - пароль пользователя");
 
-
             $result = Extensions::get("LDAP") -> get("enabled");
             if (Errors::isError($result))
                 return false;
 
-            $result = Extensions::get("LDAP") -> login($login, $password);
-            if (Errors::isError($result))
+            if ($result == true) {
+                $result = Extensions::get("LDAP") -> login($login, $password);
+            else {
+                $result = Sessions::login($login, $password);
+                if (!Errors::isError($result) && )
+            }
+
+            if (!Errors::isError($result) && $result == true)
                 return false;
 
             return $result;
         }
+
+
 
     };
 

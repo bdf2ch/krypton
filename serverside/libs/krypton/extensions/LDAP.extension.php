@@ -15,6 +15,14 @@
         * Производит установку модуля
         **/
         public function install () {
+            $result = DBManager::is_table_exists("kr_users");
+            if (!$result)
+                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Таблица с пользователями не найдена");
+
+            $result = DBManager::add_column("kr_users", "ldap_enabled", "int(11) NOT NULL default 1");
+            if (!$result)
+                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ldap_enabledd' в таблицу ползователей");
+
             $result = DBManager::create_table(self::$id);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалочь создать таблицу с информацией об LDAP");

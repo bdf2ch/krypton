@@ -8,7 +8,8 @@
     $app = new Krypton(["LDAP", "Kolenergo"]);
 
 
-    var_dump(Extensions::get("Kolenergo") -> login("kolu0897", "zx12!@#$"));
+    //var_dump(Extensions::get("Kolenergo") -> login("kolu0897", "zx12!@#$"));
+    var_dump(Sessions::login("sisyanov@mail.ru", "qwerty"));
 
     $app -> start();
 
