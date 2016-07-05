@@ -30,8 +30,17 @@
 
 
 
+    <!-- BEGIN: DEBUG_CONSOLE -->
     <div id="krypton-debug-console" ng-show="errors.getAll().length > 0">
         <table>
+            <thead>
+            <tr>
+                <th colspan="2">
+                    Консоль ошибок
+                    <span class="fa fa-arrows-v right"></span>
+                </th>
+            </tr>
+            </thead>
             <tbody>
             <tr ng-repeat="error in errors.getAll() track by $index">
                 <td>{{ error.timestamp.value + ":" }}</td>
@@ -40,6 +49,9 @@
             </tbody>
         </table>
     </div>
+    <!-- END: DEBUG_CONSOLE -->
+
+
     <!--<input type="text" id="testInput2" ui-date-time-picker>-->
 
     <script src="libs/angularjs/angular-route.min.js"></script>

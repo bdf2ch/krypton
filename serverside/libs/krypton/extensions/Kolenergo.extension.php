@@ -192,17 +192,25 @@
 
 
         public function login ($login, $password) {
-            if ($login == null)
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - логин пользователя");
+            if ($login == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - логин пользователя");
+                return false;
+            }
 
-            if (gettype($login) != "string")
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - логин пользователя");
+            if (gettype($login) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - логин пользователя");
+                return false;
+            }
 
-            if ($password == null)
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - пароль пользователя");
+            if ($password == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - пароль пользователя");
+                return false;
+            }
 
-            if (gettype($password) != "string")
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - пароль пользователя");
+            if (gettype($password) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - пароль пользователя");
+                return false;
+            }
 
             if (Extensions::get("LDAP") -> get("enabled")) {
 

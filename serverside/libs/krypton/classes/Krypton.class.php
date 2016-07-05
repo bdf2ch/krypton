@@ -78,6 +78,7 @@
         public function start () {
             if (sizeof(Krypton::$app -> get("initials")) > 0) {
                 $index = 0;
+                $assignment = "";
                 foreach (Krypton::$app -> get("initials") as $key => $data) {
                     $assignment .= "\n".$key.": ".$data;
                     $assignment .= $index < sizeof(Krypton::$app -> get("initials")) - 1 ? "," : "";
@@ -96,6 +97,8 @@
                 $this -> template -> assign("ATTACHED_SCRIPTS", $scripts);
             }
 
+            if (Sessions::getCurrentUser() != false && Sessions::getCurrentUser() -> isAdmin -> value == true)
+                $this -> template -> parse("main.DEBUG_CONSOLE");
             $this -> template -> parse("main");
             $this -> template -> out("main");
         }
