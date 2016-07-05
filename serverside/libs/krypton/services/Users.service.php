@@ -182,7 +182,9 @@
                     Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getByEmail: Неверно задан типа параметра - email пользователя");
                     return false;
                 } else {
-                    $user = DBManager::select("kr_users", ["*"], "email = '$email' LIMIT 1");
+                    $result = DBManager::select("kr_users", ["*"], "email = '$email' LIMIT 1");
+                    $user = Models::construct("User1", $false);
+                    $user -> fromSource($result);
                     return $user;
                 }
             }

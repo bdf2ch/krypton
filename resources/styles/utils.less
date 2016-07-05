@@ -1,6 +1,8 @@
 @ui-border-color: lightgrey;
 @ui-input-height: 35px;
 
+@debug-console-z-index: 2000;
+
 .gradient (@start-color, @end-color) {
   background-image: -moz-linear-gradient(top, @start-color, @end-color);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@start-color), to(@end-color));
@@ -503,3 +505,30 @@ table {
 *********/
 
 .data-input {}
+
+
+
+/**********
+** DEBUG CONSOLE
+**********/
+#krypton-debug-console {
+  position: absolute;
+  z-index: @debug-console-z-index;
+  right: 20px;
+  bottom: 0px;
+  width: 300px;
+  height: 300px;
+  //padding: 10px;
+  background: black;
+  //border: 1px solid black;
+  .box-shadow(1px, 2px, 15px, 2px, rgba(0, 0, 0, 0.2));
+
+  table {
+    td {
+      text-align: left;
+      vertical-align: top;
+      font-size: 11px;
+      color: white;
+    }
+  }
+}

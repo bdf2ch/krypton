@@ -59,9 +59,12 @@
 
 
 
-    function kryptonAppRun ($log, $classes, $session, $settings, $navigation, $application, $http, $errors, $users) {
+    function kryptonAppRun ($log, $classes, $session, $settings, $navigation, $application, $http, $errors, $users, $rootScope) {
         $log.log("krypton.app run...");
         moment.locale("ru");
+
+        $rootScope.errors = $errors;
+        $rootScope.application = $application;
 
         $classes.getAll().User.departmentId = new Field({ source: "department_id", type: "integer", value: 0, default_value: 0, backupable: true });
         $classes.getAll().User.divisionId = new Field({ source: "division_id", type: "integer", value: 0, default_value: 0, backupable: true });

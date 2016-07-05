@@ -13,10 +13,7 @@
     <!-- Инициализационные данные движка -->
     <script id="krypton_init_data">
         var krypton ={
-            settings: {SETTINGS},
-            users: {USERS},
-            departments: {DEPARTMENTS},
-            divisions: {DIVISIONS}
+            {INIT_DATA}
         };
     </script>
 
@@ -41,6 +38,8 @@
     <div id="app-content" ng-view></div>
 
 
+
+
     <!-- Подключение необходимых библиотек и модулей -->
     <script src="../../libs/angularjs/angular-route.min.js"></script>
     <script src="../../libs/angularjs/angular-cookies.min.js"></script>
@@ -49,8 +48,7 @@
     <script src="../../libs/krypton/krypton.js"></script>
     <script src="../../libs/krypton/krypton.ui.js"></script>
     <script src="../../libs/momentjs/moment-with-locales.min.js"></script>
-    {CLIENT_SIDE_EXTENSIONS}
-    <script src="../../modules/app/krypton.app.kolenergo.js"></script>
+    {ATTACHED_SCRIPTS}
 </body>
 </html>
 <!-- END: main -->

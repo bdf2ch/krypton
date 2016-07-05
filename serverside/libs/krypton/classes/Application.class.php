@@ -6,6 +6,8 @@
         public $inDebugMode = false;
         public $inConstructionMode = false;
         public $extensions = array();
+        private $initials = array();
+        private $scripts = array();
 
 
 
@@ -26,7 +28,7 @@
                         $extension -> fromSource($ext);
                         array_push($this -> extensions, $extension);
                     }
-                    //var_dump($this -> extensions);
+                    var_dump($this);
                 } else
                     return false;
         }
@@ -119,6 +121,46 @@
                     }
                 }
             }
+        }
+
+
+
+        /**
+        * Добавляет инийиализационные данные на клиентскую часть приложения
+        * @var {string} - наименование переменной на клиентской чтороне приложения
+        * @data {any} - данные, которыми требуется инициализировать переменную
+        **/
+        function addInitData ($var, $data) {
+            if ($var == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> addInitData: Не задан параметр - наименование переменной");
+
+            if (gettype($var) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> addInitData: Неверно задан тип параметра - наименование переменной");
+
+            if ($data == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> addInitData: Не задан параметр - данные для стартовой инициализации");
+
+            $this -> initials[$var] = $data;
+
+            return true;
+        }
+
+
+
+        /**
+        * Добавляет javascript-файл в клиентскую часть приложения
+        * @url {string} - url файла
+        **/
+        function addJavaScript ($url) {
+            if ($url == null)
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> addJavaScript: Не задан параметр - url скрипта");
+
+            if (gettype($url) != "string")
+                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> addJavaScript: Неверно задан типа параметра - url скрипта");
+
+            array_push($this -> scripts, $url);
+
+            return true;
         }
 
     };

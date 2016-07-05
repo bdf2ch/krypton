@@ -1,20 +1,24 @@
 <?php
+    define("ENGINE_ADMIN_MODE", 1);
+
     /*** Подключение библиотек и модулей ***/
     require_once "../serverside/libs/krypton/classes/Krypton.class.php";
 
 
     /*** Создание и инициализация нового приложения Krypton ***/
-    //$app = new Krypton("tezt application", "tezt application description", Krypton::DB_TYPE_MYSQL);
-    $app = new Krypton(
-        array(
-            "title" => "new test app",
-            "description" => "new description",
-            "extensions" => array(
-                "Kolenergo",
-                "LDAP"
-            )
-        )
-    );
+    $app = new Krypton(["LDAP", "Kolenergo"]);
+
+    Sessions::login("kolu0897", "zx12!@#$");
+
+    Krypton::$app -> addInitData("application", json_encode(Krypton::$app));
+    Krypton::$app -> addInitData("extensions", json_encode(Krypton::$app -> extensions));
+    Krypton::$app -> addInitData("session", json_encode(Sessions::getCurrentSession()));
+    Krypton::$app -> addInitData("user", json_encode(Sessions::getCurrentUser()));
+    Krypton::$app -> addInitData("settings", json_encode(Settings::getAll()));
+    Krypton::$app -> addInitData("errors", json_encode(Errors::getAll()));
+    Krypton::$app -> addInitData("users", json_encode(Users::getAll()));
+    Krypton::$app -> addInitData("departments", json_encode(Extensions::get("Kolenergo") -> getDepartments()));
+    Krypton::$app -> addInitData("divisions", json_encode(Extensions::get("Kolenergo") -> getDivisions()));
 
     $app -> start();
 ?>

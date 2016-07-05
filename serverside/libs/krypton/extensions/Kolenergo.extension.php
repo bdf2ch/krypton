@@ -18,72 +18,104 @@
 
         public function install () {
             $result = DBManager::is_table_exists("kr_users");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Таблица с пользователями не найдена");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Таблица с пользователями не найдена");
+                return false;
+            }
 
             $result = DBManager::add_column("kr_users", "department_id", "int(11) NOT NULL default 0");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу ползователей");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу ползователей");
+                return false;
+            }
 
             $result = DBManager::add_column("kr_users", "division_id", "int(11) NOT NULL default 0");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'division_id' в таблицу ползователей");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'division_id' в таблицу ползователей");
+                return false;
+            }
 
             $result = Models::extend("User1", "departmentId", new Field(array( "source" => "departmentId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            if (Errors::isError($result))
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойство 'departmentId' в класс User");
+            if (Errors::isError($result)) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойство 'departmentId' в класс User");
+                return false;
+            }
 
             $result = Models::extend("User1", "divisionId", new Field(array( "source" => "divisionId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            if (Errors::isError($result))
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойство 'divisionId' в класс User");
+            if (Errors::isError($result)) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойство 'divisionId' в класс User");
+                return false;
+            }
 
             $result = DBManager::create_table("departments");
-            if (!result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу производственных отделений");
+            if (!result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу производственных отделений");
+                return false;
+            }
 
             $result = DBManager::add_column("departments", "title", "varchar(500) NOT NULL default ''");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу производственных отделений");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу производственных отделений");
+                return false;
+            }
 
             $result = DBManager::insert_row("departments", ["title"], ["'Аппарат управления'"]);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу производственных отделений");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу производственных отделений");
+                return false;
+            }
 
             $result = DBManager::insert_row("departments", ["title"], ["'Северные электрические сети'"]);
             if (!$result)
                 return Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу производственных отделений");
 
             $result = DBManager::insert_row("departments", ["title"], ["'Центральные электрические сети'"]);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу производственных отделений");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу производственных отделений");
+                return false;
+            }
 
             $result = DBManager::create_table("divisions");
-            if (!result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу отделов");
+            if (!result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу отделов");
+                return false;
+            }
 
             $result = DBManager::add_column("divisions", "title", "varchar(500) NOT NULL default ''");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу отделов");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу отделов");
+                return false;
+            }
 
             $result = DBManager::add_column("divisions", "department_id", "int(11) NOT NULL default 0");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу отделов");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу отделов");
+                return false;
+            }
 
             $result = DBManager::add_column("divisions", "parent_id", "int(11) NOT NULL default 0");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'parent_id' в таблицу отделов");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'parent_id' в таблицу отделов");
+                return false;
+            }
 
             $result = DBManager::insert_row("divisions", ["department_id", "parent_id", "title"], [1, 0, "'Отдел аппарата управления'"]);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
+                return false;
+            }
 
             $result = DBManager::insert_row("divisions", ["department_id", "parent_id", "title"], [2, 0, "'Отдел северных сетей'"]);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
+                return false;
+            }
 
             $result = DBManager::insert_row("divisions", ["department_id", "parent_id", "title"], [3, 0, "'Отдел северных сетей'"]);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
+                return false;
+            }
 
             return true;
         }
@@ -100,6 +132,8 @@
         public function init () {
             //echo("kolenergo init</br>");
 
+            Krypton::$app -> addJavaScript("modules/app/krypton.app.kolenergo.js");
+
             $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
             $divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "division_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             $ldapEnabledProperty = Models::extend("User1", "ldapEnabled", new Field(array( "source" => "ldap_enabled", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
@@ -111,6 +145,8 @@
 
             API::add("test", "Kolenergo", "getDepartments");
             API::add("addDivision", "Kolenergo", "addDivision");
+
+
 
             if (!self::isInstalled())
                 self::install();
@@ -168,15 +204,24 @@
             if (gettype($password) != "string")
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - пароль пользователя");
 
-            $result = Extensions::get("LDAP") -> get("enabled");
-            if (Errors::isError($result))
-                return false;
+            if (Extensions::get("LDAP") -> get("enabled")) {
+
+                $user = Extensions::get("LDAP") -> login($login, $password);
+                if ($user != false) {
+                    $newUser = Users::add($user);
+                    Sessions::assignCurrentSessionToUser($newUser -> id -> value);
+                }
+
+
+            } else {
+                $result = Sessions::login($login, $password);
+            }
 
             if ($result == true) {
                 $result = Extensions::get("LDAP") -> login($login, $password);
-            else {
-                $result = Sessions::login($login, $password);
-                if (!Errors::isError($result) && )
+            } else {
+                //$result = Sessions::login($login, $password);
+                //if (!Errors::isError($result) && )
             }
 
             if (!Errors::isError($result) && $result == true)

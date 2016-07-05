@@ -10,23 +10,11 @@
 <body ng-controller="testController">
     <script id="krypton_init_data">
         var krypton = {
-            //admin: {ADMIN_TEMPLATE},
-            application: {APPLICATION},
-            extensions: {EXTENSIONS},
-            session: {CURRENT_SESSION},
-            user: {CURRENT_USER},
-            settings: {SETTINGS},
-            errors: {ERRORS},
-            users: {USERS},
-            departments: {DEPARTMENTS},
-            divisions: {DIVISIONS}
+            {INIT_DATA}
         };
         console.log(krypton);
     </script>
     <script src="libs/angularjs/angular.min.js"></script>
-    <script type="text/ng-template" id="adminPanelTemplate">
-        <b>beatch!</b>
-    </script>
     
     <div id="app-header">
         <a href="#" class="menu-item active">Главная</a>
@@ -37,14 +25,21 @@
         <a href="#" class="menu-item right" ng-if="session.getCurrentSession().userId.value === 0">Войти</a>
     </div>
     <div id="app-wrapper">
-
-        <div id="app-content" ng-view>
-
-        </div>
-
+        <div id="app-content" ng-view></div>
     </div>
 
 
+
+    <div id="krypton-debug-console" ng-show="errors.getAll().length > 0">
+        <table>
+            <tbody>
+            <tr ng-repeat="error in errors.getAll() track by $index">
+                <td>{{ error.timestamp.value + ":" }}</td>
+                <td>{{ error.message.value }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
     <!--<input type="text" id="testInput2" ui-date-time-picker>-->
 
     <script src="libs/angularjs/angular-route.min.js"></script>
@@ -56,9 +51,8 @@
     <script src="libs/momentjs/moment-with-locales.min.js"></script>
 
 
-    {CLIENT_SIDE_EXTENSIONS}
+    {ATTACHED_SCRIPTS}
     <script src="modules/app/krypton.app.js"></script>
-    <!--<script src="modules/app/krypton.app.kolenergo.js"></script>-->
 </body>
 </html>
 <!-- END: main -->

@@ -68,18 +68,21 @@
                     echo(json_encode(Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> call: Неверно задан тип параметра - точка входа")));
                     return false;
                 } else {
-                    //echo("4ntry = ".$entry);
                     $isEntryExists = self::getEntry($entry);
-                    //var_dump($isEntryExists);
                     if ($isEntryExists != false) {
                         $callable = $isEntryExists -> class."::".$isEntryExists -> method;
-                        //echo($callable."</br>");
                         $result = call_user_func(array($isEntryExists -> class, $isEntryExists -> method));
                         echo(json_encode($result));
                     }
                 }
 
         }
+
+
+        //public function send ($result) {
+        //    if ($result == null)
+        //        return Errors::push();
+        //}
 
 
 
