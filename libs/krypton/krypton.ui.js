@@ -1195,43 +1195,32 @@
     
     
     
-    function modalsFactory ($log, $compile, $parse, $sanitize, $sce, $compile) {
+    function modalsFactory ($log, $compile, $parse, $sanitize, $sce, $compile, $templateCache, $rootScope) {
         var items = [];
 
-        var template =
+        //var template =
             //"<div class='krypton-ui-modal' id='{{id}}' ng-show='isVisible === true'>" +
-                "<div class='modal-header'></div>" +
-                "<div class='modal-content'></div>";
+         //       "<div class='modal-header'></div>" +
+         //       "<div class='modal-content'></div>";
             //"</div>";
-
-        var addModalToDocument = function (scope) {
-            if (scope !== undefined) {
-                var modal = document.createElement("div");
-                //modal.setAttribute("id", scope.id);
-                modal.className = "krypton-ui-modal";
-                if (scope.width !== undefined)
-                    angular.element(modal).css("width", scope.width + "px");
-                if (scope.height !== undefined)
-                    angular.element(modal).css("height", scope.height + "px");
-                modal.innerHTML = template;
-                document.body.appendChild(modal);
-                $compile(modal)(scope);
-                items.push(scope);
-            }
-        };
-
-        $log.log("factory");
-
+        var template =
+            "<div class='modal-header'>" +
+                "<span></span>" +
+                "<span class='fa fa-times header-close-button right'></span>" +
+            "</div>" +
+            "<div id='{{ modalId }}' class='modal-content' ng-bind-html='{{ parsedContent }}'>" +
+            "</div>";
 
 
         return {
             register: function (scope) {
                 if (scope !== undefined) {
+
                     var modal = document.createElement("div");
                     modal.setAttribute("id", scope.modalId);
                     modal.className = "krypton-ui-modal";
                     //modal.innerHTML = template;
-                    modal.innerHTML = scope.content;
+                    //modal.innerHTML = scope.content;
                     //$compile(modal)
                     if (scope.width !== undefined)
                         angular.element(modal).css("width", scope.actualWidth + "px");
@@ -1239,8 +1228,14 @@
                         angular.element(modal).css("height", scope.actualHeight + "px");
                     //scope.parsedContent = $sce.trustAsHtml(scope.content);
 
+                    angular.element(modal).append(scope.content);
+
                     document.body.appendChild(modal);
+
+                    //$compile(modal)(scope);
                     $compile(modal)(scope.contentScope);
+                    //var content = document.getElementById("modal-" + scope.modalId);
+                    //$log.log("conel = ", content);
                     items.push(scope);
 
                     $log.log("modals = ", items);
@@ -1299,7 +1294,7 @@
     
     
     
-    function  modalDirective ($log, $modals) {
+    function  modalDirective ($log, $modals, $templateCache) {
         return {
             restrict: "A",
             //template:
@@ -1313,7 +1308,7 @@
                 modalHeight: "@",
                 modalCaption: "@"
             },
-            //transclude: true,
+            transclude: true,
             /*
             controller: function ($log, $scope, $modals, $attrs, $transclude) {
             //    $log.log("modal controller");
@@ -1346,10 +1341,19 @@
 
             },
             */
-            link: function (scope, element, attrs, ctrl) {
-                var contentScope = scope.contentScope = scope.$parent;
+            link: function (scope, element, attrs, ctrl, transclude) {
+                var contentScope = scope.contentScope = angular.element(element).scope();
                 var content = scope.content = element[0].innerHTML;
+
+                transclude (function (clone) {
+                    scope.content = clone;
+                    $log.log("clone = ", clone);
+                });
+                //element[0].innerHTML = "";
+                //$templateCache.put("test", element[0].innerHTML);
+                //$log.log("template = ", $templateCache.get("test"));
                 $modals.register(scope);
+                //$log.log("ctrl = ", ctrl);
 
             }
         }    

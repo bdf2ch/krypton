@@ -272,12 +272,14 @@
 
 
 
-    function companyController ($log, $scope, $kolenergo, $filter, $modals) {
+    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope) {
         $scope.kolenergo = $kolenergo;
         $scope.departments = $kolenergo.getDepartments();
         $scope.divisions = $kolenergo.getDivisions();
         $scope.currentDepartmentId = undefined;
         $scope.currentDivision = undefined;
+
+        $rootScope.test = "efdfdsqfsdf";
         
         $scope.test = "fucking test12";
 
