@@ -130,7 +130,8 @@
 
 
         public function init () {
-            //echo("kolenergo init</br>");
+
+
 
             Krypton::$app -> addJavaScript("modules/app/krypton.app.kolenergo.js");
 
@@ -208,34 +209,31 @@
             }
 
             if (gettype($password) != "string") {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - пароль пользователя");
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тип параметра - пароль пользователя");
                 return false;
             }
 
             if (Extensions::get("LDAP") -> get("enabled")) {
-
                 $user = Extensions::get("LDAP") -> login($login, $password);
                 if ($user != false) {
-                    $newUser = Users::add($user);
-                    Sessions::assignCurrentSessionToUser($newUser -> id -> value);
+                    $result = Users::getByEmail($user -> email -> value);
+                    if (!$result) {
+                        $newUser = Users::add($user);
+                        if ($newUser != false)
+                            Sessions::setCurrentUserById($newUser -> id -> value);
+                        return $newUser;
+                    }
+
+                    Sessions::setCurrentUserById($result -> id -> value);
+                    return $user;
+                } else {
+                    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> login: Не удалось пройти авторизацию AD");
+                    return false;
                 }
-
-
             } else {
                 $result = Sessions::login($login, $password);
+                return $result;
             }
-
-            if ($result == true) {
-                $result = Extensions::get("LDAP") -> login($login, $password);
-            } else {
-                //$result = Sessions::login($login, $password);
-                //if (!Errors::isError($result) && )
-            }
-
-            if (!Errors::isError($result) && $result == true)
-                return false;
-
-            return $result;
         }
 
 

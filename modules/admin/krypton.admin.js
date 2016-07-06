@@ -4,7 +4,8 @@
 (function () {
     angular
         .module("krypton.admin", ["ngRoute", "ngCookies", "ngSanitize", "krypton", "krypton.ui", "krypton.app.kolenergo"])
-        .config(function ($routeProvider) {
+        .config(function ($routeProvider,$sceProvider) {
+            $sceProvider.enabled(false);
         })
         .run(kryptonAdminRun);
 

@@ -115,29 +115,38 @@
         * Добавляет нового пользователя
         **/
         public static function add ($user) {
-            if ($user == null)
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - экземпляр класса User");
-            else {
-                if (gettype($user) != "object" && get_class($user) != "User")
-                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип парметра - экземпляр класса User");
-                else {
-                    $result = DBManager::insert_row(
-                        "kr_users",
-                        ["name", "surname", "fname", "email", "phone", "mobile_phone", "position", "password", "is_admin"],
-                        ["'".$user -> name -> value."'", "'".$user -> surname -> value."'", "'".$user -> fname -> value."'", "'".$user -> email -> value."'", "'".$user -> phone -> value."'", "'".$user -> mobile -> value."'", "'".$user -> position -> value."'", "'".md5($password)."'", intval($user -> isAdmin -> value)]
-                    );
-                    if ($result == false)
-                        return Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> add: ".mysql_errno()." - ".mysql_error());
-                    else {
-                        $id = mysql_insert_id();
-                        $user -> id -> value = intval($id);
-                        return $id != null && $id != 0 ? $id : false;
-                    }
-                    array_push(self::$items, $user);
-                }
+            if ($user == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Не задан параметр - экземпляр класса User");
+                return false;
             }
-        }
 
+            if (get_class($user) != "User1") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> add: Неверно задан тип парметра - экземпляр класса User");
+                    return false;
+            }
+
+            $result = DBManager::insert_row(
+                "kr_users",
+                ["surname", "name", "fname", "position", "email", "phone", "mobile_phone", "password", "is_admin"],
+                ["'".$user -> surname -> value."'", "'".$user -> name -> value."'", "'".$user -> fname -> value."'", "'".$user -> position -> value."'", "'".$user -> email -> value."'", "'".$user -> phone -> value."'", "'".$user -> mobile -> value."'", "'".md5($password)."'", intval($user -> isAdmin -> value)]
+            );
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> add: Не удалось добавить пользователя");
+                return false;
+            }
+
+            $id = mysql_insert_id();
+            $result = DBManager::select("kr_users", ["*"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> add: Не удалось выбрать добавленного пользователя");
+                return false;
+            }
+
+            $newUser = Models::construct("User1", false);
+            $newUser -> fromSource($result[0]);
+            array_push(self::$items, $newUser);
+            return $newUser;
+        }
 
 
 
@@ -151,44 +160,51 @@
             if ($id == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getById: Не задан параметр - идентификатор пользователя");
                 return false;
-            } else {
-                if (gettype($id) != "integer") {
-                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getById: Неверно задан тип параметра - идентификатор пользователя");
-                    return false;
-                } else {
-                    $u = DBManager::select("kr_users", ["*"], "id = $id LIMIT 1");
-                    if ($u) {
-                        $user = Models::construct("User1", false);
-                        $user -> fromSource($u[0]);
-                        return $user;
-                    } else
-                        return false;
-                }
             }
+
+            if (gettype($id) != "integer") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getById: Неверно задан тип параметра - идентификатор пользователя");
+                return false;
+            }
+
+            $result = DBManager::select("kr_users", ["*"], "id = $id LIMIT 1");
+            if (!$result)
+                return $result;
+
+            $user = Models::construct("User1", false);
+            $user -> fromSource($result[0]);
+            return $user;
         }
+
+
 
 
 
         /**
         * Возвращает информацию о пользователе по email пользователя
-        * @email - Email пользователя
+        * @email {string} - email пользователя
         **/
         public static function getByEmail ($email) {
             if ($email == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getByEmail: Не задан параметр - email пользователя");
                 return false;
-            } else {
-                if (gettype($email) != "string") {
-                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getByEmail: Неверно задан типа параметра - email пользователя");
-                    return false;
-                } else {
-                    $result = DBManager::select("kr_users", ["*"], "email = '$email' LIMIT 1");
-                    $user = Models::construct("User1", $false);
-                    $user -> fromSource($result);
-                    return $user;
-                }
             }
+
+            if (gettype($email) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getByEmail: Неверно задан типа параметра - email пользователя");
+                return false;
+            }
+
+            $result = DBManager::select("kr_users", ["*"], "email = '$email' LIMIT 1");
+            if (!$result)
+                return $result;
+
+            $user = Models::construct("User1", false);
+            $user -> fromSource($result[0]);
+            return $user;
         }
+
+
 
 
         private static function generate_password ($length) {

@@ -5,6 +5,7 @@
         const ERROR_TYPE_ENGINE = 2;
         const ERROR_TYPE_DATABASE = 3;
         const ERROR_TYPE_LDAP = 4;
+        const ERROR_TYPE_ACCESS = 5;
 
         public static $errors = array();
         private static $lastError;

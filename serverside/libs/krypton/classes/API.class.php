@@ -4,7 +4,20 @@
         private static $entries = array();
 
 
-        public static function init () {}
+        public function __construct () {
+             global $db_host;
+             global $db_name;
+             global $db_user;
+             global $db_password;
+
+             $result = DBManager::connect($db_host, $db_user, $db_password);
+             if (!$result)
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "API -> __construct: Не удалось установить соединени с БД");
+
+             $result = DBManager::select_db("krypton");
+             if (!$result)
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "API -> __construct: Не удалось выбрать БД");
+        }
 
 
         public static function add ($entry, $class, $method) {
@@ -76,6 +89,26 @@
                     }
                 }
 
+        }
+
+
+        public static function isExists ($entry) {
+            if ($entry == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> isExists: Не задан параметр - точка входа");
+                return null;
+            }
+
+            if (gettype($entry) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> isExists: Неверно задан тип параметра - точка входа");
+                return null;
+            }
+
+            foreach (self::$entries as $key => $ent) {
+                if ($ent -> entry == $entry)
+                    return true;
+            }
+
+            return false;
         }
 
 

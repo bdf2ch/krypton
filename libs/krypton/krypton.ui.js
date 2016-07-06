@@ -1195,13 +1195,13 @@
     
     
     
-    function modalsFactory ($log, $compile, $parse, $sanitize) {
+    function modalsFactory ($log, $compile, $parse, $sanitize, $sce, $compile) {
         var items = [];
 
         var template =
             //"<div class='krypton-ui-modal' id='{{id}}' ng-show='isVisible === true'>" +
                 "<div class='modal-header'></div>" +
-                "<div class='modal-content'>{{transcluded}}</div>";
+                "<div class='modal-content'></div>";
             //"</div>";
 
         var addModalToDocument = function (scope) {
@@ -1210,9 +1210,9 @@
                 //modal.setAttribute("id", scope.id);
                 modal.className = "krypton-ui-modal";
                 if (scope.width !== undefined)
-                    angular.element(modal).css("width", scope.actualWidth + "px");
+                    angular.element(modal).css("width", scope.width + "px");
                 if (scope.height !== undefined)
-                    angular.element(modal).css("height", scope.actualHeight + "px");
+                    angular.element(modal).css("height", scope.height + "px");
                 modal.innerHTML = template;
                 document.body.appendChild(modal);
                 $compile(modal)(scope);
@@ -1227,6 +1227,28 @@
         return {
             register: function (scope) {
                 if (scope !== undefined) {
+                    var modal = document.createElement("div");
+                    modal.setAttribute("id", scope.modalId);
+                    modal.className = "krypton-ui-modal";
+                    //modal.innerHTML = template;
+                    modal.innerHTML = scope.content;
+                    //$compile(modal)
+                    if (scope.width !== undefined)
+                        angular.element(modal).css("width", scope.actualWidth + "px");
+                    if (scope.height !== undefined)
+                        angular.element(modal).css("height", scope.actualHeight + "px");
+                    //scope.parsedContent = $sce.trustAsHtml(scope.content);
+
+                    document.body.appendChild(modal);
+                    $compile(modal)(scope.contentScope);
+                    items.push(scope);
+
+                    $log.log("modals = ", items);
+
+
+
+
+                    /*
                     var modals = document.getElementsByClassName("krypton-ui-modal");
                     if (modals.length === 0)
                         addModalToDocument(scope);
@@ -1244,6 +1266,7 @@
 
                     items.push(scope);
                     $log.log("register = ", items);
+                    */
                 }
             },
 
@@ -1278,32 +1301,32 @@
     
     function  modalDirective ($log, $modals) {
         return {
-            restrict: "E",
-            transclude: true,
+            restrict: "A",
             //template:
-            //    "<div class='krypton-ui-modal' id='{{id}}' ng-show='isVisible === true'>" +
-            //        "<div class='modal-header'></div>" +
+            //    "<div class='krypton-ui-modal' id='{{id}}'>" +
+            //        "<div class='modal-header'>{{ caption }}</div>" +
             //        "<div class='modal-content' ng-transclude></div>" +
             //    "</div>",
-            //replace: true,
             scope: {
-                id: "@",
-                width: "@",
-                height: "@",
-                caption: "@"
+                modalId: "@",
+                modalWidth: "@",
+                modalHeight: "@",
+                modalCaption: "@"
             },
+            //transclude: true,
+            /*
             controller: function ($log, $scope, $modals, $attrs, $transclude) {
             //    $log.log("modal controller");
 
                 //$modals.register($scope);
 
-                $transclude($scope, function (content) {
-                    $log.log("transcluded = ", content);
-                    $scope.transcluded = content;
-                });
+                //$transclude($scope, function (content) {
+                //    $log.log("transcluded = ", content);
+                //    $scope.transcluded = content;
+                //});
 
-                $log.log($transclude);
-                $log.log($attrs);
+                //$log.log($transclude);
+                //$log.log($attrs);
 
                 $scope.isVisible = false;
 
@@ -1322,11 +1345,11 @@
                 $modals.register($scope);
 
             },
-            link: function (scope, element, attrs, ctrlm, transclude) {
-
-                $log.log(transclude);
-
-
+            */
+            link: function (scope, element, attrs, ctrl) {
+                var contentScope = scope.contentScope = scope.$parent;
+                var content = scope.content = element[0].innerHTML;
+                $modals.register(scope);
 
             }
         }    

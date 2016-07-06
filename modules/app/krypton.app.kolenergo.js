@@ -278,6 +278,12 @@
         $scope.divisions = $kolenergo.getDivisions();
         $scope.currentDepartmentId = undefined;
         $scope.currentDivision = undefined;
+        
+        $scope.test = "fucking test12";
+
+        $scope.$watch("test", function (val) {
+            $log.log("test = ", val);
+        });
 
         $log.log("company controller");
 

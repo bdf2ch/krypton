@@ -28,7 +28,7 @@
                         $extension -> fromSource($ext);
                         array_push($this -> extensions, $extension);
                     }
-                    var_dump($this);
+                    //var_dump($this);
                 } else
                     return false;
         }
@@ -130,7 +130,7 @@
         * @var {string} - наименование переменной на клиентской чтороне приложения
         * @data {any} - данные, которыми требуется инициализировать переменную
         **/
-        function addInitData ($var, $data) {
+        function addInitialData ($var, $data) {
             if ($var == null)
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Application -> addInitData: Не задан параметр - наименование переменной");
 
@@ -161,6 +161,11 @@
             array_push($this -> scripts, $url);
 
             return true;
+        }
+
+
+        function run () {
+             Extensions::get("Kolenergo") -> login("kolu0897", "zx12!@#$");
         }
 
     };

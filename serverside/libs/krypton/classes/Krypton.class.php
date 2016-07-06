@@ -32,9 +32,13 @@
             self::$app = new Application();
             self::$app -> init();
 
-            Settings::init();
-            Users::init();
-            Sessions::init();
+
+              self::$app -> run();
+
+                        Settings::init();
+                        Users::init();
+                        Sessions::init();
+
 
             $template = "/serverside/templates/application.html";
             if (defined("ENGINE_ADMIN_MODE")) {
@@ -82,7 +86,7 @@
                 foreach (Krypton::$app -> get("initials") as $key => $data) {
                     $assignment .= "\n".$key.": ".$data;
                     $assignment .= $index < sizeof(Krypton::$app -> get("initials")) - 1 ? "," : "";
-                    $this -> template -> assign("INIT_DATA", $assignment);
+                    $this -> template -> assign("INITIAL_DATA", $assignment);
                     $index++;
                 }
             }
@@ -97,7 +101,7 @@
                 $this -> template -> assign("ATTACHED_SCRIPTS", $scripts);
             }
 
-            if (Sessions::getCurrentUser() != false && Sessions::getCurrentUser() -> isAdmin -> value == true)
+            //if (Sessions::getCurrentUser() != false && Sessions::getCurrentUser() -> isAdmin -> value == true)
                 $this -> template -> parse("main.DEBUG_CONSOLE");
             $this -> template -> parse("main");
             $this -> template -> out("main");

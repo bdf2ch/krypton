@@ -52,71 +52,74 @@
 
 
         /**
-        * Производит инициализацию модуля
+        * Выполняет инициализацию сервиса
         **/
         public static function init () {
             global $db_host;
             global $db_user;
             global $db_password;
 
-            //echo("</br>sessions init called</br>");
-            //if (!defined("ENGINE_API")) {
-
             if (isset($_COOKIE["krypton_session"])) {
-                if (DBManager::is_connected()) {
-                    if (!DBManager::connect($db_host, $db_user, $db_password)) {
-                        return Errors::push(Errors::ERROR_TYPE_DATABASE, "Sessions -> init: Не удалось установить соединение с БД");
-                    } else {
-                        if (!DBManager::select_db("krypton")) {
-                            return Errors::push(Errors::ERROR_TYPE_DATABASE, "Sessions -> init: Не удалось выбрать БД");
-                        } else {
-                            $s = DBManager::select("kr_sessions", ["*"], "token = '".$_COOKIE["krypton_session"]."' LIMIT 1");
-                            if ($s == false) {
-                                $token = self::generate_token(32);
-                                DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
-                                $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
-                                if ($s != false) {
-                                    $session = Models::load("Session", false);
-                                    $session -> fromSource($s[0]);
-                                    self::$session = $session;
-                                } else
-                                    self::$session = false;
-                                //self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
-                                setcookie("krypton_session", $token);
-                            } else {
-                                $session = Models::load("Session", false);
-                                $session -> fromSource($s[0]);
-                                self::$session = $session;
-                            }
-                            //var_dump(self::$session);
-                            if (self::$session -> userId -> value != 0) {
-                                $u = Users::getById(self::$session -> userId -> value);
-                                if ($u != false) {
-                                    self::$user = $u;
-                                }
-                            }
+                $token = $_COOKIE["krypton_session"];
+                $result = DBManager::select("kr_sessions", ["*"], "token = '$token' LIMIT 1");
+                if (!$result) {
+                    $newToken = self::generateToken();
+                    $start = time();
+                    $end = $start + Settings::getByCode("session_duration");
 
-                            //var_dump(self::getCurrentSession());
-                        }
+                    $result = DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$newToken."'", $start, $end]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
+                        return false;
                     }
-                } else
-                    return Errors::push(ERROR_TYPE_DATABASE, "Sessions -> init: Отсутсвтует соединение с БД");
-            } else {
-                if (!defined("ENGINE_API_MODE")) {
-                    $token = self::generate_token(32);
-                    DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$token."'", time(), time() + Settings::getByCode("session_duration")]);
-                    $s = DBManager::select("kr_sessions", ["*"], "token = '".$token."' LIMIT 1");
-                    self::$session = $s != false ? new Session($s[0]["user_id"], $s[0]["token"], $s[0]["start"], $s[0]["end"]) : null;
-                    setcookie("krypton_session", $token);
+
+                    $session = Models::construct("Session", false);
+                    $session -> token -> value = $newToken;
+                    $session -> start -> value = $start;
+                    $session -> end -> value = $end;
+                    self::$session = $session;
+
+                    return true;
+                } else {
+                    $session = Models::construct("Session", false);
+                    $session -> fromSource($result[0]);
+                    self::$session = $session;
+
+                    if ($session -> userId -> value != 0) {
+                        $result = DBManager::select("kr_users", ["*"], "id = ".$session -> userId -> value);
+                        if (!$result) {
+                            Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Пользователь с идентификатором ".$session -> userId -> value." не найден");
+                            return false;
+                        }
+
+                        $user = Models::construct("User1", false);
+                        $user -> fromSource($result[0]);
+                        self::$user = $user;
+                    }
+
+                    return true;
                 }
+            } else {
+                $newToken = self::generateToken();
+                $start = time();
+                $end = $start + Settings::getByCode("session_duration");
+
+                $result = DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$newToken."'", $start, $end]);
+                if (!$result) {
+                    Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
+                    return false;
+                }
+
+                $session = Models::construct("Session", false);
+                $session -> token -> value = $newToken;
+                $session -> start -> value = $start;
+                $session -> end -> value = $end;
+                self::$session = $session;
+                setcookie("krypton_session", $newToken, $end, "/", $_SERVER["SERVER_NAME"]);
+
+                return true;
             }
-
-            //}
-            //$this -> setLoaded(true);
-
-            //var_dump(LDAP::login("kolu0897", "zx12!@#$"));
-            //self::login("kolu0897", "zx12!@#$");
-         }
+        }
 
 
 
@@ -131,29 +134,37 @@
 
         /**
         * Устанавливает объект текущего пользователя по идентификатору пользователя
-        * @id - Идентификатор пользователя
-        * ! Требует наличия загруженного модуля UsersModule
+        * @id {integer} - идентификатор пользователя
         **/
         public static function setCurrentUserById ($id) {
             if ($id == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> setCurrentUserById: Не задан параметр - идентификатор пользователя");
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Sessions -> setCurrentUserById: Не задан параметр - идентификатор пользователя");
                 return false;
-            } else {
-                if (gettype($id) != "integer") {
-                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> setCurrentUserById: Неверно задан тип параметра - идентификатор пользователя");
-                    return false;
-                } else {
-                    $user = Users::getById($id);
-                    if (!$user) {
-                        Errors::push(Errors::Error_TYPE_ENGINE, "Session -> setCurrentUserById: пользователь с идентификатором ".$id." не найден");
-                        return false;
-                    } else {
-                        self::$user = $user;
-                        return true;
-                    }
-                }
             }
+
+            if (gettype($id) != "integer") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Sessions -> setCurrentUserById: Неверно задан тип параметра - идентификатор пользователя");
+                return false;
+            }
+
+            $user = Users::getById($id);
+            if (!$user) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> setCurrentUserById: пользователь с идентификатором ".$id." не найден");
+                return false;
+            }
+
+            $token = self::getCurrentSession() -> token -> value;
+            $result = DBManager::update("kr_sessions", ["user_id"], [$id], "token = '$token'");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> setCurrentUserById: Не удалось установить текущего пользователя");
+                return false;
+            }
+
+            self::$user = $user;
+            return true;
         }
+
+
 
 
 
@@ -194,6 +205,8 @@
 
 
 
+
+
         /**
         * Производит авторизацию пользователя
         * @email {string} - e-mail пользователя
@@ -221,6 +234,8 @@
             $user -> fromSource($result[0]);
             return $user;
         }
+
+
 
 
 
@@ -268,7 +283,7 @@
             $success = false;
             $token = "";
             while (!$success) {
-                for ($i = 0; $i < 16; $i++) {
+                for ($i = 0; $i < 32; $i++) {
                     $index = rand(0, count($arr) - 1);
                     $token .= $arr[$index];
                 }
@@ -282,17 +297,18 @@
 
 
         public static function isValidToken ($token) {
-            if ($token == null)
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Sessions -> isValidToken: Не задан параметр - токен сессии пользователя");
-            else
-                if (gettype($token) != "string")
-                    return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Sessions -> isValidToken: Неверно задан тип параметра - токен секссии пользователя");
+            if ($token == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Sessions -> isValidToken: Не задан параметр - токен сессии пользователя");
+                return null;
+            }
+
+            if (gettype($token) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Sessions -> isValidToken: Неверно задан тип параметра - токен секссии пользователя");
+                return null;
+            }
 
             $result = DBManager::select("kr_sessions", ["*"], "token = '$token' LIMIT 1");
-            if (!Errors::isError($result)) {
-                return sizeof($result) > 0 ? true : false;
-            } else
-                return $result;
+            return $result != false ? true : false;
         }
 
 

@@ -127,63 +127,96 @@
         public static function login ($login, $password) {
             global $ldap_host;
 
-            if ($login == null)
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан прараметр - логин пользователя");
+            if ($login == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан прараметр - логин пользователя");
+                return false;
+            }
 
-            if (gettype($login) != "string")
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра - логин пользователя");
+            if (gettype($login) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра - логин пользователя");
+                return false;
+            }
 
-            if ($password == null)
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан параметр - пароль пользователя");
+            if ($password == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Не задан параметр - пароль пользователя");
+                return false;
+            }
 
-            if (gettype($password) != "string")
-                return Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра  пароль пользователя");
+            if (gettype($password) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "LDAP -> login: Неверно задан тип параметра  пароль пользователя");
+                return false;
+            }
 
             $link = ldap_connect($ldap_host);
-            if (!$link)
-                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: Не удалось подключиться к серверу LDAP");
+            if (!$link) {
+                Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: Не удалось подключиться к серверу LDAP");
+                return false;
+            }
 
             $result = ldap_set_option ($link, LDAP_OPT_PROTOCOL_VERSION, 3);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+                return false;
+            }
 
             $result = ldap_bind($link, "NW\\".$login, $password);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+                return false;
+            }
 
             $attributes = array("name", "mail", "samaccountname", "cn", "telephonenumber", "mobile");
             $filter = "(&(objectCategory=person)(sAMAccountName=$login))";
+
             $search = ldap_search($link, ('OU=02_USERS,OU=Kolenergo,DC=nw,DC=mrsksevzap,DC=ru'), $filter, $attributes);
-            if (!$search)
-                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+            if (!$search) {
+                Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+                return false;
+            }
 
             $result = ldap_get_entries($link, $search);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_LDAP, "LDAP -> login: ".ldap_errno($link)." - ".ldap_error($link));
+                return false;
+            }
 
-            $fio = explode(" ", $info[0]["name"][0]);
+            //var_dump($result);
+
+            $fio = explode(" ", $result[0]["name"][0]);
             $surname = $fio[0];
             $name = $fio[1];
             $fname = $fio[2];
             $phone = "";
-            $mobile = $info[0]["mobile"][0];
-            $email = $info[0]["mail"][0];
+            $mobile = $result[0]["mobile"][0];
+            $email = $result[0]["mail"][0];
 
-            if ($info[0]["telephonenumber"]["count"] > 0) {
-                for ($i = 0; $i < $info[0]["telephonenumber"]["count"]; $i++) {
-                    $phone += strval($info[0]["telephonenumber"][$i]);
-                    $phone += $i < $info[0]["telephonenumber"]["count"] ? ";" : "";
+            if ($result[0]["telephonenumber"]["count"] > 0) {
+                for ($i = 0; $i < $result[0]["telephonenumber"]["count"]; $i++) {
+                    $phone += strval($result[0]["telephonenumber"][$i]);
+                    $phone += $i < $result[0]["telephonenumber"]["count"] ? ";" : "";
                 }
             }
 
+            $parameters = array(
+                "id" => 0,
+                "surname" => $surname,
+                "name" => $name,
+                "fname" => $fname,
+                "email" => $email,
+                "phone" => $phone,
+                "mobile" => $mobile
+            );
+
             $user = Models::construct("User1", false);
-            $user -> id -> value = -1;
+            $user -> id -> value = 0;
             $user -> surname -> value = $surname;
             $user -> name -> value = $name;
-            $user -> fname -> value  = $fname;
+            $user -> fname -> value = $fname;
             $user -> email -> value = $email;
             $user -> phone -> value = strval($phone);
             $user -> mobile -> value = strval($mobile);
+
+            //var_dump($user);
 
             return $user;
         }

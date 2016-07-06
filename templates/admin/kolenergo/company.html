@@ -14,7 +14,7 @@
         </div>
 
     </column>
-    <column id="department-divisions" width="80" caption="Отделы" maximizable="1">
+    <column id="department-divisions" width="80" caption="Структурные подразделения" maximizable="1">
         <column-control class="green round" content="fa fa-plus" title="Добавить пользователя" action="addDivision"></column-control>
         <column-control class="blue round" content="fa fa-pencil" ng-show="currentDivision !== undefined" title="Редактировать пользователя"></column-control>
 
@@ -38,3 +38,18 @@
 <!--
 <modal id="test-modal-2"></modal>
 -->
+
+
+
+<!-- <modal id="test-modal" caption="test modal">fdsfsdfsdf uytuty mnbmbnmb</modal> -->
+
+
+
+<div modal modal-id="test-modal" modal-caption="test modal caption">
+    <input type="text" ng-model="test"/>
+    <b>transcluded content</b></br>
+    <i>transcluded content</i>
+    <code>fdfsdf</code>
+    <p>paragraph</p>
+
+</div>
