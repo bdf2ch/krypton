@@ -272,22 +272,16 @@
 
 
 
-    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope) {
+    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory) {
         $scope.kolenergo = $kolenergo;
+        $scope.$modals = $modals;
         $scope.departments = $kolenergo.getDepartments();
         $scope.divisions = $kolenergo.getDivisions();
         $scope.currentDepartmentId = undefined;
         $scope.currentDivision = undefined;
-
-        $rootScope.test = "efdfdsqfsdf";
+        $scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+        $scope.newDivision._backup_.setup();
         
-        $scope.test = "fucking test12";
-
-        $scope.$watch("test", function (val) {
-            $log.log("test = ", val);
-        });
-
-        $log.log("company controller");
 
 
         $scope.onSelectDepartment = function (department) {
@@ -300,6 +294,7 @@
         };
 
 
+        
         $scope.onSelectDivision = function (division) {
             if (division !== undefined) {
                 $log.log("onSelectHierarchyItem", division);
@@ -308,6 +303,7 @@
         };
 
 
+        
         $scope.addDivision = function () {
             $log.log("add division called");
             $modals.open("test");
@@ -331,8 +327,26 @@
             {id: 10, parentId: 3, title: "Отдел " + this.id},
             {id: 11, parentId: 10, title: "Отдел " + this.id}
         ];
+        
 
-        //$modals.open("test-modal");
+
+        $scope.onAddDivision = function () {
+            $modals.open("new-division-modal");
+        };
+
+        $scope.onCancelAddNewDivision = function () {
+            $scope.newDivision._backup_.restore();
+            //$modals.close("test-modal");
+        };
+
+        $scope.onEditDivision = function () {
+            $modals.open("edit-division-modal");
+        };
+
+        $scope.onCancelEditDivision = function () {
+            $scope.currentDivision._backup_.restore();
+            $scope.currentDivision._states_.changed(false);
+        };
     };
 
 

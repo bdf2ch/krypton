@@ -934,7 +934,7 @@
                 onSelect: "="
             },
             template:
-                "<ul class='{{ \"krypton-ui-hierarchy \" + class }}'>" +
+                "<ul class='{{ \"krypton-ui-hierarchy root \" + class }}'>" +
                     "<li ng-repeat='node in initial track by $id(node)' ng-init='this.children = getChildren(node)' ng-click='select(node)'>" +
                         "<div class='item-controls'>" +
                             "<span class='expand fa fa-plus-circle' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
@@ -1195,165 +1195,245 @@
     
     
     
-    function modalsFactory ($log, $compile, $parse, $sanitize, $sce, $compile, $templateCache, $rootScope) {
+    function modalsFactory ($log, $errors) {
         var items = [];
 
-        //var template =
-            //"<div class='krypton-ui-modal' id='{{id}}' ng-show='isVisible === true'>" +
-         //       "<div class='modal-header'></div>" +
-         //       "<div class='modal-content'></div>";
-            //"</div>";
-        var template =
-            "<div class='modal-header'>" +
-                "<span></span>" +
-                "<span class='fa fa-times header-close-button right'></span>" +
-            "</div>" +
-            "<div id='{{ modalId }}' class='modal-content' ng-bind-html='{{ parsedContent }}'>" +
-            "</div>";
-
-
         return {
+
+            /**
+             * Возвращает массив со всеми модальными окнами
+             * @returns {Array}
+             */
+            getAll: function () {
+                return items;
+            },
+
+            /**
+             * Возвращает scope модального окна с заданным идентификатором
+             * @param id {string} - идентификатор модального окна
+             * @returns {scope}
+             */
+            getById: function (id) {
+                if (id === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> Не задан параметр - идентификатор модального окна");
+                    return false;
+                }
+
+                var length = items.length;
+                for (var i = 0; i < length; i++) {
+                    if (items[i].modalId === id)
+                        return items[i];
+                }
+
+                return false;
+            },
+
+            /**
+             * Регистирует модальное окно
+             * @param scope {scope} - scope добавляемого модального окна
+             * @returns {boolean}
+             */
             register: function (scope) {
+                if (scope === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> register: Не задан парметр - scope добавляемого модального окна");
+                    return false;
+                }
                 if (scope !== undefined) {
-
-                    var modal = document.createElement("div");
-                    modal.setAttribute("id", scope.modalId);
-                    modal.className = "krypton-ui-modal";
-                    //modal.innerHTML = template;
-                    //modal.innerHTML = scope.content;
-                    //$compile(modal)
-                    if (scope.width !== undefined)
-                        angular.element(modal).css("width", scope.actualWidth + "px");
-                    if (scope.height !== undefined)
-                        angular.element(modal).css("height", scope.actualHeight + "px");
-                    //scope.parsedContent = $sce.trustAsHtml(scope.content);
-
-                    angular.element(modal).append(scope.content);
-
-                    document.body.appendChild(modal);
-
-                    //$compile(modal)(scope);
-                    $compile(modal)(scope.contentScope);
-                    //var content = document.getElementById("modal-" + scope.modalId);
-                    //$log.log("conel = ", content);
                     items.push(scope);
-
-                    $log.log("modals = ", items);
-
-
-
-
-                    /*
-                    var modals = document.getElementsByClassName("krypton-ui-modal");
-                    if (modals.length === 0)
-                        addModalToDocument(scope);
-                    else {
-                        var length = modals.length;
-                        var modalFound = false;
-                        for (var i = 0; i < length; i++) {
-                            if (modals[i].getAttribute("id") === scope.id)
-                                modalFound = true;
-                        }
-                        if (modalFound === false) {
-                            addModalToDocument(scope);
-                        }
-                    }
-
-                    items.push(scope);
-                    $log.log("register = ", items);
-                    */
                 }
             },
 
+            /**
+             * Открывает модальное окно с заданным идентификатором
+             * @param id {string} - идентификатор модального окна
+             * @returns {boolean}
+             */
             open: function (id) {
-                $log.log("items = ", items);
-                if (id !== undefined) {
-                    var length = items.length;
-                    for (var i = 0; i < length; i++) {
-                        //var temp = items[i].id.replace(/\s+/g, '');
-                        //$log.log("trimmed = '", temp + "'");
-                        if (items[i].id === id + " ")
-                            items[i].open();
-                        else
-                            items[i].close();
-                    }
+                if (id === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> open: не задан параметр - идентификатор модального окна");
+                    return false;
                 }
+
+                var length = items.length;
+                var found = false;
+                for (var i = 0; i < length; i++) {
+                    if (items[i].settings.id === id) {
+                        found = true;
+                        items[i].open();
+                    } else
+                        items[i].settings.isVisible = false;
+                }
+
+                if (found === false) {
+                    $errors.add(ERROR_TYPE_ENGINE, "$modals -> open: Модальное окно с идентификатором '" + id + "' не найдено");
+                    return false;
+                } else
+                    return true;
             },
 
+            /**
+             * Закрывает модальное окно с заданным идентификатором
+             * @param id {string} - идентификатор модального окна
+             * @returns {boolean}
+             */
             close: function (id) {
-                if (id !== undefined) {
-                    var length = items.length;
-                    for (var i = 0; i < length; i++) {
-                        if (items[i].id === id)
-                            items[i].close();
+                if (id === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> close: Не задан параметр - идентификатор модального окна");
+                    return false;
+                }
+
+                var length = items.length;
+                var found = false;
+                for (var i = 0; i < length; i++) {
+                    if (items[i].settings.id === id) {
+                        found = true;
+                        items[i].close();
                     }
                 }
+
+                if (found === false) {
+                    $errors.add(ERROR_TYPE_ENGINE, "$modals -> open: Модальное окно с идентификатором '" + id + "' не найдено");
+                    return false;
+                } else
+                    return true;
             }
         }
     };
     
     
     
-    function  modalDirective ($log, $modals, $templateCache) {
+    function  modalDirective ($log, $modals, $compile, $errors, $window) {
         return {
             restrict: "A",
-            //template:
-            //    "<div class='krypton-ui-modal' id='{{id}}'>" +
-            //        "<div class='modal-header'>{{ caption }}</div>" +
-            //        "<div class='modal-content' ng-transclude></div>" +
-            //    "</div>",
             scope: {
                 modalId: "@",
                 modalWidth: "@",
                 modalHeight: "@",
-                modalCaption: "@"
+                modalCaption: "@",
+                modalOnClose: "=",
+                modalOnOpen: "="
             },
             transclude: true,
-            /*
-            controller: function ($log, $scope, $modals, $attrs, $transclude) {
-            //    $log.log("modal controller");
-
-                //$modals.register($scope);
-
-                //$transclude($scope, function (content) {
-                //    $log.log("transcluded = ", content);
-                //    $scope.transcluded = content;
-                //});
-
-                //$log.log($transclude);
-                //$log.log($attrs);
-
-                $scope.isVisible = false;
-
-                //if ($attrs.id !== undefined && $attrs.id !== "")
-                //    $scope.id = $attrs.id.trim();
-
-                $scope.open = function () {
-                    $scope.isVisible = true;
-                };
-
-                $scope.close = function () {
-                    $scope.isVisible = false;
-                };
-
-                $log.log("scope = ", $scope);
-                $modals.register($scope);
-
-            },
-            */
             link: function (scope, element, attrs, ctrl, transclude) {
-                var contentScope = scope.contentScope = angular.element(element).scope();
-                var content = scope.content = element[0].innerHTML;
+                if (attrs.modalId === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> modal: Не задан идентификатор модального окна - аттрибут 'modal-id'");
+                    return false;
+                }
 
-                transclude (function (clone) {
-                    scope.content = clone;
-                    $log.log("clone = ", clone);
+                if ($modals.getById(scope.modalId)) {
+                    $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> modal: Модальное окно с идентификатором '" + scope.modalId + "' уже существует");
+                    return false;
+                }
+
+                var settings = scope.settings = {
+                    id: scope.modalId,
+                    isVisible: false,
+                    caption: attrs.modalCaption !== undefined ? attrs.modalCaption : "",
+                    width: scope.modalWidth !== undefined && !isNaN(scope.modalWidth) ? parseInt(scope.modalWidth) : 0,
+                    height: scope.modalHeight !== undefined && !isNaN(scope.modalHeight) ? parseInt(scope.modalHeight) : 0,
+                    onClose: scope.modalOnClose !== undefined && typeof scope.modalOnClose === "function" ? scope.modalOnClose : undefined,
+                    onOpen: scope.modalOnOpen !== undefined && typeof scope.modalOnOpen === "function" ? scope.modalOnOpen : undefined
+                };
+
+                var transcludedContent = "";
+                transclude(function (clone) {
+                    transcludedContent = clone;
                 });
-                //element[0].innerHTML = "";
-                //$templateCache.put("test", element[0].innerHTML);
-                //$log.log("template = ", $templateCache.get("test"));
+
+                var modal = document.createElement("div");
+                scope.element = modal;
+                modal.setAttribute("id", scope.settings.id);
+                modal.className = "krypton-ui-modal";
+                var header = document.createElement("div");
+                header.className = "modal-header";
+                var headerCaption = document.createElement("span");
+                headerCaption.className = "modal-caption";
+                headerCaption.innerHTML = scope.settings.caption;
+                var headerClose = document.createElement("span");
+                headerClose.className = "modal-close fa fa-times right";
+                headerClose.setAttribute("title", "Закрыть");
+                headerClose.setAttribute("ng-click", "this.close()");
+                header.appendChild(headerCaption);
+                header.appendChild(headerClose);
+                var content = document.createElement("div");
+                content.className = "modal-content";
+                angular.element(content).append(transcludedContent);
+                document.body.appendChild(modal);
+                modal.appendChild(header);
+                modal.appendChild(content);
+
+                $compile(content)(scope.$parent);
+                $compile(modal)(scope);
                 $modals.register(scope);
-                //$log.log("ctrl = ", ctrl);
+
+                var fog = document.getElementsByClassName("krypton-ui-fog");
+                if (fog.length === 0) {
+                    var fogElement = document.createElement("div");
+                    fogElement.className = "krypton-ui-fog";
+                    document.body.appendChild(fogElement);
+                }
+
+                if (scope.settings.width !== 0)
+                    angular.element(modal).css("width", scope.settings.width + "px");
+                if (scope.settings.height !== 0)
+                    angular.element(modal).css("height", scope.settings.height + "px");
+
+                var redraw = function (elm) {
+                    if (elm !== undefined) {
+                        var windowWidth = $window.innerWidth;
+                        var windowHeight = $window.innerHeight;
+                        var containerHeight = angular.element(elm).prop("clientHeight");
+                        var left = 0;
+                        var top = 0;
+
+                        left = (windowWidth / 2) - angular.element(elm).prop("clientWidth") / 2 + "px";
+                        top = (windowHeight / 2) - ((angular.element(elm).prop("clientHeight")) / 2) + "px";
+
+                        angular.element(elm).css("left", left);
+                        angular.element(elm).css("top", top);
+
+                        return true;
+                    }
+                };
+
+                modal.addEventListener("DOMSubtreeModified", function () {
+                    redraw(scope.element);
+                }, false);
+
+                angular.element($window).bind("resize", function () {
+                    redraw(scope.element);
+                });
+
+
+                /**
+                 * Открывает модальной окно
+                 */
+                scope.open = function () {
+                    if (scope.settings.onOpen !== undefined)
+                        scope.settings.onOpen();
+                    scope.settings.isVisible = true;
+                    scope.$parent._modal_ = scope;
+                    var fog = document.getElementsByClassName("krypton-ui-fog");
+                    document.body.style.overflow = "hidden";
+                    fog[0].classList.add("visible");
+                    angular.element(scope.element).css("display", "block");
+                    redraw(scope.element);
+                };
+
+
+                /**
+                 * Закрывает модальное окно
+                 */
+                scope.close = function () {
+                    scope.settings.isVisible = false;
+                    if (scope.settings.onClose !== undefined)
+                        scope.settings.onClose();
+                    delete scope.$parent._modal_;
+                    var fog = document.getElementsByClassName("krypton-ui-fog");
+                    document.body.style.overflow = "hidden";
+                    fog[0].classList.remove("visible");
+                    angular.element(scope.element).css("display", "none");
+                };
 
             }
         }    

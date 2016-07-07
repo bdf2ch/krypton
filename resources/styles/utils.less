@@ -246,6 +246,13 @@
 ** FORMS
 **********/
 
+label {
+  display: inline-block;
+  margin-bottom: 3px;
+  font-size: 13px;
+  color: gray;
+}
+
 input {
   display: block;
   font-family: "Roboto Regular";
@@ -345,6 +352,9 @@ input[type='button'], input[type='submit'], button {
     background: @color-green;
     &:hover {
       background: @color-green-hover;
+    }
+    &[disabled] {
+      background: @color-light-green;
     }
   }
 

@@ -467,12 +467,118 @@
 @hierarchy-item-height: 40px;
 
 .krypton-ui-hierarchy {
+  //display: block;
+  //float: left;
+  //overflow: auto;
   margin-top: 0px;
   margin-bottom: 0px;
   padding-left: 0px;
-  border: 1px solid black;
+  //border: 1px solid black;
+  list-style-type: none;
+
+  &.root {
+    overflow: visible;
+    box-sizing: border-box;
+
+    .nested {
+      margin-left: 10px;
+    }
+  }
+
+  &.nested {
+    display: block;
+    //float: left;
+    overflow: visible;
+    //width: auto;
+    margin-left: 15px;
+    //margin-top: 10px;
+    //padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    //border-left: 1px dotted black;
+
+    .nested {
+      margin-left: 25px;
+    }
+
+    li {
+      margin-top: -10px;
+      border-left: 1px dotted black;
+
+      &:last-of-type {
+        .lines-bottom {
+          border-left: none;
+        }
+      }
+    }
+  }
+
+  li {
+    display: block;
+    //float: left;
+    clear: left;
+    overflow: visible;
+    min-height: @hierarchy-item-height;
+    //padding: 10px;
+    //background: @color-light-blue;
+    //border: 1px solid lightblue;
+    //box-sizing: content-box;
+    box-sizing: border-box;
+  }
 
 
+  .item-controls {
+    display: inline-block;
+    float: left;
+    width: 12px;
+    height: @hierarchy-item-height;
+    line-height: @hierarchy-item-height;
+    margin-right: 5px;
+    margin-left: 5px;
+
+    .expand {
+      cursor: pointer;
+      &.invisible {
+        visibility: hidden;
+      }
+    }
+
+    .collapse {
+      cursor: pointer;
+    }
+  }
+
+  .item-lines {
+    display: inline-block;
+    float: left;
+    width: 15px;
+    height: @hierarchy-item-height;
+    box-sizing: border-box;
+    //border:1px solid red;
+
+    .lines-top {
+      height: @hierarchy-item-height / 2;
+      margin-top: -1px;
+      //border-left: 1px dotted black;
+      border-bottom: 1px dotted black;
+    }
+
+    .lines-bottom {
+      height: @hierarchy-item-height / 2;
+      //border-left: 1px dotted black;
+    }
+
+  }
+
+  .item-content {
+    display: inline-block;
+    float: left;
+    height: @hierarchy-item-height;
+    padding: 10px;
+    box-sizing: border-box;
+    background: lavender;
+  }
 
 
 /*
@@ -609,20 +715,19 @@
 ********************/
 @modal-z-index: 5000;
 @modal-default-width: 400px;
-@modal-default-height: 400px;
-@modal-header-height: 40px;
+@modal-default-height: auto;
+@modal-header-height: 35px;
 
 .krypton-ui-modal {
-  //display: none;
+  display: none;
   position: absolute;
-  top: 0px;
-  left: 0px;
+  overflow: visible;
   z-index: @modal-z-index;
   width: @modal-default-width;
   height: @modal-default-height;
   box-sizing: border-box;
   background: white;
-  border: 1px solid lightgray;
+  .box-shadow(1px, 1px, 15px, 1px, rgba(0, 0, 0, 0.2));
 
   .modal-header {
     position: absolute;
@@ -631,13 +736,40 @@
     right: 0px;
     height: @modal-header-height;
     border-bottom: 1px solid lightgray;
+    box-sizing: border-box;
+    background-color: #fafafa;
+    .gradient(#ffffff, #f2f2f2);
+
+    .modal-caption {
+      height: @modal-header-height;
+      margin-left: 10px;
+      text-align: left;
+      font-size: 13px;
+      text-transform: uppercase;
+      line-height: @modal-header-height;
+    }
+
+    .modal-close {
+      width: 30px;
+      height: @modal-header-height;
+      text-align: center;
+      font-size: 17px;
+      line-height: @modal-header-height;
+      color: lightgray;
+      cursor: pointer;
+
+      &:hover {
+        color: gray;
+      }
+    }
+
   }
 
   .modal-content {
-    position: absolute;
-    top: @modal-header-height;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+    position: relative;
+    margin-top: @modal-header-height;
+    overflow: auto;
+    background: white;
+    box-sizing: content-box;
   }
 }
