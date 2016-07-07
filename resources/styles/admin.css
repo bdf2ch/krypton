@@ -451,20 +451,27 @@
 .krypton-ui-hierarchy.root .nested {
   margin-left: 10px;
 }
+.krypton-ui-hierarchy.root .nested li {
+  margin-top: -20px;
+}
 .krypton-ui-hierarchy.nested {
   display: block;
   overflow: visible;
   margin-left: 15px;
-  padding-top: 5px;
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
 .krypton-ui-hierarchy.nested .nested {
   margin-left: 25px;
+  margin-top: -20px;
 }
 .krypton-ui-hierarchy.nested li {
   margin-top: -10px;
   border-left: 1px dotted black;
+}
+.krypton-ui-hierarchy.nested li:first-of-type {
+  margin-top: -10px;
+  padding-top: 20px;
 }
 .krypton-ui-hierarchy.nested li:last-of-type .lines-bottom {
   border-left: none;
@@ -473,49 +480,128 @@
   display: block;
   clear: left;
   overflow: visible;
-  min-height: 40px;
+  min-height: 30px;
   box-sizing: border-box;
 }
 .krypton-ui-hierarchy .item-controls {
   display: inline-block;
   float: left;
   width: 12px;
-  height: 40px;
-  line-height: 40px;
+  height: 30px;
+  line-height: 30px;
   margin-right: 5px;
   margin-left: 5px;
 }
 .krypton-ui-hierarchy .item-controls .expand {
+  line-height: 30px;
   cursor: pointer;
 }
 .krypton-ui-hierarchy .item-controls .expand.invisible {
   visibility: hidden;
 }
 .krypton-ui-hierarchy .item-controls .collapse {
+  line-height: 30px;
   cursor: pointer;
 }
 .krypton-ui-hierarchy .item-lines {
   display: inline-block;
   float: left;
   width: 15px;
-  height: 40px;
+  height: 30px;
   box-sizing: border-box;
 }
 .krypton-ui-hierarchy .item-lines .lines-top {
-  height: 20px;
+  height: 15px;
   margin-top: -1px;
   border-bottom: 1px dotted black;
 }
 .krypton-ui-hierarchy .item-lines .lines-bottom {
-  height: 20px;
+  height: 15px;
 }
 .krypton-ui-hierarchy .item-content {
   display: inline-block;
   float: left;
-  height: 40px;
+  height: 30px;
   padding: 10px;
   box-sizing: border-box;
   background: lavender;
+}
+.krypton-ui-hierarchy .tree-item {
+  height: 30px;
+  border: 1px solid red;
+}
+.krypton-ui-tree {
+  overflow: auto;
+  padding-top: 15px;
+  box-sizing: border-box;
+}
+.krypton-ui-tree .container {
+  position: relative;
+  float: left;
+  width: inherit;
+  box-sizing: border-box;
+  border: 1px solid yellow;
+}
+.krypton-ui-tree .container .tree-item:last-of-type {
+  border-left: none;
+}
+.krypton-ui-tree .container .tree-item:last-of-type .top {
+  border-left: 1px dotted black;
+}
+.krypton-ui-tree .container .tree-item:first-of-type {
+  border-left: none;
+}
+.krypton-ui-tree .container.nested {
+  width: inherit;
+  padding-left: 20px;
+}
+.krypton-ui-tree .container.nested .tree-item:last-of-type {
+  border-left: none;
+}
+.krypton-ui-tree .container.nested .tree-item:last-of-type .top {
+  border-left: 1px dotted black;
+}
+.krypton-ui-tree .container.nested .top {
+  border-left: none !important;
+}
+.krypton-ui-tree .tree-item {
+  overflow: visible;
+  min-height: 30px;
+  border-left: 1px dotted black;
+  box-sizing: border-box;
+}
+.krypton-ui-tree .item-lines {
+  float: left;
+  width: 15px;
+  height: 30px;
+}
+.krypton-ui-tree .item-lines .top {
+  width: 15px;
+  height: 14px;
+  border-bottom: 1px dotted black;
+}
+.krypton-ui-tree .item-lines .bottom {
+  width: 15px;
+  height: 14px;
+}
+.krypton-ui-tree .item-controls {
+  float: left;
+  width: 15px;
+  height: 30px;
+  text-align: center;
+}
+.krypton-ui-tree .item-controls .expand {
+  line-height: 30px;
+}
+.krypton-ui-tree .item-controls .collapse {
+  line-height: 30px;
+}
+.krypton-ui-tree .item-content {
+  overflow: auto;
+  height: 30px;
+  padding-left: 5px;
+  padding-right: 5px;
+  line-height: 30px;
 }
 /********************
 ** MODEL-LIST
@@ -854,39 +940,39 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196F3;
+  background: #2196f3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976D2;
+  background: #1976d2;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4CAF50;
+  background: #4caf50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388E3C;
+  background: #388e3c;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #C8E6C9;
+  background: #c8e6c9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #F44336;
+  background: #f44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #D32F2F;
+  background: #d32f2f;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -927,22 +1013,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4CAF50;
+  color: #4caf50;
 }
 a.green:hover {
-  color: #388E3C;
+  color: #388e3c;
 }
 a.red {
-  color: #F44336;
+  color: #f44336;
 }
 a.red:hover {
-  color: #D32F2F;
+  color: #d32f2f;
 }
 a.blue {
-  color: #2196F3;
+  color: #2196f3;
 }
 a.blue:hover {
-  color: #1976D2;
+  color: #1976d2;
 }
 /**********
 ** COLORS
@@ -1044,11 +1130,11 @@ body {
   box-sizing: border-box;
   border-bottom: 1px solid #d4d4d4;
   border-left: 1px solid #d4d4d4;
-  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
+  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
 }
 #app-header #current-menu {
   margin-left: 5px;
@@ -1078,11 +1164,11 @@ body {
   width: 200px;
   height: 45px;
   box-sizing: border-box;
-  background-image: -moz-linear-gradient(top, #ECEFF1, #CFD8DC);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ECEFF1), to(#CFD8DC));
-  background-image: -webkit-linear-gradient(top, #ECEFF1, #CFD8DC);
-  background-image: -o-linear-gradient(top, #ECEFF1, #CFD8DC);
-  background-image: linear-gradient(to bottom, #ECEFF1, #CFD8DC);
+  background-image: -moz-linear-gradient(top, #eceff1, #cfd8dc);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#eceff1), to(#cfd8dc));
+  background-image: -webkit-linear-gradient(top, #eceff1, #cfd8dc);
+  background-image: -o-linear-gradient(top, #eceff1, #cfd8dc);
+  background-image: linear-gradient(to bottom, #eceff1, #cfd8dc);
 }
 #app-menu .menu-item {
   display: block;
@@ -1093,18 +1179,18 @@ body {
   color: black;
   box-sizing: border-box;
   border-bottom: 1px solid lightgray;
-  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
+  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
 }
 #app-menu .menu-item.active {
-  background-image: -moz-linear-gradient(top, #EEEEEE, #E0E0E0);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#EEEEEE), to(#E0E0E0));
-  background-image: -webkit-linear-gradient(top, #EEEEEE, #E0E0E0);
-  background-image: -o-linear-gradient(top, #EEEEEE, #E0E0E0);
-  background-image: linear-gradient(to bottom, #EEEEEE, #E0E0E0);
+  background-image: -moz-linear-gradient(top, #eeeeee, #e0e0e0);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#eeeeee), to(#e0e0e0));
+  background-image: -webkit-linear-gradient(top, #eeeeee, #e0e0e0);
+  background-image: -o-linear-gradient(top, #eeeeee, #e0e0e0);
+  background-image: linear-gradient(to bottom, #eeeeee, #e0e0e0);
 }
 #app-content {
   position: absolute;

@@ -934,6 +934,7 @@
                 onSelect: "="
             },
             template:
+                /*
                 "<ul class='{{ \"krypton-ui-hierarchy root \" + class }}'>" +
                     "<li ng-repeat='node in initial track by $id(node)' ng-init='this.children = getChildren(node)' ng-click='select(node)'>" +
                         "<div class='item-controls'>" +
@@ -945,8 +946,26 @@
                         "<div  ng-include=\"\'hierarchy.html'\"></div>" +
                     "</li>" +
                 "</ul>",
+                */
+                "<div class='krypton-ui-tree'>" +
+                    "<div class='container'>" +
+                        "<div class='tree-item' ng-repeat='node in initial track by $id(node)' ng-init='this.children = getChildren(node)'>" +
+                            "<div class='item-lines'>" +
+                                "<div class='top'></div>" +
+                                "<div class='bottom'></div>" +
+                            "</div>" +
+                            "<div class='item-controls'>" +
+                                "<span class='expand fa fa-plus-circle' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                                "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                            "</div>" +
+                            "<div class='item-content'>{{ node.display }}</div>" +
+                            "<div ng-include=\"\'hierarchy.html'\"></div>" +
+                        "</div>" +
+                    "</div>" +
+                "</div>",
             link: function (scope, element, attrs, ctrl) {
 
+                /*
                 var template =
                     "<ul class='{{ \"krypton-ui-hierarchy nested \" + class }}' ng-if='node.expanded === true'>" +
                         "<li ng-repeat='node in children' ng-init='children = getChildren(node)' ng-click='select(node)'>" +
@@ -961,6 +980,23 @@
                             "<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
                         "</li>" +
                     "</ul>";
+                */
+
+                    var template =
+                        "<div class='container nested' ng-if='node.children.length > 0'>" +
+                            "<div class='tree-item' ng-repeat='node in children' ng-init='children = getChildren(node)'>" +
+                                "<div class='item-lines'>" +
+                                    "<div class='top'></div>" +
+                                    "<div class='bottom'></div>" +
+                                "</div>" +
+                                "<div class='item-controls'>" +
+                                    "<span class='expand fa fa-plus-circle' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                                    "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                                "</div>" +
+                                "<div class='item-content'>{{ node.display }}</div>" +
+                                "<div ng-include=\"\'hierarchy.html'\"></div>" +
+                            "</div>" +
+                        "</div>";
 
                 $templateCache.put("hierarchy.html", template);
                 var stack = scope.stack = [];
