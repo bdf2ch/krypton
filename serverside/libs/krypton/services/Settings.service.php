@@ -8,6 +8,56 @@
         * Производит установку подсистемы
         **/
         public static function install () {
+            $result = DBManager::create_table("kr_settings");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось создать таблицу с настройками");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_settings", "extension_id", "varchar(200) NOT NULL default ''");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось добавить столбец 'extension_id' в таблицу с настройками");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_settings", "code", "varchar(200) NOT NULL default ''");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось добавить столбец 'code' в таблицу с настройками");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_settings", "title", "varchar(200) NOT NULL");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось добавить столбец 'title' в таблицу с настройками");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_settings", "description", "varchar(200) NOT NULL");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось добавить столбец 'description' в таблицу с настройками");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_settings", "type", "int(11) NOT NULL default 2");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось добавить столбец 'type' в таблицу с настройками");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_settings", "value", "varchar(500) NOT NULL default ''");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось добавить столбец 'value' в таблицу с настройками");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_settings", "is_system", "int(11) NOT NULL default 1");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> install: Не удалось добавить столбец 'is_system' в таблицу с настройками");
+                return false;
+            }
+
+
+
             if (!DBManager::is_table_exists("kr_settings")) {
                 if (DBManager::create_table("kr_settings")) {
                     if (DBManager::add_column("kr_settings", "module_id", "varchar(200) NOT NULL default ''") &&
@@ -118,6 +168,40 @@
                 array_push(self::$items, $setting);
                 return true;
             }
+        }
+
+
+
+        public static function addSetting ($setting) {
+            if ($setting == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Settings -> add: Не задан параметр - настройка");
+                return false;
+            }
+
+            if (get_class($setting) != "Setting") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Settings -> add: Неверно задан тип параметра - настройка");
+                return false;
+            }
+
+            $result = DBManager::insert_row(
+                "kr_settings",
+                ["extension_id", "code", "title", "description", "type", "value", "is_system"],
+                [
+                    "'".$setting -> extensionId -> value."'",
+                    "'".$setting -> code -> value."'",
+                    "'".$setting -> title -> value."'",
+                    "'".$setting -> description -> value."'",
+                    $setting -> type -> value,
+                    intval($setting -> isSystem -> value)
+                 ]
+            );
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> add: Не удалось добавить настройку '".$setting -> code -> value."'");
+                return false;
+            }
+
+            array_push(self::$items, $setting);
+            return true;
         }
 
 

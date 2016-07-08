@@ -12,6 +12,7 @@
             self::field("email", new Field(array( "source" => "email", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("phone", new Field(array( "source" => "phone", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("mobile", new Field(array( "source" => "mobile_phone", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("photo", new Field(array( "source" => "photo_url", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("isAdmin", new Field(array( "source" => "is_admin", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => false, "defaultValue" => false )));
 
             if (is_null($parameters))

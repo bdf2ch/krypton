@@ -1,22 +1,32 @@
-<div id="telephones-search-box" class="width-100">
-    <input type="text" class="width-60 center" name="" id="" placeholder="Введите имя, телефон или e-mail" ng-model="person">
-</div>
-<div class="width-20">&nbsp;</div>
-<div class="width-60">
-    <div class="nothing-found text-center" ng-show="person === ''">Начните вводить имя, контактный телефон или e-mail искомого контакта</div>
-    <div class="nothing-found text-center" ng-show="person !== ''">Не найдено контактов, удовлетворяющих Вашему запросу</div>
 
-    <div class="telephones-user width-100" ng-repeat="user in users.getAll()">
-        <div class="user-photo width-40">
-            <img src="" alt="" title="{{ user.fio }}">
+
+
+<div class="row">
+    <div id="telephones-divisions" class="width-30">
+        b
+    </div>
+
+    <div class="width-70">
+        <div id="telephones-search-box" class="width-100">
+            <input type="text" class="width-90 center" name="" id="" placeholder="Введите имя, телефон или e-mail" ng-model="person">
         </div>
-        <div class="user-info width-60">
-            <div class="fio">{{ user.fio }}</div>
-            <div class="position" ng-if="user.position.value !== ''">Инженер-программист</div>
-            <div class="phones">
-                тел. <span class="phone">{{ user.phone.value }}</span>
+        <div class="width-100">
+            <div class="nothing-found text-center" ng-show="person === ''">Начните вводить имя, контактный телефон или e-mail искомого контакта</div>
+            <div class="nothing-found text-center" ng-show="person !== ''">Не найдено контактов, удовлетворяющих Вашему запросу</div>
+
+            <div class="telephones-user width-100">
+                <div class="user-photo width-40">
+                    <img src="" alt="" title="">
+                </div>
+                <div class="user-info width-60">
+                    <div class="fio">dsfsdfsdf</div>
+                    <div class="position" ng-if="user.position.value !== ''">Инженер-программист</div>
+                    <div class="phones">
+                        тел. <span class="phone">55-55-66</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
-<div class="width-20">&nbsp;</div>

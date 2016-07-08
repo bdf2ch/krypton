@@ -1,83 +1,40 @@
 <?php
 
-    class Users extends Service {
-
-        //public static $id = "kr_users";
-        public static $description = "Users description";
-        public static $clientSideExtensionUrl = "modules/app/krypton.app.users.js";
+    class Files extends Service {
         private static $items = array();
-
-
-
 
 
         /**
         * Производит установку модуля в системе
         **/
         public static function install () {
-            $result = DBManager::create_table("kr_users");
+            $result = DBManager::create_table("kr_files");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать таблицу с информацией о пользователях");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Files -> install: Не удалось создать таблицу с информацией о файлах");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_users", "name", "varchar(200) NOT NULL");
+            $result = DBManager::add_column("kr_files", "parent_id", "int(11) default 0");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'name' в таблицу с информацией о пользователях");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Files -> install: Не удалось добавить столбец 'parent_id' в таблицу с информацией о файлах");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_users", "surname", "varchar(200) NOT NULL");
+            $result = DBManager::add_column("kr_files", "title", "varchar(200) NOT NULL");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'surname' в таблицу с информацией о пользователях");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Files -> install: Не удалось добавить столбец 'title' в таблицу с информацией о файлах");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_users", "fname", "varchar(200) default ''");
+            $result = DBManager::add_column("kr_files", "type", "varchar(200) NOT NULL");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'fname' в таблицу с информацией о пользователях");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Files -> install: Не удалось добавить столбец 'type' в таблицу с информацией о файлах");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_users", "email", "varchar(200) NOT NULL");
+            $result = DBManager::add_column("kr_files", "size", "int(200) default 0");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'email' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "phone", "varchar(100) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'phone' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "mobile_phone", "varchar(200) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'mobile_phone' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "position", "varchar(500) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'position' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "photo_url", "varchar(500) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'photo_url' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "password", "varchar(60) NOT NULL default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'password' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "is_admin", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'is_admin' в таблицу с информацией о пользователях");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Files -> install: Не удалось добавить столбец 'size' в таблицу с информацией о файлах");
                 return false;
             }
 
@@ -104,12 +61,12 @@
         * Выполняет инициализацию модуля
         **/
         public static function init () {
-            $users = DBManager::select("kr_users", ["*"], "''");
-            if ($users != false) {
-                foreach ($users as $key => $item) {
-                    $user = Models::load("User1", false);
-                    $user -> fromSource($item);
-                    array_push(self::$items, $user);
+            $files = DBManager::select("kr_files", ["*"], "''");
+            if ($files != false) {
+                foreach ($files as $key => $item) {
+                    $file = Models::load("File", false);
+                    $file -> fromSource($item);
+                    array_push(self::$items, $file);
                 }
             }
         }

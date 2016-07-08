@@ -948,18 +948,22 @@
                 "</ul>",
                 */
                 "<div class='krypton-ui-tree'>" +
-                    "<div class='container'>" +
+                    "<div class='container root'>" +
                         "<div class='tree-item' ng-repeat='node in initial track by $id(node)' ng-init='this.children = getChildren(node)'>" +
-                            "<div class='item-lines'>" +
-                                "<div class='top'></div>" +
-                                "<div class='bottom'></div>" +
+                            //"<div class='item-lines'>" +
+                            //    "<div class='top'></div>" +
+                            //    "<div class='bottom'></div>" +
+                            //"</div>" +
+                            //"<div class='item-controls'>" +
+                            //    "<span class='expand fa fa-plus-circle' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                            //    "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                            //"</div>" +
+                            //"<div class='item-content'>{{ node.display }}</div>" +
+                            //"<div ng-include=\"\'hierarchy.html'\"></div>" +
+                            "<div class='tree-item-content'>" +
+                                "<div class='item-label'>{{ node.display }}</div>" +
                             "</div>" +
-                            "<div class='item-controls'>" +
-                                "<span class='expand fa fa-plus-circle' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
-                                "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
-                            "</div>" +
-                            "<div class='item-content'>{{ node.display }}</div>" +
-                            "<div ng-include=\"\'hierarchy.html'\"></div>" +
+                            "<div class='container nested' ng-include=\"\'hierarchy.html'\"></div>" +
                         "</div>" +
                     "</div>" +
                 "</div>",
@@ -983,18 +987,22 @@
                 */
 
                     var template =
-                        "<div class='container nested' ng-if='node.children.length > 0'>" +
+                        "<div class='container nested' >" +
                             "<div class='tree-item' ng-repeat='node in children' ng-init='children = getChildren(node)'>" +
-                                "<div class='item-lines'>" +
-                                    "<div class='top'></div>" +
-                                    "<div class='bottom'></div>" +
-                                "</div>" +
-                                "<div class='item-controls'>" +
-                                    "<span class='expand fa fa-plus-circle' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
-                                    "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
-                                "</div>" +
-                                "<div class='item-content'>{{ node.display }}</div>" +
-                                "<div ng-include=\"\'hierarchy.html'\"></div>" +
+                                //"<div class='item-lines'>" +
+                                //    "<div class='top'></div>" +
+                                //    "<div class='bottom'></div>" +
+                                //"</div>" +
+                                //"<div class='item-controls'>" +
+                                //    "<span class='expand fa fa-plus-circle' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                                //    "<span class='collapse fa fa-minus-circle' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                                //"</div>" +
+                                //"<div class='item-content'>{{ node.display }}</div>" +
+                                //"<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
+                            "<div class='tree-item-content'>" +
+                            "<div class='item-label'>{{ node.display }}</div>" +
+                            "</div>" +
+                            "<div class='container nested' ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
                             "</div>" +
                         "</div>";
 

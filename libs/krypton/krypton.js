@@ -1307,6 +1307,7 @@ function isField (obj) {
             email: new Field({ source: "email", type: "string", value: "", default_value: "", backupable: true }),
             phone: new Field({ source: "phone", type: "string", value: "", default_value: "", backupable: true }),
             mobile: new Field({ source: "mobile_phone", type: "string", value: "", default_value: "", backupable: true }),
+            photo: new Field({ source: "photo_url", type: "string", value: "", default_value: "", backupable: true }),
             isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true }),
             fio: "",
             phones: [],

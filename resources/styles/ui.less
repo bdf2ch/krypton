@@ -464,7 +464,7 @@
 /***************
 ** HIERARCHY
 ***************/
-@hierarchy-item-height: 30px;
+@hierarchy-item-height: 40px;
 
 .krypton-ui-hierarchy {
   //display: block;
@@ -697,27 +697,29 @@
 
 
 
+/*
 
 .krypton-ui-tree {
   overflow: auto;
-  padding-top: 15px;
+  //padding-top: 15px;
   box-sizing: border-box;
   //border: 1px solid green;
 
   .container {
     position: relative;
-    float: left;
+    //float: left;
     width: inherit;
-    //overflow: visible;
+    overflow: visible;
     //margin-top: 10px;
     box-sizing: border-box;
-    border: 1px solid yellow;
+    //border: 1px solid yellow;
 
     .tree-item:last-of-type {
       border-left: none;
+      //margin-top: -1px;
 
       .top {
-        border-left: 1px dotted black;
+        border-left: 1px solid black;
       }
 
     }
@@ -727,33 +729,65 @@
     }
 
 
+    &.root {
 
-    &.nested {
-      //overflow: scroll;
-      width: inherit;
-      //margin-left: 20px;
-      padding-left: 20px;
+      .container {
+        border-left: 1px solid black;
 
-
-      .tree-item:last-of-type {
-        border-left: none;
-
-        .top {
-          border-left: 1px dotted black;
+        .tree-item:first-of-type {
+          .top {
+            border-left: 1px solid black;
+          }
         }
       }
 
-      .top {
-        border-left: none !important;
+
+      .tree-item:first-of-type {
+        .top {
+          border-left: none;
+        }
+        .bottom {
+          border-left: 1px solid black;
+        }
       }
+
+      .tree-item:last-of-type {
+        .bottom {
+          border-left: none;
+        }
+      }
+
+
+      .container {
+        .tree-item:last-of-type {
+          .top {
+            border-left: 1px solid black;
+          }
+        }
+
+      }
+
+    }
+
+
+    &.nested {
+      //margin-top: -5px;
+      padding-left: 20px;
+
+      .nested {
+        border-left: 1px solid black;
+      }
+
     }
   }
 
+
+
   .tree-item {
     overflow: visible;
-    min-height: @hierarchy-item-height;
+    //min-height: @hierarchy-item-height;
     //border: 1px solid red;
-    border-left: 1px dotted black;
+    border-left: 1px solid black;
     box-sizing: border-box;
   }
 
@@ -767,7 +801,7 @@
       width: 15px;
       height: @hierarchy-item-height / 2 - 1px;
       //border-right: 1px dotted black;
-      border-bottom: 1px dotted black;
+      border-bottom: 1px solid black;
     }
 
     .bottom {
@@ -797,15 +831,72 @@
   .item-content {
     overflow: auto;
     height: @hierarchy-item-height;
-    padding-left: 5px;
-    padding-right: 5px;
+    //padding-left: 5px;
+    //padding-right: 5px;
+    padding: 5px;
     line-height: @hierarchy-item-height;
     //border: 1px solid yellow;
   }
 
 }
+*/
 
 
+
+
+.krypton-ui-tree {
+
+  border-left: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+  border-bottom: 2px solid lightgray;
+
+  .container {
+    overflow: auto;
+    //border: 1px solid green;
+    &.root {
+      //margin-left: -10px;
+      //margin-right: -10px;
+    }
+
+    &.nested {
+      //margin-left: -10px;
+      //margin-right: -10px;
+      .tree-item {
+        //width: 100%;
+        //padding-left: 20px;
+      }
+    }
+  }
+
+
+  .tree-item {
+    overflow: auto;
+    min-height: @hierarchy-item-height;
+    //padding: 10px;
+    background: white;
+    box-sizing: border-box;
+    border-bottom: 1px solid lightgray;
+  }
+
+  .tree-item-content {
+    overflow: auto;
+    padding: 10px;
+    border: 1px solid red;
+  }
+
+  .item-label {
+    float: left;
+  }
+
+  .item-controls {
+    float: left;
+  }
+
+  .item-content {
+    float: left;
+  }
+
+}
 
 
 

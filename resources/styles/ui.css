@@ -254,39 +254,39 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -327,22 +327,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4caf50;
+  color: #4CAF50;
 }
 a.green:hover {
-  color: #388e3c;
+  color: #388E3C;
 }
 a.red {
-  color: #f44336;
+  color: #F44336;
 }
 a.red:hover {
-  color: #d32f2f;
+  color: #D32F2F;
 }
 a.blue {
-  color: #2196f3;
+  color: #2196F3;
 }
 a.blue:hover {
-  color: #1976d2;
+  color: #1976D2;
 }
 /**********
 ** COLORS
@@ -905,128 +905,227 @@ a.blue:hover {
   display: block;
   clear: left;
   overflow: visible;
-  min-height: 30px;
+  min-height: 40px;
   box-sizing: border-box;
 }
 .krypton-ui-hierarchy .item-controls {
   display: inline-block;
   float: left;
   width: 12px;
-  height: 30px;
-  line-height: 30px;
+  height: 40px;
+  line-height: 40px;
   margin-right: 5px;
   margin-left: 5px;
 }
 .krypton-ui-hierarchy .item-controls .expand {
-  line-height: 30px;
+  line-height: 40px;
   cursor: pointer;
 }
 .krypton-ui-hierarchy .item-controls .expand.invisible {
   visibility: hidden;
 }
 .krypton-ui-hierarchy .item-controls .collapse {
-  line-height: 30px;
+  line-height: 40px;
   cursor: pointer;
 }
 .krypton-ui-hierarchy .item-lines {
   display: inline-block;
   float: left;
   width: 15px;
-  height: 30px;
+  height: 40px;
   box-sizing: border-box;
 }
 .krypton-ui-hierarchy .item-lines .lines-top {
-  height: 15px;
+  height: 20px;
   margin-top: -1px;
   border-bottom: 1px dotted black;
 }
 .krypton-ui-hierarchy .item-lines .lines-bottom {
-  height: 15px;
+  height: 20px;
 }
 .krypton-ui-hierarchy .item-content {
   display: inline-block;
   float: left;
-  height: 30px;
+  height: 40px;
   padding: 10px;
   box-sizing: border-box;
   background: lavender;
 }
 .krypton-ui-hierarchy .tree-item {
-  height: 30px;
+  height: 40px;
   border: 1px solid red;
 }
+/*
+
 .krypton-ui-tree {
   overflow: auto;
-  padding-top: 15px;
+  //padding-top: 15px;
   box-sizing: border-box;
+  //border: 1px solid green;
+
+  .container {
+    position: relative;
+    //float: left;
+    width: inherit;
+    overflow: visible;
+    //margin-top: 10px;
+    box-sizing: border-box;
+    //border: 1px solid yellow;
+
+    .tree-item:last-of-type {
+      border-left: none;
+      //margin-top: -1px;
+
+      .top {
+        border-left: 1px solid black;
+      }
+
+    }
+
+    .tree-item:first-of-type {
+      border-left: none;
+    }
+
+
+    &.root {
+
+      .container {
+        border-left: 1px solid black;
+
+        .tree-item:first-of-type {
+          .top {
+            border-left: 1px solid black;
+          }
+        }
+      }
+
+
+      .tree-item:first-of-type {
+        .top {
+          border-left: none;
+        }
+        .bottom {
+          border-left: 1px solid black;
+        }
+      }
+
+      .tree-item:last-of-type {
+        .bottom {
+          border-left: none;
+        }
+      }
+
+
+      .container {
+        .tree-item:last-of-type {
+          .top {
+            border-left: 1px solid black;
+          }
+        }
+
+      }
+
+    }
+
+
+    &.nested {
+      //margin-top: -5px;
+      padding-left: 20px;
+
+      .nested {
+        border-left: 1px solid black;
+      }
+
+    }
+  }
+
+
+
+  .tree-item {
+    overflow: visible;
+    //min-height: @hierarchy-item-height;
+    //border: 1px solid red;
+    border-left: 1px solid black;
+    box-sizing: border-box;
+  }
+
+  .item-lines {
+    float: left;
+    width: 15px;
+    height: @hierarchy-item-height;
+    //border: 1px solid orange;
+
+    .top {
+      width: 15px;
+      height: @hierarchy-item-height / 2 - 1px;
+      //border-right: 1px dotted black;
+      border-bottom: 1px solid black;
+    }
+
+    .bottom {
+      width: 15px;
+      height: @hierarchy-item-height / 2 - 1px;
+      //border-right: 1px dotted black;
+    }
+
+  }
+
+  .item-controls {
+    float: left;
+    width: 15px;
+    height: @hierarchy-item-height;
+    text-align: center;
+    //border: 1px solid blue;
+
+    .expand {
+        line-height: @hierarchy-item-height;
+    }
+
+    .collapse {
+      line-height: @hierarchy-item-height;
+    }
+  }
+
+  .item-content {
+    overflow: auto;
+    height: @hierarchy-item-height;
+    //padding-left: 5px;
+    //padding-right: 5px;
+    padding: 5px;
+    line-height: @hierarchy-item-height;
+    //border: 1px solid yellow;
+  }
+
+}
+*/
+.krypton-ui-tree {
+  border-left: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+  border-bottom: 2px solid lightgray;
 }
 .krypton-ui-tree .container {
-  position: relative;
-  float: left;
-  width: inherit;
-  box-sizing: border-box;
-  border: 1px solid yellow;
-}
-.krypton-ui-tree .container .tree-item:last-of-type {
-  border-left: none;
-}
-.krypton-ui-tree .container .tree-item:last-of-type .top {
-  border-left: 1px dotted black;
-}
-.krypton-ui-tree .container .tree-item:first-of-type {
-  border-left: none;
-}
-.krypton-ui-tree .container.nested {
-  width: inherit;
-  padding-left: 20px;
-}
-.krypton-ui-tree .container.nested .tree-item:last-of-type {
-  border-left: none;
-}
-.krypton-ui-tree .container.nested .tree-item:last-of-type .top {
-  border-left: 1px dotted black;
-}
-.krypton-ui-tree .container.nested .top {
-  border-left: none !important;
+  overflow: auto;
 }
 .krypton-ui-tree .tree-item {
-  overflow: visible;
-  min-height: 30px;
-  border-left: 1px dotted black;
+  overflow: auto;
+  min-height: 40px;
+  background: white;
   box-sizing: border-box;
+  border-bottom: 1px solid lightgray;
 }
-.krypton-ui-tree .item-lines {
+.krypton-ui-tree .tree-item-content {
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid red;
+}
+.krypton-ui-tree .item-label {
   float: left;
-  width: 15px;
-  height: 30px;
-}
-.krypton-ui-tree .item-lines .top {
-  width: 15px;
-  height: 14px;
-  border-bottom: 1px dotted black;
-}
-.krypton-ui-tree .item-lines .bottom {
-  width: 15px;
-  height: 14px;
 }
 .krypton-ui-tree .item-controls {
   float: left;
-  width: 15px;
-  height: 30px;
-  text-align: center;
-}
-.krypton-ui-tree .item-controls .expand {
-  line-height: 30px;
-}
-.krypton-ui-tree .item-controls .collapse {
-  line-height: 30px;
 }
 .krypton-ui-tree .item-content {
-  overflow: auto;
-  height: 30px;
-  padding-left: 5px;
-  padding-right: 5px;
-  line-height: 30px;
+  float: left;
 }
 /********************
 ** MODEL-LIST
