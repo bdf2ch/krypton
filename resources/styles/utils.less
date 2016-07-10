@@ -552,3 +552,81 @@ table {
     }
   }
 }
+
+
+
+/**********
+* LIST
+**********/
+.list-item {
+  height: 44px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #E0E0E0;
+
+  cursor: pointer;
+
+  &:hover {
+    background: #FAFAFA;
+  }
+
+  &.active {
+    background: #EEEEEE;
+
+    .list-item-icon {
+      border-left: 3px solid #2196F3;
+    }
+
+  }
+
+  .list-item-icon {
+    float: left;
+    //width: 30px;
+    height: 44px;
+    //padding: 10px;
+    padding: 5px;
+    padding-top: 6px;
+    text-align: center;
+    font-size: 15px;
+    //line-height: 50px;
+    color: #273A4D;
+    border-left: 3px solid transparent;
+
+    box-sizing: border-box;
+
+    //border: 1px solid green;
+
+
+    span {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      background: white;
+      border-radius: 50px;
+      border: 1px solid #E0E0E0;
+    }
+  }
+  .list-item-content-lead {
+    height: 22px;
+    margin-left: 40px;
+    padding-left: 5px;
+    padding-top: 5px;
+    color: #1F3E4C;
+    box-sizing: border-box;
+    //border: 1px solid red;
+
+    &.only {
+      height: 44px;
+      line-height: 33px;
+    }
+  }
+  .list-item-content-secondary {
+    height: 22px;
+    margin-left: 40px;
+    padding-left: 5px;
+    //padding-top: 3px;
+    color: #A7B0BB;
+    box-sizing: border-box;
+    //border: 1px solid blue;
+  }
+}

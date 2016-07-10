@@ -20,17 +20,35 @@
 
     <!-- Шапка приложения -->
     <div id="app-header">
-        <div id="current-menu">
-            <span id="current-menu-title">{{ navigation.getCurrent().title }}</span>
-            <span id="current-menu-description">{{ navigation.getCurrent().description }}</span>
+        <div id="current-menu-title" ng-show="false">
+            <span id="title">{{ navigation.getCurrent().title }}</span>
+            <span id="description">{{ navigation.getCurrent().description }}</span>
+        </div>
+        <div id="current-menu-search" ng-show="false">
+            <div class="search-box">
+                <input type="text" name="" id="">
+            </div>
+            <span class="control fa fa-times" title="Закрыть поиск"></span>
+        </div>
+        <div id="current-menu-controls" ng-show="true">
+            <span class="control fa fa-search" title="Поиск"></span>
+            <span class="control fa fa-cog" title="Настройки"></span>
         </div>
     </div>
 
 
     <!-- Меню приложения -->
     <div id="app-menu">
-        <div id="current-user"></div>
-        <a class="menu-item" ng-href="{{ '#' + menu.url }}" ng-class="{ 'active': menu.isActive === true }" ng-repeat="menu in navigation.getAll() track by $index">{{ menu.title }}</a>
+
+        <div id="current-user">
+            <div class="current-user-photo">
+                <img src="" alt="">
+                <span class="no-user-photo fa fa-user"></span>
+            </div>
+            <div class="current-user-fio">{{ session.getCurrentUser().name.value + " " + session.getCurrentUser().surname.value }}</div>
+        </div>
+
+        <a class="menu-item" ng-href="{{ '#' + menu.url }}" ng-class="{ 'active': menu.isActive === true }" ng-repeat="menu in navigation.getAll() track by $index"><span class="fa fa-cog"></span>&nbsp; {{ menu.title }}</a>
     </div>
 
 

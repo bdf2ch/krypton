@@ -961,9 +961,13 @@
                             //"<div class='item-content'>{{ node.display }}</div>" +
                             //"<div ng-include=\"\'hierarchy.html'\"></div>" +
                             "<div class='tree-item-content'>" +
+                                "<div class='item-controls'>" +
+                                    "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                                    "<span class='collapse fa fa-chevron-up' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                                "</div>" +
                                 "<div class='item-label'>{{ node.display }}</div>" +
                             "</div>" +
-                            "<div class='container nested' ng-include=\"\'hierarchy.html'\"></div>" +
+                            "<div ng-include=\"\'hierarchy.html'\"></div>" +
                         "</div>" +
                     "</div>" +
                 "</div>",
@@ -999,10 +1003,10 @@
                                 //"</div>" +
                                 //"<div class='item-content'>{{ node.display }}</div>" +
                                 //"<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
-                            "<div class='tree-item-content'>" +
-                            "<div class='item-label'>{{ node.display }}</div>" +
-                            "</div>" +
-                            "<div class='container nested' ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
+                                "<div class='tree-item-content'>" +
+                                    "<div class='item-label'>{{ node.display }}</div>" +
+                                "</div>" +
+                                "<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
                             "</div>" +
                         "</div>";
 

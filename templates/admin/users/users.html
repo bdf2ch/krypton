@@ -1,17 +1,40 @@
 
 
-
-
-
-
 <columns id="users">
     <column id="user-groups" width="20" caption="группы" >
         <column-control class="green round" content="fa fa-plus" title="Добавить группу"></column-control>
         <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить группу"></column-control>
+
+        <div class="list-item">
+            <div class="list-item-icon">
+                <span class="fa fa-users"></span>
+            </div>
+            <div class="list-item-content-lead">Администраторы</div>
+            <div class="list-item-content-secondary">3 пользователя</div>
+        </div>
+
+        <div class="list-item active">
+            <div class="list-item-icon">
+                <span class="fa fa-users"></span>
+            </div>
+            <div class="list-item-content-lead">Редакторы</div>
+            <div class="list-item-content-secondary">4 пользователя</div>
+        </div>
+
+        <div class="list-item">
+            <div class="list-item-icon">
+                <span class="fa fa-users"></span>
+            </div>
+            <div class="list-item-content-lead only">Редакторы</div>
+        </div>
+
+
     </column>
     <column id="users" width="80" caption="пользователи" maximizable="1">
         <column-control class="green round" content="fa fa-plus" title="Добавить пользователя"></column-control>
         <column-control class="blue round" content="fa fa-pencil" title="Редактировать пользователя"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить пользователя"></column-control>
         <div class="padding-5">
             <table class="stripped">
                 <thead>

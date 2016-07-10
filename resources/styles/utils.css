@@ -423,3 +423,60 @@ a.blue:hover {
   font-size: 11px;
   color: white;
 }
+/**********
+* LIST
+**********/
+.list-item {
+  height: 44px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #E0E0E0;
+  cursor: pointer;
+}
+.list-item:hover {
+  background: #FAFAFA;
+}
+.list-item.active {
+  background: #EEEEEE;
+}
+.list-item.active .list-item-icon {
+  border-left: 3px solid #2196F3;
+}
+.list-item .list-item-icon {
+  float: left;
+  height: 44px;
+  padding: 5px;
+  padding-top: 6px;
+  text-align: center;
+  font-size: 15px;
+  color: #273A4D;
+  border-left: 3px solid transparent;
+  box-sizing: border-box;
+}
+.list-item .list-item-icon span {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background: white;
+  border-radius: 50px;
+  border: 1px solid #E0E0E0;
+}
+.list-item .list-item-content-lead {
+  height: 22px;
+  margin-left: 40px;
+  padding-left: 5px;
+  padding-top: 5px;
+  color: #1F3E4C;
+  box-sizing: border-box;
+}
+.list-item .list-item-content-lead.only {
+  height: 44px;
+  line-height: 33px;
+}
+.list-item .list-item-content-secondary {
+  height: 22px;
+  margin-left: 40px;
+  padding-left: 5px;
+  color: #A7B0BB;
+  box-sizing: border-box;
+}

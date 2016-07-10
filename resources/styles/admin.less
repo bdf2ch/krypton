@@ -32,31 +32,100 @@ html, body {
   height: @app-header-height;
   min-width: @app-min-width;
   box-sizing: border-box;
-  border-bottom: 1px solid #d4d4d4;
+  border-bottom: 1px solid #D3D5E0;
   border-left: 1px solid #d4d4d4;
  //.gradient(#16222A, #3A6073);
-  .gradient(#fff, #f2f2f2);
+  //.gradient(#fff, #f2f2f2);
   //.gradient(#E3F2FD, #BBDEFB);
+  background: #EEF1F8;
+
+  .control {
+    //float: none;
+    display: block;
+    width: 45px;
+    height: @app-header-height;
+    padding-left: 15px;
+    padding-right: 15px;
+    line-height: @app-header-height;
+    color: #37474F;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &:hover {
+      color: #37474F;
+      //background: #E9EBF0;
+    }
+  }
 
 
 
-  #current-menu {
+  #current-menu-title {
+    //float: left;
+    height: @app-header-height;
     margin-left: 5px;
     box-sizing: border-box;
+    border: 1px solid green;
 
-    #current-menu-title {
+    #title {
       display: block;
+      //float: left;
       margin-top: 4px;
       font-size: 20px;
       line-height: 19px;
-      color: black;
+      color: #37474F;
     }
 
-    #current-menu-description {
+    #description {
       display: block;
+      //float: left;
       font-size: 14px;
-      color: gray;
+      color: #61808F;
     }
+  }
+
+  #current-menu-search {
+    float: left;
+    overflow: auto;
+    //position: relative;
+    //height: 100%;
+    //padding: 5px;
+    //text-align: center;
+    box-sizing: border-box;
+    border: 1px solid red;
+
+    .search-box {
+      //float: left;
+      //width: 100%;
+      height: @app-header-height;
+      //margin-right: 55px;
+      padding: 3px;
+      box-sizing: border-box;
+      border: 1px solid green;
+
+      input {
+        width: 100%;
+        outline: none;
+      }
+
+
+    }
+    .control {
+      float: left;
+    }
+
+
+
+  }
+
+  #current-menu-controls {
+    float: right;
+    //width: 200px;
+    height: @app-header-height;
+    font-size: 18px;
+    box-sizing: border-box;
+    //border: 1px solid blue;
+
+
 
   }
 }
@@ -68,16 +137,45 @@ html, body {
   top: 0px;
   bottom: 0px;
   width: @app-menu-width;
-  background: url("../images/menu_background.png");
+ // background: url("../images/menu_background.png");
+  background: #2F475E;
 
 
   #current-user {
+    overflow: auto;
     width: @app-menu-width;
-    height: @app-header-height;
-    //border: 1px solid black;
-    //border-right: 1px solid lightgray;
-    box-sizing: border-box;
-    .gradient(#ECEFF1, #CFD8DC);
+    margin-bottom: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #223547;
+
+    .current-user-photo {
+      margin-bottom: 10px;
+      text-align: center;
+
+      img {
+        display: block;
+        width: 80px;
+        height: 80px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 50%;
+        background: #E0E0E0;
+      }
+
+      .no-user-photo {
+        margin-top: -80px;
+        font-size: 50px;
+        line-height: 80px;
+        color: #BDBDBD;
+      }
+
+    }
+
+    .current-user-fio {
+      text-align: center;
+      color: #E1F5FE;
+    }
   }
 
 
@@ -87,13 +185,18 @@ html, body {
     float: left;
     padding: 10px;
     text-decoration: none;
-    color: black;
+    color: #E1F5FE;
     box-sizing: border-box;
-    border-bottom: 1px solid lightgray;
-    .gradient(#fff, #f2f2f2);
+    border-left: 3px solid transparent;
+
+    &:hover {
+      background: #2B4157;
+    }
 
     &.active {
-      .gradient(#EEEEEE, #E0E0E0);
+      color: white;
+      background: #223547;
+      border-left: 3px solid #2196F3;
     }
   }
 }
@@ -106,7 +209,8 @@ html, body {
   right: 0px;
   bottom: 0px;
   min-width: @app-min-width;
-  border-left: 1px solid lightgray;
+  //background: #ECEFF4;
+  //border-left: 1px solid lightgray;
 }
 
 

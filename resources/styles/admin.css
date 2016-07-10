@@ -286,7 +286,6 @@
   display: table;
   width: 100%;
   height: 100%;
-  border-bottom: 1px solid #E3E3E3;
 }
 .krypton-columns .columns-row {
   position: relative;
@@ -299,7 +298,7 @@
   display: table-cell;
   overflow: hidden;
   height: 100%;
-  border-right: 1px solid #E3E3E3;
+  border-right: 1px solid #D3D5E0;
 }
 .krypton-columns .columns-column:last-of-type {
   border-right: none;
@@ -313,21 +312,16 @@
   padding: 5px;
   vertical-align: bottom;
   box-sizing: border-box;
-  background-color: #fafafa;
-  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
-  border-bottom: 1px solid lightgrey;
+  background: #E3E5F1;
+  border-bottom: 1px solid #D3D5E0;
 }
 .krypton-columns .columns-column .column-header .header-caption {
   display: inline-block;
   margin-right: 5px;
   line-height: 22px;
-  font-size: 13px;
+  font-size: 12px;
   text-transform: uppercase;
-  color: gray;
+  color: #818292;
 }
 .krypton-columns .columns-column .column-header .service-button {
   width: 20px;
@@ -676,28 +670,30 @@
 .krypton-ui-tree {
   border-left: 1px solid lightgray;
   border-right: 1px solid lightgray;
-  border-bottom: 2px solid lightgray;
 }
 .krypton-ui-tree .container {
   overflow: auto;
+}
+.krypton-ui-tree .container.nested {
+  margin-left: 20px;
+  border-left: 1px solid lightgray;
 }
 .krypton-ui-tree .tree-item {
   overflow: auto;
   min-height: 40px;
   background: white;
   box-sizing: border-box;
-  border-bottom: 1px solid lightgray;
 }
 .krypton-ui-tree .tree-item-content {
   overflow: auto;
   padding: 10px;
-  border: 1px solid red;
+  border-bottom: 1px solid lightgray;
 }
 .krypton-ui-tree .item-label {
   float: left;
 }
 .krypton-ui-tree .item-controls {
-  float: left;
+  float: right;
 }
 .krypton-ui-tree .item-content {
   float: left;
@@ -1039,39 +1035,39 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196F3;
+  background: #2196f3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976D2;
+  background: #1976d2;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4CAF50;
+  background: #4caf50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388E3C;
+  background: #388e3c;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #C8E6C9;
+  background: #c8e6c9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #F44336;
+  background: #f44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #D32F2F;
+  background: #d32f2f;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -1112,22 +1108,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4CAF50;
+  color: #4caf50;
 }
 a.green:hover {
-  color: #388E3C;
+  color: #388e3c;
 }
 a.red {
-  color: #F44336;
+  color: #f44336;
 }
 a.red:hover {
-  color: #D32F2F;
+  color: #d32f2f;
 }
 a.blue {
-  color: #2196F3;
+  color: #2196f3;
 }
 a.blue:hover {
-  color: #1976D2;
+  color: #1976d2;
 }
 /**********
 ** COLORS
@@ -1209,6 +1205,63 @@ a.blue:hover {
   color: white;
 }
 /**********
+* LIST
+**********/
+.list-item {
+  height: 44px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #E0E0E0;
+  cursor: pointer;
+}
+.list-item:hover {
+  background: #FAFAFA;
+}
+.list-item.active {
+  background: #EEEEEE;
+}
+.list-item.active .list-item-icon {
+  border-left: 3px solid #2196F3;
+}
+.list-item .list-item-icon {
+  float: left;
+  height: 44px;
+  padding: 5px;
+  padding-top: 6px;
+  text-align: center;
+  font-size: 15px;
+  color: #273A4D;
+  border-left: 3px solid transparent;
+  box-sizing: border-box;
+}
+.list-item .list-item-icon span {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background: white;
+  border-radius: 50px;
+  border: 1px solid #E0E0E0;
+}
+.list-item .list-item-content-lead {
+  height: 22px;
+  margin-left: 40px;
+  padding-left: 5px;
+  padding-top: 5px;
+  color: #1F3E4C;
+  box-sizing: border-box;
+}
+.list-item .list-item-content-lead.only {
+  height: 44px;
+  line-height: 33px;
+}
+.list-item .list-item-content-secondary {
+  height: 22px;
+  margin-left: 40px;
+  padding-left: 5px;
+  color: #A7B0BB;
+  box-sizing: border-box;
+}
+/**********
 ** KRYPTON ADMINISTRATION PANEL
 ***********/
 html,
@@ -1227,29 +1280,66 @@ body {
   height: 45px;
   min-width: 1200px;
   box-sizing: border-box;
-  border-bottom: 1px solid #d4d4d4;
+  border-bottom: 1px solid #D3D5E0;
   border-left: 1px solid #d4d4d4;
-  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
+  background: #EEF1F8;
 }
-#app-header #current-menu {
+#app-header .control {
+  display: block;
+  width: 45px;
+  height: 45px;
+  padding-left: 15px;
+  padding-right: 15px;
+  line-height: 45px;
+  color: #37474F;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+#app-header .control:hover {
+  color: #37474F;
+}
+#app-header #current-menu-title {
+  height: 45px;
   margin-left: 5px;
   box-sizing: border-box;
+  border: 1px solid green;
 }
-#app-header #current-menu #current-menu-title {
+#app-header #current-menu-title #title {
   display: block;
   margin-top: 4px;
   font-size: 20px;
   line-height: 19px;
-  color: black;
+  color: #37474F;
 }
-#app-header #current-menu #current-menu-description {
+#app-header #current-menu-title #description {
   display: block;
   font-size: 14px;
-  color: gray;
+  color: #61808F;
+}
+#app-header #current-menu-search {
+  float: left;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid red;
+}
+#app-header #current-menu-search .search-box {
+  height: 45px;
+  padding: 3px;
+  box-sizing: border-box;
+  border: 1px solid green;
+}
+#app-header #current-menu-search .search-box input {
+  width: 100%;
+  outline: none;
+}
+#app-header #current-menu-search .control {
+  float: left;
+}
+#app-header #current-menu-controls {
+  float: right;
+  height: 45px;
+  font-size: 18px;
+  box-sizing: border-box;
 }
 #app-menu {
   position: absolute;
@@ -1257,17 +1347,38 @@ body {
   top: 0px;
   bottom: 0px;
   width: 200px;
-  background: url("../images/menu_background.png");
+  background: #2F475E;
 }
 #app-menu #current-user {
+  overflow: auto;
   width: 200px;
-  height: 45px;
-  box-sizing: border-box;
-  background-image: -moz-linear-gradient(top, #ECEFF1, #CFD8DC);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ECEFF1), to(#CFD8DC));
-  background-image: -webkit-linear-gradient(top, #ECEFF1, #CFD8DC);
-  background-image: -o-linear-gradient(top, #ECEFF1, #CFD8DC);
-  background-image: linear-gradient(to bottom, #ECEFF1, #CFD8DC);
+  margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #223547;
+}
+#app-menu #current-user .current-user-photo {
+  margin-bottom: 10px;
+  text-align: center;
+}
+#app-menu #current-user .current-user-photo img {
+  display: block;
+  width: 80px;
+  height: 80px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 50%;
+  background: #E0E0E0;
+}
+#app-menu #current-user .current-user-photo .no-user-photo {
+  margin-top: -80px;
+  font-size: 50px;
+  line-height: 80px;
+  color: #BDBDBD;
+}
+#app-menu #current-user .current-user-fio {
+  text-align: center;
+  color: #E1F5FE;
 }
 #app-menu .menu-item {
   display: block;
@@ -1275,21 +1386,17 @@ body {
   float: left;
   padding: 10px;
   text-decoration: none;
-  color: black;
+  color: #E1F5FE;
   box-sizing: border-box;
-  border-bottom: 1px solid lightgray;
-  background-image: -moz-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fff), to(#f2f2f2));
-  background-image: -webkit-linear-gradient(top, #fff, #f2f2f2);
-  background-image: -o-linear-gradient(top, #fff, #f2f2f2);
-  background-image: linear-gradient(to bottom, #fff, #f2f2f2);
+  border-left: 3px solid transparent;
+}
+#app-menu .menu-item:hover {
+  background: #2B4157;
 }
 #app-menu .menu-item.active {
-  background-image: -moz-linear-gradient(top, #EEEEEE, #E0E0E0);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#EEEEEE), to(#E0E0E0));
-  background-image: -webkit-linear-gradient(top, #EEEEEE, #E0E0E0);
-  background-image: -o-linear-gradient(top, #EEEEEE, #E0E0E0);
-  background-image: linear-gradient(to bottom, #EEEEEE, #E0E0E0);
+  color: white;
+  background: #223547;
+  border-left: 3px solid #2196F3;
 }
 #app-content {
   position: absolute;
@@ -1298,7 +1405,6 @@ body {
   right: 0px;
   bottom: 0px;
   min-width: 1200px;
-  border-left: 1px solid lightgray;
 }
 /***********
 ** COMPANY

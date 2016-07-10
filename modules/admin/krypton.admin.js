@@ -29,11 +29,13 @@
 
 
 
-    function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $http, $settings) {
+    function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $http, $settings, $session) {
         $log.log("krypton admin run");
         //$location.url("/users");
         $rootScope.navigation = $navigation;
+        $rootScope.session = $session;
 
+        $session.init();
         $settings.init();
         $users.init();
         
