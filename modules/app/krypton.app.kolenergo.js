@@ -110,6 +110,16 @@
                     $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> getDivisionById: Не задан параметр - идентификатор структурного подразделения");
                     return false
                 }
+            },
+
+            addDivision: function (division) {
+                if (division !== undefined) {
+                    divisions.push(division);
+                    return true;
+                } else {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> addDivision: Не задан параметр - объект нового отдела");
+                    return false
+                }
             }
         }
     };
@@ -272,7 +282,7 @@
 
 
 
-    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory) {
+    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http) {
         $scope.kolenergo = $kolenergo;
         $scope.$modals = $modals;
         $scope.departments = $kolenergo.getDepartments();
@@ -281,13 +291,21 @@
         $scope.currentDivision = undefined;
         $scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
         $scope.newDivision._backup_.setup();
-        
 
 
-        $scope.onSelectDepartment = function (department) {
+
+        $scope.onSelectDepartment = function (departmentId) {
             $log.log("onSelect fired");
-            if (department !== undefined) {
-                $scope.currentDepartment = department;
+            if (departmentId !== undefined) {
+                var length = $kolenergo.getDepartments().length;
+                for (var i = 0; i < length; i++) {
+                    var department = $kolenergo.getDepartments()[i];
+                    if (department.id.value === departmentId) {
+                        department._states_.selected(true);
+                        $scope.currentDepartment = department;
+                    } else
+                        department._states_.selected(false);
+                }
                 $scope.divisions = $filter("byDepartmentId")($scope.divisions, department.id.value);
                 $log.log("filter = ", $scope.divisions);
             }
@@ -297,16 +315,36 @@
         
         $scope.onSelectDivision = function (division) {
             if (division !== undefined) {
-                $log.log("onSelectHierarchyItem", division);
+                //$log.log("onSelectHierarchyItem", division);
                 $scope.currentDivision = division;
+                $log.log("current division = ", $scope.currentDivision);
+                $scope.newDivision.parentId.value = $scope.currentDivision.id.value;
+            } else {
+                $scope.currentDivision = undefined;
+                $scope.newDivision.parentId.value = 0;
             }
         };
 
 
         
-        $scope.addDivision = function () {
+        $scope.onAddNewDivision = function () {
             $log.log("add division called");
-            $modals.open("test");
+            //$modals.open("test");
+            var data = {
+                title: $scope.newDivision.title.value,
+                parentId: $scope.newDivision.parentId.value
+            };
+            $http.post("/serverside/libs/krypton/api.php", {action: "addDivision", data : data })
+                .success(function (data) {
+                    if (data !== undefined) {
+                        $log.log(data);
+                        var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+                        division._model_.fromAnother(data);
+                        division._backup_.setup();
+                        $kolenergo.addDivision(division);
+                        $modals.close("new-division-modal");
+                    }
+                });
         };
 
 
@@ -335,12 +373,36 @@
         };
 
         $scope.onCancelAddNewDivision = function () {
+            $log.log("closed");
             $scope.newDivision._backup_.restore();
+            if ($scope.currentDivision !== undefined)
+                $scope.newDivision.parentId.value = $scope.currentDivision.id.value;
             //$modals.close("test-modal");
         };
 
+
         $scope.onEditDivision = function () {
             $modals.open("edit-division-modal");
+        };
+
+        $scope.editDivision = function () {
+            var data = {
+                id: $scope.currentDivision.id.value,
+                title: $scope.currentDivision.title.value,
+                parentId: $scope.currentDivision.parentId.value
+            };
+            $http.post("/serverside/libs/krypton/api.php", {action: "editDivision", data : data })
+                .success(function (data) {
+                    if (data !== undefined) {
+                        $log.log(data);
+                        var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+                        division._model_.fromAnother(data);
+                        $scope.currentDivision._model_.fromAnother(division);
+                        $scope.currentDivision._backup_.setup();
+                        $log.log("updated division = ", $scope.currentDivision);
+                        $modals.close("edit-division-modal");
+                    }
+                });
         };
 
         $scope.onCancelEditDivision = function () {

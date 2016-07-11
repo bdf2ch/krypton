@@ -468,7 +468,7 @@
 /***************
 ** HIERARCHY
 ***************/
-@hierarchy-item-height: 40px;
+@hierarchy-item-height: 20px;
 
 .krypton-ui-hierarchy {
   //display: block;
@@ -850,71 +850,80 @@
 
 .krypton-ui-tree {
 
-  border-left: 1px solid lightgray;
-  border-right: 1px solid lightgray;
-  //border-bottom: 1px solid black;
+  //border-left: 1px solid lightgray;
+  //border-right: 1px solid lightgray;
 
   .container {
-    overflow: auto;
-    //border-bottom: 2px solid lightgray;
-    //border: 1px solid green;
+    overflow: visible;
+
     &.root {
-      //margin-left: -10px;
-      //margin-right: -10px;
+      //border-bottom: 1px solid lightgray;
     }
 
     &.nested {
-      //border: 1px solid green;
       margin-left: 20px;
-      //margin-right: -10px;
-      border-left: 1px solid lightgray;
+      //padding-top: 10px;
+     // margin-top: 20px;
+      //border-left: 1px solid lightgray;
+
       .tree-item {
-        //width: 100%;
-        //padding-left: 20px;
-
-      }
-
-      .nested {
-        //border-left: none;
-        .tree-item-content {
-          //padding-left: 20px;
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+        &:first-of-type {
+          //margin-top: -20px;
         }
       }
-
-      .tree-item-content {
-        //padding-left: 20px;
-
-
-      }
-
-
     }
   }
 
 
   .tree-item {
     overflow: auto;
-    min-height: @hierarchy-item-height;
-    //padding: 10px;
+    min-height: 20px;
     background: white;
     box-sizing: border-box;
     //border-bottom: 1px solid lightgray;
+
   }
 
   .tree-item-content {
+    //float: left;
     overflow: auto;
-    padding: 10px;
-    //border: 1px solid red;
-    border-bottom: 1px solid lightgray;
-    //border-left: 1px solid lightgray;
+    padding: 5px;
+    //border-bottom: 1px solid lightgray;
   }
 
   .item-label {
     float: left;
+    height: @hierarchy-item-height;
+    margin-right: 10px;
+    line-height: @hierarchy-item-height;
+    //clear: right;
+    //color: @color-light-blue;
+    text-decoration: underline;
+    cursor: pointer;
+    //border-bottom: 1px solid lightgray;
+
+    &.active {
+      font-family: "Roboto Bold";
+      text-decoration: underline;
+    }
   }
 
   .item-controls {
-    float: right;
+    float: left;
+    height: @hierarchy-item-height;
+    margin-right: 10px;
+    line-height: @hierarchy-item-height;
+    font-size: 10px;
+
+    .expand {
+      cursor: pointer;
+    }
+
+    .collapse {
+      cursor: pointer;
+    }
   }
 
   .item-content {
@@ -995,10 +1004,10 @@
     left: 0px;
     right: 0px;
     height: @modal-header-height;
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid #D3D5E0;
     box-sizing: border-box;
-    background-color: #fafafa;
-    .gradient(#ffffff, #f2f2f2);
+    background-color: #EEF1F8;
+    //.gradient(#ffffff, #f2f2f2);
 
     .modal-caption {
       height: @modal-header-height;

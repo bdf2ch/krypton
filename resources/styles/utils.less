@@ -259,6 +259,7 @@ input {
   font-size: 18px;
   border: 1px solid @ui-border-color;
   box-sizing: border-box;
+  outline: none;
 }
 
 input[type='text'], input[type='password'] {
@@ -286,6 +287,7 @@ select {
   font-size: 17px;
   text-align: center !important;
   border: 1px solid @ui-border-color;
+  outline: none;
 
   &.no-border {
     border: none;
@@ -309,6 +311,7 @@ input[type='button'], input[type='submit'], button {
   cursor: pointer;
   line-height: 12px;
   box-sizing: border-box;
+  outline: none;
 
   &.rounded {
     border-radius: 50%;
@@ -559,7 +562,7 @@ table {
 * LIST
 **********/
 .list-item {
-  height: 44px;
+  min-height: 44px;
   box-sizing: border-box;
   border-bottom: 1px solid #E0E0E0;
 
@@ -607,12 +610,16 @@ table {
     }
   }
   .list-item-content-lead {
+    overflow: hidden;
     height: 22px;
     margin-left: 40px;
     padding-left: 5px;
+    padding-right: 5px;
     padding-top: 5px;
     color: #1F3E4C;
     box-sizing: border-box;
+    white-space: nowrap;
+    text-overflow: ellipsis !important;
     //border: 1px solid red;
 
     &.only {
@@ -621,11 +628,15 @@ table {
     }
   }
   .list-item-content-secondary {
+    overflow: hidden;
     height: 22px;
     margin-left: 40px;
     padding-left: 5px;
+    padding-right: 5px;
     //padding-top: 3px;
     color: #A7B0BB;
+    white-space: nowrap;
+    text-overflow: ellipsis !important;
     box-sizing: border-box;
     //border: 1px solid blue;
   }

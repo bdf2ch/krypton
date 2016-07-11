@@ -99,6 +99,22 @@
 
 
 
+            public static function fromAnother ($another) {
+                if ($another == null) {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> fromAnother: Не задан параметр - объект-источник инициализации");
+                    return false;
+                }
+
+                if (gettype($another) != "object") {
+                    Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> fromAnother: Неверно задан тип параметра - объект-источник инициализации");
+                    return false;
+                }
+
+
+            }
+
+
+
             public static function toJSON () {
                 $obj = new stdClass();
                 $class = get_called_class();

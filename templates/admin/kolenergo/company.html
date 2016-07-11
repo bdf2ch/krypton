@@ -3,7 +3,9 @@
         <column-control class="green round" content="fa fa-plus" title="Добавить группу"></column-control>
         <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу"></column-control>
 
-        <div class="padding-5">
+        <div>
+
+            <!--
             <model-list
                     ng-model="departments"
                     primary-label="title"
@@ -11,6 +13,15 @@
                     model-id="id"
                     on-select="onSelectDepartment">
             </model-list>
+            -->
+
+            <div class="list-item" ng-class="{'active': department._states_.selected() === true}" ng-repeat="department in kolenergo.getDepartments() track by $index" ng-click="onSelectDepartment(department.id.value)">
+                <div class="list-item-icon">
+                    <span class="fa fa-building" aria-hidden="true"></span>
+                </div>
+                <div class="list-item-content-lead only" title="{{ department.title.value }}">{{ department.title.value }}</div>
+            </div>
+
         </div>
 
     </column>
@@ -55,7 +66,7 @@
 
         <div class="row">
             <div class="width-50">
-                <button class="width-100 green" ng-disabled="newDivision.title.value === ''">Добавить</button>
+                <button class="width-100 green" ng-disabled="newDivision.title.value === ''" ng-click="onAddNewDivision()">Добавить</button>
             </div>
             <div class="width-50">
                 <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>
@@ -85,7 +96,7 @@
 
         <div class="row">
             <div class="width-50">
-                <button class="width-100 green" ng-disabled="currentDivision._states_.changed() === false">Сохранить</button>
+                <button class="width-100 green" ng-disabled="currentDivision._states_.changed() === false" ng-click="editDivision()">Сохранить</button>
             </div>
             <div class="width-50">
                 <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>

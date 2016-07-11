@@ -2,6 +2,7 @@ RewriteEngine On
 Options +FollowSymlinks
 RewriteBase /
 RewriteCond %{REQUEST_URI} !^/install/
+#RewriteCond %{REQUEST_URI} !^/serverside/libs/krypton/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^.*$ index.php

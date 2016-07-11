@@ -146,6 +146,7 @@
 
             API::add("test", "Kolenergo", "getDepartments");
             API::add("addDivision", "Kolenergo", "addDivision");
+            API::add("editDivision", "Kolenergo", "editDivision");
 
 
 
@@ -187,8 +188,61 @@
 
 
         public static function addDivision ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "kolenergo -> addDivision: Не задан параметр - объект с информацией о добавляемом отделе");
+                return false;
+            }
 
+            $result = DBManager::insert_row("divisions", ["parent_id", "title"], [$data -> parentId, "'".$data -> title."'"]);
+            if (!result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось добавить отдел");
+                return false;
+            }
+
+            $id = mysql_insert_id();
+            $result = DBManager::select("divisions", ["*"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось выбрать добавленный отдел");
+                return false;
+            }
+
+            $division = Models::construct("Division", false);
+            $division -> fromSource($result[0]);
+            //array_push(self::$divisions, $division);
+
+            return $division;
         }
+
+
+
+
+
+        public static function editDivision ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "kolenergo -> editDivision: Не задан параметр - объект с информацией о редактируемом отделе");
+                return false;
+            }
+
+            $result = DBManager::update("divisions", ["title", "parent_id"], ["'".$data -> title."'", $data -> parentId], "id = ".$data -> id);
+            if (!result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editDivision: Не удалось обновить информацию об отделе");
+                return false;
+            }
+
+            $result = DBManager::select("divisions", ["*"], "id = ".$data -> id);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось выбрать измененный отдел");
+                return false;
+            }
+
+            $division = Models::construct("Division", false);
+            $division -> fromSource($result[0]);
+            //array_push(self::$divisions, $division);
+
+            return $division;
+        }
+
+
 
 
 

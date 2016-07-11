@@ -8,6 +8,7 @@
             .directive("columns", columnsDirective)
             .directive("column", columnDirective)
             .directive("columnControl", columnControlDirective)
+            .factory("$hierarchy", hierarchyFactory)
             .directive("hierarchy", hierarchyDirective)
             .directive("modelList", modelListDirective)
             .factory("$modals", modalsFactory)
@@ -921,8 +922,42 @@
 
 
 
+    function hierarchyFactory ($errors) {
+        var items = [];
 
-    function hierarchyDirective ($log, $errors, $compile, $templateCache, $parse) {
+        return {
+
+            register: function (scope) {
+                if (scope !== undefined) {
+                    this.items.push(scope);
+                } else {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> register: Не зада параметр - scope иерархии");
+                    return false;
+                }
+            },
+
+            getById: function (id) {
+                if (id === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> get: Не задан параметр - идентификатор иерархии");
+                    return false;
+                }
+
+                var length = items.length;
+                for (var i = 0; i < length; i++) {
+                    if (items[i].id === id)
+                        return items[i];
+                }
+
+                $errors.add(ERROR_TYPE_ENGINE, "$hierarchy -> getById: Иерархия с идентификатором '" + id + "' не найдена");
+                return false;
+            }
+        }
+    };
+
+
+
+
+    function hierarchyDirective ($log, $errors, $compile, $templateCache, $parse, $hierarchy) {
         return {
             restrict: "E",
             scope: {
@@ -961,17 +996,28 @@
                             //"<div class='item-content'>{{ node.display }}</div>" +
                             //"<div ng-include=\"\'hierarchy.html'\"></div>" +
                             "<div class='tree-item-content'>" +
+                                "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node)'>{{ node.display }}</div>" +
                                 "<div class='item-controls'>" +
                                     "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
                                     "<span class='collapse fa fa-chevron-up' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
                                 "</div>" +
-                                "<div class='item-label'>{{ node.display }}</div>" +
+
                             "</div>" +
-                            "<div ng-include=\"\'hierarchy.html'\"></div>" +
+                            "<div ng-include=\"\'hierarchy.html'\" ng-show='node.expanded === true'></div>" +
                         "</div>" +
                     "</div>" +
                 "</div>",
             link: function (scope, element, attrs, ctrl) {
+
+                scope.$watchCollection("source", function (val) {
+                    $log.log("hierarchy length = ", val.length);
+                    $log.log("collection changed");
+                    if (val !== undefined) {
+                        init();
+                        $compile($templateCache.get("hierarchy.html"))(scope);
+                        //scope.$apply();
+                    }
+                });
 
                 /*
                 var template =
@@ -992,7 +1038,7 @@
 
                     var template =
                         "<div class='container nested' >" +
-                            "<div class='tree-item' ng-repeat='node in children' ng-init='children = getChildren(node)'>" +
+                            "<div class='tree-item' ng-repeat='node in this.children track by $id(node)' ng-init='children = getChildren(node)'>" +
                                 //"<div class='item-lines'>" +
                                 //    "<div class='top'></div>" +
                                 //    "<div class='bottom'></div>" +
@@ -1004,9 +1050,13 @@
                                 //"<div class='item-content'>{{ node.display }}</div>" +
                                 //"<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
                                 "<div class='tree-item-content'>" +
-                                    "<div class='item-label'>{{ node.display }}</div>" +
+                                    "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node)'>{{ node.display }}</div>" +
+                                    "<div class='item-controls'>" +
+                                        "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                                        "<span class='collapse fa fa-chevron-up' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                                    "</div>" +
                                 "</div>" +
-                                "<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
+                                "<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\" ng-show='node.expanded === true'></div>" +
                             "</div>" +
                         "</div>";
 
@@ -1069,15 +1119,37 @@
                         }
                     }
                 };
-                
+
+
                 scope.select = function (node) {
-                    if (scope.onSelect !== undefined)
-                        scope.onSelect(node);
+                    $log.log(node);
+                    if (node !== undefined) {
+                        var length = stack.length;
+                        for (var i = 0; i < length; i++) {
+                            if (angular.equals(node, stack[i])) {
+                                if (stack[i]._states_.selected() === true) {
+                                    stack[i]._states_.selected(false);
+                                    if (scope.onSelect !== undefined)
+                                        scope.onSelect(undefined);
+                                } else {
+                                    stack[i]._states_.selected(true);
+                                    if (scope.onSelect !== undefined)
+                                        scope.onSelect(node);
+                                }
+                            } else
+                                stack[i]._states_.selected(false);
+                        }
+                    }
+                    //node._states_.selected(true);
+                    
                 };
+                
 
 
                 var init = function () {
                     $log.log("source = ", scope.source);
+                    stack.splice(0, stack.length);
+                    initial.splice(0, initial.length);
 
                     //scope.source = $parse(scope.source);
                     //$log.log("ngModel = ", scope.source);
@@ -1130,56 +1202,12 @@
                                 scope.stack[scope.stack.length - 1].children.push(second);
 
                         }
-
                     }
-
                 };
 
-                init();
-                //$log.log("stack = ", scope.stack);
-                //$log.log("initial = ", scope.initial);
 
-                /*
-                if (scope.ngModel !== null && scope.ngModel !== undefined) {
-                    if (typeof scope.ngModel.constructor !== undefined && scope.ngModel.constructor === Array) {
-                        if (scope.key !== undefined && scope.key !== "") {
+                $hierarchy.register(scope);
 
-                            if (scope.parentKey !== undefined && scope.parentKey !== "") {
-
-                                var length = scope.ngModel.length;
-                                for (var i = 0; i < length; i++) {
-
-                                    if (scope.ngModel[i][scope.key] !== undefined && scope.ngModel[i][scope.key] !== "") {
-
-                                        if (scope.ngModel[i][scope.parentKey] !== undefined && scope.ngModel[i][scope.parentKey] !== "") {
-
-                                            scope.stack.push(scope.ngModel[i]);
-                                            scope.stack[scope.stack.length - 1].expanded = false;
-                                            scope.stack[scope.stack.length - 1].children = [];
-                                            if (scope.ngModel[i][scope.parentKey] === 0)
-                                                scope.initial.push(scope.ngModel[i]);
-
-                                            for (var x = 0; x < length; x ++) {
-                                                if (scope.ngModel[x][scope.parentKey] === scope.ngModel[i][scope.key])
-                                                    scope.stack[scope.stack.length - 1].children.push(scope.ngModel[x]);
-                                            }
-                                        } else
-                                            $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не найдено поле родительской связи в источнике данных (" + scope.parentKey + ")");
-
-
-                                    } else
-                                        $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не найдено поле связи в источнике данных (" + scope.key + ")");
-
-                                }
-
-                            } else
-                                $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не задан аттрибут - поле родительской связи");
-                        } else
-                            return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Не задан аттрибут - поле связи иерархии");
-                    } else
-                        return $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> hierarchy -> Источник данных (ngModel) не является массивом");
-                }
-                */
             }
         }
     };
@@ -1410,7 +1438,7 @@
                 modal.appendChild(header);
                 modal.appendChild(content);
 
-                $compile(content)(scope.$parent);
+                //$compile(content)(scope.$parent);
                 $compile(modal)(scope);
                 $modals.register(scope);
 

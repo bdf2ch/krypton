@@ -3,7 +3,7 @@
     $db_host = "127.0.0.1";
     $db_name = "krypton";
     $db_user = "root";
-    $db_password = "l1mpb1zk1t";
+    $db_password = "";
 
     $ldap_host = "10.50.0.1";
 
@@ -41,6 +41,10 @@
                 require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/classes/".$class.".class.php";
             else if (file_exists($_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$class.".extension.php"))
                 require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/extensions/".$class.".extension.php";
+            else if (file_exists($_SERVER["DOCUMENT_ROOT"])."/serverside/libs/krypton/services/".$class.".service.php") {
+                require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/services/".$class.".service.php";
+                Services::register($class);
+            }
         }
     }
 

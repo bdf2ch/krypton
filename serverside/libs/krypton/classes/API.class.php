@@ -84,15 +84,15 @@
                     $isEntryExists = self::getEntry($entry);
                     if ($isEntryExists != false) {
                         $callable = $isEntryExists -> class."::".$isEntryExists -> method;
-                        $result = call_user_func(array($isEntryExists -> class, $isEntryExists -> method));
-                        echo(json_encode($result));
+                        $result = call_user_func_array(array($isEntryExists -> class, $isEntryExists -> method), array("data" => $data));
+                        return $result;
                     }
                 }
 
         }
 
 
-        public static function isExists ($entry) {
+        public static function isEntryExists ($entry) {
             if ($entry == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "API -> isExists: Не задан параметр - точка входа");
                 return null;

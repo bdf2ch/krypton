@@ -2,12 +2,13 @@
     define("ENGINE_API_MODE", 1);
     require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/config.php";
 
-    Settings::init();
-    Sessions::init();
-    Users::init();
-    Extensions::load("Kolenergo");
+    $app = new Krypton(["Kolenergo", "LDAP"]);
+    //Settings::init();
+    //Sessions::init();
+    //Users::init();
+    //Extensions::load("Kolenergo");
 
-    $api = new API();
+    //$api = new API();
 
     if (Sessions::getCurrentSession() == false) {
         return Errors::push(Errors::ERROR_TYPE_ACCESS, "Неавторизованный доступ");
@@ -24,11 +25,12 @@
 
                 $result = API::isEntryExists($postdata -> action);
                 if ($result == null || $result == false)
-                    return Errors::push(Errors::ERROR_TYPE_ENGINE, "");
+                    return Errors::push(Errors::ERROR_TYPE_ENGINE, "fsdfsdf");
 
                 $result = API::call($postdata -> action, $postdata -> data);
                 echo(json_encode($result));
             }
         }
     }
+
 ?>
