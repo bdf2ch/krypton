@@ -1158,6 +1158,19 @@
                 };
 
 
+                var isInStack = function (id) {
+                    if (id !== undefined) {
+                        var length = scope.stack.length;
+                        for (var i = 0; i < length; i++) {
+                            var item = scope.stack[i];
+                            var itemId = item[scope.key].constructor === Field ? item[scope.key].value : item[scope.key];
+                            if (itemId === id)
+                                return scope.stack[i];
+                        }
+                        return false;
+                    }
+                };
+
 
                 var init = function () {
                     $log.log("source = ", scope.source);
@@ -1223,6 +1236,19 @@
                         }
 
                         scope.stack.push(temp);
+
+                    }
+                };
+
+                var update = function () {
+                    var length = scope.source.length;
+                    for (var i = 0; i < length; i++) {
+                        var temp = scope.source[i];
+                        var firstKey = temp[scope.key].constructor === Field ? temp[scope.key].value : temp[scope.key];
+                        var firstParentKey = temp[scope.parentKey].constructor === Field ? temp[scope.parentKey].value : temp[scope.parentKey];
+                        for (var x = 0; x < length; x++) {
+
+                        }
 
                     }
                 };

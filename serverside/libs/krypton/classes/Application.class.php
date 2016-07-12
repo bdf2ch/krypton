@@ -165,7 +165,7 @@
 
 
         function run () {
-             Extensions::get("Kolenergo") -> login("kolu0897", "zx12!@#$");
+             //Extensions::get("Kolenergo") -> login("kolu0897", "zx12!@#$");
         }
 
     };

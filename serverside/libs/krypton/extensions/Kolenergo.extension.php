@@ -224,7 +224,7 @@
             }
 
             $result = DBManager::insert_row("organizations", ["title"], ["'".$data -> title."'"]);
-            if (!result) {
+            if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addOrganization: Не удалось добавить организацию");
                 return false;
             }
@@ -248,7 +248,7 @@
 
 
         /**
-        * Сохраняет изменения об измененнной организации
+        * Сохраняет изменения в измененнной организации
         * @data {object} - объект с информацией о редактируемой организации
         **/
         public function editOrganization ($data) {
@@ -275,6 +275,7 @@
 
             return $organization;
         }
+
 
 
 
@@ -335,7 +336,7 @@
             }
 
             $result = DBManager::insert_row("divisions", ["parent_id", "title"], [$data -> parentId, "'".$data -> title."'"]);
-            if (!result) {
+            if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось добавить отдел");
                 return false;
             }
@@ -358,6 +359,10 @@
 
 
 
+        /**
+        * Сохраняет изменения в измененном отделе
+        * @data {object} - объект с информацией об изменяемом отделе
+        **/
         public static function editDivision ($data) {
             if ($data == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "kolenergo -> editDivision: Не задан параметр - объект с информацией о редактируемом отделе");
@@ -365,7 +370,7 @@
             }
 
             $result = DBManager::update("divisions", ["title", "parent_id"], ["'".$data -> title."'", $data -> parentId], "id = ".$data -> id);
-            if (!result) {
+            if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editDivision: Не удалось обновить информацию об отделе");
                 return false;
             }
@@ -378,9 +383,44 @@
 
             $division = Models::construct("Division", false);
             $division -> fromSource($result[0]);
-            //array_push(self::$divisions, $division);
 
             return $division;
+        }
+
+
+
+
+
+        /**
+        * Удаляет отдел
+        * @data {object} - объект с информацией об удаляемом отделе
+        **/
+        public static function deleteDivision ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> deleteDivision: Не задан параметр - объект с информацией об удаляемом отделе");
+                return false;
+            }
+
+            $id = $data -> id;
+            $result = DBManager::delete("divisions", "id = ".$id);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDivision: Не удалось удалить отдел");
+                return false;
+            }
+
+            $result = DBManager::update("divisions", ["parent_id"], [0], "parent_id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDivision: Не удалось обнулить родительский отдел в дочерних отделах удаляемого отдела");
+                return false;
+            }
+
+            $result = DBManager::update("kr_users", ["division_id"], 0, "division_id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDivision: Не удалось обновить информацию о пользователях, принадлежащих удаляемому отделу");
+                return false;
+            }
+
+            return true;
         }
 
 

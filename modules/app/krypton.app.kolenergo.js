@@ -18,8 +18,8 @@
         $classes.add("Organization", {
             __dependencies__: [],
             __icon__: "",
-            id: new Field({ source: "id", type: "integer", value: 0, default_value: 0 }),
-            title: new Field( { source: "title", type: "string", value: "", default_value: "", backupable: true })
+            id: new Field ({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            title: new Field ({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
         });
 
         /**
@@ -29,8 +29,8 @@
         $classes.add("Department", {
             __dependencies__: [],
             __icon__: "",
-            id: new Field({ source: "id", type: "integer", value: 0, default_value: 0 }),
-            title: new Field({ source: "title", type: "string", value: "", default_value: "", backupable: true })
+            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
         });
 
         /**
@@ -39,10 +39,10 @@
          */
         $classes.add("Division", {
             __dependencies__: [],
-            id: new Field({ source: "id", type: "integer", value: 0, default_value: 0 }),
-            departmentId: new Field({ source: "department_id", type: "integer", value: 0, default_value: 0, backupable: true }),
-            parentId: new Field({ source: "parent_id", type: "integer", value: 0, default_value: 0, backupable: true }),
-            title: new Field({ source: "title", type: "string", value: "", default_value: "", backupable: true })
+            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            departmentId: new Field({ source: "department_id", type: DATA_TYPE_STRING, value: 0, default_value: 0, backupable: true }),
+            parentId: new Field({ source: "parent_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
+            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
         });
 
         var organizations = [];
@@ -374,7 +374,7 @@
         $scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
 
 
-        $scope.newOrganization._backup_.setup();
+
         $scope.newDivision._backup_.setup();
         
         
@@ -384,8 +384,13 @@
                 for (var i = 0; i < length; i++) {
                     var organization = $kolenergo.getOrganizations()[i];
                     if (organization.id.value === organizationId) {
-                        organization._states_.selected(true);
-                        $scope.currentOrganization = organization;
+                        if (organization._states_.selected() === false) {
+                            organization._states_.selected(true);
+                            $scope.currentOrganization = organization;
+                        } else {
+                            organization._states_.selected(false);
+                            $scope.currentOrganization = undefined;
+                        }
                     } else
                         organization._states_.selected(false);
                 }
@@ -429,6 +434,7 @@
          */
         $scope.openAddOrganizationModal = function () {
             $modals.open("new-organization-modal");
+            $scope.newOrganization._backup_.setup();
         };
 
 
@@ -521,6 +527,7 @@
                     if (data !== undefined && data !== null) {
                         if (JSON.parse(data) === true) {
                             $kolenergo.deleteOrganization($scope.currentOrganization.id.value);
+                            $scope.currentOrganization = undefined;
                             $modals.close("delete-organization-modal");
                         }
                     }

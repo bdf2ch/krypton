@@ -5,6 +5,7 @@
 
         public function __construct ($parameters) {
             self::field("id", new Field(array( "source" => "id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("userGroupId", new Field(array( "source" => "user_group_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("surname", new Field(array( "source" => "surname", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("name", new Field(array( "source" => "name", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("fname", new Field(array( "source" => "fname", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));

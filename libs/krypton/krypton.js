@@ -58,16 +58,16 @@ function Field (parameters) {
             beforeChange = value;
         else {
             switch (this.type) {
-                case "string":
+                case DATA_TYPE_STRING:
                     this.value = beforeChange.toString();
                     break;
-                case "integer":
+                case DATA_TYPE_INTEGER:
                     this.value = parseInt(beforeChange);
                     break;
-                case "float":
+                case DATA_TYPE_FLOAT:
                     this.value =+ parseFloat(beforeChange).toFixed(6);
                     break;
-                case "boolean":
+                case DATA_TYPE_BOOLEAN:
                     this.value = new Boolean(beforeChange);
                     break;
                 default:
@@ -278,11 +278,11 @@ function isField (obj) {
 
                                     if (this.__instance__[prop].type !== undefined) {
                                         switch (this.__instance__[prop].type) {
-                                            case "string":
+                                            case DATA_TYPE_STRING:
                                                 this.__instance__[prop].value = JSONdata[data].toString();
                                                 this.__instance__[prop]._backup_(JSONdata[data].toString());
                                                 break;
-                                            case "integer":
+                                            case DATA_TYPE_INTEGER:
                                                 if (!isNaN(JSONdata[data])) {
                                                     this.__instance__[prop].value = parseInt(JSONdata[data]);
                                                     this.__instance__[prop]._backup_(parseInt(JSONdata[data]));
@@ -292,7 +292,7 @@ function isField (obj) {
                                                     this.__instance__[prop]._backup_(0);
                                                 }
                                                 break;
-                                            case "float":
+                                            case DATA_TYPE_FLOAT:
                                                 if (!isNaN(JSONdata[data])) {
                                                     this.__instance__[prop].value = +parseFloat(JSONdata[data]).toFixed(6);
                                                     this.__instance__[prop]._backup_(+parseFloat(JSONdata[data]).toFixed(6));
@@ -302,7 +302,7 @@ function isField (obj) {
                                                     this.__instance__[prop]._backup_(0.0);
                                                 }
                                                 break;
-                                            case "boolean":
+                                            case DATA_TYPE_BOOLEAN:
                                                 if (!isNaN(JSONdata[data])) {
                                                     var value = parseInt(JSONdata[data]);
                                                     if (value === 1 || value === 0) {
@@ -379,7 +379,7 @@ function isField (obj) {
                                     if (isField(this.__instance__[anotherProp])) {
                                         if (this.__instance__[anotherProp].type !== undefined) {
                                             switch (this.__instance__[anotherProp].type) {
-                                                case "string":
+                                                case DATA_TYPE_STRING:
                                                     if (isField(obj[anotherProp])) {
                                                         this.__instance__[anotherProp]._fromAnother_(obj[anotherProp]);
                                                         this.__instance__[anotherProp]._backup_(obj[anotherProp].value.toString());
@@ -388,7 +388,7 @@ function isField (obj) {
                                                         this.__instance__[anotherProp]._backup_(obj[anotherProp].toString());
                                                     }
                                                     break;
-                                                case "integer":
+                                                case DATA_TYPE_INTEGER:
                                                     var value = isField(obj[anotherProp]) ? obj[anotherProp].value : obj[anotherProp];
 
 
@@ -406,7 +406,7 @@ function isField (obj) {
                                                         this.__instance__[anotherProp]._backup_(0);
                                                     }
                                                     break;
-                                                case "float":
+                                                case DATA_TYPE_FLOAT:
                                                     if (!isNaN(obj[anotherProp])) {
                                                         if (isField(obj[fromAnother()])) {
                                                             this.__instance__[anotherProp]._fromAnother_(obj[anotherProp]);
@@ -421,7 +421,7 @@ function isField (obj) {
                                                         this.__instance__[anotherProp]._backup_(0.0);
                                                     }
                                                     break;
-                                                case "boolean":
+                                                case DATA_TYPE_BOOLEAN:
                                                     if (!isNaN(obj[anotherProp])) {
                                                         var value = isField(obj[anotherProp]) ? parseInt(obj[anotherProp].value) : parseInt(obj[anotherProp]);
                                                         if (value === 1 || value === 0) {
@@ -542,18 +542,19 @@ function isField (obj) {
                     for (var prop in this.__instance__) {
                         if (this.__instance__[prop].constructor === Field && this.__instance__[prop].backupable !== undefined && this.__instance__[prop].backupable === true && this.__instance__[prop] !== null) {
                             if (this.__instance__[prop].type !== undefined) {
+                                $log.log("ready");
                                 switch (parseInt(this.__instance__[prop].type)) {
                                     case DATA_TYPE_STRING:
                                         this.data[prop] = this.__instance__[prop].value.toString();
                                         break;
                                     case DATA_TYPE_INTEGER:
-                                        this.__instance__._backup_.data[prop] = parseInt(this.__instance__[prop].value);
+                                        this.data[prop] = parseInt(this.__instance__[prop].value);
                                         break;
                                     case DATA_TYPE_FLOAT:
-                                        this.__instance__._backup_.data[prop] = +parseFloat(this.__instance__[prop].value).toFixed(6);
+                                        this.data[prop] = +parseFloat(this.__instance__[prop].value).toFixed(6);
                                         break;
                                     case DATA_TYPE_BOOLEAN:
-                                        this.__instance__._backup_.data[prop] = this.__instance__[prop].value;
+                                        this.data[prop] = this.__instance__[prop].value;
                                         break;
                                 }
                             } else {
@@ -561,6 +562,7 @@ function isField (obj) {
                                 result++;
                             }
                         }
+                        $log.log(this.data);
                     }
                     if (this.__instance__._init_ !== undefined)
                         this.__instance__._init_();
@@ -1099,9 +1101,9 @@ function isField (obj) {
          */
         $classes.add("Error", {
             __dependencies__: [],
-            type: new Field({ source: "typeId", type: "integer", value: 0, default_value: 0 }),
-            message: new Field({ source: "message", type: "string", value: "", default_value: "" }),
-            timestamp: new Field({ source: "timestamp", type: "integer", value: 0, default_value: 0 })
+            type: new Field({ source: "typeId", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            message: new Field({ source: "message", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            timestamp: new Field({ source: "timestamp", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 })
         });
 
         var items = [];
@@ -1199,13 +1201,13 @@ function isField (obj) {
          */
         $classes.add("Setting", {
             __dependencies__: [],
-            moduleId: new Field({ source: "module_id", type: "string", value: "", default_value: "" }),
-            code: new Field({ source: "code", type: "string", value: "", default_value: "" }),
-            title: new Field({ source: "title", type: "string", value: "", default_value: "" }),
-            description: new Field({ source: "description", type: "string", value: "", default_value: "" }),
-            dataType: new Field({ source: "data_type", type: "string", value: "", default_value: "" }),
-            isSystem: new Field({ source: "is_system", type: "integer", value: 0, default_value: 0 }),
-            value: new Field({ source: "value", type: "string", value: "", default_value: "" })
+            extensionId: new Field({ source: "module_id", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            code: new Field({ source: "code", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            description: new Field({ source: "description", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            dataType: new Field({ source: "data_type", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            isSystem: new Field({ source: "is_system", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            value: new Field({ source: "value", type: DATA_TYPE_STRING, value: "", default_value: "" })
         });
 
         var items = [];
@@ -1244,9 +1246,9 @@ function isField (obj) {
 
         $classes.add("Extension", {
             __dependencies__: [],
-            id: new Field({ source: "id", type: "string", value: "", default_value: "" }),
-            description: new Field({ source: "description", type: "string", value: "", default_value: "" }),
-            url: new Field({ source: "url", type: "string", value: "", default_value: "" })
+            id: new Field({ source: "id", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            description: new Field({ source: "description", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            url: new Field({ source: "url", type: DATA_TYPE_STRING, value: "", default_value: "" })
         });
 
         var items = [];
@@ -1286,13 +1288,11 @@ function isField (obj) {
          ********************/
         $classes.add("Session", {
             __dependencies__: [],
-            userId: new Field({ source: "user_id", type: "integer", value: 0, default_value: 0 }),
-            token: new Field ({ source: "token", type: "string", value: "", default_value: "" }),
-            start: new Field({ source: "start", type: "integer", value: 0, default_value: 0 }),
-            end: new Field({ source: "end", type: "integer", value: 0, default_value: 0 })
+            userId: new Field({ source: "user_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            token: new Field ({ source: "token", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            start: new Field({ source: "start", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            end: new Field({ source: "end", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 })
         });
-
-
 
         /********************
          * User
@@ -1300,16 +1300,16 @@ function isField (obj) {
          ********************/
         $classes.add("User", {
             __dependencies__: [],
-            id: new Field({ source: "id", type: "integer", value: 0, default_value: 0, backupable: true, displayable: true, title: "#"}),
-            name: new Field({ source: "name", type: "string", value: "", default_value: "", backupable: true, displayable: true, title: "Имя" }),
-            fname: new Field({ source: "fname", type: "string", value: "", default_value: "", backupable: true, displayable: true, title: "Отчество" }),
-            surname: new Field({ source: "surname", type: "string", value: "", default_value: "", backupable: true, displayable: true, title: "Фамилия" }),
-            position: new Field({ source: "position", type: "string", value: "", default_value: "", backupable: true }),
-            email: new Field({ source: "email", type: "string", value: "", default_value: "", backupable: true }),
-            phone: new Field({ source: "phone", type: "string", value: "", default_value: "", backupable: true }),
-            mobile: new Field({ source: "mobile_phone", type: "string", value: "", default_value: "", backupable: true }),
-            photo: new Field({ source: "photo_url", type: "string", value: "", default_value: "", backupable: true }),
-            isAdmin: new Field({ source: "is_admin", type: "boolean", value: false, default_value: false, backupable: true }),
+            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true, displayable: true, title: "#"}),
+            name: new Field({ source: "name", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Имя" }),
+            fname: new Field({ source: "fname", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Отчество" }),
+            surname: new Field({ source: "surname", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Фамилия" }),
+            position: new Field({ source: "position", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            email: new Field({ source: "email", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            phone: new Field({ source: "phone", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            mobile: new Field({ source: "mobile_phone", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            photo: new Field({ source: "photo_url", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            isAdmin: new Field({ source: "is_admin", type: DATA_TYPE_BOOLEAN, value: false, default_value: false, backupable: true }),
             fio: "",
             phones: [],
             
@@ -1405,10 +1405,10 @@ function isField (obj) {
          */
         $classes.add("Application", {
             __dependencies__: [],
-            title: new Field({ source: "title", type: "string", value: "", default_value: "", back: true }),
-            description: new Field({ source: "description", type: "string", value: "", default_value: "", backupable: true }),
-            inDebugMode: new Field({ source: "is_in_debug_mode", type: "boolean", value: false, default_value: false, backupable: true }),
-            inConstructionMode: new Field({ source: "is_in_construction_mode", type: "boolean", value: false, default_value: false, backupable: true })
+            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", back: true }),
+            description: new Field({ source: "description", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            inDebugMode: new Field({ source: "is_in_debug_mode", type: DATA_TYPE_BOOLEAN, value: false, default_value: false, backupable: true }),
+            inConstructionMode: new Field({ source: "is_in_construction_mode", type: DATA_TYPE_BOOLEAN, value: false, default_value: false, backupable: true })
         });
 
         var app = $factory({ classes: ["Application", "Model", "States", "Backup"], base_class: "Application" });

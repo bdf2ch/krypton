@@ -6,6 +6,7 @@
         public static $description = "Users description";
         public static $clientSideExtensionUrl = "modules/app/krypton.app.users.js";
         private static $items = array();
+        private static $groups = array();
 
 
 
@@ -15,9 +16,39 @@
         * Производит установку модуля в системе
         **/
         public static function install () {
+            $result = DBManager::create_table("kr_user_groups");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать таблицу с информацией о группах пользователей");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_user_groups", "title", "varchar(500) NOT NULL default ''");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'title' в таблицу с информацией о группах пользователей");
+                return false;
+            }
+
+            $result = DBManager::insert_row("kr_user_groups", ["title"], ["'Администраторы'"]);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу групп пользователей");
+               return false;
+            }
+
+            $result = DBManager::insert_row("kr_user_groups", ["title"], ["'Редакторы'"]);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу групп пользователей");
+                return false;
+            }
+
             $result = DBManager::create_table("kr_users");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать таблицу с информацией о пользователях");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_users", "user_group_id", "int(11) NOT NULL default 0");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'user_group_id' в таблицу с информацией о пользователях");
                 return false;
             }
 
@@ -81,6 +112,12 @@
                 return false;
             }
 
+            $result = DBManager::insert_row("kr_users", ["user_group_id", "surname", "name", "fname", "is_admin"], [1, "'Admin'", "'Admin'", "'Admin'", 1]);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу пользователей");
+                return false;
+            }
+
             return true;
         }
 
@@ -111,6 +148,28 @@
                     $user -> fromSource($item);
                     array_push(self::$items, $user);
                 }
+            }
+
+            API::add("addUserGroup", "Users", "addGroup");
+        }
+
+
+
+
+
+        /**
+        * Возвращает массив всех групп пользователей
+        **/
+        public static function getGroups () {
+            return self::$groups;
+        }
+
+
+
+        public static function addGroup ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> addGroup: Не задан параметр - объект с информацией о добавляемой группе пользователей");
+                return false;
             }
         }
 
