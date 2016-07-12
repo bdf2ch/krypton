@@ -113,7 +113,7 @@
             if ($settings != false) {
                 foreach ($settings as $key => $item) {
                     $setting = new Setting (
-                        $item["module_id"],
+                        $item["extension_id"],
                         $item["code"],
                         $item["title"],
                         intval($item["type"]),
@@ -150,7 +150,7 @@
         public static function add ($moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem) {
             if (!DBManager::insert_row (
                     "kr_settings",
-                    ["module_id", "code", "title", "description", "type", "value", "is_system"],
+                    ["extension_id", "code", "title", "description", "type", "value", "is_system"],
                     [$moduleTitle, $settingCode, $settingTitle, $settingDescription, $settingDataType, $settingValue, $settingIsSystem]
             )) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Settings -> add: Не удалось добавить настройку в систему");

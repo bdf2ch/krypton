@@ -42,7 +42,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="error in errors.getAll() track by $index">
+            <tr ng-repeat="error in errors.getAll() track by $id(error)">
                 <td>{{ error.timestamp.value + ":" }}</td>
                 <td>{{ error.message.value }}</td>
             </tr>

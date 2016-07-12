@@ -5,6 +5,7 @@
         public static $description = "Модуль портала Колэнерго";
         public static $url = "modules/app/krypton.app.kolenergo.js";
 
+        public static $organizations = array();
         public static $departments = array();
         public static $divisions = array();
 
@@ -47,8 +48,20 @@
                 return false;
             }
 
+            $result = DBManager::create_table("organizations");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу организаций");
+                return false;
+            }
+
+            $result = DBManager::add_column("organizations", "title", "varchar(500) NOT NULL default ''");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу организаций");
+                return false;
+            }
+
             $result = DBManager::create_table("departments");
-            if (!result) {
+            if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу производственных отделений");
                 return false;
             }
@@ -145,6 +158,9 @@
                 return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойства в класс User");
 
             API::add("test", "Kolenergo", "getDepartments");
+            API::add("addOrganization", "Kolenergo", "addOrganization");
+            API::add("editOrganization", "Kolenergo", "editOrganization");
+            API::add("deleteOrganization", "Kolenergo", "deleteOrganization");
             API::add("addDivision", "Kolenergo", "addDivision");
             API::add("editDivision", "Kolenergo", "editDivision");
 
@@ -153,6 +169,15 @@
             if (!self::isInstalled())
                 self::install();
             else {
+                $organizations = DBManager::select("organizations", ["*"], "''");
+                if ($organizations != false) {
+                    foreach ($organizations as $key => $item) {
+                        $organization = Models::load("Organization", false);
+                        $organization -> fromSource($item);
+                        array_push(self::$organizations, $organization);
+                    }
+                }
+
                 $departments = DBManager::select("departments", ["*"], "''");
                 if ($departments != false) {
                     foreach ($departments as $key => $item) {
@@ -175,18 +200,134 @@
 
 
 
+
+
+        /**
+        * Возвращает массив организаций
+        **/
+        public function getOrganizations () {
+            return self::$organizations;
+        }
+
+
+
+
+
+        /**
+        * Добавляет организацию
+        * @data {object} - объект с информацией о добавляемой организации
+        **/
+        public function addOrganization ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> addOrganization: Не задан рарметр - объект с информацией об организации");
+                return false;
+            }
+
+            $result = DBManager::insert_row("organizations", ["title"], ["'".$data -> title."'"]);
+            if (!result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addOrganization: Не удалось добавить организацию");
+                return false;
+            }
+
+            $id = mysql_insert_id();
+            $result = DBManager::select("organizations", ["*"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addOrganization: Не удалось выбрать добавленную организацию");
+                return false;
+            }
+
+            $organization = Models::construct("Organization", false);
+            $organization -> fromSource($result[0]);
+            array_push(self::$organizations, $organization);
+
+            return $organization;
+        }
+
+
+
+
+
+        /**
+        * Сохраняет изменения об измененнной организации
+        * @data {object} - объект с информацией о редактируемой организации
+        **/
+        public function editOrganization ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> editOrganization: Не задан рарметр - объект с информацией об организации");
+                return false;
+            }
+
+            $id = $data -> id;
+            $result = DBManager::update("organizations", ["title"], ["'".$data -> title."'"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editOrganization: Не удалось сохранить изменения измененной организации");
+                return false;
+            }
+
+            $result = DBManager::select("organizations", ["*"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editOrganization: Не удалось выбрать отредактированную организацию");
+                return false;
+            }
+
+            $organization = Models::construct("Organization", false);
+            $organization -> fromSource($result[0]);
+
+            return $organization;
+        }
+
+
+
+
+        /**
+        * Удаляет организацию
+        * @data {object} - объект с информацией об удаляемой организации
+        **/
+        public function deleteOrganization ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> deleteOrganization: Не задан рарметр - объект с информацией об организации");
+                return false;
+            }
+
+            $id = $data -> id;
+            $result = DBManager::delete("organizations", "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteOrganization: Не удалось удалить организацию");
+                return false;
+            }
+
+            return true;
+        }
+
+
+
+
+        /**
+        * Возвращает массив производственных отделений
+        **/
         public function getDepartments () {
             return self::$departments;
         }
 
 
 
+
+
+        /**
+        * Возвращает массив отделов
+        **/
         public static function getDivisions () {
             return self::$divisions;
         }
 
 
 
+
+
+        /**
+        * Добавляет отдел
+        * @data {object} - объект с данными добавляемого отдела
+        **/
         public static function addDivision ($data) {
             if ($data == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "kolenergo -> addDivision: Не задан параметр - объект с информацией о добавляемом отделе");
@@ -208,7 +349,7 @@
 
             $division = Models::construct("Division", false);
             $division -> fromSource($result[0]);
-            //array_push(self::$divisions, $division);
+            array_push(self::$divisions, $division);
 
             return $division;
         }

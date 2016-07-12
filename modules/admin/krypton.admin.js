@@ -46,7 +46,8 @@
             templateUrl: "../../templates/admin/users/users.html",
             controller: usersController,
             title: "Пользователи",
-            description: "Управление пользователями"
+            description: "Управление пользователями",
+            icon: "fa-user"
         });
         $navigation.add(temp);
 
@@ -57,6 +58,7 @@
             controller: dashboardController(),
             title: "Дашборд",
             description: "Панель управления",
+            icon: "fa-home",
             isDefault: true
         });
         $navigation.add(temp2);
@@ -68,7 +70,8 @@
                     templateUrl: "../../templates/admin/settings/settings.html",
                     controller: settingsController,
                     title: "Настройки",
-                    description : "Управление настройками системы и модулей"
+                    description : "Управление настройками системы и модулей",
+                    icon: "fa-cog"
                 }));
 
 

@@ -509,6 +509,55 @@
 
 
 
+
+
+        /**
+        * Выполняет удаление данных из БД
+        * @table {string} - наименование таблицы
+        * @condition {string} - условие
+        **/
+        public static function delete ($table, $condition) {
+            if ($table == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> delete: Не задан параметр - наименование таблицы");
+                return false;
+            }
+
+            if (gettype($table) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> delete: Неверно задан тип параметра - наименование таблицы");
+                return false;
+            }
+
+            if ($condition == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> delete: Не задан параметр - условие");
+                return false;
+            }
+
+            if (gettype($condition) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> delete: Неверно задан тип параметра - условие");
+                return false;
+            }
+
+            if (self::is_connected() == false) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select: Отсутствует соединение с БД");
+                return false;
+            }
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+                    $query = mysql_query("DELETE FROM $table WHERE $condition", self::$link);
+                    if (!$query) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> delete: ".mysql_errno()." - ".mysql_error());
+                        return false;
+                    } else
+                        return true;
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+                    break;
+            }
+        }
+
+
+
         /**
         * Выполняет выборку данных из БД
         * @table - Наименование таблицы

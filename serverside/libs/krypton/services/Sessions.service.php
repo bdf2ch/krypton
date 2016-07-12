@@ -22,11 +22,11 @@
                         if (Settings::add("'krypton'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", Krypton::DATA_TYPE_INTEGER, 2000, 1))
                             return true;
                         else {
-                            Errors::push(Errors::Error_TYPE_ENGINE, "Session -> install: Не удалось добавить настройку");
+                            Errors::push(Errors::ERROR_TYPE_ENGINE, "Session -> install: Не удалось добавить настройку");
                             return false;
                         }
                     } else {
-                        Errors::push(Errors::Error_TYPE_ENGINE, "Session -> install: Не удалось создать структуру таблицы сессий");
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Session -> install: Не удалось создать структуру таблицы сессий");
                         return false;
                     }
                 } else {

@@ -48,7 +48,10 @@
             <div class="current-user-fio">{{ session.getCurrentUser().name.value + " " + session.getCurrentUser().surname.value }}</div>
         </div>
 
-        <a class="menu-item" ng-href="{{ '#' + menu.url }}" ng-class="{ 'active': menu.isActive === true }" ng-repeat="menu in navigation.getAll() track by $index"><span class="fa fa-cog"></span>&nbsp; {{ menu.title }}</a>
+        <a class="menu-item" ng-href="{{ '#' + menu.url }}" ng-class="{ 'active': menu.isActive === true }" ng-repeat="menu in navigation.getAll() track by $index">
+            <span class="{{ 'fa ' + menu.icon }}"></span>
+            &nbsp;{{ menu.title }}
+        </a>
     </div>
 
 

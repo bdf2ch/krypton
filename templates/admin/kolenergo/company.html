@@ -1,7 +1,9 @@
 <columns id="company">
-    <column id="company-departments" width="20" caption="Произв. отделения" >
-        <column-control class="green round" content="fa fa-plus" title="Добавить группу"></column-control>
-        <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу"></column-control>
+    <column id="company-organizations" width="20" caption="Организации" >
+        <column-control class="green round" content="fa fa-plus" title="Добавить организацию" action="openAddOrganizationModal"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать организацию" action="openEditOrganizationModal" ng-show="currentOrganization !== undefined"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить организацию" action="openDeleteOrganizationModal" ng-show="currentOrganization !== undefined"></column-control>
+
 
         <div>
 
@@ -15,11 +17,11 @@
             </model-list>
             -->
 
-            <div class="list-item" ng-class="{'active': department._states_.selected() === true}" ng-repeat="department in kolenergo.getDepartments() track by $index" ng-click="onSelectDepartment(department.id.value)">
+            <div class="list-item" ng-class="{'active': org._states_.selected() === true}" ng-repeat="org in kolenergo.getOrganizations() track by $index" ng-click="selectOrganization(org.id.value)">
                 <div class="list-item-icon">
                     <span class="fa fa-building" aria-hidden="true"></span>
                 </div>
-                <div class="list-item-content-lead only" title="{{ department.title.value }}">{{ department.title.value }}</div>
+                <div class="list-item-content-lead only" title="{{ org._backup_.data.title }}">{{ org._backup_.data.title }}</div>
             </div>
 
         </div>
@@ -45,6 +47,62 @@
 </columns>
 
 
+
+<div modal modal-id="new-organization-modal" modal-caption="Новая организация" modal-on-close="closeAddOrganizationModal">
+    <div class="padding-10">
+        <div class="row margin-bottom-10">
+            <label for="new-organization-title">Наименование организации</label>
+            <input type="text" id="new-organization-title" name="new-organization-title" class="width-100" ng-model="newOrganization.title.value">
+        </div>
+
+
+        <div class="row">
+            <div class="width-50">
+                <button class="width-100 green" ng-disabled="newOrganization.title.value === ''" ng-click="addOrganization()">Добавить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div modal modal-id="edit-organization-modal" modal-caption="Редактирование организации" modal-on-close="closeEditOrganizationModal">
+    <div class="padding-10">
+        <div class="row margin-bottom-10">
+            <label for="current-organization-title">Наименование организации</label>
+            <input type="text" id="current-organization-title" name="current-organization-title" class="width-100" ng-model="currentOrganization.title.value" ng-change="currentOrganization._states_.changed(true)">
+        </div>
+
+
+        <div class="row">
+            <div class="width-50">
+                <button class="width-100 green" ng-disabled="currentOrganization._states_.changed() === false || currentOrganization.title.value === ''" ng-click="editOrganization()">Сохранить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div modal modal-id="delete-organization-modal" modal-caption="Удаление организации">
+    <div class="padding-10">
+        <div class="row">
+            <div class="row margin-bottom-10">
+                Вы уверены, что хотите удалить <b>{{ currentOrganization.title.value }}</b> ?
+            </div>
+            <div class="width-50">
+                <button class="width-100 green" ng-click="deleteOrganization()">Удалить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div modal modal-id="new-division-modal" modal-caption="Новое структурное подразделение" modal-on-close="onCancelAddNewDivision">

@@ -8,10 +8,10 @@ const ERROR_TYPE_DATABASE = 3;
 const ERROR_TYPE_LDAP = 4;
 
 /* Константы типов данных в моделях на бэкенде */
-const DATA_TYPE_INTEGER = 11;
-const DATA_TYPE_STRING = 12;
-const DATA_TYPE_FLOAT = 13;
-const DATA_TYPE_BOOLEAN = 14;
+const DATA_TYPE_INTEGER = 1;
+const DATA_TYPE_STRING = 2;
+const DATA_TYPE_FLOAT = 3;
+const DATA_TYPE_BOOLEAN = 4;
 
 
 
@@ -139,6 +139,7 @@ function isField (obj) {
                     url: "",
                     title: "",
                     description: "",
+                    icon: "",
                     templateUrl: "",
                     controller: "",
                     isActive: false,
@@ -540,20 +541,19 @@ function isField (obj) {
                     var result = 0;
                     for (var prop in this.__instance__) {
                         if (this.__instance__[prop].constructor === Field && this.__instance__[prop].backupable !== undefined && this.__instance__[prop].backupable === true && this.__instance__[prop] !== null) {
-
                             if (this.__instance__[prop].type !== undefined) {
-                                switch (this.__instance__[prop].type) {
-                                    case "string":
+                                switch (parseInt(this.__instance__[prop].type)) {
+                                    case DATA_TYPE_STRING:
                                         this.data[prop] = this.__instance__[prop].value.toString();
                                         break;
-                                    case "integer":
-                                        this.data[prop] = parseInt(this.__instance__[prop].value);
+                                    case DATA_TYPE_INTEGER:
+                                        this.__instance__._backup_.data[prop] = parseInt(this.__instance__[prop].value);
                                         break;
-                                    case "float":
-                                        this.data[prop] = +parseFloat(this.__instance__[prop].value).toFixed(6);
+                                    case DATA_TYPE_FLOAT:
+                                        this.__instance__._backup_.data[prop] = +parseFloat(this.__instance__[prop].value).toFixed(6);
                                         break;
-                                    case "boolean":
-                                        this.data[prop] = this.__instance__[prop].value;
+                                    case DATA_TYPE_BOOLEAN:
+                                        this.__instance__._backup_.data[prop] = this.__instance__[prop].value;
                                         break;
                                 }
                             } else {
