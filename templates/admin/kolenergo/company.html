@@ -1,8 +1,8 @@
 <columns id="company">
     <column id="company-organizations" width="20" caption="Организации" >
         <column-control class="green round" content="fa fa-plus" title="Добавить организацию" action="openAddOrganizationModal"></column-control>
-        <column-control class="blue round" content="fa fa-pencil" title="Редактировать организацию" action="openEditOrganizationModal" ng-show="currentOrganization !== undefined"></column-control>
-        <column-control class="red round" content="fa fa-times" title="Удалить организацию" action="openDeleteOrganizationModal" ng-show="currentOrganization !== undefined"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать организацию" action="openEditOrganizationModal" ng-show="kolenergo.organizations.getCurrent() !== undefined"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить организацию" action="openDeleteOrganizationModal" ng-show="kolenergo.organizations.getCurrent() !== undefined"></column-control>
 
 
         <div>
@@ -17,7 +17,7 @@
             </model-list>
             -->
 
-            <div class="list-item" ng-class="{'active': org._states_.selected() === true}" ng-repeat="org in kolenergo.getOrganizations() track by $index" ng-click="selectOrganization(org.id.value)">
+            <div class="list-item" ng-class="{'active': org._states_.selected() === true}" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-click="kolenergo.organizations.select(org.id.value)">
                 <div class="list-item-icon">
                     <span class="fa fa-building" aria-hidden="true"></span>
                 </div>
@@ -61,7 +61,7 @@
                 <button class="width-100 green" ng-disabled="newOrganization.title.value === ''" ng-click="addOrganization()">Добавить</button>
             </div>
             <div class="width-50">
-                <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
             </div>
         </div>
     </div>
@@ -72,16 +72,16 @@
     <div class="padding-10">
         <div class="row margin-bottom-10">
             <label for="current-organization-title">Наименование организации</label>
-            <input type="text" id="current-organization-title" name="current-organization-title" class="width-100" ng-model="currentOrganization.title.value" ng-change="currentOrganization._states_.changed(true)">
+            <input type="text" id="current-organization-title" name="current-organization-title" class="width-100" ng-model="kolenergo.organizations.getCurrent().title.value" ng-change="kolenergo.organizations.getCurrent()._states_.changed(true)">
         </div>
 
 
         <div class="row">
             <div class="width-50">
-                <button class="width-100 green" ng-disabled="currentOrganization._states_.changed() === false || currentOrganization.title.value === ''" ng-click="editOrganization()">Сохранить</button>
+                <button class="width-100 green" ng-disabled="kolenergo.organizations.getCurrent()._states_.changed() === false || kolenergo.organizations.getCurrent().title.value === ''" ng-click="editOrganization()">Сохранить</button>
             </div>
             <div class="width-50">
-                <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>
+                <button class="width-100 red" ng-click="$modals.close()">Отмена</button>
             </div>
         </div>
     </div>
@@ -92,13 +92,13 @@
     <div class="padding-10">
         <div class="row">
             <div class="row margin-bottom-10">
-                Вы уверены, что хотите удалить <b>{{ currentOrganization.title.value }}</b> ?
+                Вы уверены, что хотите удалить <b>{{ kolenergo.organizations.getCurrent().title.value }}</b> ?
             </div>
             <div class="width-50">
                 <button class="width-100 green" ng-click="deleteOrganization()">Удалить</button>
             </div>
             <div class="width-50">
-                <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>
+                <button class="width-100 red" ng-click="$modals.close()">Отмена</button>
             </div>
         </div>
     </div>

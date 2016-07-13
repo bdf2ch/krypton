@@ -1321,8 +1321,19 @@
     
     
     
-    function modalsFactory ($log, $errors) {
+    function modalsFactory ($log, $errors, $compile, $window) {
         var items = [];
+        var currentModal = undefined;
+
+        var redraw = function (elm) {
+            if (elm !== undefined) {
+                var left = ($window.innerWidth / 2) - angular.element(elm).prop("clientWidth") / 2 + "px";
+                var top = ($window.innerHeight / 2) - ((angular.element(elm).prop("clientHeight")) / 2) + "px";
+
+                angular.element(elm).css("left", left);
+                angular.element(elm).css("top", top);
+            }
+        };
 
         return {
 
@@ -1341,13 +1352,13 @@
              */
             getById: function (id) {
                 if (id === undefined) {
-                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> Не задан параметр - идентификатор модального окна");
+                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> getById: Не задан параметр - идентификатор модального окна");
                     return false;
                 }
 
                 var length = items.length;
                 for (var i = 0; i < length; i++) {
-                    if (items[i].modalId === id)
+                    if (items[i].id === id)
                         return items[i];
                 }
 
@@ -1359,14 +1370,16 @@
              * @param scope {scope} - scope добавляемого модального окна
              * @returns {boolean}
              */
-            register: function (scope) {
-                if (scope === undefined) {
-                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> register: Не задан парметр - scope добавляемого модального окна");
+            register: function (modal) {
+                if (modal === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> register: Не задан парметр - объект модального окна");
                     return false;
                 }
-                if (scope !== undefined) {
-                    items.push(scope);
-                }
+
+                items.push(modal);
+                $log.log("modals = ", items);
+
+                return true;
             },
 
             /**
@@ -1376,18 +1389,42 @@
              */
             open: function (id) {
                 if (id === undefined) {
-                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> open: не задан параметр - идентификатор модального окна");
+                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> open: Не задан параметр - идентификатор модального окна");
                     return false;
                 }
 
                 var length = items.length;
                 var found = false;
                 for (var i = 0; i < length; i++) {
-                    if (items[i].settings.id === id) {
+                    if (items[i].id === id) {
                         found = true;
-                        items[i].open();
-                    } else
-                        items[i].settings.isVisible = false;
+                        currentModal = items[i];
+                        var modal = document.getElementsByClassName("krypton-ui-modal")[0];
+                        var header = document.getElementById("krypton-ui-modal-caption");
+                        var content = document.getElementById("krypton-ui-modal-content");
+                        header.innerHTML = items[i].caption;
+                        content.innerHTML = items[i].content;
+                        $compile(modal)(items[i].scope);
+                        angular.element(modal).css("display", "block");
+
+                        var fog = document.getElementsByClassName("krypton-ui-fog");
+                        document.body.style.overflow = "hidden";
+                        fog[0].classList.add("visible");
+                        redraw(modal);
+
+                        if (items[i].width !== 0)
+                            angular.element(modal).css("width", items[i].width + "px");
+                        if (items[i].height !== 0)
+                            angular.element(modal).css("height", items[i].height + "px");
+
+                        modal.addEventListener("DOMSubtreeModified", function () {
+                            redraw(modal);
+                        }, false);
+
+                        angular.element($window).bind("resize", function () {
+                            redraw(modal);
+                        });
+                    }
                 }
 
                 if (found === false) {
@@ -1399,98 +1436,80 @@
 
             /**
              * Закрывает модальное окно с заданным идентификатором
-             * @param id {string} - идентификатор модального окна
              * @returns {boolean}
              */
-            close: function (id) {
-                if (id === undefined) {
-                    $errors.add(ERROR_TYPE_DEFAULT, "$modals -> close: Не задан параметр - идентификатор модального окна");
-                    return false;
-                }
-
-                var length = items.length;
-                var found = false;
-                for (var i = 0; i < length; i++) {
-                    if (items[i].settings.id === id) {
-                        found = true;
-                        items[i].close();
-                    }
-                }
-
-                if (found === false) {
-                    $errors.add(ERROR_TYPE_ENGINE, "$modals -> open: Модальное окно с идентификатором '" + id + "' не найдено");
-                    return false;
-                } else
+            close: function () {
+                if (currentModal !== undefined) {
+                    var modal = document.getElementsByClassName("krypton-ui-modal")[0];
+                    if (currentModal.onClose !== undefined)
+                        currentModal.onClose();
+                    var fog = document.getElementsByClassName("krypton-ui-fog");
+                    document.body.style.overflow = "hidden";
+                    fog[0].classList.remove("visible");
+                    angular.element(modal).css("display", "none");
+                    currentModal = undefined;
                     return true;
+                }
+
+                return false;
             }
         }
     };
     
     
     
-    function  modalDirective ($log, $modals, $compile, $errors, $window) {
+    function  modalDirective ($log, $modals, $compile, $errors, $window, $sce) {
         return {
             restrict: "A",
-            scope: {
-                modalId: "@",
-                modalWidth: "@",
-                modalHeight: "@",
-                modalCaption: "@",
-                modalOnClose: "=",
-                modalOnOpen: "="
-            },
-            transclude: true,
-            link: function (scope, element, attrs, ctrl, transclude) {
+            scope: false,
+            link: function (scope, element, attrs, ctrl) {
                 if (attrs.modalId === undefined) {
                     $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> modal: Не задан идентификатор модального окна - аттрибут 'modal-id'");
                     return false;
                 }
 
-                if ($modals.getById(scope.modalId)) {
-                    $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> modal: Модальное окно с идентификатором '" + scope.modalId + "' уже существует");
-                    return false;
-                }
 
-                var settings = scope.settings = {
-                    id: scope.modalId,
+                var modal  = {
+                    id: attrs.modalId,
                     isVisible: false,
                     caption: attrs.modalCaption !== undefined ? attrs.modalCaption : "",
-                    width: scope.modalWidth !== undefined && !isNaN(scope.modalWidth) ? parseInt(scope.modalWidth) : 0,
-                    height: scope.modalHeight !== undefined && !isNaN(scope.modalHeight) ? parseInt(scope.modalHeight) : 0,
-                    onClose: scope.modalOnClose !== undefined && typeof scope.modalOnClose === "function" ? scope.modalOnClose : undefined,
-                    onOpen: scope.modalOnOpen !== undefined && typeof scope.modalOnOpen === "function" ? scope.modalOnOpen : undefined
+                    content: $sce.trustAsHtml(element[0].innerHTML),
+                    scope: scope,
+                    width: attrs.modalWidth !== undefined && !isNaN(attrs.modalWidth) ? parseInt(attrs.modalWidth) : 0,
+                    height: attrs.modalHeight !== undefined && !isNaN(attrs.modalHeight) ? parseInt(attrs.modalHeight) : 0,
+                    onClose: attrs.modalOnClose !== undefined && typeof scope.$eval(attrs.modalOnClose) === "function" ? scope.$eval(attrs.modalOnClose) : undefined,
+                    onOpen: attrs.modalOnOpen !== undefined && typeof scope.$eval(attrs.modalOnOpen) === "function" ? scope.$eval(attrs.modalOnOpen) : undefined
                 };
 
-                var transcludedContent = "";
-                transclude(function (clone) {
-                    transcludedContent = clone;
-                });
 
-                var modal = document.createElement("div");
-                scope.element = modal;
-                modal.setAttribute("id", scope.settings.id);
-                modal.className = "krypton-ui-modal";
-                var header = document.createElement("div");
-                header.className = "modal-header";
-                var headerCaption = document.createElement("span");
-                headerCaption.className = "modal-caption";
-                headerCaption.innerHTML = scope.settings.caption;
-                var headerClose = document.createElement("span");
-                headerClose.className = "modal-close fa fa-times right";
-                headerClose.setAttribute("title", "Закрыть");
-                headerClose.setAttribute("ng-click", "this.close()");
-                header.appendChild(headerCaption);
-                header.appendChild(headerClose);
-                var content = document.createElement("div");
-                content.className = "modal-content";
-                angular.element(content).append(transcludedContent);
-                document.body.appendChild(modal);
-                modal.appendChild(header);
-                modal.appendChild(content);
+                element[0].innerHTML = "";
+                element[0].classList.add("ng-hide");
+                $modals.register(modal);
 
-                //$compile(content)(scope.$parent);
-                $compile(modal)(scope);
-                $modals.register(scope);
+
+                var check = document.getElementsByClassName("krypton-ui-modal");
+                if (check.length === 0) {
+                    var modal = document.createElement("div");
+                    modal.className = "krypton-ui-modal";
+                    var header = document.createElement("div");
+                    header.className = "modal-header";
+                    var headerCaption = document.createElement("span");
+                    headerCaption.setAttribute("id", "krypton-ui-modal-caption");
+                    headerCaption.className = "modal-caption";
+                    var headerClose = document.createElement("span");
+                    headerClose.className = "modal-close fa fa-times right";
+                    headerClose.setAttribute("title", "Закрыть");
+                    headerClose.setAttribute("ng-click", "$modals.close()");
+                    header.appendChild(headerCaption);
+                    header.appendChild(headerClose);
+                    var content = document.createElement("div");
+                    content.setAttribute("id", "krypton-ui-modal-content");
+                    content.className = "modal-content";
+                    document.body.appendChild(modal);
+                    modal.appendChild(header);
+                    modal.appendChild(content);
+                }
+
 
                 var fog = document.getElementsByClassName("krypton-ui-fog");
                 if (fog.length === 0) {
@@ -1498,69 +1517,6 @@
                     fogElement.className = "krypton-ui-fog";
                     document.body.appendChild(fogElement);
                 }
-
-                if (scope.settings.width !== 0)
-                    angular.element(modal).css("width", scope.settings.width + "px");
-                if (scope.settings.height !== 0)
-                    angular.element(modal).css("height", scope.settings.height + "px");
-
-                var redraw = function (elm) {
-                    if (elm !== undefined) {
-                        var windowWidth = $window.innerWidth;
-                        var windowHeight = $window.innerHeight;
-                        var containerHeight = angular.element(elm).prop("clientHeight");
-                        var left = 0;
-                        var top = 0;
-
-                        left = (windowWidth / 2) - angular.element(elm).prop("clientWidth") / 2 + "px";
-                        top = (windowHeight / 2) - ((angular.element(elm).prop("clientHeight")) / 2) + "px";
-
-                        angular.element(elm).css("left", left);
-                        angular.element(elm).css("top", top);
-
-                        return true;
-                    }
-                };
-
-                modal.addEventListener("DOMSubtreeModified", function () {
-                    redraw(scope.element);
-                }, false);
-
-                angular.element($window).bind("resize", function () {
-                    redraw(scope.element);
-                });
-
-
-                /**
-                 * Открывает модальной окно
-                 */
-                scope.open = function () {
-                    if (scope.settings.onOpen !== undefined)
-                        scope.settings.onOpen();
-                    scope.settings.isVisible = true;
-                    scope.$parent._modal_ = scope;
-                    var fog = document.getElementsByClassName("krypton-ui-fog");
-                    document.body.style.overflow = "hidden";
-                    fog[0].classList.add("visible");
-                    angular.element(scope.element).css("display", "block");
-                    redraw(scope.element);
-                };
-
-
-                /**
-                 * Закрывает модальное окно
-                 */
-                scope.close = function () {
-                    scope.settings.isVisible = false;
-                    if (scope.settings.onClose !== undefined)
-                        scope.settings.onClose();
-                    delete scope.$parent._modal_;
-                    var fog = document.getElementsByClassName("krypton-ui-fog");
-                    document.body.style.overflow = "hidden";
-                    fog[0].classList.remove("visible");
-                    angular.element(scope.element).css("display", "none");
-                };
-
             }
         }    
     };

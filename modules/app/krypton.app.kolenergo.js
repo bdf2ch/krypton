@@ -49,6 +49,9 @@
         var departments = [];
         var divisions = [];
 
+        var currentOrganization = undefined;
+        var currentDivision = undefined;
+
         return {
             init: function () {
                 if (window.krypton !== null && window.krypton !== undefined) {
@@ -101,55 +104,96 @@
                 });
                 $navigation.add(temp);
             },
+            
+            
+            
+            organizations: {
+                /**
+                 * Возвращает массив всех организаций
+                 * @returns {Array}
+                 */
+                getAll: function () {
+                    return organizations;
+                },
 
+                /**
+                 * Возвращает текущую организацию
+                 * @returns {undefined}
+                 */
+                getCurrent: function () {
+                    return currentOrganization;
+                },
 
-            /**
-             * Возвращает массив всех организаций
-             * @returns {Array}
-             */
-            getOrganizations: function () {
-                return organizations;
-            },
-
-
-            /**
-             * Добавляет новую организацию
-             * @param organization {Organization} - объект с информацией о новой организации
-             * @returns {boolean}
-             */
-            addOrganization: function (organization) {
-                if (organization == undefined) {
-                    $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> addOrganization: Не залан параметр - объект с информацией о новой организации");
-                    return false;
-                }
-
-                organizations.push(organization);
-                return true;
-            },
-
-
-            /**
-             * Удаляет организацию с заданным идентификатором
-             * @param id {number} - идентификатор организации
-             * @returns {boolean}
-             */
-            deleteOrganization: function (id) {
-                if (id === undefined) {
-                    $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> deleteOrganization: Не задан параметр - идентификатор организации");
-                    return false;
-                }
-
-                var length = organizations.length;
-                for (var i = 0; i < length; i++) {
-                    if (organizations[i].id.value === id) {
-                        organizations.splice(i, 1);
-                        return true;
+                /**
+                 * Выбирает организацию по идентификатору
+                 * @param organizationId {number} - идентификатор организации
+                 * @returns {boolean}
+                 */
+                select: function (organizationId) {
+                    if (organizationId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> selectOrganization: Не задан параметр - идентификатор организации");
+                        return false;
                     }
-                }
 
-                $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> deleteOrganization: Организация с идентификатором " + id + " не найдена");
-                return false;
+                    var length = organizations.length;
+                    for (var i = 0; i < length; i++) {
+                        if  (organizations[i].id.value === organizationId) {
+                            if (organizations[i]._states_.selected() === false) {
+                                organizations[i]._states_.selected(true);
+                                currentOrganization = organizations[i];
+                            } else {
+                                organizations[i]._states_.selected(false);
+                                currentOrganization = undefined;
+                            }
+                        } else
+                            organizations[i]._states_.selected(false);
+                    }
+                    $log.log("curret org = ", currentOrganization);
+
+                    return true;
+                },
+
+                /**
+                 * Добавляет новую организацию
+                 * @param organization {Organization} - объект с информацией о новой организации
+                 * @returns {boolean}
+                 */
+                add: function (organization) {
+                    if (organization == undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> addOrganization: Не залан параметр - объект с информацией о новой организации");
+                        return false;
+                    }
+
+                    organizations.push(organization);
+                    return true;
+                },
+
+                /**
+                 * Удаляет организацию с заданным идентификатором
+                 * @param id {number} - идентификатор организации
+                 * @returns {boolean}
+                 */
+                delete: function (organizationId) {
+                    if (organizationId === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> deleteOrganization: Не задан параметр - идентификатор организации");
+                        return false;
+                    }
+
+                    var length = organizations.length;
+                    for (var i = 0; i < length; i++) {
+                        if (organizations[i].id.value === organizationId) {
+                            organizations.splice(i, 1);
+                            currentOrganization = undefined;
+                            return true;
+                        }
+                    }
+
+                    $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> deleteOrganization: Организация с идентификатором " + organizationId + " не найдена");
+                    return false;
+                },
+
             },
+
 
 
             /**
@@ -373,29 +417,11 @@
         $scope.newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
         $scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
 
+        $log.log("scope");
 
 
         $scope.newDivision._backup_.setup();
-        
-        
-        $scope.selectOrganization= function (organizationId) {
-            if (organizationId !== undefined) {
-                var length = $kolenergo.getOrganizations().length;
-                for (var i = 0; i < length; i++) {
-                    var organization = $kolenergo.getOrganizations()[i];
-                    if (organization.id.value === organizationId) {
-                        if (organization._states_.selected() === false) {
-                            organization._states_.selected(true);
-                            $scope.currentOrganization = organization;
-                        } else {
-                            organization._states_.selected(false);
-                            $scope.currentOrganization = undefined;
-                        }
-                    } else
-                        organization._states_.selected(false);
-                }
-            }
-        };
+
 
         $scope.onSelectDepartment = function (departmentId) {
             $log.log("onSelect fired");
@@ -434,6 +460,7 @@
          */
         $scope.openAddOrganizationModal = function () {
             $modals.open("new-organization-modal");
+            $scope.newOrganization._backup_.restore();
             $scope.newOrganization._backup_.setup();
         };
 
@@ -442,7 +469,9 @@
          * Закрывает модальное окно добавления новой организации
          */
         $scope.closeAddOrganizationModal = function () {
+            $log.log("org add close");
             $scope.newOrganization._backup_.restore();
+            $log.log("new org title = ", $scope.newOrganization.title.value);
         };
 
 
@@ -460,7 +489,7 @@
                         var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
                         organization._model_.fromAnother(data);
                         organization._backup_.setup();
-                        $kolenergo.addOrganization(organization);
+                        $kolenergo.organizations.add(organization);
                         $modals.close("new-organization-modal");
                     }
                 });
@@ -479,7 +508,9 @@
          * Закрывает модальное окно редактирования организации
          */
         $scope.closeEditOrganizationModal = function () {
-            $scope.currentOrganization._backup_.restore();
+            //$log.log($scope.currentOrganization._backup_.data);
+            //$scope.currentOrganization._backup_.restore();
+            $kolenergo.organizations.getCurrent()._backup_.restore();
             $log.log("close edit");
         };
 
@@ -489,8 +520,8 @@
          */
         $scope.editOrganization = function () {
             var data = {
-                id: $scope.currentOrganization.id.value,
-                title: $scope.currentOrganization.title.value
+                id: $kolenergo.organizations.getCurrent().id.value,
+                title: $kolenergo.organizations.getCurrent().title.value
             };
             $http.post("/serverside/libs/krypton/api.php", {action: "editOrganization", data : data })
                 .success(function (data) {
@@ -498,8 +529,8 @@
                         $log.log(data);
                         var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
                         organization._model_.fromAnother(data);
-                        $scope.currentOrganization._model_.fromAnother(organization);
-                        $scope.currentOrganization._backup_.setup();
+                        $kolenergo.organizations.getCurrent()._model_.fromAnother(organization);
+                        $kolenergo.organizations.getCurrent()._backup_.setup();
                         $modals.close("edit-organization-modal");
                     }
                 });
@@ -518,16 +549,16 @@
          * Удаляет организацию
          */
         $scope.deleteOrganization = function () {
-            var data = {
-                id: $scope.currentOrganization.id.value
+            var params = {
+                id: $kolenergo.organizations.getCurrent().id.value
             };
-            $http.post("/serverside/libs/krypton/api.php", {action: "deleteOrganization", data : data })
+            $http.post("/serverside/libs/krypton/api.php", {action: "deleteOrganization", data : params })
                 .success(function (data) {
                     $log.log(data);
                     if (data !== undefined && data !== null) {
                         if (JSON.parse(data) === true) {
-                            $kolenergo.deleteOrganization($scope.currentOrganization.id.value);
-                            $scope.currentOrganization = undefined;
+                            $kolenergo.organizations.delete(params.id);
+                            //$scope.currentOrganization = undefined;
                             $modals.close("delete-organization-modal");
                         }
                     }

@@ -17,10 +17,24 @@
 
 
 
-    function usersController ($log, $scope, $users, $kolenergo) {
+
+
+    function usersController ($log, $scope, $users, $modals, $kolenergo) {
         $scope.users = $users;
+        $scope.modals = $modals;
         $scope.kolenergo = $kolenergo;
+
+        $scope.newUserGroup = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
+
+
+        $scope.openNewUserGroupModal = function () {
+            $modals.open("new-user-group");
+        };
+
+        $scope.closeNewUserGroupModal = function () {};
     };
+
+
 
 
     function settingsController ($log, $scope, $settings) {

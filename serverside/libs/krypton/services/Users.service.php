@@ -2,7 +2,6 @@
 
     class Users extends Service {
 
-        //public static $id = "kr_users";
         public static $description = "Users description";
         public static $clientSideExtensionUrl = "modules/app/krypton.app.users.js";
         private static $items = array();
@@ -112,7 +111,7 @@
                 return false;
             }
 
-            $result = DBManager::insert_row("kr_users", ["user_group_id", "surname", "name", "fname", "is_admin"], [1, "'Admin'", "'Admin'", "'Admin'", 1]);
+            $result = DBManager::insert_row("kr_users", ["user_group_id", "surname", "name", "fname", "email", "password", "is_admin"], [1, "'Admin'", "'Admin'", "'Admin'", "'bdf2ch@gmail.com'", "'".md5("zx12!@#$")."'", 1]);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу пользователей");
                 return false;
@@ -150,7 +149,17 @@
                 }
             }
 
+            $groups = DBManager::select("kr_user_groups", ["*"], "''");
+            if ($groups != false) {
+                foreach ($groups as $key => $item) {
+                    $group = Models::load("UserGroup", false);
+                    $group -> fromSource($item);
+                    array_push(self::$groups, $group);
+                }
+            }
+
             API::add("addUserGroup", "Users", "addGroup");
+            API::add("editUserGroup", "Users", "editGroup");
         }
 
 

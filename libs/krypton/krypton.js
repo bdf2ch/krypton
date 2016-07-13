@@ -542,7 +542,6 @@ function isField (obj) {
                     for (var prop in this.__instance__) {
                         if (this.__instance__[prop].constructor === Field && this.__instance__[prop].backupable !== undefined && this.__instance__[prop].backupable === true && this.__instance__[prop] !== null) {
                             if (this.__instance__[prop].type !== undefined) {
-                                $log.log("ready");
                                 switch (parseInt(this.__instance__[prop].type)) {
                                     case DATA_TYPE_STRING:
                                         this.data[prop] = this.__instance__[prop].value.toString();
@@ -562,7 +561,6 @@ function isField (obj) {
                                 result++;
                             }
                         }
-                        $log.log(this.data);
                     }
                     if (this.__instance__._init_ !== undefined)
                         this.__instance__._init_();
@@ -1294,6 +1292,16 @@ function isField (obj) {
             end: new Field({ source: "end", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 })
         });
 
+        /**
+         * UserGroup
+         * Набор свойств и методов, описывающих группу пользователей
+         */
+        $classes.add("UserGroup", {
+            __dependencies__: [],
+            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "" })
+        });
+
         /********************
          * User
          * Набор свойств и методов, описывающих пользователя
@@ -1301,6 +1309,7 @@ function isField (obj) {
         $classes.add("User", {
             __dependencies__: [],
             id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true, displayable: true, title: "#"}),
+            userGroupId: new Field({ source: "user_group_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, displayable: false }),
             name: new Field({ source: "name", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Имя" }),
             fname: new Field({ source: "fname", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Отчество" }),
             surname: new Field({ source: "surname", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Фамилия" }),
@@ -1322,6 +1331,7 @@ function isField (obj) {
 
         var session = undefined;
         var user = undefined;
+        var groups = [];
 
         return {
 
@@ -1330,14 +1340,24 @@ function isField (obj) {
                 user = $factory({ classes: ["User", "Model", "States"], base_class: "User" });
 
                 if (window.krypton !== undefined && window.krypton !== null) {
-                    if (krypton.session !== null) {
+                    if (window.krypton.session !== null) {
                         session._model_.fromAnother(krypton.session);
                         $log.log("updated session = ", session);
                     }
-                    if (krypton.user !== null) {
+                    if (window.krypton.user !== null) {
                         $log.log("USER !== NULL");
                         user._model_.fromAnother(krypton.user);
                         $log.log("updated user = ", user);
+                    }
+                    if (window.krypton.user !== null) {
+                        var length = window.krypton.userGroups;
+                        for (var i = 0; i < length; i++) {
+                            var userGroup = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
+                            userGroup._model_.fromAnother(window.krypton.userGroups[i]);
+                            userGroup._backup_.setup();
+                            groups.push(userGroup);
+                        }
+                        $log.log("user groups = ", groups);
                     }
                 }
             },
@@ -1356,6 +1376,10 @@ function isField (obj) {
              */
             getCurrentUser: function () {
                 return user;
+            },
+
+            getUserGroups: function () {
+                return groups;
             }
         }
     };
@@ -1367,7 +1391,10 @@ function isField (obj) {
      * Сервис для управления пользователями
      ******************************/
     function usersFactory ($log, $factory) {
-        var items = [];
+        var users = [];
+        var groups = [];
+        var currentGroup = undefined;
+        var currentUser = undefined;
 
         return {
             init: function () {
@@ -1378,16 +1405,55 @@ function isField (obj) {
                             var user = $factory({ classes: ["User", "Model", "States", "Backup"], base_class: "User" });
                             user._model_.fromAnother(window.krypton.users[i]);
                             user._backup_.setup();
-                            items.push(user);
+                            users.push(user);
                         }
-                        $log.log("users = ", items);
+                        $log.log("users = ", users);
+                    }
+
+                    if (window.krypton.userGroups !== null && window.krypton.userGroups !== undefined) {
+                        var length = window.krypton.userGroups.length;
+                        for (var i = 0; i < length; i++) {
+                            var group = $factory({ classes: ["UserGroup", "Model", "States", "Backup"], base_class: "UserGroup" });
+                            group._model_.fromAnother(window.krypton.userGroups[i]);
+                            group._backup_.setup();
+                            groups.push(group);
+                        }
+                        $log.log("groups = ", groups);
                     }
                 }
             },
 
+            getGroups: function () {
+                return groups;
+            },
 
-            getAll: function () {
-                return items;
+            getCurrentGroup: function () {
+                return currentGroup;
+            },
+
+            selectGroup: function (groupId) {
+                if (groupId === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$users -> selectGroup: Не задан параметр - идентификатор группы пользователей");
+                    return false;
+                }
+
+                var length = groups.length;
+                for (var i = 0; i < length; i++) {
+                    if (groups[i].id.value === groupId) {
+                        if (groups[i]._states_.selected() === false) {
+                            groups[i]._states_.selected(true);
+                            currentGroup = groups[i];
+                        } else {
+                            groups[i]._states_.selected(false);
+                            currentGroup = undefined;
+                        }
+                    } else
+                        groups[i]._states_.selected(false);
+                }
+            },
+
+            getUsers: function () {
+                return users;
             }
         }
     };

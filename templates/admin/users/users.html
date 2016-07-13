@@ -2,32 +2,18 @@
 
 <columns id="users">
     <column id="user-groups" width="20" caption="группы" >
-        <column-control class="green round" content="fa fa-plus" title="Добавить группу"></column-control>
+        <column-control class="green round" content="fa fa-plus" title="Добавить группу" action="openNewUserGroupModal"></column-control>
         <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу"></column-control>
         <column-control class="red round" content="fa fa-times" title="Удалить группу"></column-control>
 
-        <div class="list-item">
+        <div class="list-item" ng-class="{'active': group._states_.selected() === true}" ng-repeat="group in users.getGroups() track by $id(group)" ng-click="users.selectGroup(group.id.value)">
             <div class="list-item-icon">
                 <span class="fa fa-users"></span>
             </div>
-            <div class="list-item-content-lead">Администраторы</div>
+            <div class="list-item-content-lead" title="{{ group._backup_.data.title }}">{{ group.title.value }}</div>
             <div class="list-item-content-secondary">3 пользователя</div>
         </div>
 
-        <div class="list-item active">
-            <div class="list-item-icon">
-                <span class="fa fa-users"></span>
-            </div>
-            <div class="list-item-content-lead">Редакторы</div>
-            <div class="list-item-content-secondary">4 пользователя</div>
-        </div>
-
-        <div class="list-item">
-            <div class="list-item-icon">
-                <span class="fa fa-users"></span>
-            </div>
-            <div class="list-item-content-lead only">Редакторы</div>
-        </div>
 
 
     </column>
@@ -49,7 +35,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="user in users.getAll() track by $index">
+                <tr ng-repeat="user in users.getUsers() track by $index">
                     <td>{{ user.surname.value }}</td>
                     <td>{{ user.name.value }}</td>
                     <td>{{ user.fname.value }}</td>
@@ -63,3 +49,22 @@
         </div>
     </column>
 </columns>
+
+
+<div modal modal-id="new-user-group" modal-caption="Новая группа пользователей">
+    <div class="padding-10">
+        <div class="row margin-bottom-10">
+            <label for="new-group-title">Наименование группы</label>
+            <input type="text" id="new-group-title" name="new-group-title" class="width-100" ng-model="newUserGroup.title.value">
+        </div>
+
+        <div class="row">
+            <div class="width-50">
+                <button class="width-100 green" ng-disabled="newUserGroup.title.value === ''" ng-click="addUserGroup()">Добавить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
