@@ -89,7 +89,7 @@
             }
 
             $result = DBManager::create_table("divisions");
-            if (!result) {
+            if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу отделов");
                 return false;
             }

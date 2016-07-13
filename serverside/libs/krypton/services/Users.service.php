@@ -175,11 +175,35 @@
 
 
 
+
+
+        /**
+        * Добавляет новую группу пользователей
+        * @data {object} - объект с информацией о добавляемой группе пользователей
+        **/
         public static function addGroup ($data) {
             if ($data == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> addGroup: Не задан параметр - объект с информацией о добавляемой группе пользователей");
                 return false;
             }
+
+            $result = DBManager::insert_row("kr_user_groups", ["title"], ["'".$data -> title."'"]);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> addGroup: Не удалось добавить группу пользователей");
+                return false;
+            }
+
+            $id = mysql_insert_id();
+            $result = DBManager::select("kr_user_groups", ["*"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> adGroup: Не удалось выбрать добавленную группу пользователей");
+                return false;
+            }
+
+            $group = Models::construct("UserGroup", false);
+            $group -> fromSource($result[0]);
+
+            return $group;
         }
 
 

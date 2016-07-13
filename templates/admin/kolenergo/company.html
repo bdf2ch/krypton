@@ -81,7 +81,7 @@
                 <button class="width-100 green" ng-disabled="kolenergo.organizations.getCurrent()._states_.changed() === false || kolenergo.organizations.getCurrent().title.value === ''" ng-click="editOrganization()">Сохранить</button>
             </div>
             <div class="width-50">
-                <button class="width-100 red" ng-click="$modals.close()">Отмена</button>
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
             </div>
         </div>
     </div>
@@ -98,7 +98,7 @@
                 <button class="width-100 green" ng-click="deleteOrganization()">Удалить</button>
             </div>
             <div class="width-50">
-                <button class="width-100 red" ng-click="$modals.close()">Отмена</button>
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
             </div>
         </div>
     </div>

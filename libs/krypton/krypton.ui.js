@@ -17,7 +17,7 @@
     
     
     
-    function kryptonUIRun ($log, $classes) {
+    function kryptonUIRun ($log, $classes, $rootScope, $modals) {
         $log.log("krypton.ui run...");
         /**
          * DateTimePicker
@@ -45,6 +45,8 @@
                 this.scope.close();
             }
         });
+
+        $rootScope.modals = $modals;
     };
 
 
@@ -1499,7 +1501,7 @@
                     var headerClose = document.createElement("span");
                     headerClose.className = "modal-close fa fa-times right";
                     headerClose.setAttribute("title", "Закрыть");
-                    headerClose.setAttribute("ng-click", "$modals.close()");
+                    headerClose.setAttribute("ng-click", "modals.close()");
                     header.appendChild(headerCaption);
                     header.appendChild(headerClose);
                     var content = document.createElement("div");

@@ -19,7 +19,7 @@
 
 
 
-    function usersController ($log, $scope, $users, $modals, $kolenergo) {
+    function usersController ($log, $scope, $http, $factory, $users, $modals, $kolenergo) {
         $scope.users = $users;
         $scope.modals = $modals;
         $scope.kolenergo = $kolenergo;
@@ -29,9 +29,31 @@
 
         $scope.openNewUserGroupModal = function () {
             $modals.open("new-user-group");
+            //$scope.newUserGroup._backup_.restore();
+            $scope.newUserGroup._backup_.setup();
+
         };
 
-        $scope.closeNewUserGroupModal = function () {};
+        $scope.closeNewUserGroupModal = function () {
+            $log.log("close");
+            $scope.newUserGroup._backup_.restore();
+        };
+        
+        $scope.addUserGroup = function () {
+            var data = {
+                title: $scope.newUserGroup.title.value
+            };
+            $http.post("/serverside/libs/krypton/api.php", { action: "addUserGroup", data: data })
+                .success(function (data) {
+                    if (data !== undefined) {
+                        var group = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
+                        group._model_.fromAnother(data);
+                        group._backup_.setup();
+                        $users.addGroup(group);
+                        $modals.close();
+                    }
+                });
+        };
     };
 
 

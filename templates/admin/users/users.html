@@ -3,8 +3,8 @@
 <columns id="users">
     <column id="user-groups" width="20" caption="группы" >
         <column-control class="green round" content="fa fa-plus" title="Добавить группу" action="openNewUserGroupModal"></column-control>
-        <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу"></column-control>
-        <column-control class="red round" content="fa fa-times" title="Удалить группу"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу" ng-show="users.getCurrentGroup() !== undefined"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить группу" ng-show="users.getCurrentGroup() !== undefined"></column-control>
 
         <div class="list-item" ng-class="{'active': group._states_.selected() === true}" ng-repeat="group in users.getGroups() track by $id(group)" ng-click="users.selectGroup(group.id.value)">
             <div class="list-item-icon">
@@ -51,7 +51,7 @@
 </columns>
 
 
-<div modal modal-id="new-user-group" modal-caption="Новая группа пользователей">
+<div modal modal-id="new-user-group" modal-caption="Новая группа пользователей" modal-on-close="closeNewUserGroupModal">
     <div class="padding-10">
         <div class="row margin-bottom-10">
             <label for="new-group-title">Наименование группы</label>

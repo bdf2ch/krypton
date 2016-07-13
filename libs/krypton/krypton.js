@@ -1299,7 +1299,7 @@ function isField (obj) {
         $classes.add("UserGroup", {
             __dependencies__: [],
             id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "" })
+            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
         });
 
         /********************
@@ -1454,6 +1454,16 @@ function isField (obj) {
 
             getUsers: function () {
                 return users;
+            },
+            
+            addGroup: function (group) {
+                if (group === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$users -> addGroup: Не задан параметр - объект с информацией о добавляемой группе пользователей");
+                    return false;
+                }
+                
+                groups.push(group);
+                return true;
             }
         }
     };

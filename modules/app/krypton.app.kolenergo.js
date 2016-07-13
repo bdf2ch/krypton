@@ -408,7 +408,7 @@
 
     function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http) {
         $scope.kolenergo = $kolenergo;
-        $scope.$modals = $modals;
+        $scope.modals = $modals;
         $scope.departments = $kolenergo.getDepartments();
         $scope.divisions = $kolenergo.getDivisions();
         $scope.currentOrganization = undefined;

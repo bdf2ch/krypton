@@ -19,7 +19,7 @@
                         DBManager::add_column("kr_sessions", "start", "int(11) NOT NULL default 0") &&
                         DBManager::add_column("kr_sessions", "end", "int(11) NOT NULL default 0")
                     ) {
-                        if (Settings::add("'krypton'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", Krypton::DATA_TYPE_INTEGER, 2000, 1))
+                        if (Settings::add("'krypton'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", Krypton::DATA_TYPE_INTEGER, 864000, 1))
                             return true;
                         else {
                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Session -> install: Не удалось добавить настройку");
