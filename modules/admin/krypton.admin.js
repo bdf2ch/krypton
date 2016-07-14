@@ -27,6 +27,7 @@
         $scope.newUserGroup = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
 
 
+
         $scope.openNewUserGroupModal = function () {
             $modals.open("new-user-group");
             //$scope.newUserGroup._backup_.restore();
@@ -34,16 +35,20 @@
 
         };
 
+
+
         $scope.closeNewUserGroupModal = function () {
             $log.log("close");
             $scope.newUserGroup._backup_.restore();
         };
-        
+
+
+
         $scope.addUserGroup = function () {
-            var data = {
+            var params = {
                 title: $scope.newUserGroup.title.value
             };
-            $http.post("/serverside/libs/krypton/api.php", { action: "addUserGroup", data: data })
+            $http.post("/serverside/libs/krypton/api.php", { action: "addUserGroup", data: params })
                 .success(function (data) {
                     if (data !== undefined) {
                         var group = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
@@ -51,6 +56,68 @@
                         group._backup_.setup();
                         $users.addGroup(group);
                         $modals.close();
+                    }
+                });
+        };
+
+
+
+        $scope.openEditUserGroupModal = function () {
+            $modals.open("edit-user-group");
+        };
+
+
+
+        $scope.closeEditUserGroupModal = function () {
+            $users.groups.getCurrent()._backup_.restore();
+            $users.groups.getCurrent()._states_.changed(false);
+        };
+
+
+
+        $scope.editUserGroup = function () {
+            var params = {
+                id: $users.groups.getCurrent().id.value,
+                title: $users.groups.getCurrent().title.value
+            };
+            $http.post("/serverside/libs/krypton/api.php", { action: "editUserGroup", data: params })
+                .success(function (data) {
+                    if (data !== undefined) {
+                        var group = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
+                        group._model_.fromAnother(data);
+                        $users.groups.getCurrent()._model_.fromAnother(group);
+                        $users.groups.getCurrent()._backup_.setup();
+                        $modals.close();
+                    }
+                });
+        };
+
+
+
+        /**
+         * Открывает модальное окно удаления группы пользователей
+         */
+        $scope.openDeleteUserGroupModal = function () {
+            $modals.open("delete-user-group-modal");
+        };
+
+
+
+        /**
+         * Удаляет группу пользователей
+         */
+        $scope.deleteUserGroup = function () {
+            var params = {
+                id: $users.groups.getCurrent().id.value
+            };
+            $http.post("/serverside/libs/krypton/api.php", {action: "deleteUserGroup", data : params })
+                .success(function (data) {
+                    $log.log(data);
+                    if (data !== undefined && data !== null) {
+                        if (JSON.parse(data) === true) {
+                            $users.groups.delete(params.id);
+                            $modals.close("delete-user-group-modal");
+                        }
                     }
                 });
         };

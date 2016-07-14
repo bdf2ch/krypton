@@ -3,14 +3,14 @@
 <columns id="users">
     <column id="user-groups" width="20" caption="группы" >
         <column-control class="green round" content="fa fa-plus" title="Добавить группу" action="openNewUserGroupModal"></column-control>
-        <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу" ng-show="users.getCurrentGroup() !== undefined"></column-control>
-        <column-control class="red round" content="fa fa-times" title="Удалить группу" ng-show="users.getCurrentGroup() !== undefined"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать группу" action="openEditUserGroupModal" ng-show="users.groups.getCurrent() !== undefined"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить группу" action="openDeleteUserGroupModal" ng-show="users.groups.getCurrent() !== undefined"></column-control>
 
-        <div class="list-item" ng-class="{'active': group._states_.selected() === true}" ng-repeat="group in users.getGroups() track by $id(group)" ng-click="users.selectGroup(group.id.value)">
+        <div class="list-item" ng-class="{'active': group._states_.selected() === true}" ng-repeat="group in users.groups.getAll() track by $id(group)" ng-click="users.groups.select(group.id.value)">
             <div class="list-item-icon">
                 <span class="fa fa-users"></span>
             </div>
-            <div class="list-item-content-lead" title="{{ group._backup_.data.title }}">{{ group.title.value }}</div>
+            <div class="list-item-content-lead" title="{{ group._backup_.data.title }}">{{ group._backup_.data.title }}</div>
             <div class="list-item-content-secondary">3 пользователя</div>
         </div>
 
@@ -61,6 +61,42 @@
         <div class="row">
             <div class="width-50">
                 <button class="width-100 green" ng-disabled="newUserGroup.title.value === ''" ng-click="addUserGroup()">Добавить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div modal modal-id="edit-user-group" modal-caption="Редактирование группы пользователей" modal-on-close="closeEditUserGroupModal">
+    <div class="padding-10">
+        <div class="row margin-bottom-10">
+            <label for="current-group-title">Наименование группы</label>
+            <input type="text" id="current-group-title" name="current-group-title" class="width-100" ng-model="users.groups.getCurrent().title.value" ng-change="users.groups.getCurrent()._states_.changed(true)">
+        </div>
+
+        <div class="row">
+            <div class="width-50">
+                <button class="width-100 green" ng-disabled="users.groups.getCurrent().title.value === '' || users.groups.getCurrent()._states_.changed() === false" ng-click="editUserGroup()">Сохранить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div modal modal-id="delete-user-group-modal" modal-caption="Удаление группы пользователей">
+    <div class="padding-10">
+        <div class="row">
+            <div class="row margin-bottom-10">
+                Вы уверены, что хотите удалить группу <b>{{ users.groups.getCurrent().title.value }}</b> ?
+            </div>
+            <div class="width-50">
+                <button class="width-100 green" ng-click="deleteUserGroup()">Удалить</button>
             </div>
             <div class="width-50">
                 <button class="width-100 red" ng-click="modals.close()">Отмена</button>

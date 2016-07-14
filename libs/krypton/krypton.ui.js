@@ -988,7 +988,7 @@
                 */
                 "<div class='krypton-ui-tree'>" +
                     "<div class='container root'>" +
-                        "<div class='tree-item' ng-repeat='node in initial track by $id(node)'>" +
+                        "<div class='tree-item' ng-class='{ \"with-children\": node._hierarchy_.haveChildren === true, \"expanded\": node._hierarchy_.expanded === true, \"active\": node._states_.selected() === true }' ng-repeat='node in initial track by $id(node)'>" +
                             //"<div class='item-lines'>" +
                             //    "<div class='top'></div>" +
                             //    "<div class='bottom'></div>" +
@@ -999,8 +999,8 @@
                             //"</div>" +
                             //"<div class='item-content'>{{ node.display }}</div>" +
                             //"<div ng-include=\"\'hierarchy.html'\"></div>" +
-                            "<div class='tree-item-content'>" +
-                                "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node)'>" +
+                            "<div class='tree-item-content' ng-click='expand(node)'>" +
+                                "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event)'>" +
                                 "<span ng-if='node[displayField].type !== undefined'>{{ node[displayField].value }}</span>" +
                                 "<span ng-if='node[displayField].type === undefined'>{{ node[displayField] }}</span>" +
                                 "</div>" +
@@ -1015,11 +1015,20 @@
                         "</div>" +
                     "</div>" +
                 "</div>",
+            controller: function ($scope) {
+                this.items = [];
+
+                this.register = function (scope) {
+                    this.items.push(scope);
+                    $log.log("registered", this.items);
+
+                };
+            },
             link: function (scope, element, attrs, ctrl) {
 
                 var template =
                     "<div class='container nested' >" +
-                    "<div class='tree-item' ng-repeat='node in node._hierarchy_.children track by $id(node)'>" +
+                    "<div class='tree-item' ng-class='{ \"with-children\": node._hierarchy_.haveChildren === true, \"expanded\": node._hierarchy_.expanded === true, \"active\": node._states_.selected() === true }' ng-repeat='node in node._hierarchy_.children track by $id(node)'>" +
                     //"<div class='item-lines'>" +
                     //    "<div class='top'></div>" +
                     //    "<div class='bottom'></div>" +
@@ -1030,8 +1039,8 @@
                     //"</div>" +
                     //"<div class='item-content'>{{ node.display }}</div>" +
                     //"<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
-                    "<div class='tree-item-content'>" +
-                    "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node)'>{{ node.display }}</div>" +
+                    "<div class='tree-item-content' ng-click='expand(node)'>" +
+                    "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event)'>{{ node.display }}</div>" +
                     "<div class='item-controls'>" +
                     "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === false'></span>" +
                     "<span class='collapse fa fa-chevron-up' ng-if='node._hierarchy_.expanded === true' ng-click='collapse(node)'></span>" +
@@ -1116,8 +1125,13 @@
                         for (var i = 0; i < length; i ++) {
                             var nodeKey = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
                             var tempKey = scope.stack[i][scope.key].constructor === Field ? scope.stack[i][scope.key].value : scope.stack[i][scope.key];
-                            if (nodeKey === tempKey)
-                                scope.stack[i]._hierarchy_.expanded = true;
+                            if (nodeKey === tempKey) {
+                                if (node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === false)
+                                    scope.stack[i]._hierarchy_.expanded = true;
+                                else if (node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === true)
+                                    this.collapse(node);
+                            }
+
                         }
                     }
                 };
@@ -1136,23 +1150,41 @@
                 };
 
 
-                scope.select = function (node) {
+                scope.select = function (node, event) {
                     $log.log(node);
+                    event.stopPropagation();
                     if (node !== undefined) {
                         var length = stack.length;
                         for (var i = 0; i < length; i++) {
                             if (angular.equals(node, stack[i])) {
-                                if (stack[i]._states_.selected() === true) {
+
+                                //if (node._hierarchy_.haveChildren === true) {
+                                //    if (node._hierarchy_.expanded === false)
+                                //        this.expand(node);
+                                //    else {
+                                        //if (node._states_.selected() === false) {
+                                        //    node._states_.selected(true);
+                                        //} else
+                                        //    node._states_.selected(false);
+                                //        this.collapse(node);
+                                //    }
+                                //} else {
+                                    if (stack[i]._states_.selected() === true) {
+                                        stack[i]._states_.selected(false);
+                                        if (scope.onSelect !== undefined)
+                                            scope.onSelect(undefined);
+                                    } else {
+                                        stack[i]._states_.selected(true);
+                                        if (scope.onSelect !== undefined)
+                                            scope.onSelect(node);
+                                    }
+                                //}
+
+
+                            } else {
+                               
                                     stack[i]._states_.selected(false);
-                                    if (scope.onSelect !== undefined)
-                                        scope.onSelect(undefined);
-                                } else {
-                                    stack[i]._states_.selected(true);
-                                    if (scope.onSelect !== undefined)
-                                        scope.onSelect(node);
-                                }
-                            } else
-                                stack[i]._states_.selected(false);
+                            }
                         }
                     }
                     //node._states_.selected(true);
@@ -1259,6 +1291,7 @@
                 //$compile(element)(scope);
                 //init();
                 $hierarchy.register(scope);
+                ctrl.register(scope);
 
             }
         }

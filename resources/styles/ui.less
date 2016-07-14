@@ -855,14 +855,21 @@
 
   .container {
     overflow: visible;
+    //border: 1px solid lightgray;
+    background: white;
 
     &.root {
       //border-bottom: 1px solid lightgray;
     }
 
     &.nested {
-      margin-left: 20px;
-      //padding-top: 10px;
+      //margin-left: 20px;
+      //margin-top: 5px;
+      padding-left: 20px;
+      padding-top: 7px;
+      padding-bottom: 7px;
+      padding-right: 7px;
+      border-top: 1px solid #E0E0E0;
      // margin-top: 20px;
       //border-left: 1px solid lightgray;
 
@@ -871,6 +878,7 @@
         padding-bottom: 0px !important;
         &:first-of-type {
           //margin-top: -20px;
+          //border: 1px solid #E0E0E0;
         }
       }
     }
@@ -882,38 +890,90 @@
     min-height: 20px;
     background: white;
     box-sizing: border-box;
+    cursor: pointer;
+    //background: #FAFAFA;
     //border-bottom: 1px solid lightgray;
+
+    &:nth-of-type(even) {
+     // border: 1px solid red;
+    }
+
+    &.with-children {
+      border: 1px solid #F5F5F5;
+      background: #FAFAFA;
+
+      &.expanded {
+        margin-bottom: 5px;
+        .tree-item-content:first-of-type {
+          //border-bottom: 1px solid #E0E0E0;
+        }
+      }
+
+      .tree-item:first-of-type {
+
+      }
+    }
+
+
+    &.active {
+      .tree-item-content {
+        //&.expanded {
+          background: #EEEEEE;
+          border-left: 3px solid #2196F3;
+        //}
+
+      }
+
+    }
+
+    //.active > .tree-item-content {
+    //  background: white;
+    //}
+
+
 
   }
 
   .tree-item-content {
     //float: left;
     overflow: auto;
-    padding: 5px;
+    border-left: 3px solid transparent;
+    //padding: 5px;
+    //padding-left: 0px;
     //border-bottom: 1px solid lightgray;
   }
 
   .item-label {
+    display: inline-block;
     float: left;
     height: @hierarchy-item-height;
     margin-right: 10px;
+    padding: 5px;
     line-height: @hierarchy-item-height;
     //clear: right;
     //color: @color-light-blue;
-    text-decoration: underline;
-    cursor: pointer;
-    //border-bottom: 1px solid lightgray;
+    //text-decoration: underline;
+    //cursor: pointer;
+    border-left: 3px solid transparent;
 
-    &.active {
-      font-family: "Roboto Bold";
+    &:hover {
       text-decoration: underline;
     }
+
+    //border-bottom: 1px solid lightgray;
+
+    //&.active {
+    //  background: #EEEEEE;
+    //  border-left: 3px solid #2196F3;
+    //}
   }
 
   .item-controls {
-    float: left;
+    display: inline-block;
+    float: right;
     height: @hierarchy-item-height;
-    margin-right: 10px;
+    margin-right: 5px;
+    padding: 5px;
     line-height: @hierarchy-item-height;
     font-size: 10px;
 

@@ -1422,35 +1422,80 @@ function isField (obj) {
                     }
                 }
             },
+            
+            groups: {
 
-            getGroups: function () {
-                return groups;
-            },
+                /**
+                 * Возвращает массив всех группами пользователей
+                 * @returns {Array}
+                 */
+                getAll: function () {
+                    return groups;
+                },
 
-            getCurrentGroup: function () {
-                return currentGroup;
-            },
+                /**
+                 * Возвращает текщую группу пользователей
+                 * @returns {UserGroup / undefined}
+                 */
+                getCurrent: function () {
+                    return currentGroup;
+                },
 
-            selectGroup: function (groupId) {
-                if (groupId === undefined) {
-                    $errors.add(ERROR_TYPE_DEFAULT, "$users -> selectGroup: Не задан параметр - идентификатор группы пользователей");
+                /**
+                 * Выбираент группу пользователей
+                 * @param groupId {number} - идентификатор группы пользователей
+                 * @returns {UserGroup / boolean}
+                 */
+                select: function (groupId) {
+                    if (groupId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$users -> selectGroup: Не задан параметр - идентификатор группы пользователей");
+                        return false;
+                    }
+
+                    var length = groups.length;
+                    for (var i = 0; i < length; i++) {
+                        if (groups[i].id.value === groupId) {
+                            if (groups[i]._states_.selected() === false) {
+                                groups[i]._states_.selected(true);
+                                currentGroup = groups[i];
+                            } else {
+                                groups[i]._states_.selected(false);
+                                currentGroup = undefined;
+                            }
+                        } else
+                            groups[i]._states_.selected(false);
+                    }
+                },
+
+                /**
+                 * Удаляет группу пользователей
+                 * @param groupId {number} - идентификатор группы пользователей
+                 * @returns {boolean}
+                 */
+                delete: function (groupId) {
+                    if (groupId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$users -> groups -> delete: Не задан параметр - идентификатор группы пользователей");
+                        return false;
+                    }
+
+                    var length = groups.length;
+                    for (var i = 0; i < length; i++) {
+                        if (groups[i].id.value === groupId) {
+                            groups.splice(i, 1);
+                            currentGroup = undefined;
+                            return true;
+                        }
+                    }
+
                     return false;
                 }
-
-                var length = groups.length;
-                for (var i = 0; i < length; i++) {
-                    if (groups[i].id.value === groupId) {
-                        if (groups[i]._states_.selected() === false) {
-                            groups[i]._states_.selected(true);
-                            currentGroup = groups[i];
-                        } else {
-                            groups[i]._states_.selected(false);
-                            currentGroup = undefined;
-                        }
-                    } else
-                        groups[i]._states_.selected(false);
-                }
             },
+
+            
+
+            
+
+            
 
             getUsers: function () {
                 return users;

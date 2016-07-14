@@ -669,9 +669,14 @@
 */
 .krypton-ui-tree .container {
   overflow: visible;
+  background: white;
 }
 .krypton-ui-tree .container.nested {
-  margin-left: 20px;
+  padding-left: 20px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-right: 7px;
+  border-top: 1px solid #E0E0E0;
 }
 .krypton-ui-tree .container.nested .tree-item {
   padding-top: 0px !important;
@@ -682,27 +687,41 @@
   min-height: 20px;
   background: white;
   box-sizing: border-box;
+  cursor: pointer;
+}
+.krypton-ui-tree .tree-item.with-children {
+  border: 1px solid #F5F5F5;
+  background: #FAFAFA;
+}
+.krypton-ui-tree .tree-item.with-children.expanded {
+  margin-bottom: 5px;
+}
+.krypton-ui-tree .tree-item.active .tree-item-content {
+  background: #EEEEEE;
+  border-left: 3px solid #2196F3;
 }
 .krypton-ui-tree .tree-item-content {
   overflow: auto;
-  padding: 5px;
+  border-left: 3px solid transparent;
 }
 .krypton-ui-tree .item-label {
+  display: inline-block;
   float: left;
   height: 20px;
   margin-right: 10px;
+  padding: 5px;
   line-height: 20px;
-  text-decoration: underline;
-  cursor: pointer;
+  border-left: 3px solid transparent;
 }
-.krypton-ui-tree .item-label.active {
-  font-family: "Roboto Bold";
+.krypton-ui-tree .item-label:hover {
   text-decoration: underline;
 }
 .krypton-ui-tree .item-controls {
-  float: left;
+  display: inline-block;
+  float: right;
   height: 20px;
-  margin-right: 10px;
+  margin-right: 5px;
+  padding: 5px;
   line-height: 20px;
   font-size: 10px;
 }

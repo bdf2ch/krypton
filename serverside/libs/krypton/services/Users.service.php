@@ -160,6 +160,7 @@
 
             API::add("addUserGroup", "Users", "addGroup");
             API::add("editUserGroup", "Users", "editGroup");
+            API::add("deleteUserGroup", "Users", "deleteGroup");
         }
 
 
@@ -204,6 +205,68 @@
             $group -> fromSource($result[0]);
 
             return $group;
+        }
+
+
+
+
+
+        /**
+        * Сохраняет изменения в измененной группе пользователей
+        * @data {object} - объект с информацией об изменяемой группе пользователей
+        **/
+        public function editGroup ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> editGroup: Не задан параметр - объект с информацией об изменяемой группе пользователей");
+                return false;
+            }
+
+            $result = DBManager::update("kr_user_groups", ["title"], ["'".$data -> title."'"], "id = ".$data -> id);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> editGroup: Не удалось сохранить изменения измененной группы пользователей");
+                return false;
+            }
+
+            $result = DBManager::select("kr_user_groups", ["*"], "id = ".$data -> id);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> editGroup: Не удалось выбрать измененную группу пользователей");
+                return false;
+            }
+
+            $group = Models::construct("UserGroup", false);
+            $group -> fromSource($result[0]);
+
+            return $group;
+        }
+
+
+
+
+
+        /**
+        * Удаляет группу пользователей
+        * @data {object} - объект с информацией об удаляемой группе пользователей
+        **/
+        public function deleteGroup ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> deleteGroup: Не задан параметр - объект с информацией об удаляемой группе пользователей");
+                return false;
+            }
+
+            $id = $data -> id;
+            $result = DBManager::delete("kr_user_groups", "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> deleteGroup: Не удалось удалить группу пользователей");
+                return false;
+            }
+
+            $result = DBManager::update("kr_users", ["user_group_id"], [0], "user_group_id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> deleteGroup: Не удалось обновить информацию о пользователях");
+                return false;
+            }
+
+            return true;
         }
 
 
