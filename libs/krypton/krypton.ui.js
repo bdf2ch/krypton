@@ -1023,6 +1023,11 @@
                     $log.log("registered", this.items);
 
                 };
+
+
+                this.redraw = function () {
+
+                };
             },
             link: function (scope, element, attrs, ctrl) {
 
