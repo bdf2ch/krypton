@@ -406,7 +406,7 @@
 
 
 
-    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http) {
+    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http, $hierarchy) {
         $scope.kolenergo = $kolenergo;
         $scope.modals = $modals;
         $scope.departments = $kolenergo.getDepartments();
@@ -442,7 +442,7 @@
 
 
         
-        $scope.onSelectDivision = function (division) {
+        $scope.selectDivision = function (division) {
             if (division !== undefined) {
                 //$log.log("onSelectHierarchyItem", division);
                 $scope.currentDivision = division;
@@ -581,6 +581,7 @@
                         division._model_.fromAnother(data);
                         division._backup_.setup();
                         $kolenergo.addDivision(division);
+                        //$hierarchy.add("test", division);
                         $modals.close("new-division-modal");
                     }
                 });

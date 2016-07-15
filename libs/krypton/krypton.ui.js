@@ -924,23 +924,26 @@
 
 
 
-    function hierarchyFactory ($errors) {
+    function hierarchyFactory ($log, $errors) {
         var items = [];
 
         return {
 
             register: function (scope) {
-                if (scope !== undefined) {
-                    items.push(scope);
-                } else {
-                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> register: Не зада параметр - scope иерархии");
+                if (scope === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> register: Не задан параметр - scope регистрируемой иерархии");
                     return false;
                 }
+
+                items.push(scope);
+                $log.info("registered", items);
+
+                return true;
             },
 
             getById: function (id) {
                 if (id === undefined) {
-                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> get: Не задан параметр - идентификатор иерархии");
+                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> get: Не задан параметр - идентификатор иерархического списка");
                     return false;
                 }
 
@@ -950,8 +953,81 @@
                         return items[i];
                 }
 
-                $errors.add(ERROR_TYPE_ENGINE, "$hierarchy -> getById: Иерархия с идентификатором '" + id + "' не найдена");
                 return false;
+            },
+
+            add: function (hierarchyId, item) {
+                if (hierarchyId === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> add: Не задан параметр - идентификатор иерархического списка");
+                    return false;
+                }
+
+                if (item === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> add: Не задан параметр - добавляемый элемент иерархического списка");
+                    return false;
+                }
+
+
+                var hierarchy = this.getById(hierarchyId);
+                if (hierarchy === false) {
+                    $errors.add(ERROR_TYPE_ENGINE, "$hierarchy -> add: Иерархический список с идентификатором '" + hierarchyId + "' не найден");
+                    return false;
+                }
+
+                if (item[hierarchy.key] === undefined) {
+                    $errors.add(ERROR_TYPE_ENGINE, "$hierarchy -> add: Добавляемый элемент иерархического списка не содержит ключевого поля (" + hierarchy.key + ")");
+                    return false;
+                }
+
+                if (item[hierarchy.parentKey] === undefined) {
+                    $errors.add(ERROR_TYPE_ENGINE, "$hierarchy -> add: Добавляемый элемент иерархического списка не содержит ключевого поля (" + hierarchy.parentKey + ")");
+                    return false;
+                }
+
+                item._hierarchy_ = {};
+                item._hierarchy_.expanded = false;
+                item._hierarchy_.havChildren = false;
+                item._hierarchy_.children = [];
+
+                hierarchy.source.push(item);
+                return true;
+
+                //var length = hierarchy.source.length;
+                //for (var x = 0; x < length; x++) {
+                //    var current = hierarchy.source[x];
+                //    var currentKey = current[hierarchy.key].constructor === Field ? current[hierarchy.key].value : current[hierarchy.key];
+                //    if (currentKey === itemId) {
+                //        current._hierarchy_.children.push(item);
+                //        return true;
+                //    }
+                //}
+
+                //$errors.add(ERROR_TYPE_ENGINE, "$hierarchy -> add: Элемент иерархического списка с идентификатором '" + itemId + "' не найден");
+                //return false;
+
+
+
+            },
+
+            update: function (hierarchyId, itemIKey) {
+                if (hierarchyId == undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$hierarchy -> update: Не задан параметр - идентификатор иерархического списка");
+                    return false;
+                }
+
+
+                var length = items.length;
+                for (var i = 0; i < length; i++) {
+                    if (items[i].id === hierarchyId) {
+
+                        if (itemKey === undefined) {
+
+                        } else {
+                            
+                        }
+
+                    }
+                }
             }
         }
     };
@@ -988,7 +1064,7 @@
                 */
                 "<div class='krypton-ui-tree'>" +
                     "<div class='container root'>" +
-                        "<div class='tree-item' ng-class='{ \"with-children\": node._hierarchy_.haveChildren === true, \"expanded\": node._hierarchy_.expanded === true, \"active\": node._states_.selected() === true }' ng-repeat='node in initial track by $id(node)'>" +
+                        "<div class='tree-item' ng-class='{ \"with-children\": node._hierarchy_.haveChildren === true, \"expanded\": node._hierarchy_.expanded === true, \"active\": node._states_.selected() === true }' ng-repeat='node in initial track by $index'>" +
                             //"<div class='item-lines'>" +
                             //    "<div class='top'></div>" +
                             //    "<div class='bottom'></div>" +
@@ -1018,10 +1094,34 @@
             controller: function ($scope) {
                 this.items = [];
 
-                this.register = function (scope) {
-                    this.items.push(scope);
-                    $log.log("registered", this.items);
+                $log.log("HIERARCHY CONTROLLER START", this.items);
 
+                this.register = function (scope) {
+                    if (scope === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> hierarchy -> controller -> register: Не задан параметр - scope регистрируемой иерархии");
+                        return false;
+                    }
+
+                    this.items.push(scope);
+                    $log.info("registered", this.items);
+
+                    return true;
+                };
+
+
+                this.findById = function (id) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> hierarchy -> controller -> findById: Не задан параметр - идентификатор иерархического списка");
+                        return false;
+                    }
+
+                    var length = this.items.length;
+                    for (var i = 0; i < length; i++) {
+                        if (this.items[i].id === id)
+                            return this.items[i];
+                    }
+
+                    return false;
                 };
 
 
@@ -1033,7 +1133,7 @@
 
                 var template =
                     "<div class='container nested' >" +
-                    "<div class='tree-item' ng-class='{ \"with-children\": node._hierarchy_.haveChildren === true, \"expanded\": node._hierarchy_.expanded === true, \"active\": node._states_.selected() === true }' ng-repeat='node in node._hierarchy_.children track by $id(node)'>" +
+                    "<div class='tree-item' ng-class='{ \"with-children\": node._hierarchy_.haveChildren === true, \"expanded\": node._hierarchy_.expanded === true, \"active\": node._states_.selected() === true }' ng-repeat='node in node._hierarchy_.children track by $index'>" +
                     //"<div class='item-lines'>" +
                     //    "<div class='top'></div>" +
                     //    "<div class='bottom'></div>" +
@@ -1057,16 +1157,31 @@
                     "</div>";
 
                 var parsedTemplate = scope.parsedTemplate = template;
-                $log.log("parsed = ", parsedTemplate);
+                //$log.log("parsed = ", parsedTemplate);
 
-                scope.$watchCollection("source", function (val) {
-                    $log.log("hierarchy length = ", val.length);
-                    $log.log("collection changed");
-                    if (val !== undefined) {
-                        init();
+                var current = scope.current = undefined;
+
+                scope.$watch("current", function (newVal, oldVal) {
+                    //$log.log("hierarchy length = ", newVal.length);
+                    //$log.log("collection changed");
+                    //$log.log("old = ", oldVal.length, ", new = ", newVal.length);
+                    //if (newVal !== oldVal) {
+                        //$log.log("old = ", oldVal, ", new = ", newVal);
+                    $log.log("current = ", scope.current);
+                    //$log.log("new = ", newVal);
+                    //if (oldVal !== newVal) {
+                    //    $log.log("not equal");
+                    //    init();
+                    //}
                         //$compile(element)(scope);
                        // scope.$digest();
-                    }
+                        //scope.source = val;
+                    //}
+                });
+
+
+                scope.$watchCollection("current._hierarchy_.children", function (val) {
+                   $log.log("children of current changed");
                 });
 
                 /*
@@ -1087,8 +1202,26 @@
                 */
 
 
+                if (attrs.id === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> hierarchy directive: Не задан параметр - идентификатор иерархического списка (аттрибут id)");
+                    return false;
+                }
+
+                if (attrs.source === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> hierarchy directive: Не задан параметр - источник данных иерархического списка (аттрибут source)");
+                    return false;
+                }
+
+                $log.log("source = ", scope.source);
+
+                if (scope.source.constructor === undefined || scope.source.constructor !== Array) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "krypton.ui -> hierarchy directive: Источник данных не является массивом");
+                    return false;
+                }
+
 
                 $templateCache.put("hierarchy", template);
+                var id = scope.id = attrs.id;
                 var stack = scope.stack = [];
                 var initial = scope.initial = [];
 
@@ -1109,13 +1242,13 @@
                 scope.getChildren = function (node) {
                     if (node !== undefined) {
                         var result = [];
-                        var length = scope.stack.length;
+                        var length = scope.source.length;
                         for (var i = 0; i < length; i++) {
-                            var temp = scope.stack[i];
+                            var temp = scope.source[i];
                             var nodeKey = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
                             var parentKey = temp[scope.parentKey].constructor === Field ? temp[scope.parentKey].value : temp[scope.parentKey];
                             if (parentKey === nodeKey) {
-                                result.push(scope.stack[i]);
+                                result.push(scope.source[i]);
                             }
                         }
                         $log.log(node.id.value + " children = ", result);
@@ -1126,13 +1259,13 @@
 
                 scope.expand = function (node) {
                     if (node !== undefined) {
-                        var length = scope.stack.length;
+                        var length = scope.source.length;
                         for (var i = 0; i < length; i ++) {
                             var nodeKey = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
-                            var tempKey = scope.stack[i][scope.key].constructor === Field ? scope.stack[i][scope.key].value : scope.stack[i][scope.key];
+                            var tempKey = scope.source[i][scope.key].constructor === Field ? scope.source[i][scope.key].value : scope.source[i][scope.key];
                             if (nodeKey === tempKey) {
                                 if (node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === false)
-                                    scope.stack[i]._hierarchy_.expanded = true;
+                                    scope.source[i]._hierarchy_.expanded = true;
                                 else if (node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === true)
                                     this.collapse(node);
                             }
@@ -1144,24 +1277,29 @@
                 
                 scope.collapse = function (node) {
                     if (node !== undefined) {
-                        var length = scope.stack.length;
+                        var length = scope.source.length;
                         for (var i = 0; i < length; i ++) {
                             var nodeKey = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
-                            var tempKey = scope.stack[i][scope.key].constructor === Field ? scope.stack[i][scope.key].value : scope.stack[i][scope.key];
+                            var tempKey = scope.source[i][scope.key].constructor === Field ? scope.source[i][scope.key].value : scope.source[i][scope.key];
                             if (nodeKey === tempKey)
-                                scope.stack[i]._hierarchy_.expanded = false;
+                                scope.source[i]._hierarchy_.expanded = false;
                         }
                     }
                 };
 
 
                 scope.select = function (node, event) {
-                    $log.log(node);
+
                     event.stopPropagation();
                     if (node !== undefined) {
-                        var length = stack.length;
+                        $log.log(node);
+                        var length = scope.source.length;
                         for (var i = 0; i < length; i++) {
-                            if (angular.equals(node, stack[i])) {
+                            //if (angular.equals(node, stack[i])) {
+                            var nodeId = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
+                            var stackId = scope.source[i][scope.key].constructor === Field ? scope.source[i][scope.key].value : scope.source[i][scope.key];
+                            if (nodeId === stackId){
+                                $log.log("equals");
 
                                 //if (node._hierarchy_.haveChildren === true) {
                                 //    if (node._hierarchy_.expanded === false)
@@ -1174,21 +1312,24 @@
                                 //        this.collapse(node);
                                 //    }
                                 //} else {
-                                    if (stack[i]._states_.selected() === true) {
-                                        stack[i]._states_.selected(false);
+                                    if (scope.source[i]._states_.selected() === true) {
+                                        scope.source[i]._states_.selected(false);
+                                        scope.current = undefined;
                                         if (scope.onSelect !== undefined)
                                             scope.onSelect(undefined);
                                     } else {
-                                        stack[i]._states_.selected(true);
-                                        if (scope.onSelect !== undefined)
+                                        scope.source[i]._states_.selected(true);
+                                        if (scope.onSelect !== undefined) {
                                             scope.onSelect(node);
+                                            scope.current = node;
+                                        }
                                     }
                                 //}
 
 
                             } else {
                                
-                                    stack[i]._states_.selected(false);
+                                    scope.source[i]._states_.selected(false);
                             }
                         }
                     }
@@ -1212,8 +1353,8 @@
 
 
                 var init = function () {
-                    $log.log("source = ", scope.source);
-                    stack.splice(0, stack.length);
+                    //$log.log("source = ", scope.source);
+                    //stack.splice(0, stack.length);
                     initial.splice(0, initial.length);
 
                     //scope.source = $parse(scope.source);
@@ -1250,10 +1391,16 @@
                         }
                         var firstParentKey = temp[scope.parentKey].constructor === Field ? temp[scope.parentKey].value : temp[scope.parentKey];
 
-                        temp._hierarchy_ = {};
-                        temp._hierarchy_.expanded = false;
-                        temp._hierarchy_.haveChildren = false;
-                        temp._hierarchy_.children = [];
+                        if (temp._hierarchy_ !== undefined) {
+                            temp._hierarchy_.children.splice(0, temp._hierarchy_.children.length);
+                            temp._hierarchy_.havChildren = false;
+                        } else {
+                            temp._hierarchy_ = {};
+                            temp._hierarchy_.expanded = false;
+                            temp._hierarchy_.haveChildren = false;
+                            temp._hierarchy_.children = [];
+                        }
+
 
                         if (temp[scope.displayField] !== undefined && temp[scope.displayField] !== "") {
                             temp.display = temp[scope.displayField].constructor === Field ? temp[scope.displayField].value : temp[scope.displayField];
@@ -1274,7 +1421,7 @@
 
                         }
 
-                        scope.stack.push(temp);
+                        //scope.stack.push(temp);
 
                     }
                 };
@@ -1294,9 +1441,21 @@
 
                 //$compile(scope.parsedTemplate)(scope);
                 //$compile(element)(scope);
-                //init();
-                $hierarchy.register(scope);
-                ctrl.register(scope);
+                init();
+                //$hierarchy.register(scope);
+                //ctrl.register(scope);
+
+                var item = $hierarchy.getById(attrs.id);
+                $log.log("item = ", item);
+                //if (item !== false) {
+                    //scope = item;
+                    //scope.$apply();
+                //    scope.initial = item.initial;
+                //    scope.stack = item.stack;
+                //} else {
+                    //init();
+                //    $hierarchy.register(scope);
+                //}
 
             }
         }
@@ -1417,7 +1576,7 @@
                 }
 
                 items.push(modal);
-                $log.log("modals = ", items);
+                //$log.log("modals = ", items);
 
                 return true;
             },
