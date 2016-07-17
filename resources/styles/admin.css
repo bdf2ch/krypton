@@ -696,7 +696,7 @@
 .krypton-ui-tree .tree-item.with-children.expanded {
   margin-bottom: 5px;
 }
-.krypton-ui-tree .tree-item.active .tree-item-content {
+.krypton-ui-tree .tree-item.active .tree-item-content:first-of-type {
   background: #EEEEEE;
   border-left: 3px solid #2196F3;
 }

@@ -38,6 +38,7 @@
                         Settings::init();
                         Users::init();
                         Sessions::init();
+                        Files::init();
 
 
             $template = "/serverside/templates/application.html";

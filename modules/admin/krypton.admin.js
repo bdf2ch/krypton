@@ -130,7 +130,13 @@
         $scope.settings = $settings;
     };
 
+    
+    
+    function filesController ($scope, $log, $factory) {
+        
+    };
 
+    
 
     function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $http, $settings, $session) {
         $log.log("krypton admin run");
