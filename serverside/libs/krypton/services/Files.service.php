@@ -101,6 +101,12 @@
 
 
 
+
+
+        /**
+        * Проверяет, существует ли папка на сервере
+        * @title {string} - наименование папки
+        **/
         public static function is_folder_exists ($title) {
             if ($title == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Files -> is_folder_exists: Не задан параметр - наименование папки");
@@ -141,7 +147,6 @@
             }
 
             $path = $_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR."uploads".DIRECTORY_SEPARATOR.$title;
-            echo($path);
             if (!mkdir($path, 0777, true)) {
                 return Errors::push(Errors::ERROR_TYPE_FILE, "Files -> create_folder: Не удалось создать папку '".$path."'");
                 return false;
@@ -152,6 +157,12 @@
 
 
 
+
+
+        /**
+        * Загружает файл на сервер
+        * @destination {string} - путь расположения загружаемого файла
+        **/
         public static function upload ($destination) {
             if ($destination == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Files -> upload: Не задан параметр - расположение загружаемого файла");
@@ -162,6 +173,9 @@
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Files -> upload: Неверно задан типа параметра - расположение загружаемого файла");
                 return false;
             }
+
+            if (!isset($_FILES["file"]))
+                return false;
 
             if ($_FILES["file"]["size"] == 0) {
                 Errors::push(Errors::ERROR_TYPE_FILE_UPLOAD, "Files -> upload: Размер загружаемого файла равен 0");
@@ -179,10 +193,11 @@
                 return false;
             }
 
-            $name = $_FILES["file"]['name'];
+            $name = iconv("windows-1251", "UTF-8", $_FILES["file"]['name']);
             $tmpName  = $_FILES["file"]['tmp_name'];
             $size = $_FILES["file"]['size'];
             $type = $_FILES["file"]['type'];
+            $url = DIRECTORY_SEPARATOR."uploads".DIRECTORY_SEPARATOR.$destination.DIRECTORY_SEPARATOR.$name;
 
             if (!file_exists($folder)) {
                 Errors::push(Errors::ERROR_TYPE_FILE, "Files -> upload: Папка по адресу '".$folder."' не найдена");
@@ -200,6 +215,7 @@
             $uploadedFile -> type -> value = $type;
             $uploadedFile -> size -> value = $size;
             $uploadedFile -> isFolder -> value = false;
+            $uploadedFile -> url -> value = $url;
 
             return $uploadedFile;
 

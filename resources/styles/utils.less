@@ -251,6 +251,52 @@ label {
   margin-bottom: 3px;
   font-size: 13px;
   color: gray;
+
+  &.button {
+    height: @ui-input-height;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    line-height: 12px;
+    text-align: center;
+    box-sizing: border-box;
+    outline: none;
+
+    &.blue {
+      color: white;
+      background: @color-blue;
+      &:hover {
+        background: @color-blue-hover;
+      }
+    }
+
+    &.green {
+      color: white;
+      background: @color-green;
+      &:hover {
+        background: @color-green-hover;
+      }
+      &[disabled] {
+        background: @color-light-green;
+      }
+    }
+
+    &.red {
+      color: white;
+      background: @color-red;
+      &:hover {
+        background: @color-red-hover;
+      }
+    }
+
+    &.transparent {
+      background: transparent;
+    }
+
+    input {
+      display: none;
+    }
+  }
 }
 
 input {

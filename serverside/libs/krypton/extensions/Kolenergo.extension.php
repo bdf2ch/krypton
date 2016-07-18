@@ -495,11 +495,11 @@
 
             $file = Files::upload("users".DIRECTORY_SEPARATOR.$userId);
             if (!$file) {
-                return Errors::push(Errors::ERROR_TYPE_FILE, "Koelnergo -> uploadUserPhoto: Не удалось загрузить фото пользователя");
+                Errors::push(Errors::ERROR_TYPE_FILE, "Koelnergo -> uploadUserPhoto: Не удалось загрузить фото пользователя");
                 return false;
             }
 
-            $photo_url = "/uploads/users/".$userId."/".$file -> title -> value;
+            $photo_url = "uploads/users/".$userId."/".$file -> title -> value;
             $result = DBManager::update("kr_users", ["photo_url"], ["'".$photo_url."'"], "id = $userId");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> uploadUserPhoto: Не удалось обновить фото пользователя в БД");

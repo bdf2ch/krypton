@@ -256,7 +256,7 @@
     };
 
 
-    function UserAccountController ($log, $scope, $session, $kolenergo, $http) {
+    function UserAccountController ($log, $scope, $session, $kolenergo, $http, $factory) {
         $scope.user = $session.getCurrentUser();
         $scope.kolenergo = $kolenergo;
         
@@ -419,7 +419,7 @@
             //    });
             var file = $factory({ classes: ["File", "Model", "States"], base_class: "File" });
             file._model_.fromAnother(data);
-            $session.getCurrentUser().photoUrl.value = "/uploads/users/" + $session.getCurrentUser().id.value + "/" + file.title.value;
+            $session.getCurrentUser().photo.value = file.url.value;
         };
     };
 

@@ -3,16 +3,16 @@
 
     <!-- Фотография пользователя -->
     <div id="user-photo" class="width-30">
-        <img class="width-100" src="resources/images/no_photo.png" alt="">
-        <button class="blue width-100"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp; Загрузить фото</button>
-        <label for="userfile" class="label-button">
-            Приложить документ
+        <img class="width-100" src="resources/images/no_photo.png" alt="" ng-show="user.photo.value === ''">
+        <img class="width-100" ng-src="{{ user.photo.value }}" alt="" ng-show="user.photo.value !== ''">
+        <label for="userfile" class="button blue width-100">
+            <span class="fa fa-upload"></span>&nbsp; Загрузить фото
             <input
                     type="file"
                     name="userfile"
                     id="userfile"
                     uploader
-                    uploader-url="serverside/libs/krypton/uploader.php"
+                    uploader-url="serverside/libs/krypton/api.php"
                     uploader-data="uploaderData"
                     uploader-on-complete-upload="onCompleteUploadUserPhoto"/>
         </label>
