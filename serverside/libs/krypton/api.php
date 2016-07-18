@@ -2,6 +2,8 @@
     define("ENGINE_API_MODE", 1);
     require_once $_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/config.php";
 
+    //echo("this is api");
+
     $app = new Krypton(["Kolenergo", "LDAP"]);
     //Settings::init();
     //Sessions::init();
@@ -22,6 +24,7 @@
         $postdata = json_decode(file_get_contents("php://input"));
         if ($postdata != null) {
             if (isset($postdata -> action)) {
+                //echo($postdata -> action);
 
                 $result = API::isEntryExists($postdata -> action);
                 if ($result == null || $result == false)
@@ -30,7 +33,8 @@
                 $result = API::call($postdata -> action, $postdata -> data);
                 echo(json_encode($result));
             }
-        }
+        } else
+            echo("postdata is null");
     }
 
 ?>

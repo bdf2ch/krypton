@@ -1,0 +1,849 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="">
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# object: http://ogp.me/ns/object# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#">
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    
+    
+    <title>angular-file-upload/angular-file-upload.min.map at master · nervgh/angular-file-upload · GitHub</title>
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub">
+    <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-144.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144.png">
+    <meta property="fb:app_id" content="1401488693436528">
+
+      <meta content="@github" name="twitter:site" /><meta content="summary" name="twitter:card" /><meta content="nervgh/angular-file-upload" name="twitter:title" /><meta content="angular-file-upload - Angular File Upload is a module for the AngularJS framework" name="twitter:description" /><meta content="https://avatars1.githubusercontent.com/u/2478262?v=3&amp;s=400" name="twitter:image:src" />
+      <meta content="GitHub" property="og:site_name" /><meta content="object" property="og:type" /><meta content="https://avatars1.githubusercontent.com/u/2478262?v=3&amp;s=400" property="og:image" /><meta content="nervgh/angular-file-upload" property="og:title" /><meta content="https://github.com/nervgh/angular-file-upload" property="og:url" /><meta content="angular-file-upload - Angular File Upload is a module for the AngularJS framework" property="og:description" />
+      <meta name="browser-stats-url" content="/_stats">
+    <link rel="assets" href="https://assets-cdn.github.com/">
+    
+    <meta name="pjax-timeout" content="1000">
+    
+
+    <meta name="msapplication-TileImage" content="/windows-tile.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="selected-link" value="repo_source" data-pjax-transient>
+      <meta name="google-analytics" content="UA-3769691-2">
+
+    <meta content="collector.githubapp.com" name="octolytics-host" /><meta content="collector-cdn.github.com" name="octolytics-script-host" /><meta content="github" name="octolytics-app-id" /><meta content="D58EC0FD:6170:3BD076:5513FFA0" name="octolytics-dimension-request_id" />
+    
+    <meta content="Rails, view, blob#show" name="analytics-event" />
+
+    
+    <link rel="icon" type="image/x-icon" href="https://assets-cdn.github.com/favicon.ico">
+
+
+    <meta content="authenticity_token" name="csrf-param" />
+<meta content="cbPoPp5EC3JhM7SYOGlg76OKPzWBNN+Gh+Ny20PG99Q8ZFwT+fyajsigvzYSAsNsxBfEAwWxWmVZ5o8tH7Y3sQ==" name="csrf-token" />
+
+    <link href="https://assets-cdn.github.com/assets/github-72aef5c1eab64bf684cb6f55513fae147b11b63503bf2311319ec22e77d3194f.css" media="all" rel="stylesheet" />
+    <link href="https://assets-cdn.github.com/assets/github2-40d9bf14363443ccf64a2b71208f59e8739d6288d962feba121227e0608772f3.css" media="all" rel="stylesheet" />
+    
+    
+
+
+    <meta http-equiv="x-pjax-version" content="16f1961eb9229a014751d96dc0a55124">
+
+      
+  <meta name="description" content="angular-file-upload - Angular File Upload is a module for the AngularJS framework">
+  <meta name="go-import" content="github.com/nervgh/angular-file-upload git https://github.com/nervgh/angular-file-upload.git">
+
+  <meta content="2478262" name="octolytics-dimension-user_id" /><meta content="nervgh" name="octolytics-dimension-user_login" /><meta content="12043484" name="octolytics-dimension-repository_id" /><meta content="nervgh/angular-file-upload" name="octolytics-dimension-repository_nwo" /><meta content="true" name="octolytics-dimension-repository_public" /><meta content="false" name="octolytics-dimension-repository_is_fork" /><meta content="12043484" name="octolytics-dimension-repository_network_root_id" /><meta content="nervgh/angular-file-upload" name="octolytics-dimension-repository_network_root_nwo" />
+  <link href="https://github.com/nervgh/angular-file-upload/commits/master.atom" rel="alternate" title="Recent Commits to angular-file-upload:master" type="application/atom+xml">
+
+  </head>
+
+
+  <body class="logged_out  env-production windows vis-public page-blob">
+    <a href="#start-of-content" tabindex="1" class="accessibility-aid js-skip-to-content">Skip to content</a>
+    <div class="wrapper">
+      
+      
+      
+
+
+        
+        <div class="header header-logged-out" role="banner">
+  <div class="container clearfix">
+
+    <a class="header-logo-wordmark" href="https://github.com/" data-ga-click="(Logged out) Header, go to homepage, icon:logo-wordmark">
+      <span class="mega-octicon octicon-logo-github"></span>
+    </a>
+
+    <div class="header-actions" role="navigation">
+        <a class="btn btn-primary" href="/join" data-ga-click="(Logged out) Header, clicked Sign up, text:sign-up">Sign up</a>
+      <a class="btn" href="/login?return_to=%2Fnervgh%2Fangular-file-upload%2Fblob%2Fmaster%2Fangular-file-upload.min.map" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
+    </div>
+
+    <div class="site-search repo-scope js-site-search" role="search">
+      <form accept-charset="UTF-8" action="/nervgh/angular-file-upload/search" class="js-site-search-form" data-global-search-url="/search" data-repo-search-url="/nervgh/angular-file-upload/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+  <input type="text"
+    class="js-site-search-field is-clearable"
+    data-hotkey="s"
+    name="q"
+    placeholder="Search"
+    data-global-scope-placeholder="Search GitHub"
+    data-repo-scope-placeholder="Search"
+    tabindex="1"
+    autocapitalize="off">
+  <div class="scope-badge">This repository</div>
+</form>
+    </div>
+
+      <ul class="header-nav left" role="navigation">
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="/explore" data-ga-click="(Logged out) Header, go to explore, text:explore">Explore</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="/features" data-ga-click="(Logged out) Header, go to features, text:features">Features</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="https://enterprise.github.com/" data-ga-click="(Logged out) Header, go to enterprise, text:enterprise">Enterprise</a>
+          </li>
+          <li class="header-nav-item">
+            <a class="header-nav-link" href="/blog" data-ga-click="(Logged out) Header, go to blog, text:blog">Blog</a>
+          </li>
+      </ul>
+
+  </div>
+</div>
+
+
+
+      <div id="start-of-content" class="accessibility-aid"></div>
+          <div class="site" itemscope itemtype="http://schema.org/WebPage">
+    <div id="js-flash-container">
+      
+    </div>
+    <div class="pagehead repohead instapaper_ignore readability-menu">
+      <div class="container">
+        
+<ul class="pagehead-actions">
+
+  <li>
+      <a href="/login?return_to=%2Fnervgh%2Fangular-file-upload"
+    class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+    aria-label="You must be signed in to watch a repository" rel="nofollow">
+    <span class="octicon octicon-eye"></span>
+    Watch
+  </a>
+  <a class="social-count" href="/nervgh/angular-file-upload/watchers">
+    108
+  </a>
+
+  </li>
+
+  <li>
+      <a href="/login?return_to=%2Fnervgh%2Fangular-file-upload"
+    class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+    aria-label="You must be signed in to star a repository" rel="nofollow">
+    <span class="octicon octicon-star"></span>
+    Star
+  </a>
+
+    <a class="social-count js-social-count" href="/nervgh/angular-file-upload/stargazers">
+      1,405
+    </a>
+
+  </li>
+
+    <li>
+      <a href="/login?return_to=%2Fnervgh%2Fangular-file-upload"
+        class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+        aria-label="You must be signed in to fork a repository" rel="nofollow">
+        <span class="octicon octicon-repo-forked"></span>
+        Fork
+      </a>
+      <a href="/nervgh/angular-file-upload/network" class="social-count">
+        414
+      </a>
+    </li>
+</ul>
+
+        <h1 itemscope itemtype="http://data-vocabulary.org/Breadcrumb" class="entry-title public">
+          <span class="mega-octicon octicon-repo"></span>
+          <span class="author"><a href="/nervgh" class="url fn" itemprop="url" rel="author"><span itemprop="title">nervgh</span></a></span><!--
+       --><span class="path-divider">/</span><!--
+       --><strong><a href="/nervgh/angular-file-upload" class="js-current-repository" data-pjax="#js-repo-pjax-container">angular-file-upload</a></strong>
+
+          <span class="page-context-loader">
+            <img alt="" height="16" src="https://assets-cdn.github.com/assets/spinners/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16" />
+          </span>
+
+        </h1>
+      </div><!-- /.container -->
+    </div><!-- /.repohead -->
+
+    <div class="container">
+      <div class="repository-with-sidebar repo-container new-discussion-timeline  ">
+        <div class="repository-sidebar clearfix">
+            
+<nav class="sunken-menu repo-nav js-repo-nav js-sidenav-container-pjax js-octicon-loaders"
+     role="navigation"
+     data-pjax="#js-repo-pjax-container"
+     data-issue-count-url="/nervgh/angular-file-upload/issues/counts">
+  <ul class="sunken-menu-group">
+    <li class="tooltipped tooltipped-w" aria-label="Code">
+      <a href="/nervgh/angular-file-upload" aria-label="Code" class="selected js-selected-navigation-item sunken-menu-item" data-hotkey="g c" data-selected-links="repo_source repo_downloads repo_commits repo_releases repo_tags repo_branches /nervgh/angular-file-upload">
+        <span class="octicon octicon-code"></span> <span class="full-word">Code</span>
+        <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/assets/spinners/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16" />
+</a>    </li>
+
+      <li class="tooltipped tooltipped-w" aria-label="Issues">
+        <a href="/nervgh/angular-file-upload/issues" aria-label="Issues" class="js-selected-navigation-item sunken-menu-item" data-hotkey="g i" data-selected-links="repo_issues repo_labels repo_milestones /nervgh/angular-file-upload/issues">
+          <span class="octicon octicon-issue-opened"></span> <span class="full-word">Issues</span>
+          <span class="js-issue-replace-counter"></span>
+          <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/assets/spinners/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16" />
+</a>      </li>
+
+    <li class="tooltipped tooltipped-w" aria-label="Pull requests">
+      <a href="/nervgh/angular-file-upload/pulls" aria-label="Pull requests" class="js-selected-navigation-item sunken-menu-item" data-hotkey="g p" data-selected-links="repo_pulls /nervgh/angular-file-upload/pulls">
+          <span class="octicon octicon-git-pull-request"></span> <span class="full-word">Pull requests</span>
+          <span class="js-pull-replace-counter"></span>
+          <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/assets/spinners/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16" />
+</a>    </li>
+
+      <li class="tooltipped tooltipped-w" aria-label="Wiki">
+        <a href="/nervgh/angular-file-upload/wiki" aria-label="Wiki" class="js-selected-navigation-item sunken-menu-item" data-hotkey="g w" data-selected-links="repo_wiki /nervgh/angular-file-upload/wiki">
+          <span class="octicon octicon-book"></span> <span class="full-word">Wiki</span>
+          <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/assets/spinners/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16" />
+</a>      </li>
+  </ul>
+  <div class="sunken-menu-separator"></div>
+  <ul class="sunken-menu-group">
+
+    <li class="tooltipped tooltipped-w" aria-label="Pulse">
+      <a href="/nervgh/angular-file-upload/pulse" aria-label="Pulse" class="js-selected-navigation-item sunken-menu-item" data-selected-links="pulse /nervgh/angular-file-upload/pulse">
+        <span class="octicon octicon-pulse"></span> <span class="full-word">Pulse</span>
+        <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/assets/spinners/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16" />
+</a>    </li>
+
+    <li class="tooltipped tooltipped-w" aria-label="Graphs">
+      <a href="/nervgh/angular-file-upload/graphs" aria-label="Graphs" class="js-selected-navigation-item sunken-menu-item" data-selected-links="repo_graphs repo_contributors /nervgh/angular-file-upload/graphs">
+        <span class="octicon octicon-graph"></span> <span class="full-word">Graphs</span>
+        <img alt="" class="mini-loader" height="16" src="https://assets-cdn.github.com/assets/spinners/octocat-spinner-32-e513294efa576953719e4e2de888dd9cf929b7d62ed8d05f25e731d02452ab6c.gif" width="16" />
+</a>    </li>
+  </ul>
+
+
+</nav>
+
+              <div class="only-with-full-nav">
+                  
+<div class="clone-url open"
+  data-protocol-type="http"
+  data-url="/users/set_protocol?protocol_selector=http&amp;protocol_type=clone">
+  <h3><span class="text-emphasized">HTTPS</span> clone URL</h3>
+  <div class="input-group js-zeroclipboard-container">
+    <input type="text" class="input-mini input-monospace js-url-field js-zeroclipboard-target"
+           value="https://github.com/nervgh/angular-file-upload.git" readonly="readonly">
+    <span class="input-group-button">
+      <button aria-label="Copy to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+    </span>
+  </div>
+</div>
+
+  
+<div class="clone-url "
+  data-protocol-type="subversion"
+  data-url="/users/set_protocol?protocol_selector=subversion&amp;protocol_type=clone">
+  <h3><span class="text-emphasized">Subversion</span> checkout URL</h3>
+  <div class="input-group js-zeroclipboard-container">
+    <input type="text" class="input-mini input-monospace js-url-field js-zeroclipboard-target"
+           value="https://github.com/nervgh/angular-file-upload" readonly="readonly">
+    <span class="input-group-button">
+      <button aria-label="Copy to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+    </span>
+  </div>
+</div>
+
+
+
+<p class="clone-options">You can clone with
+  <a href="#" class="js-clone-selector" data-protocol="http">HTTPS</a> or <a href="#" class="js-clone-selector" data-protocol="subversion">Subversion</a>.
+  <a href="https://help.github.com/articles/which-remote-url-should-i-use" class="help tooltipped tooltipped-n" aria-label="Get help on which URL is right for you.">
+    <span class="octicon octicon-question"></span>
+  </a>
+</p>
+
+
+  <a href="https://windows.github.com" class="btn btn-sm sidebar-button" title="Save nervgh/angular-file-upload to your computer and use it in GitHub Desktop." aria-label="Save nervgh/angular-file-upload to your computer and use it in GitHub Desktop.">
+    <span class="octicon octicon-device-desktop"></span>
+    Clone in Desktop
+  </a>
+
+                <a href="/nervgh/angular-file-upload/archive/master.zip"
+                   class="btn btn-sm sidebar-button"
+                   aria-label="Download the contents of nervgh/angular-file-upload as a zip file"
+                   title="Download the contents of nervgh/angular-file-upload as a zip file"
+                   rel="nofollow">
+                  <span class="octicon octicon-cloud-download"></span>
+                  Download ZIP
+                </a>
+              </div>
+        </div><!-- /.repository-sidebar -->
+
+        <div id="js-repo-pjax-container" class="repository-content context-loader-container" data-pjax-container>
+          
+
+<a href="/nervgh/angular-file-upload/blob/6c832bbdd0e5b084848ad4246c1e7b44dc2a532f/angular-file-upload.min.map" class="hidden js-permalink-shortcut" data-hotkey="y">Permalink</a>
+
+<!-- blob contrib key: blob_contributors:v21:e5b36d77fbc505edc8de41ec5ce76a8d -->
+
+<div class="file-navigation js-zeroclipboard-container">
+  
+<div class="select-menu js-menu-container js-select-menu left">
+  <span class="btn btn-sm select-menu-button js-menu-target css-truncate" data-hotkey="w"
+    data-master-branch="master"
+    data-ref="master"
+    title="master"
+    role="button" aria-label="Switch branches or tags" tabindex="0" aria-haspopup="true">
+    <span class="octicon octicon-git-branch"></span>
+    <i>branch:</i>
+    <span class="js-select-button css-truncate-target">master</span>
+  </span>
+
+  <div class="select-menu-modal-holder js-menu-content js-navigation-container" data-pjax aria-hidden="true">
+
+    <div class="select-menu-modal">
+      <div class="select-menu-header">
+        <span class="select-menu-title">Switch branches/tags</span>
+        <span class="octicon octicon-x js-menu-close" role="button" aria-label="Close"></span>
+      </div>
+
+      <div class="select-menu-filters">
+        <div class="select-menu-text-filter">
+          <input type="text" aria-label="Filter branches/tags" id="context-commitish-filter-field" class="js-filterable-field js-navigation-enable" placeholder="Filter branches/tags">
+        </div>
+        <div class="select-menu-tabs">
+          <ul>
+            <li class="select-menu-tab">
+              <a href="#" data-tab-filter="branches" data-filter-placeholder="Filter branches/tags" class="js-select-menu-tab">Branches</a>
+            </li>
+            <li class="select-menu-tab">
+              <a href="#" data-tab-filter="tags" data-filter-placeholder="Find a tag…" class="js-select-menu-tab">Tags</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="branches">
+
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <a class="select-menu-item js-navigation-item js-navigation-open selected"
+               href="/nervgh/angular-file-upload/blob/master/angular-file-upload.min.map"
+               data-name="master"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <span class="select-menu-item-text css-truncate-target" title="master">
+                master
+              </span>
+            </a>
+            <a class="select-menu-item js-navigation-item js-navigation-open "
+               href="/nervgh/angular-file-upload/blob/version_1.x.x/angular-file-upload.min.map"
+               data-name="version_1.x.x"
+               data-skip-pjax="true"
+               rel="nofollow">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <span class="select-menu-item-text css-truncate-target" title="version_1.x.x">
+                version_1.x.x
+              </span>
+            </a>
+        </div>
+
+          <div class="select-menu-no-results">Nothing to show</div>
+      </div>
+
+      <div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="tags">
+        <div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+
+
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v1.1.5/angular-file-upload.min.map"
+                 data-name="v1.1.5"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v1.1.5">v1.1.5</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v1.1.4/angular-file-upload.min.map"
+                 data-name="v1.1.4"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v1.1.4">v1.1.4</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v1.1.1/angular-file-upload.min.map"
+                 data-name="v1.1.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v1.1.1">v1.1.1</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v1.1.0/angular-file-upload.min.map"
+                 data-name="v1.1.0"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v1.1.0">v1.1.0</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v1.0.3/angular-file-upload.min.map"
+                 data-name="v1.0.3"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v1.0.3">v1.0.3</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v1.0.2/angular-file-upload.min.map"
+                 data-name="v1.0.2"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v1.0.2">v1.0.2</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v1.0.1/angular-file-upload.min.map"
+                 data-name="v1.0.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v1.0.1">v1.0.1</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.5.7/angular-file-upload.min.map"
+                 data-name="v0.5.7"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.5.7">v0.5.7</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.5.6/angular-file-upload.min.map"
+                 data-name="v0.5.6"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.5.6">v0.5.6</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.5.5/angular-file-upload.min.map"
+                 data-name="v0.5.5"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.5.5">v0.5.5</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.5.4/angular-file-upload.min.map"
+                 data-name="v0.5.4"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.5.4">v0.5.4</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.4.1/angular-file-upload.min.map"
+                 data-name="v0.4.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.4.1">v0.4.1</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.4.0/angular-file-upload.min.map"
+                 data-name="v0.4.0"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.4.0">v0.4.0</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.3.3.1/angular-file-upload.min.map"
+                 data-name="v0.3.3.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.3.3.1">v0.3.3.1</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.3.1/angular-file-upload.min.map"
+                 data-name="v0.3.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.3.1">v0.3.1</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.3/angular-file-upload.min.map"
+                 data-name="v0.3"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.3">v0.3</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.9.6/angular-file-upload.min.map"
+                 data-name="v0.2.9.6"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.9.6">v0.2.9.6</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.9.4/angular-file-upload.min.map"
+                 data-name="v0.2.9.4"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.9.4">v0.2.9.4</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.8.9/angular-file-upload.min.map"
+                 data-name="v0.2.8.9"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.8.9">v0.2.8.9</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.8.8/angular-file-upload.min.map"
+                 data-name="v0.2.8.8"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.8.8">v0.2.8.8</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.8.7/angular-file-upload.min.map"
+                 data-name="v0.2.8.7"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.8.7">v0.2.8.7</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.8.6/angular-file-upload.min.map"
+                 data-name="v0.2.8.6"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.8.6">v0.2.8.6</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.8.4/angular-file-upload.min.map"
+                 data-name="v0.2.8.4"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.8.4">v0.2.8.4</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.8.1/angular-file-upload.min.map"
+                 data-name="v0.2.8.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.8.1">v0.2.8.1</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.7/angular-file-upload.min.map"
+                 data-name="v0.2.7"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.7">v0.2.7</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.5/angular-file-upload.min.map"
+                 data-name="v0.2.5"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.5">v0.2.5</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.4/angular-file-upload.min.map"
+                 data-name="v0.2.4"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.4">v0.2.4</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v0.2.1/angular-file-upload.min.map"
+                 data-name="v0.2.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v0.2.1">v0.2.1</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v_0.2/angular-file-upload.min.map"
+                 data-name="v_0.2"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v_0.2">v_0.2</a>
+            </div>
+            <div class="select-menu-item js-navigation-item ">
+              <span class="select-menu-item-icon octicon octicon-check"></span>
+              <a href="/nervgh/angular-file-upload/tree/v_0.1/angular-file-upload.min.map"
+                 data-name="v_0.1"
+                 data-skip-pjax="true"
+                 rel="nofollow"
+                 class="js-navigation-open select-menu-item-text css-truncate-target"
+                 title="v_0.1">v_0.1</a>
+            </div>
+        </div>
+
+        <div class="select-menu-no-results">Nothing to show</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <div class="btn-group right">
+    <a href="/nervgh/angular-file-upload/find/master"
+          class="js-show-file-finder btn btn-sm empty-icon tooltipped tooltipped-s"
+          data-pjax
+          data-hotkey="t"
+          aria-label="Quickly jump between files">
+      <span class="octicon octicon-list-unordered"></span>
+    </a>
+    <button aria-label="Copy file path to clipboard" class="js-zeroclipboard btn btn-sm zeroclipboard-button" data-copied-hint="Copied!" type="button"><span class="octicon octicon-clippy"></span></button>
+  </div>
+
+  <div class="breadcrumb js-zeroclipboard-target">
+    <span class='repo-root js-repo-root'><span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/nervgh/angular-file-upload" class="" data-branch="master" data-direction="back" data-pjax="true" itemscope="url"><span itemprop="title">angular-file-upload</span></a></span></span><span class="separator">/</span><strong class="final-path">angular-file-upload.min.map</strong>
+  </div>
+</div>
+
+
+  <div class="commit file-history-tease">
+    <div class="file-history-tease-header">
+        <img alt="Alex" class="avatar" data-user="2478262" height="24" src="https://avatars1.githubusercontent.com/u/2478262?v=3&amp;s=48" width="24" />
+        <span class="author"><a href="/nervgh" rel="author">nervgh</a></span>
+        <time datetime="2014-10-21T08:36:58Z" is="relative-time">Oct 21, 2014</time>
+        <div class="commit-title">
+            <a href="/nervgh/angular-file-upload/commit/6c832bbdd0e5b084848ad4246c1e7b44dc2a532f" class="message" data-pjax="true" title='Added: "enable ie9 to transport complex form data" (#259)'>Added: "enable ie9 to transport complex form data" (</a><a href="https://github.com/nervgh/angular-file-upload/pull/259" class="issue-link" title="enable ie9 to transport complex form data">#259</a><a href="/nervgh/angular-file-upload/commit/6c832bbdd0e5b084848ad4246c1e7b44dc2a532f" class="message" data-pjax="true" title='Added: "enable ie9 to transport complex form data" (#259)'>)</a>
+        </div>
+    </div>
+
+    <div class="participation">
+      <p class="quickstat">
+        <a href="#blob_contributors_box" rel="facebox">
+          <strong>6</strong>
+           contributors
+        </a>
+      </p>
+          <a class="avatar-link tooltipped tooltipped-s" aria-label="nervgh" href="/nervgh/angular-file-upload/commits/master/angular-file-upload.min.map?author=nervgh"><img alt="Alex" class="avatar" data-user="2478262" height="20" src="https://avatars3.githubusercontent.com/u/2478262?v=3&amp;s=40" width="20" /></a>
+    <a class="avatar-link tooltipped tooltipped-s" aria-label="esvit" href="/nervgh/angular-file-upload/commits/master/angular-file-upload.min.map?author=esvit"><img alt="Vitalii Savchuk" class="avatar" data-user="1222467" height="20" src="https://avatars0.githubusercontent.com/u/1222467?v=3&amp;s=40" width="20" /></a>
+    <a class="avatar-link tooltipped tooltipped-s" aria-label="OleksandrBezhan" href="/nervgh/angular-file-upload/commits/master/angular-file-upload.min.map?author=OleksandrBezhan"><img alt="Alex" class="avatar" data-user="1303861" height="20" src="https://avatars2.githubusercontent.com/u/1303861?v=3&amp;s=40" width="20" /></a>
+    <a class="avatar-link tooltipped tooltipped-s" aria-label="bimusiek" href="/nervgh/angular-file-upload/commits/master/angular-file-upload.min.map?author=bimusiek"><img alt="Michal Hernas" class="avatar" data-user="1025588" height="20" src="https://avatars1.githubusercontent.com/u/1025588?v=3&amp;s=40" width="20" /></a>
+    <a class="avatar-link tooltipped tooltipped-s" aria-label="brocksamson" href="/nervgh/angular-file-upload/commits/master/angular-file-upload.min.map?author=brocksamson"><img alt="Matthew Miller" class="avatar" data-user="314629" height="20" src="https://avatars2.githubusercontent.com/u/314629?v=3&amp;s=40" width="20" /></a>
+    <a class="avatar-link tooltipped tooltipped-s" aria-label="sjorobekov" href="/nervgh/angular-file-upload/commits/master/angular-file-upload.min.map?author=sjorobekov"><img alt="Sam Yorobekoff" class="avatar" data-user="4434217" height="20" src="https://avatars0.githubusercontent.com/u/4434217?v=3&amp;s=40" width="20" /></a>
+
+
+    </div>
+    <div id="blob_contributors_box" style="display:none">
+      <h2 class="facebox-header">Users who have contributed to this file</h2>
+      <ul class="facebox-user-list">
+          <li class="facebox-user-list-item">
+            <img alt="Alex" data-user="2478262" height="24" src="https://avatars1.githubusercontent.com/u/2478262?v=3&amp;s=48" width="24" />
+            <a href="/nervgh">nervgh</a>
+          </li>
+          <li class="facebox-user-list-item">
+            <img alt="Vitalii Savchuk" data-user="1222467" height="24" src="https://avatars2.githubusercontent.com/u/1222467?v=3&amp;s=48" width="24" />
+            <a href="/esvit">esvit</a>
+          </li>
+          <li class="facebox-user-list-item">
+            <img alt="Alex" data-user="1303861" height="24" src="https://avatars0.githubusercontent.com/u/1303861?v=3&amp;s=48" width="24" />
+            <a href="/OleksandrBezhan">OleksandrBezhan</a>
+          </li>
+          <li class="facebox-user-list-item">
+            <img alt="Michal Hernas" data-user="1025588" height="24" src="https://avatars3.githubusercontent.com/u/1025588?v=3&amp;s=48" width="24" />
+            <a href="/bimusiek">bimusiek</a>
+          </li>
+          <li class="facebox-user-list-item">
+            <img alt="Matthew Miller" data-user="314629" height="24" src="https://avatars0.githubusercontent.com/u/314629?v=3&amp;s=48" width="24" />
+            <a href="/brocksamson">brocksamson</a>
+          </li>
+          <li class="facebox-user-list-item">
+            <img alt="Sam Yorobekoff" data-user="4434217" height="24" src="https://avatars2.githubusercontent.com/u/4434217?v=3&amp;s=48" width="24" />
+            <a href="/sjorobekov">sjorobekov</a>
+          </li>
+      </ul>
+    </div>
+  </div>
+
+<div class="file">
+  <div class="file-header">
+    <div class="file-actions">
+
+      <div class="btn-group">
+        <a href="/nervgh/angular-file-upload/raw/master/angular-file-upload.min.map" class="btn btn-sm " id="raw-url">Raw</a>
+          <a href="/nervgh/angular-file-upload/blame/master/angular-file-upload.min.map" class="btn btn-sm js-update-url-with-hash">Blame</a>
+        <a href="/nervgh/angular-file-upload/commits/master/angular-file-upload.min.map" class="btn btn-sm " rel="nofollow">History</a>
+      </div>
+
+        <a class="octicon-btn tooltipped tooltipped-nw"
+           href="https://windows.github.com"
+           aria-label="Open this file in GitHub for Windows">
+            <span class="octicon octicon-device-desktop"></span>
+        </a>
+
+          <button type="button" class="octicon-btn disabled tooltipped tooltipped-n" aria-label="You must be signed in to make or propose changes">
+            <span class="octicon octicon-pencil"></span>
+          </button>
+
+        <button type="button" class="octicon-btn octicon-btn-danger disabled tooltipped tooltipped-n" aria-label="You must be signed in to make or propose changes">
+          <span class="octicon octicon-trashcan"></span>
+        </button>
+    </div>
+
+    <div class="file-info">
+        1 lines (1 sloc)
+        <span class="file-info-divider"></span>
+      18.938 kb
+    </div>
+  </div>
+  
+  <div class="blob-wrapper data type-text">
+      <table class="highlight tab-size-8 js-file-line-container">
+      <tr>
+        <td id="L1" class="blob-num js-line-number" data-line-number="1"></td>
+        <td id="LC1" class="blob-code js-file-line">{&quot;version&quot;:3,&quot;file&quot;:&quot;angular-file-upload.min.js&quot;,&quot;sources&quot;:[&quot;angular-file-upload.js&quot;],&quot;names&quot;:[&quot;angular&quot;,&quot;factory&quot;,&quot;define&quot;,&quot;amd&quot;,&quot;module&quot;,&quot;value&quot;,&quot;url&quot;,&quot;alias&quot;,&quot;headers&quot;,&quot;queue&quot;,&quot;progress&quot;,&quot;autoUpload&quot;,&quot;removeAfterUpload&quot;,&quot;method&quot;,&quot;filters&quot;,&quot;formData&quot;,&quot;queueLimit&quot;,&quot;Number&quot;,&quot;MAX_VALUE&quot;,&quot;withCredentials&quot;,&quot;fileUploaderOptions&quot;,&quot;$rootScope&quot;,&quot;$http&quot;,&quot;$window&quot;,&quot;$compile&quot;,&quot;FileUploader&quot;,&quot;options&quot;,&quot;settings&quot;,&quot;copy&quot;,&quot;extend&quot;,&quot;this&quot;,&quot;isUploading&quot;,&quot;_nextIndex&quot;,&quot;_failFilterIndex&quot;,&quot;_directives&quot;,&quot;select&quot;,&quot;drop&quot;,&quot;over&quot;,&quot;unshift&quot;,&quot;name&quot;,&quot;fn&quot;,&quot;_queueLimitFilter&quot;,&quot;_folderFilter&quot;,&quot;FileLikeObject&quot;,&quot;fileOrInput&quot;,&quot;isInput&quot;,&quot;isElement&quot;,&quot;fakePathOrObject&quot;,&quot;postfix&quot;,&quot;isString&quot;,&quot;FileItem&quot;,&quot;uploader&quot;,&quot;some&quot;,&quot;input&quot;,&quot;element&quot;,&quot;file&quot;,&quot;isReady&quot;,&quot;isUploaded&quot;,&quot;isSuccess&quot;,&quot;isCancel&quot;,&quot;isError&quot;,&quot;index&quot;,&quot;_file&quot;,&quot;_input&quot;,&quot;_replaceNode&quot;,&quot;FileDirective&quot;,&quot;prop&quot;,&quot;push&quot;,&quot;_saveLinks&quot;,&quot;bind&quot;,&quot;FileSelect&quot;,&quot;super_&quot;,&quot;apply&quot;,&quot;arguments&quot;,&quot;isHTML5&quot;,&quot;removeAttr&quot;,&quot;FileDrop&quot;,&quot;FileOver&quot;,&quot;prototype&quot;,&quot;File&quot;,&quot;FormData&quot;,&quot;addToQueue&quot;,&quot;files&quot;,&quot;list&quot;,&quot;isArrayLikeObject&quot;,&quot;arrayOfFilters&quot;,&quot;_getFilters&quot;,&quot;count&quot;,&quot;length&quot;,&quot;addedFileItems&quot;,&quot;forEach&quot;,&quot;temp&quot;,&quot;_isValidFile&quot;,&quot;fileItem&quot;,&quot;_onAfterAddingFile&quot;,&quot;filter&quot;,&quot;_onWhenAddingFileFailed&quot;,&quot;_onAfterAddingAll&quot;,&quot;_getTotalProgress&quot;,&quot;_render&quot;,&quot;uploadAll&quot;,&quot;removeFromQueue&quot;,&quot;getIndexOfItem&quot;,&quot;item&quot;,&quot;cancel&quot;,&quot;splice&quot;,&quot;_destroy&quot;,&quot;clearQueue&quot;,&quot;remove&quot;,&quot;uploadItem&quot;,&quot;transport&quot;,&quot;_prepareToUploading&quot;,&quot;cancelItem&quot;,&quot;abort&quot;,&quot;items&quot;,&quot;getNotUploadedItems&quot;,&quot;upload&quot;,&quot;cancelAll&quot;,&quot;isFile&quot;,&quot;isFileLikeObject&quot;,&quot;isObject&quot;,&quot;isNumber&quot;,&quot;indexOf&quot;,&quot;getReadyItems&quot;,&quot;sort&quot;,&quot;item1&quot;,&quot;item2&quot;,&quot;destroy&quot;,&quot;key&quot;,&quot;object&quot;,&quot;onAfterAddingAll&quot;,&quot;onAfterAddingFile&quot;,&quot;onWhenAddingFileFailed&quot;,&quot;onBeforeUploadItem&quot;,&quot;onProgressItem&quot;,&quot;onProgressAll&quot;,&quot;onSuccessItem&quot;,&quot;onErrorItem&quot;,&quot;onCancelItem&quot;,&quot;onCompleteItem&quot;,&quot;onCompleteAll&quot;,&quot;notUploaded&quot;,&quot;uploaded&quot;,&quot;ratio&quot;,&quot;current&quot;,&quot;Math&quot;,&quot;round&quot;,&quot;isUndefined&quot;,&quot;isArray&quot;,&quot;names&quot;,&quot;match&quot;,&quot;$$phase&quot;,&quot;$apply&quot;,&quot;size&quot;,&quot;type&quot;,&quot;every&quot;,&quot;call&quot;,&quot;_isSuccessCode&quot;,&quot;status&quot;,&quot;_transformResponse&quot;,&quot;response&quot;,&quot;headersGetter&quot;,&quot;_headersGetter&quot;,&quot;defaults&quot;,&quot;transformResponse&quot;,&quot;transformFn&quot;,&quot;_parseHeaders&quot;,&quot;val&quot;,&quot;i&quot;,&quot;parsed&quot;,&quot;split&quot;,&quot;line&quot;,&quot;slice&quot;,&quot;trim&quot;,&quot;toLowerCase&quot;,&quot;parsedHeaders&quot;,&quot;_xhrTransport&quot;,&quot;xhr&quot;,&quot;_xhr&quot;,&quot;XMLHttpRequest&quot;,&quot;form&quot;,&quot;that&quot;,&quot;_onBeforeUploadItem&quot;,&quot;obj&quot;,&quot;append&quot;,&quot;onprogress&quot;,&quot;event&quot;,&quot;lengthComputable&quot;,&quot;loaded&quot;,&quot;total&quot;,&quot;_onProgressItem&quot;,&quot;onload&quot;,&quot;getAllResponseHeaders&quot;,&quot;gist&quot;,&quot;_onCompleteItem&quot;,&quot;onerror&quot;,&quot;_onErrorItem&quot;,&quot;onabort&quot;,&quot;_onCancelItem&quot;,&quot;open&quot;,&quot;setRequestHeader&quot;,&quot;send&quot;,&quot;_iframeTransport&quot;,&quot;iframe&quot;,&quot;Date&quot;,&quot;now&quot;,&quot;_form&quot;,&quot;replaceWith&quot;,&quot;action&quot;,&quot;target&quot;,&quot;enctype&quot;,&quot;encoding&quot;,&quot;html&quot;,&quot;contentDocument&quot;,&quot;body&quot;,&quot;innerHTML&quot;,&quot;e&quot;,&quot;dummy&quot;,&quot;_onSuccessItem&quot;,&quot;unbind&quot;,&quot;after&quot;,&quot;submit&quot;,&quot;_onBeforeUpload&quot;,&quot;_onProgress&quot;,&quot;_onSuccess&quot;,&quot;_onError&quot;,&quot;_onCancel&quot;,&quot;_onComplete&quot;,&quot;nextItem&quot;,&quot;isDefined&quot;,&quot;inherit&quot;,&quot;source&quot;,&quot;Object&quot;,&quot;create&quot;,&quot;constructor&quot;,&quot;_createFromFakePath&quot;,&quot;path&quot;,&quot;lastModifiedDate&quot;,&quot;lastIndexOf&quot;,&quot;_createFromObject&quot;,&quot;onBeforeUpload&quot;,&quot;onProgress&quot;,&quot;onSuccess&quot;,&quot;onError&quot;,&quot;onCancel&quot;,&quot;onComplete&quot;,&quot;clone&quot;,&quot;scope&quot;,&quot;css&quot;,&quot;events&quot;,&quot;$destroy&quot;,&quot;change&quot;,&quot;getOptions&quot;,&quot;getFilters&quot;,&quot;isEmptyAfterSelection&quot;,&quot;attr&quot;,&quot;onChange&quot;,&quot;dragover&quot;,&quot;dragleave&quot;,&quot;onDrop&quot;,&quot;transfer&quot;,&quot;_getTransfer&quot;,&quot;_preventAndStop&quot;,&quot;_removeOverClass&quot;,&quot;onDragOver&quot;,&quot;_haveFiles&quot;,&quot;types&quot;,&quot;dropEffect&quot;,&quot;_addOverClass&quot;,&quot;onDragLeave&quot;,&quot;currentTarget&quot;,&quot;dataTransfer&quot;,&quot;originalEvent&quot;,&quot;preventDefault&quot;,&quot;stopPropagation&quot;,&quot;contains&quot;,&quot;addOverClass&quot;,&quot;removeOverClass&quot;,&quot;overClass&quot;,&quot;addClass&quot;,&quot;getOverClass&quot;,&quot;removeClass&quot;,&quot;directive&quot;,&quot;$parse&quot;,&quot;link&quot;,&quot;attributes&quot;,&quot;$eval&quot;,&quot;TypeError&quot;],&quot;mappings&quot;:&quot;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&quot;}</td>
+      </tr>
+</table>
+
+  </div>
+
+</div>
+
+<a href="#jump-to-line" rel="facebox[.linejump]" data-hotkey="l" style="display:none">Jump to Line</a>
+<div id="jump-to-line" style="display:none">
+  <form accept-charset="UTF-8" action="" class="js-jump-to-line-form" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+    <input class="linejump-input js-jump-to-line-field" type="text" placeholder="Jump to line&hellip;" autofocus>
+    <button type="submit" class="btn">Go</button>
+</form></div>
+
+        </div>
+
+      </div><!-- /.repo-container -->
+      <div class="modal-backdrop"></div>
+    </div><!-- /.container -->
+  </div><!-- /.site -->
+
+
+    </div><!-- /.wrapper -->
+
+      <div class="container">
+  <div class="site-footer" role="contentinfo">
+    <ul class="site-footer-links right">
+        <li><a href="https://status.github.com/" data-ga-click="Footer, go to status, text:status">Status</a></li>
+      <li><a href="https://developer.github.com" data-ga-click="Footer, go to api, text:api">API</a></li>
+      <li><a href="https://training.github.com" data-ga-click="Footer, go to training, text:training">Training</a></li>
+      <li><a href="https://shop.github.com" data-ga-click="Footer, go to shop, text:shop">Shop</a></li>
+        <li><a href="https://github.com/blog" data-ga-click="Footer, go to blog, text:blog">Blog</a></li>
+        <li><a href="https://github.com/about" data-ga-click="Footer, go to about, text:about">About</a></li>
+
+    </ul>
+
+    <a href="https://github.com" aria-label="Homepage">
+      <span class="mega-octicon octicon-mark-github" title="GitHub"></span>
+</a>
+    <ul class="site-footer-links">
+      <li>&copy; 2015 <span title="0.03798s from github-fe133-cp1-prd.iad.github.net">GitHub</span>, Inc.</li>
+        <li><a href="https://github.com/site/terms" data-ga-click="Footer, go to terms, text:terms">Terms</a></li>
+        <li><a href="https://github.com/site/privacy" data-ga-click="Footer, go to privacy, text:privacy">Privacy</a></li>
+        <li><a href="https://github.com/security" data-ga-click="Footer, go to security, text:security">Security</a></li>
+        <li><a href="https://github.com/contact" data-ga-click="Footer, go to contact, text:contact">Contact</a></li>
+    </ul>
+  </div>
+</div>
+
+
+    <div class="fullscreen-overlay js-fullscreen-overlay" id="fullscreen_overlay">
+  <div class="fullscreen-container js-suggester-container">
+    <div class="textarea-wrap">
+      <textarea name="fullscreen-contents" id="fullscreen-contents" class="fullscreen-contents js-fullscreen-contents" placeholder=""></textarea>
+      <div class="suggester-container">
+        <div class="suggester fullscreen-suggester js-suggester js-navigation-container"></div>
+      </div>
+    </div>
+  </div>
+  <div class="fullscreen-sidebar">
+    <a href="#" class="exit-fullscreen js-exit-fullscreen tooltipped tooltipped-w" aria-label="Exit Zen Mode">
+      <span class="mega-octicon octicon-screen-normal"></span>
+    </a>
+    <a href="#" class="theme-switcher js-theme-switcher tooltipped tooltipped-w"
+      aria-label="Switch themes">
+      <span class="octicon octicon-color-mode"></span>
+    </a>
+  </div>
+</div>
+
+
+
+    
+    
+
+    <div id="ajax-error-message" class="flash flash-error">
+      <span class="octicon octicon-alert"></span>
+      <a href="#" class="octicon octicon-x flash-close js-ajax-error-dismiss" aria-label="Dismiss error"></a>
+      Something went wrong with that request. Please try again.
+    </div>
+
+
+      <script crossorigin="anonymous" src="https://assets-cdn.github.com/assets/frameworks-d22b59d0085e83b7549ba4341ec9e68f80c2f29c8e49213ee182003dc8d568c6.js"></script>
+      <script async="async" crossorigin="anonymous" src="https://assets-cdn.github.com/assets/github-504dff3e8e0e391a1b545db0b1d117e086a912948fd385da44a23112ae1063a4.js"></script>
+      
+      
+
+  </body>
+</html>
+

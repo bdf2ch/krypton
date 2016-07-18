@@ -250,15 +250,20 @@
 
 
 
-    function kolenergoRun ($log, $kolenergo, $classes) {
+    function kolenergoRun ($log, $kolenergo, $classes, $http) {
         $log.log("krypton.app.kolenergo run...");
         $kolenergo.init();
     };
 
 
-    function UserAccountController ($log, $scope, $session, $kolenergo) {
+    function UserAccountController ($log, $scope, $session, $kolenergo, $http) {
         $scope.user = $session.getCurrentUser();
         $scope.kolenergo = $kolenergo;
+        
+        $scope.uploaderData = {
+            action: "uploadUserPhoto",
+            userId: $session.getCurrentUser().id.value
+        };
 
 
         $scope.department = {
@@ -400,6 +405,21 @@
         $scope.cancel = function () {
             $log.log("cancel called");
             $scope.user._states_.editing(false);
+        };
+        
+        
+        $scope.onCompleteUploadUserPhoto = function (data) {
+            $log.log("photo upload complete");
+            $log.log(data);
+            //$http.post("serverside/libs/krypton/uploader.php", $scope.uploaderData)
+            //    .success(function (data) {
+            //        if (data !== undefined) {
+            //            $log.log(data);
+            //        }
+            //    });
+            var file = $factory({ classes: ["File", "Model", "States"], base_class: "File" });
+            file._model_.fromAnother(data);
+            $session.getCurrentUser().photoUrl.value = "/uploads/users/" + $session.getCurrentUser().id.value + "/" + file.title.value;
         };
     };
 

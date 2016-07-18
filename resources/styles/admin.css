@@ -694,14 +694,7 @@
   border: 1px solid #F5F5F5;
   background: #FAFAFA;
 }
-<<<<<<< HEAD
-.krypton-ui-tree .tree-item.with-children.expanded {
-  margin-bottom: 5px;
-}
 .krypton-ui-tree .tree-item.active .tree-item-content:first-of-type {
-=======
-.krypton-ui-tree .tree-item.active .tree-item-content {
->>>>>>> d27c8d5660de0f4884fad81d1f3632828d2b665d
   background: #EEEEEE;
   border-left: 3px solid #2196F3;
 }

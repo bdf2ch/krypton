@@ -3,7 +3,7 @@
 
 (function () {
     angular
-        .module("krypton.admin", ["ngRoute", "ngCookies", "ngSanitize", "krypton", "krypton.ui", "krypton.app.kolenergo"])
+        .module("krypton.admin", ["ngRoute", "ngCookies", "ngSanitize", "angularFileUpload", "krypton", "krypton.ui", "krypton.app.kolenergo"])
         .config(function ($routeProvider,$sceProvider) {
             $sceProvider.enabled(false);
         })

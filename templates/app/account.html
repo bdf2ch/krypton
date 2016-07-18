@@ -5,6 +5,17 @@
     <div id="user-photo" class="width-30">
         <img class="width-100" src="resources/images/no_photo.png" alt="">
         <button class="blue width-100"><i class="fa fa-upload" aria-hidden="true"></i>&nbsp; Загрузить фото</button>
+        <label for="userfile" class="label-button">
+            Приложить документ
+            <input
+                    type="file"
+                    name="userfile"
+                    id="userfile"
+                    uploader
+                    uploader-url="serverside/libs/krypton/uploader.php"
+                    uploader-data="uploaderData"
+                    uploader-on-complete-upload="onCompleteUploadUserPhoto"/>
+        </label>
     </div>
 
     <!-- Личные данные пользователя -->

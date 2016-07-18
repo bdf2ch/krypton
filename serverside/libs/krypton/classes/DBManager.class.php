@@ -622,6 +622,59 @@
             }
         }
 
+
+
+        public static function insert_file ($table, $column, $title) {
+            if ($table == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> insert_file: Не задан параметр - наименование таблицы");
+                return false;
+            }
+
+            if (gettype($table) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> insert_file: Неверно задан тип параметра - наименование таблицы");
+                return false;
+            }
+
+            if ($column == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> insert_file: Не задан параметр - наименование столбца");
+                return false;
+            }
+
+            if (gettype($column) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> insert_file: Неверно задан тип параметра - наименование столбца");
+                return false;
+            }
+
+            if ($title == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> insert_file: Не задан параметр - имя загружаемого файла");
+                return false;
+            }
+
+            if (gettype($title) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> insert_file: Неверно задан тип параметра - имя загружаемого файла");
+                return false;
+            }
+
+            if (!self::is_table_exists($table)) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_file: Таблица '".$table."' не найдена");
+                return false;
+            }
+
+            if (!self::is_column_exists($table, $column)) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_file: Столбец '".$column."' в таблице '".$table."' не найден");
+                return false;
+            }
+
+            if (!self::is_connected()) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_file: Отсутствует соединение с БД");
+                return false;
+            }
+
+
+
+
+        }
+
     };
 
 ?>

@@ -99,6 +99,12 @@
                 return false;
             }
 
+            $result = DBManager::add_column("kr_users", "photo", "mediumblob");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'photo' в таблицу с информацией о пользователях");
+                return false;
+            }
+
             $result = DBManager::add_column("kr_users", "password", "varchar(60) NOT NULL default ''");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'password' в таблицу с информацией о пользователях");

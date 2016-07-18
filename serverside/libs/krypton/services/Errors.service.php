@@ -6,6 +6,8 @@
         const ERROR_TYPE_DATABASE = 3;
         const ERROR_TYPE_LDAP = 4;
         const ERROR_TYPE_ACCESS = 5;
+        const ERROR_TYPE_FILE_UPLOAD = 6;
+        const ERROR_TYPE_FILE = 7;
 
         public static $errors = array();
         private static $lastError;

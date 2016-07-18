@@ -163,6 +163,8 @@
             API::add("deleteOrganization", "Kolenergo", "deleteOrganization");
             API::add("addDivision", "Kolenergo", "addDivision");
             API::add("editDivision", "Kolenergo", "editDivision");
+            API::add("uploadUserPhoto", "Kolenergo", "uploadUserPhoto");
+
 
 
 
@@ -469,6 +471,42 @@
                 $result = Sessions::login($login, $password);
                 return $result;
             }
+        }
+
+
+
+
+
+        public static function uploadUserPhoto ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> uploadUserPhoto: Не задан параметр - объект с данными о загружаемом фото");
+                return false;
+            }
+
+            $userId = $data -> userId;
+            $result = Files::is_folder_exists("users".DIRECTORY_SEPARATOR.$userId);
+            if (!$result) {
+                $result = Files::create_folder("users".DIRECTORY_SEPARATOR.$userId);
+                if (!$result) {
+                    Errors::push(Errors::ERROR_TYPE_FILE, "Kolenergo -> uploadUserPhoto: Не удалось создать папку 'users/".$userId."'");
+                    return false;
+                }
+            }
+
+            $file = Files::upload("users".DIRECTORY_SEPARATOR.$userId);
+            if (!$file) {
+                return Errors::push(Errors::ERROR_TYPE_FILE, "Koelnergo -> uploadUserPhoto: Не удалось загрузить фото пользователя");
+                return false;
+            }
+
+            $photo_url = "/uploads/users/".$userId."/".$file -> title -> value;
+            $result = DBManager::update("kr_users", ["photo_url"], ["'".$photo_url."'"], "id = $userId");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> uploadUserPhoto: Не удалось обновить фото пользователя в БД");
+                return false;
+            }
+
+            return $file;
         }
 
 
