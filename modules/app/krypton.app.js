@@ -29,11 +29,15 @@
                 })
                 .when("/phones", {
                     templateUrl: "templates/app/telephones.html",
-                    controller: "TelephonesController"
+                    controller: "PhoneBookController"
                 })
                 .when("/account", {
                     templateUrl: "templates/app/account.html",
                     controller: "UserAccountController"
+                })
+                .when("/login", {
+                    templateUrl: "templates/app/login.html",
+                    controller: "LoginController"
                 })
                 .otherwise({
                     redirectTo: "/"

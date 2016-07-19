@@ -100,6 +100,12 @@
                 return false;
             }
 
+            $result = DBManager::add_column("divisions", "organization_id", "int(11) NOT NULL default 0");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу отделов");
+                return false;
+            }
+
             $result = DBManager::add_column("divisions", "department_id", "int(11) NOT NULL default 0");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу отделов");
@@ -164,6 +170,7 @@
             API::add("addDivision", "Kolenergo", "addDivision");
             API::add("editDivision", "Kolenergo", "editDivision");
             API::add("uploadUserPhoto", "Kolenergo", "uploadUserPhoto");
+            API::add("login", "Kolenergo", "login");
 
 
 
@@ -337,7 +344,7 @@
                 return false;
             }
 
-            $result = DBManager::insert_row("divisions", ["parent_id", "title"], [$data -> parentId, "'".$data -> title."'"]);
+            $result = DBManager::insert_row("divisions", ["organization_id", "parent_id", "title"], [$data -> organizationId, $data -> parentId, "'".$data -> title."'"]);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось добавить отдел");
                 return false;
@@ -429,29 +436,36 @@
 
 
 
-        public function login ($login, $password) {
-            if ($login == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - логин пользователя");
+        public static function login ($params) {
+            $errors = array();
+
+            if ($params == null) {
+                array_push($errors, Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр -  объект с данными"));
                 return false;
             }
 
-            if (gettype($login) != "string") {
+            if ($params -> login == null) {
+                array_push(Errors::push($errors, Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - логин пользователя"));
+                return false;
+            }
+
+            if (gettype($params -> login) != "string") {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тп параметра - логин пользователя");
                 return false;
             }
 
-            if ($password == null) {
+            if ($params -> password == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Не задан параметр - пароль пользователя");
                 return false;
             }
 
-            if (gettype($password) != "string") {
+            if (gettype($params -> password) != "string") {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> login: Неверно задан тип параметра - пароль пользователя");
                 return false;
             }
 
             if (Extensions::get("LDAP") -> get("enabled")) {
-                $user = Extensions::get("LDAP") -> login($login, $password);
+                $user = Extensions::get("LDAP") -> login($params -> login, $params -> password);
                 if ($user != false) {
                     $result = Users::getByEmail($user -> email -> value);
                     if (!$result) {
@@ -468,7 +482,7 @@
                     return false;
                 }
             } else {
-                $result = Sessions::login($login, $password);
+                $result = Sessions::login($params -> login, $params -> password);
                 return $result;
             }
         }

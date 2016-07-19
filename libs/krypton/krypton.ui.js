@@ -11,6 +11,7 @@
             .factory("$hierarchy", hierarchyFactory)
             .directive("hierarchy", hierarchyDirective)
             .directive("modelList", modelListDirective)
+            .directive("centered", centeredDirective)
             .factory("$modals", modalsFactory)
             .directive("modal", modalDirective)
             .run(kryptonUIRun);
@@ -1718,6 +1719,38 @@
                 }
             }
         }    
+    };
+    
+    
+    
+    
+    
+    function centeredDirective ($window, $log) {
+        return {
+            restrict: "A",
+            link: function (scope, element, attrs) {
+
+                var redraw = function () {
+                    var left = ($window.innerWidth / 2) - angular.element(element).prop("clientWidth") / 2 + "px";
+                    var top = ($window.innerHeight / 2) - ((angular.element(element).prop("clientHeight")) / 2) + "px";
+                    angular.element(element).css("left", left);
+                    angular.element(element).css("top", top);
+                };
+
+
+                angular.element($window).bind("resize", function () {
+                    redraw();
+                });
+
+                redraw();
+
+                element[0].addEventListener("DOMSubtreeModified", function () {
+                    redraw();
+                }, false);
+
+
+            }
+        }
     };
 
 })();

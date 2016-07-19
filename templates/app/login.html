@@ -1,0 +1,40 @@
+<div id="bg-layout"></div>
+
+
+<div id="app-login">
+
+
+    <form action="" id="login-form" centered>
+        <span class="fa fa-user login-header"></span>
+
+        <div class="row padding-20">
+            <div class="row padding-10 form-caption">
+                Авторизация
+            </div>
+
+            <div class="row padding-10">
+                <input type="text" name="login" id="login" class="big dark obtique text-center width-100" placeholder="Учетная запись" ng-model="login">
+            </div>
+
+            <div class="row padding-10">
+                <input type="password" name="password" id="password" class="big dark obtique text-center width-100 width-100" placeholder="Пароль" ng-model="password">
+            </div>
+
+            <div class="row padding-10">
+                <input type="submit" value="Войти" class="width-50 blue obtique center" ng-disabled="loading" ng-click="send()">
+            </div>
+        </div>
+
+
+        <div class="row login-errors" ng-show="errors.length > 0">
+
+            <span class="login-error" ng-repeat="error in errors">
+                <span class="fa fa-exclamation-circle"></span> &nbsp;
+                {{ error }}
+            </span>
+        </div>
+    </form>
+
+</div>
+
+

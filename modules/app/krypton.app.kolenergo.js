@@ -5,6 +5,8 @@
         .module("krypton.app.kolenergo", ["krypton"])
         .factory("$kolenergo", kolenergoFactory)
         .controller("UserAccountController", UserAccountController)
+        .controller("LoginController", LoginController)
+        .controller("PhoneBookController", PhoneBookController)
         .filter("byDepartmentId", byDepartmentIdFilter)
         .run(kolenergoRun);
 
@@ -40,6 +42,7 @@
         $classes.add("Division", {
             __dependencies__: [],
             id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            organizationId: new Field({ source: "organization_id", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
             departmentId: new Field({ source: "department_id", type: DATA_TYPE_STRING, value: 0, default_value: 0, backupable: true }),
             parentId: new Field({ source: "parent_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
             title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
@@ -417,16 +420,19 @@
             //            $log.log(data);
             //        }
             //    });
-            var file = $factory({ classes: ["File", "Model", "States"], base_class: "File" });
-            file._model_.fromAnother(data);
-            $session.getCurrentUser().photo.value = file.url.value;
+            if (data.result !== false) {
+                var file = $factory({ classes: ["File", "Model", "States"], base_class: "File" });
+                file._model_.fromAnother(data.result);
+                $session.getCurrentUser().photo.value = file.url.value;
+            }
+
         };
     };
 
 
 
 
-    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http, $hierarchy) {
+    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http, $hierarchy, $errors) {
         $scope.kolenergo = $kolenergo;
         $scope.modals = $modals;
         $scope.departments = $kolenergo.getDepartments();
@@ -475,6 +481,7 @@
         };
 
 
+
         /**
          * Открывает модальное окно добавления новой организации
          */
@@ -483,6 +490,7 @@
             $scope.newOrganization._backup_.restore();
             $scope.newOrganization._backup_.setup();
         };
+
 
 
         /**
@@ -495,25 +503,31 @@
         };
 
 
+
         /**
          * Добавляет новую организацию
          */
         $scope.addOrganization = function () {
-            var data = {
+            var params = {
+                action: "addOrganization",
                 title: $scope.newOrganization.title.value
             };
-            $http.post("/serverside/libs/krypton/api.php", {action: "addOrganization", data : data })
+            $http.post("/serverside/libs/krypton/api.php", params)
                 .success(function (data) {
                     if (data !== undefined) {
                         $log.log(data);
-                        var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
-                        organization._model_.fromAnother(data);
-                        organization._backup_.setup();
-                        $kolenergo.organizations.add(organization);
-                        $modals.close("new-organization-modal");
+                        $errors.checkResponse(data);
+                        if (data.result !== false) {
+                            var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
+                            organization._model_.fromAnother(data.result);
+                            organization._backup_.setup();
+                            $kolenergo.organizations.add(organization);
+                            $modals.close("new-organization-modal");
+                        }
                     }
                 });
         };
+
 
         
         /**
@@ -524,37 +538,43 @@
         };
 
 
+
         /**
          * Закрывает модальное окно редактирования организации
          */
         $scope.closeEditOrganizationModal = function () {
-            //$log.log($scope.currentOrganization._backup_.data);
-            //$scope.currentOrganization._backup_.restore();
             $kolenergo.organizations.getCurrent()._backup_.restore();
             $log.log("close edit");
         };
+
 
         
         /**
          * Сохраняет изменения измененнной организации
          */
         $scope.editOrganization = function () {
-            var data = {
+            var params = {
+                action: "editOrganization",
                 id: $kolenergo.organizations.getCurrent().id.value,
                 title: $kolenergo.organizations.getCurrent().title.value
             };
-            $http.post("/serverside/libs/krypton/api.php", {action: "editOrganization", data : data })
+            $http.post("/serverside/libs/krypton/api.php", params)
                 .success(function (data) {
                     if (data !== undefined && data !== null) {
                         $log.log(data);
-                        var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
-                        organization._model_.fromAnother(data);
-                        $kolenergo.organizations.getCurrent()._model_.fromAnother(organization);
-                        $kolenergo.organizations.getCurrent()._backup_.setup();
-                        $modals.close("edit-organization-modal");
+                        $errors.checkResponse(data);
+
+                        if (data.result !== false) {
+                            var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
+                            organization._model_.fromAnother(data.result);
+                            $kolenergo.organizations.getCurrent()._model_.fromAnother(organization);
+                            $kolenergo.organizations.getCurrent()._backup_.setup();
+                            $modals.close("edit-organization-modal");
+                        }
                     }
                 });
         };
+
 
 
         /**
@@ -565,21 +585,26 @@
         };
 
 
+
         /**
          * Удаляет организацию
          */
         $scope.deleteOrganization = function () {
             var params = {
+                action: "deleteOrganization",
                 id: $kolenergo.organizations.getCurrent().id.value
             };
-            $http.post("/serverside/libs/krypton/api.php", {action: "deleteOrganization", data : params })
+            $http.post("/serverside/libs/krypton/api.php", params)
                 .success(function (data) {
                     $log.log(data);
                     if (data !== undefined && data !== null) {
-                        if (JSON.parse(data) === true) {
-                            $kolenergo.organizations.delete(params.id);
-                            //$scope.currentOrganization = undefined;
-                            $modals.close("delete-organization-modal");
+                        $errors.checkResponse(data);
+
+                        if (data.result !== false) {
+                            if (JSON.parse(data.result) === true) {
+                                $kolenergo.organizations.delete(params.id);
+                                $modals.close("delete-organization-modal");
+                            }
                         }
                     }
                 });
@@ -588,31 +613,41 @@
 
 
         
-        $scope.onAddNewDivision = function () {
-            var data = {
+        $scope.addNewDivision = function () {
+            var params = {
+                action: "addDivision",
                 title: $scope.newDivision.title.value,
-                parentId: $scope.newDivision.parentId.value
+                parentId: $scope.newDivision.parentId.value,
+                organizationId: $scope.newDivision.organizationId.value
             };
-            $http.post("/serverside/libs/krypton/api.php", {action: "addDivision", data : data })
+            $http.post("/serverside/libs/krypton/api.php", params)
                 .success(function (data) {
                     if (data !== undefined) {
                         $log.log(data);
-                        var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
-                        division._model_.fromAnother(data);
-                        division._backup_.setup();
-                        $kolenergo.addDivision(division);
-                        //$hierarchy.add("test", division);
-                        $modals.close("new-division-modal");
+                        $errors.checkResponse(data);
+                        
+                        if (data.result !== false) {
+                            var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+                            division._model_.fromAnother(data.result);
+                            division._backup_.setup();
+                            $kolenergo.addDivision(division);
+                            //$hierarchy.add("test", division);
+                            $modals.close("new-division-modal");    
+                        }
+                       
                     }
                 });
         };
-
         
 
 
-        $scope.onAddDivision = function () {
+        $scope.openAddNewDivisionModal = function () {
             $modals.open("new-division-modal");
+            if ($kolenergo.organizations.getCurrent() !== undefined)
+                $scope.newDivision.organizationId.value = $kolenergo.organizations.getCurrent().id.value;
         };
+        
+        
 
         $scope.onCancelAddNewDivision = function () {
             $log.log("closed");
@@ -651,6 +686,64 @@
             $scope.currentDivision._backup_.restore();
             $scope.currentDivision._states_.changed(false);
         };
+    };
+    
+    
+    
+    
+    function LoginController ($scope, $log,  $errors, $http, $factory, $location, $session) {
+        $scope.login = "";
+        $scope.password = "";
+        $scope.errors = [];
+        $scope.loading = false;
+
+
+        $scope.send = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+
+            if ($scope.login === "")
+                $scope.errors.push("Вы не указали учетную запись");
+
+            if ($scope.password === "")
+                $scope.errors.push("Вы не указали пароль");
+
+            if ($scope.errors.length === 0) {
+                $scope.loading = true;
+                var params = {
+                    action: "login",
+                    login: $scope.login,
+                    password: $scope.password
+                };
+                $http.post("serverside/libs/krypton/api.php", params)
+                    .success (function (data) {
+                        $log.log(data);
+                        $scope.loading = false;
+
+                        $errors.checkResponse(data);
+
+
+                        if (data.result !== false) {
+                            var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+                            user._model_.fromAnother(data.result);
+                            user._backup_.setup();
+                            $log.log(user);
+                            $session.setCurrentUser(user);
+                            $location.url("\account");
+                        } else {
+                            $scope.errors.push("Пользователь не найден");
+                        }
+
+                    });
+            }
+        };
+    };
+
+
+
+
+
+    function PhoneBookController ($scope, $log, $users) {
+        $scope.users = $users;
     };
 
 

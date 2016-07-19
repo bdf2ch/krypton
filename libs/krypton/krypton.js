@@ -1194,6 +1194,24 @@ function isField (obj) {
                         }
                     }
                 }
+            },
+            
+            checkResponse: function (data) {
+                if (data === undefined) {
+                    this.add(ERROR_TYPE_DEFAULT, "$errors -> check: Не задан параметр - ответ сервера");
+                    return false;
+                }
+                
+                if (data.errors !== undefined && data.errors.length > 0) {
+                    var length = data.errors.length;
+                    for (var i = 0; i < length; i++) {
+                        var error = $factory({ classes: ["Error", "Model"], base_class: "Error" });
+                        error.type.value = data.errors[i].type;
+                        error.message.value = data.errors[i].message;
+                        error.timestamp.value = data.errors[i].timestamp;
+                        items.push(error);
+                    }
+                }
             }
         }
     };
@@ -1390,6 +1408,21 @@ function isField (obj) {
              */
             getCurrentUser: function () {
                 return user;
+            },
+            
+            setCurrentUser: function (usr) {
+                if (usr === undefined) {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$sessions -> setCurrentUser: Не задан параметр - экземпляр класса User");
+                    return false;
+                }
+                
+                if (usr.__class__ == undefined || usr.__class__ !== "User") {
+                    $errors.add(ERROR_TYPE_DEFAULT, "$session -> setCurrentUser: Неверно задан тип параметра - экземпляр класса User");
+                    return false;
+                }
+                
+                user = usr;
+                return true;
             },
 
             getUserGroups: function () {

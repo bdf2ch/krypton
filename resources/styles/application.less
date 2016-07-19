@@ -1,7 +1,7 @@
 @import "ui.less";
 @import "utils.less";
 
-@app-header-height: 40px;
+@app-header-height: 35px;
 @app-header-color: #FFGGLL;
 @app-top-padding: 50px;
 
@@ -18,12 +18,12 @@ html, body {
   right: 0px;
   height: @app-header-height;
   background: #0D47A1;
-  border-bottom: 5px solid #1E88E5;
+  //border-bottom: 5px solid #1E88E5;
   box-sizing: border-box;
 
   .menu-item {
     float: left;
-    height: @app-header-height - 5px;
+    height: @app-header-height;
     padding: 5px 15px;
     font-family: "Roboto Regular";
     font-size: 16px;
@@ -58,7 +58,7 @@ html, body {
   overflow: hidden;
   min-width: 1200px;
   //border: 1px solid green;
-  background: url("../images/powerlines.jpg");
+  //background: url("../images/powerlines.jpg");
   background-size: cover;
 }
 
@@ -69,7 +69,7 @@ html, body {
   right: 0px;
   bottom: 0px;
   overflow: auto;
-  background: rgba(255, 255, 255, 0.8);
+  //background: rgba(255, 255, 255, 0.8);
 
 }
 
@@ -77,6 +77,74 @@ html, body {
 
 
 /********** TELEPHONES **********/
+#app-phones {
+
+  #companies {
+    background: #FAFAFA;
+
+    .companies-header {
+      height: 50px;
+      background: white;
+      //border: 1px solid red;
+      
+    }
+  }
+
+  #contacts {
+    border-left: 1px solid @ui-border-color;
+    box-sizing: border-box;
+
+
+
+    .contact {
+      height: 200px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      //border: 1px solid @ui-border-color;
+      border-bottom: 1px solid @ui-border-color;
+
+      .contact-photo {
+        float: left;
+        margin-right: 5px;
+
+        img {
+          width: 270px;
+          height: 200px;
+          //border: 1px solid black;
+          //border-radius: 50%;
+        }
+      }
+
+      .contact-details {
+        float: left;
+
+        .surname {
+          display: block;
+          font-size: 30px;
+          line-height: 25px;
+          color: black;
+        }
+
+        .name {
+          display: block;
+          font-size: 23px;
+          color: #212121;
+        }
+
+        .position {
+          font-size: 18px;
+          color: #607D8B;
+        }
+      }
+
+    }
+
+
+
+  }
+
+}
+
 #telephones-search-box {
   padding-top: 30px;
 }
@@ -201,6 +269,85 @@ html, body {
       color: #01579B;
     }
   }
+
+}
+
+
+
+
+/********** LOGIN **********/
+
+#bg-layout {
+  //display: block;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 1;
+  background: url("../images/powerlines-2.jpg");
+  background-size: cover;
+  //background-origin: content-box;
+  -webkit-filter: blur(5px);
+}
+
+
+#app-login {
+  position: relative;
+  height: 100%;
+  z-index: 2;
+}
+
+
+#login-form {
+  position: absolute;
+  display: block;
+  width: 400px;
+  background: white;
+  border-radius: 2px;
+  .box-shadow(1px, 1px, 20px, 1px, rgba(0, 0, 0, 0.2));
+
+  .login-header {
+    display: block;
+    width: 60px;
+    height: 60px;
+    margin-top: -30px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 40px;
+    line-height: 60px;
+    text-align: center;
+    background: @color-blue;
+    color: white;
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
+  .form-caption {
+    font-size: 24px;
+    text-align: center;
+    color: black;
+    //border-bottom: 1px solid @ui-border-color;
+  }
+
+  .login-errors {
+    padding: 10px;
+    background: @color-light-red;
+
+    .login-error {
+      display: block;
+      padding-left: 30px;
+      padding-right: 10px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      //text-align: center;
+      font-size: 14px;
+      line-height: 13px;
+      color: @color-red;
+
+    }
+  }
+
 
 }
 

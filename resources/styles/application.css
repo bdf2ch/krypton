@@ -987,27 +987,27 @@ label.button {
 }
 label.button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 label.button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 label.button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 label.button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 label.button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 label.button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 label.button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 label.button.transparent {
   background: transparent;
@@ -1038,6 +1038,20 @@ input[type='password'].label {
 input[type='text'].label.border-top,
 input[type='password'].label.border-top {
   border-top: 1px solid lightgrey;
+}
+input[type='text'].dark,
+input[type='password'].dark {
+  background: #F5F5F5;
+  border: none;
+}
+input[type='text'].obtique,
+input[type='password'].obtique {
+  border-radius: 3px;
+}
+input[type='text'].big,
+input[type='password'].big {
+  height: 41px;
+  padding: 10px;
 }
 select {
   height: 35px;
@@ -1075,6 +1089,11 @@ input[type='submit'].rounded,
 button.rounded {
   border-radius: 50%;
 }
+input[type='button'].obtique,
+input[type='submit'].obtique,
+button.obtique {
+  border-radius: 3px;
+}
 input[type='button'].small,
 input[type='submit'].small,
 button.small {
@@ -1107,39 +1126,44 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
+}
+input[type='button'].blue[disabled],
+input[type='submit'].blue[disabled],
+button.blue[disabled] {
+  background: #BBDEFB;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -1180,22 +1204,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4caf50;
+  color: #4CAF50;
 }
 a.green:hover {
-  color: #388e3c;
+  color: #388E3C;
 }
 a.red {
-  color: #f44336;
+  color: #F44336;
 }
 a.red:hover {
-  color: #d32f2f;
+  color: #D32F2F;
 }
 a.blue {
-  color: #2196f3;
+  color: #2196F3;
 }
 a.blue:hover {
-  color: #1976d2;
+  color: #1976D2;
 }
 /**********
 ** COLORS
@@ -1352,9 +1376,8 @@ body {
   left: 0px;
   top: 0px;
   right: 0px;
-  height: 40px;
+  height: 35px;
   background: #0D47A1;
-  border-bottom: 5px solid #1E88E5;
   box-sizing: border-box;
 }
 #app-header .menu-item {
@@ -1379,13 +1402,12 @@ body {
 }
 #app-wrapper {
   position: absolute;
-  top: 40px;
+  top: 35px;
   left: 0px;
   right: 0px;
   bottom: 0px;
   overflow: hidden;
   min-width: 1200px;
-  background: url("../images/powerlines.jpg");
   background-size: cover;
 }
 #app-content {
@@ -1395,9 +1417,51 @@ body {
   right: 0px;
   bottom: 0px;
   overflow: auto;
-  background: rgba(255, 255, 255, 0.8);
 }
 /********** TELEPHONES **********/
+#app-phones #companies {
+  background: #FAFAFA;
+}
+#app-phones #companies .companies-header {
+  height: 50px;
+  background: white;
+}
+#app-phones #contacts {
+  border-left: 1px solid lightgrey;
+  box-sizing: border-box;
+}
+#app-phones #contacts .contact {
+  height: 200px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid lightgrey;
+}
+#app-phones #contacts .contact .contact-photo {
+  float: left;
+  margin-right: 5px;
+}
+#app-phones #contacts .contact .contact-photo img {
+  width: 270px;
+  height: 200px;
+}
+#app-phones #contacts .contact .contact-details {
+  float: left;
+}
+#app-phones #contacts .contact .contact-details .surname {
+  display: block;
+  font-size: 30px;
+  line-height: 25px;
+  color: black;
+}
+#app-phones #contacts .contact .contact-details .name {
+  display: block;
+  font-size: 23px;
+  color: #212121;
+}
+#app-phones #contacts .contact .contact-details .position {
+  font-size: 18px;
+  color: #607D8B;
+}
 #telephones-search-box {
   padding-top: 30px;
 }
@@ -1438,7 +1502,7 @@ body {
 }
 /********** ACCOUNT **********/
 #user-account {
-  height: 60%;
+  height: 65%;
   padding-top: 50px;
   box-sizing: border-box;
 }
@@ -1487,4 +1551,65 @@ body {
   display: block;
   font-size: 18px;
   color: #01579B;
+}
+/********** LOGIN **********/
+#bg-layout {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 1;
+  background: url("../images/powerlines-2.jpg");
+  background-size: cover;
+  -webkit-filter: blur(5px);
+}
+#app-login {
+  position: relative;
+  height: 100%;
+  z-index: 2;
+}
+#login-form {
+  position: absolute;
+  display: block;
+  width: 400px;
+  background: white;
+  border-radius: 2px;
+  -webkit-box-shadow: 1px 1px 20px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 20px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 20px 1px rgba(0, 0, 0, 0.2);
+}
+#login-form .login-header {
+  display: block;
+  width: 60px;
+  height: 60px;
+  margin-top: -30px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 40px;
+  line-height: 60px;
+  text-align: center;
+  background: #2196F3;
+  color: white;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+#login-form .form-caption {
+  font-size: 24px;
+  text-align: center;
+  color: black;
+}
+#login-form .login-errors {
+  padding: 10px;
+  background: #FFCDD2;
+}
+#login-form .login-errors .login-error {
+  display: block;
+  padding-left: 30px;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 14px;
+  line-height: 13px;
+  color: #F44336;
 }

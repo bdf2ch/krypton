@@ -323,6 +323,20 @@ input[type='text'], input[type='password'] {
       border-top: 1px solid @ui-border-color;
     }
   }
+
+  &.dark {
+    background: #F5F5F5;
+    border: none;
+  }
+
+  &.obtique {
+    border-radius: 3px;
+  }
+
+  &.big {
+    height: @ui-input-height + 6px;
+    padding: 10px;
+  }
 }
 
 select {
@@ -363,6 +377,10 @@ input[type='button'], input[type='submit'], button {
     border-radius: 50%;
   }
 
+  &.obtique {
+    border-radius: 3px;
+  }
+
   &.small {
     display: inline-block;
     width: 20px;
@@ -393,6 +411,9 @@ input[type='button'], input[type='submit'], button {
     background: @color-blue;
     &:hover {
       background: @color-blue-hover;
+    }
+    &[disabled] {
+      background: @color-light-blue;
     }
   }
 

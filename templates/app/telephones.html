@@ -1,32 +1,36 @@
+<div id="app-phones" class="height-100">
 
+    <div class="row height-100">
 
-
-<div class="row">
-    <div id="telephones-divisions" class="width-30">
-        b
-    </div>
-
-    <div class="width-70">
-        <div id="telephones-search-box" class="width-100">
-            <input type="text" class="width-90 center" name="" id="" placeholder="Введите имя, телефон или e-mail" ng-model="person">
-        </div>
-        <div class="width-100">
-            <div class="nothing-found text-center" ng-show="person === ''">Начните вводить имя, контактный телефон или e-mail искомого контакта</div>
-            <div class="nothing-found text-center" ng-show="person !== ''">Не найдено контактов, удовлетворяющих Вашему запросу</div>
-
-            <div class="telephones-user width-100">
-                <div class="user-photo width-40">
-                    <img src="" alt="" title="">
-                </div>
-                <div class="user-info width-60">
-                    <div class="fio">dsfsdfsdf</div>
-                    <div class="position" ng-if="user.position.value !== ''">Инженер-программист</div>
-                    <div class="phones">
-                        тел. <span class="phone">55-55-66</span>
-                    </div>
-                </div>
+        <div id="companies" class="width-30 height-100">
+            <div class="row companies-header">
+                Огрганизации
             </div>
         </div>
+
+
+        <div id="contacts" class="width-70">
+            <div class="row padding-10">
+                <input type="text" name="" id="" class="width-100 big obtique dark">
+            </div>
+            <div class="row padding-10">
+
+                <div class="contact" ng-repeat="user in users.getUsers() track by $index">
+                    <div class="contact-photo">
+                        <img src="resources/images/no_photo.png" alt="Фотография отсутствует" ng-if="user.photo.value === ''">
+                        <img ng-src="{{ user.photo.value }}" alt="{{ user.fio }}" ng-if="user.photo.value !== ''">
+                    </div>
+                    <div class="contact-details">
+                        <span class="surname">{{ user.surname.value }}</span>
+                        <span class="name">{{ user.name.value + " " + user.fname.value }}</span>
+                        <span class="position">Должность</span>
+                        <span class="email"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
 </div>
