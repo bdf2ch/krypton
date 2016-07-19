@@ -134,7 +134,7 @@
                  */
                 select: function (organizationId) {
                     if (organizationId === undefined) {
-                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> selectOrganization: Не задан параметр - идентификатор организации");
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> organizations -> select: Не задан параметр - идентификатор организации");
                         return false;
                     }
 
@@ -151,7 +151,6 @@
                         } else
                             organizations[i]._states_.selected(false);
                     }
-                    $log.log("curret org = ", currentOrganization);
 
                     return true;
                 },
@@ -163,7 +162,7 @@
                  */
                 add: function (organization) {
                     if (organization == undefined) {
-                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> addOrganization: Не залан параметр - объект с информацией о новой организации");
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> add: Не залан параметр - объект с информацией о новой организации");
                         return false;
                     }
 
@@ -178,7 +177,7 @@
                  */
                 delete: function (organizationId) {
                     if (organizationId === undefined) {
-                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> deleteOrganization: Не задан параметр - идентификатор организации");
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> delete: Не задан параметр - идентификатор организации");
                         return false;
                     }
 
@@ -191,10 +190,92 @@
                         }
                     }
 
-                    $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> deleteOrganization: Организация с идентификатором " + organizationId + " не найдена");
+                    $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> delete: Организация с идентификатором " + organizationId + " не найдена");
                     return false;
                 },
 
+            },
+
+            divisions: {
+
+                /**
+                 * Возвращает массив всех отделов
+                 * @returns {Array}
+                 */
+                getAll: function () {
+                    return divisions;
+                },
+
+                getByOrganizationId: function (organizationId) {
+                    if (organizationId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> divisions -> getByOrganizationId: Не задан параметр - идентификатор организации");
+                        return false;
+                    }
+
+                    var result = [];
+                    var length = divisions.length;
+                    for (var i = 0; i < length; i++) {
+                        if (divisions[i].organizationId.value === organizationId)
+                            result.push(divisions[i]);
+                    }
+
+                    return result;
+                },
+
+                /**
+                 * Возвращает текущий отдел
+                 * @returns {Division / undefined}
+                 */
+                getCurrent: function () {
+                    return currentDivision;
+                },
+
+                /**
+                 * Выбирает отдел по идентификатору
+                 * @param divisionId {number} - идентификатор отдела
+                 * @returns {boolean}
+                 */
+                select: function (divisionId) {
+                    if (divisionId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> divisions -> select: Не задан параметр - идентификатор отдела");
+                        return false;
+                    }
+
+                    $log.log("divisions select");
+
+                    var length = divisions.length;
+                    for (var i = 0; i < length; i++) {
+                        if  (divisions[i].id.value === divisionId) {
+                            $log.log("div found", divisions[i]);
+                            if (divisions[i]._states_.selected() === false) {
+                                divisions[i]._states_.selected(true);
+                                currentDivision = divisions[i];
+                                $log.log("cur div = ", currentDivision);
+                            } else {
+                                divisions[i]._states_.selected(false);
+                                currentDivision = undefined;
+                            }
+                        } else
+                            divisions[i]._states_.selected(false);
+                    }
+
+                    return true;
+                },
+
+                /**
+                 * Добавляет новый отдел
+                 * @param division {Division} - объект с информацией о новом отделе
+                 * @returns {boolean}
+                 */
+                add: function (division) {
+                    if (division == undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> divisions -> add: Не залан параметр - объект с информацией о новом отделе");
+                        return false;
+                    }
+
+                    divisions.push(division);
+                    return true;
+                }
             },
 
 
@@ -435,17 +516,11 @@
     function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http, $hierarchy, $errors) {
         $scope.kolenergo = $kolenergo;
         $scope.modals = $modals;
-        $scope.departments = $kolenergo.getDepartments();
-        $scope.divisions = $kolenergo.getDivisions();
-        $scope.currentOrganization = undefined;
-        $scope.currentDepartmentId = undefined;
-        $scope.currentDivision = undefined;
+        $scope.hierarchy = [];
         $scope.newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
         $scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
 
-        $log.log("scope");
-
-
+        
         $scope.newDivision._backup_.setup();
 
 
@@ -481,6 +556,18 @@
         };
 
 
+        
+        $scope.selectOrganization = function (organizationId) {
+            if ($kolenergo.organizations.getCurrent() === undefined) {
+                $kolenergo.organizations.select(organizationId);
+                $scope.hierarchy = $kolenergo.divisions.getByOrganizationId(organizationId);
+            } else {
+                $kolenergo.organizations.select(organizationId);
+                $scope.hierarchy = [];
+            }
+        };
+        
+        
 
         /**
          * Открывает модальное окно добавления новой организации
@@ -544,7 +631,6 @@
          */
         $scope.closeEditOrganizationModal = function () {
             $kolenergo.organizations.getCurrent()._backup_.restore();
-            $log.log("close edit");
         };
 
 
@@ -610,8 +696,23 @@
                 });
         };
 
+        
+
+        $scope.openAddNewDivisionModal = function () {
+            $modals.open("new-division-modal");
+            if ($kolenergo.organizations.getCurrent() !== undefined)
+                $scope.newDivision.organizationId.value = $kolenergo.organizations.getCurrent().id.value;
+        };
 
 
+
+        $scope.closeAddNewDivisionModal = function () {
+            $scope.newDivision._backup_.restore();
+            if ($scope.currentDivision !== undefined)
+                $scope.newDivision.parentId.value = $scope.currentDivision.id.value;
+        };
+        
+        
         
         $scope.addNewDivision = function () {
             var params = {
@@ -631,7 +732,8 @@
                             division._model_.fromAnother(data.result);
                             division._backup_.setup();
                             $kolenergo.addDivision(division);
-                            //$hierarchy.add("test", division);
+                            $log.log("new division = ", division);
+                            $hierarchy.update("test");
                             $modals.close("new-division-modal");    
                         }
                        
@@ -639,45 +741,51 @@
                 });
         };
         
-
-
-        $scope.openAddNewDivisionModal = function () {
-            $modals.open("new-division-modal");
-            if ($kolenergo.organizations.getCurrent() !== undefined)
-                $scope.newDivision.organizationId.value = $kolenergo.organizations.getCurrent().id.value;
-        };
         
         
-
-        $scope.onCancelAddNewDivision = function () {
-            $log.log("closed");
-            $scope.newDivision._backup_.restore();
-            if ($scope.currentDivision !== undefined)
-                $scope.newDivision.parentId.value = $scope.currentDivision.id.value;
-            //$modals.close("test-modal");
+        $scope.selectDivision = function (division) {
+            $log.log("select division");
+            if (division !== undefined) {
+                division._states_.selected(!division._states_.selected());
+                //if (division._states_.selected() === true) {
+                //    division._states_.selected(false);
+                    $kolenergo.divisions.select(division.id.value);
+                //} else {
+                //    division._states_.selected(true);
+                //    $kolenergo.divisions.select(division.id.value);
+                //}
+            }
         };
+        
 
-
-        $scope.onEditDivision = function () {
+        $scope.openEditDivisionModal = function () {
             $modals.open("edit-division-modal");
         };
 
         $scope.editDivision = function () {
-            var data = {
-                id: $scope.currentDivision.id.value,
-                title: $scope.currentDivision.title.value,
-                parentId: $scope.currentDivision.parentId.value
+            var params = {
+                action: "editDivision",
+                id: $kolenergo.divisions.getCurrent().id.value,
+                title: $kolenergo.divisions.getCurrent().title.value,
+                parentId: $kolenergo.divisions.getCurrent().parentId.value,
+                organizationId: $kolenergo.divisions.getCurrent().organizationId.value
             };
-            $http.post("/serverside/libs/krypton/api.php", {action: "editDivision", data : data })
+            $http.post("/serverside/libs/krypton/api.php", params)
                 .success(function (data) {
                     if (data !== undefined) {
                         $log.log(data);
-                        var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
-                        division._model_.fromAnother(data);
-                        $scope.currentDivision._model_.fromAnother(division);
-                        $scope.currentDivision._backup_.setup();
-                        $log.log("updated division = ", $scope.currentDivision);
-                        $modals.close("edit-division-modal");
+                        
+                        $errors.checkResponse(data);
+                        
+                        if (data.result !== false) {
+                            var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+                            division._model_.fromAnother(data.result);
+                            $kolenergo.divisions.getCurrent()._model_.fromAnother(division);
+                            $kolenergo.divisions.getCurrent()._backup_.setup();
+                            $log.log("updated division = ", $kolenergo.divisions.getCurrent());
+                            $modals.close("edit-division-modal");    
+                        }
+                      
                     }
                 });
         };

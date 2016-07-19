@@ -42,8 +42,8 @@
 
         <div id="current-user">
             <div class="current-user-photo">
-                <img src="" alt="">
-                <span class="no-user-photo fa fa-user"></span>
+                <img ng-src="{{ session.getCurrentUser().photo.value }}" alt="">
+                <span class="no-user-photo fa fa-user" ng-if="session.getCurrentUser().photo.value === ''"></span>
             </div>
             <div class="current-user-fio">{{ session.getCurrentUser().name.value + " " + session.getCurrentUser().surname.value }}</div>
         </div>

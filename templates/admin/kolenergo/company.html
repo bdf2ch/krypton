@@ -17,7 +17,7 @@
             </model-list>
             -->
 
-            <div class="list-item" ng-class="{'active': org._states_.selected() === true}" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-click="kolenergo.organizations.select(org.id.value)">
+            <div class="list-item" ng-class="{'active': org._states_.selected() === true}" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-click="selectOrganization(org.id.value)">
                 <div class="list-item-icon">
                     <span class="fa fa-building" aria-hidden="true"></span>
                 </div>
@@ -28,14 +28,14 @@
 
     </column>
     <column id="department-divisions" width="80" caption="Структурные подразделения" maximizable="1">
-        <column-control class="green round" content="fa fa-plus" title="Добавить подразделение" action="openAddNewDivisionModal"></column-control>
-        <column-control class="blue round" content="fa fa-pencil"  ng-show="currentDivision !== undefined"  title="Редактировать подразделение" action="onEditDivision"></column-control>
+        <column-control class="green round" content="fa fa-plus" ng-show="kolenergo.organizations.getCurrent() !== undefined" title="Добавить подразделение" action="openAddNewDivisionModal"></column-control>
+        <column-control class="blue round" content="fa fa-pencil"  ng-show="kolenergo.divisions.getCurrent() !== undefined"  title="Редактировать подразделение" action="openEditDivisionModal"></column-control>
 
         <div class="padding-5">
 
            <hierarchy
                    id="test"
-                   source="kolenergo.getDivisions()"
+                   source="hierarchy"
                    key="id"
                    parent-key="parentId"
                    display-field="title"
@@ -106,7 +106,7 @@
 </div>
 
 
-<div modal modal-id="new-division-modal" modal-caption="Новое структурное подразделение" modal-on-close="onCancelAddNewDivision">
+<div modal modal-id="new-division-modal" modal-caption="Новое структурное подразделение" modal-on-close="closeAddNewDivisionModal">
     <div class="padding-10">
         <div class="row margin-bottom-10">
             <label for="new-division-title">Наименование подразделения</label>
@@ -145,7 +145,7 @@
 </div>
 
 
-<div modal modal-id="edit-division-modal" modal-caption="Редактирование структурного подразделения" modal-on-close="onCancelEditDivision">
+<div modal modal-id="edit-division-modal" modal-caption="Редактирование структурного подразделения" modal-on-close="closeEditDivisionModal">
     <div class="padding-10">
         <div class="row margin-bottom-10">
             <label for="current-division-title">Наименование подразделения</label>
@@ -168,7 +168,7 @@
                 <button class="width-100 green" ng-disabled="currentDivision._states_.changed() === false" ng-click="editDivision()">Сохранить</button>
             </div>
             <div class="width-50">
-                <button class="width-100 red" ng-click="_modal_.close()">Отмена</button>
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
             </div>
         </div>
     </div>
