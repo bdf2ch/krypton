@@ -169,6 +169,7 @@
             API::add("deleteOrganization", "Kolenergo", "deleteOrganization");
             API::add("addDivision", "Kolenergo", "addDivision");
             API::add("editDivision", "Kolenergo", "editDivision");
+            API::add("deleteDivision", "Kolenergo", "deleteDivision");
             API::add("uploadUserPhoto", "Kolenergo", "uploadUserPhoto");
             API::add("login", "Kolenergo", "login");
 
@@ -411,7 +412,7 @@
             }
 
             $id = $data -> id;
-            $result = DBManager::delete("divisions", "id = ".$id);
+            $result = DBManager::delete("divisions", "id = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDivision: Не удалось удалить отдел");
                 return false;
@@ -423,7 +424,7 @@
                 return false;
             }
 
-            $result = DBManager::update("kr_users", ["division_id"], 0, "division_id = $id");
+            $result = DBManager::update("kr_users", ["division_id"], [0], "division_id = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDivision: Не удалось обновить информацию о пользователях, принадлежащих удаляемому отделу");
                 return false;

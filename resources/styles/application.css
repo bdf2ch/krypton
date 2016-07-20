@@ -987,27 +987,27 @@ label.button {
 }
 label.button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 label.button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 label.button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 label.button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 label.button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 label.button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 label.button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 label.button.transparent {
   background: transparent;
@@ -1126,44 +1126,44 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 input[type='button'].blue[disabled],
 input[type='submit'].blue[disabled],
 button.blue[disabled] {
-  background: #bbdefb;
+  background: #BBDEFB;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -1204,22 +1204,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4caf50;
+  color: #4CAF50;
 }
 a.green:hover {
-  color: #388e3c;
+  color: #388E3C;
 }
 a.red {
-  color: #f44336;
+  color: #F44336;
 }
 a.red:hover {
-  color: #d32f2f;
+  color: #D32F2F;
 }
 a.blue {
-  color: #2196f3;
+  color: #2196F3;
 }
 a.blue:hover {
-  color: #1976d2;
+  color: #1976D2;
 }
 /**********
 ** COLORS
@@ -1365,6 +1365,22 @@ a.blue:hover {
   text-overflow: ellipsis !important;
   box-sizing: border-box;
 }
+.system-info {
+  display: block;
+  margin-top: 100px;
+  text-align: center;
+  font-size: 17px;
+  color: #E0E0E0;
+}
+.badge {
+  display: inline-block;
+  height: 20px;
+  border-radius: 4px;
+  background: #607D8B;
+  color: white;
+  font-size: 13px;
+  line-height: 14px;
+}
 html,
 body {
   height: 100%;
@@ -1462,13 +1478,14 @@ body {
   font-size: 18px;
   color: #607D8B;
 }
+#app-phones .nothing-found {
+  padding-top: 50px;
+  font-size: 17px;
+  text-align: center;
+  color: #BDBDBD;
+}
 #telephones-search-box {
   padding-top: 30px;
-}
-.nothing-found {
-  padding-top: 50px;
-  font-size: 18px;
-  color: #BDBDBD;
 }
 .telephones-user {
   margin-bottom: 25px;
@@ -1589,7 +1606,7 @@ body {
   font-size: 40px;
   line-height: 60px;
   text-align: center;
-  background: #2196f3;
+  background: #2196F3;
   color: white;
   border-radius: 50%;
   box-sizing: border-box;
@@ -1601,7 +1618,7 @@ body {
 }
 #login-form .login-errors {
   padding: 10px;
-  background: #ffcdd2;
+  background: #FFCDD2;
 }
 #login-form .login-errors .login-error {
   display: block;
@@ -1611,5 +1628,5 @@ body {
   padding-bottom: 10px;
   font-size: 14px;
   line-height: 13px;
-  color: #f44336;
+  color: #F44336;
 }

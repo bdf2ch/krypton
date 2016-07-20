@@ -1068,6 +1068,8 @@
                 var itemsLength = items.length;
                 for (var z = 0; z < itemsLength; z++) {
                     if (items[z].id === hierarchyId) {
+                        $log.log("hierarchy found");
+                        $log.log("update source = ", items[z].source.length);
                         var scope = items[z];
                         scope.initial = [];
 
@@ -1089,7 +1091,7 @@
 
                             if (temp._hierarchy_ !== undefined) {
                                 temp._hierarchy_.children.splice(0, temp._hierarchy_.children.length);
-                                temp._hierarchy_.havChildren = false;
+                                temp._hierarchy_.haveChildren = false;
                             } else {
                                 temp._hierarchy_ = {};
                                 temp._hierarchy_.expanded = false;
@@ -1097,10 +1099,6 @@
                                 temp._hierarchy_.children = [];
                             }
 
-
-                            if (temp[scope.displayField] !== undefined && temp[scope.displayField] !== "") {
-                                temp.display = temp[scope.displayField].constructor === Field ? temp[scope.displayField].value : temp[scope.displayField];
-                            }
 
                             if (firstParentKey === 0 || firstParentKey === "")
                                 scope.initial.push(temp);
@@ -1187,6 +1185,7 @@
                         "</div>" +
                     "</div>" +
                 "</div>",
+            /*
             controller: function ($scope) {
                 this.items = [];
 
@@ -1225,6 +1224,7 @@
 
                 };
             },
+            */
             link: function (scope, element, attrs, ctrl) {
 
                 var template =
@@ -1241,13 +1241,16 @@
                     //"<div class='item-content'>{{ node.display }}</div>" +
                     //"<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
                     "<div class='tree-item-content' ng-click='expand(node)'>" +
-                    "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event)'>{{ node.display }}</div>" +
+                    "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event)'>" +
+                        "<span ng-if='node[displayField].type !== undefined'>{{ node[displayField].value }}</span>" +
+                        "<span ng-if='node[displayField].type === undefined'>{{ node[displayField] }}</span>" +
+                    "</div>" +
                     "<div class='item-controls'>" +
                     "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === false'></span>" +
                     "<span class='collapse fa fa-chevron-up' ng-if='node._hierarchy_.expanded === true' ng-click='collapse(node)'></span>" +
                     "</div>" +
                     "</div>" +
-                    "<div ng-show='node._hierarchy_.expanded === true' ng-include=\"\'hierarchy'\" ng-init='this._hierarchy_.children = getChildren(this)'></div>" +
+                    "<div ng-show='node._hierarchy_.expanded === true' ng-include=\"\'hierarchy'\"></div>" +
                     //"<div ng-init='this.children = getChildren(node)' ng-bind-html='parsedTemplate' ng-show='node.expanded === true'></div>" +
                     "</div>" +
                     "</div>";
@@ -1257,13 +1260,13 @@
 
                 var current = scope.current = undefined;
 
-                scope.$watch("current", function (newVal, oldVal) {
+                scope.$watch("source.length", function (newVal, oldVal) {
                     //$log.log("hierarchy length = ", newVal.length);
-                    //$log.log("collection changed");
+                    $log.log("collection changed, ", newVal);
                     //$log.log("old = ", oldVal.length, ", new = ", newVal.length);
                     //if (newVal !== oldVal) {
                         //$log.log("old = ", oldVal, ", new = ", newVal);
-                    $log.log("current = ", scope.current);
+                    //$log.log("current = ", scope.current);
                     //$log.log("new = ", newVal);
                     //if (oldVal !== newVal) {
                     //    $log.log("not equal");
@@ -1273,13 +1276,23 @@
                        // scope.$digest();
                         //scope.source = val;
                     //}
+                    //if (newVal > 0 && oldVal === 0) {
+                        //$log.log("init");
+                        //init();
+                    //}
+
+                    //if (newVal > 0 && oldVal > 0) {
+                     //   $log.log("update");
+                        $hierarchy.update(attrs.id);
+                    //}
                 });
 
 
-                scope.$watchCollection("source", function (val) {
-                   $log.log("children of current changed");
-                    $hierarchy.update(scope.id);
-                });
+                //scope.$watchCollection("source", function (oldval) {
+                //   $log.log("children of current changed");
+
+                //    $hierarchy.update(attrs.id);
+                //});
 
                 /*
                 var template =
@@ -1348,7 +1361,7 @@
                                 result.push(scope.source[i]);
                             }
                         }
-                        $log.log(node.id.value + " children = ", result);
+                        //$log.log(node.id.value + " children = ", result);
                         return result;
                     }
                 };
@@ -1396,7 +1409,7 @@
                             var nodeId = node[scope.key].constructor === Field ? node[scope.key].value : node[scope.key];
                             var stackId = scope.source[i][scope.key].constructor === Field ? scope.source[i][scope.key].value : scope.source[i][scope.key];
                             if (nodeId === stackId){
-                                $log.log("equals");
+                                //$log.log("equals");
 
                                 //if (node._hierarchy_.haveChildren === true) {
                                 //    if (node._hierarchy_.expanded === false)
@@ -1409,24 +1422,28 @@
                                 //        this.collapse(node);
                                 //    }
                                 //} else {
-                                    if (scope.source[i]._states_.selected() === true) {
-                                        scope.source[i]._states_.selected(false);
-                                        scope.current = undefined;
+
+
+                                    //if (scope.source[i]._states_.selected() === true) {
+                                    //    scope.source[i]._states_.selected(false);
+                                    //    scope.current = undefined;
+                                    //    if (scope.onSelect !== undefined)
+                                            //scope.onSelect(undefined);
+                                    //} else {
+                                    //    scope.source[i]._states_.selected(true);
                                         if (scope.onSelect !== undefined)
-                                            scope.onSelect(undefined);
-                                    } else {
-                                        scope.source[i]._states_.selected(true);
-                                        if (scope.onSelect !== undefined) {
                                             scope.onSelect(node);
-                                            scope.current = node;
-                                        }
-                                    }
+                                            //scope.current = node;
+                                    //    }
+                                    //}
+
+
                                 //}
 
 
-                            } else {
+                            //} else {
                                
-                                    scope.source[i]._states_.selected(false);
+                                    //scope.source[i]._states_.selected(false);
                             }
                         }
                     }
@@ -1519,6 +1536,7 @@
                         }
 
                         //scope.stack.push(temp);
+                        //scope.$apply();
 
                     }
                 };
@@ -1538,13 +1556,13 @@
 
                 //$compile(scope.parsedTemplate)(scope);
                 //$compile(element)(scope);
-                init();
+                //init();
                 //$hierarchy.register(scope);
                 //ctrl.register(scope);
 
                 var item = $hierarchy.getById(attrs.id);
                 $log.log("item = ", item);
-                //if (item !== false) {
+                if (item === false) {
                     //scope = item;
                     //scope.$apply();
                     //    scope.initial = item.initial;
@@ -1552,8 +1570,11 @@
                     //} else {
                     //init();
                     $hierarchy.register(scope);
+
+                    //init();
                     //}
-                //}
+                }
+                init();
 
             }
         }

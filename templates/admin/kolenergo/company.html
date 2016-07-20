@@ -30,8 +30,13 @@
     <column id="department-divisions" width="80" caption="Структурные подразделения" maximizable="1">
         <column-control class="green round" content="fa fa-plus" ng-show="kolenergo.organizations.getCurrent() !== undefined" title="Добавить подразделение" action="openAddNewDivisionModal"></column-control>
         <column-control class="blue round" content="fa fa-pencil"  ng-show="kolenergo.divisions.getCurrent() !== undefined"  title="Редактировать подразделение" action="openEditDivisionModal"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить структурное подразделение" action="openDeleteDivisionModal" ng-show="kolenergo.divisions.getCurrent() !== undefined"></column-control>
 
         <div class="padding-5">
+
+            <div class="system-info" ng-show="kolenergo.organizations.getCurrent() === undefined">
+                Выберите организацию
+            </div>
 
            <hierarchy
                    id="test"
@@ -59,7 +64,7 @@
 
         <div class="row">
             <div class="width-50">
-                <button class="width-100 green" ng-disabled="newOrganization.title.value === ''" ng-click="addOrganization()">Добавить</button>
+                <button class="width-100 green" ng-disabled="newOrganization.title.value === '' || newOrganization._states_.loading() === true" ng-click="addOrganization()">Добавить</button>
             </div>
             <div class="width-50">
                 <button class="width-100 red" ng-click="modals.close()">Отмена</button>
@@ -79,7 +84,7 @@
 
         <div class="row">
             <div class="width-50">
-                <button class="width-100 green" ng-disabled="kolenergo.organizations.getCurrent()._states_.changed() === false || kolenergo.organizations.getCurrent().title.value === ''" ng-click="editOrganization()">Сохранить</button>
+                <button class="width-100 green" ng-disabled="kolenergo.organizations.getCurrent()._states_.changed() === false || kolenergo.organizations.getCurrent().title.value === '' || kolenergo.organizations.getCurrent()._states_.loading() === true" ng-click="editOrganization()">Сохранить</button>
             </div>
             <div class="width-50">
                 <button class="width-100 red" ng-click="modals.close()">Отмена</button>
@@ -96,7 +101,7 @@
                 Вы уверены, что хотите удалить <b>{{ kolenergo.organizations.getCurrent().title.value }}</b> ?
             </div>
             <div class="width-50">
-                <button class="width-100 green" ng-click="deleteOrganization()">Удалить</button>
+                <button class="width-100 green" ng-disabled="kolenergo.organizations.getCurrent()._states_.loading() === true" ng-click="deleteOrganization()">Удалить</button>
             </div>
             <div class="width-50">
                 <button class="width-100 red" ng-click="modals.close()">Отмена</button>
@@ -135,7 +140,7 @@
 
         <div class="row">
             <div class="width-50">
-                <button class="width-100 green" ng-disabled="newDivision.title.value === ''" ng-click="addNewDivision()">Добавить</button>
+                <button class="width-100 green" ng-disabled="newDivision.title.value === '' || newDivision._states_.loading() === true" ng-click="addDivision()">Добавить</button>
             </div>
             <div class="width-50">
                 <button class="width-100 red" ng-click="modals.close()">Отмена</button>
@@ -149,7 +154,7 @@
     <div class="padding-10">
         <div class="row margin-bottom-10">
             <label for="current-division-title">Наименование подразделения</label>
-            <input type="text" id="current-division-title" name="current-division-title" class="width-100" ng-model="currentDivision.title.value" ng-change="currentDivision._states_.changed(true)">
+            <input type="text" id="current-division-title" name="current-division-title" class="width-100" ng-model="kolenergo.divisions.getCurrent().title.value" ng-change="kolenergo.divisions.getCurrent()._states_.changed(true)">
         </div>
 
         <div class="row margin-bottom-10">
@@ -157,15 +162,32 @@
             <select name="current-division-parent"
                     id="current-division-parent"
                     class="width-100"
-                    ng-model="currentDivision.parentId.value"
-                    ng-change="currentDivision._states_.changed(true)"
-                    ng-options="division.id.value as division.title.value for division in divisions">
+                    ng-model="kolenergo.divisions.getCurrent().parentId.value"
+                    ng-change="kolenergo.divisions.getCurrent()._states_.changed(true)"
+                    ng-options="division.id.value as division.title.value for division in kolenergo.divisions.getAll()">
             </select>
         </div>
 
         <div class="row">
             <div class="width-50">
-                <button class="width-100 green" ng-disabled="currentDivision._states_.changed() === false" ng-click="editDivision()">Сохранить</button>
+                <button class="width-100 green" ng-disabled="kolenergo.divisions.getCurrent()._states_.changed() === false || kolenergo.divisions.getCurrent().title.value === '' || kolenergo.divisions.getCurrent()._states_.loading() === true" ng-click="editDivision()">Сохранить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div modal modal-id="delete-division-modal" modal-caption="Удаление структурного подразделения">
+    <div class="padding-10">
+        <div class="row">
+            <div class="row margin-bottom-10">
+                Вы уверены, что хотите удалить <b>{{ kolenergo.divisions.getCurrent().title.value }}</b> ?
+            </div>
+            <div class="width-50">
+                <button class="width-100 green" ng-disabled="kolenergo.divisions.getCurrent()._states_.loading() === true" ng-click="deleteDivision()">Удалить</button>
             </div>
             <div class="width-50">
                 <button class="width-100 red" ng-click="modals.close()">Отмена</button>

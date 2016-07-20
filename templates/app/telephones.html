@@ -11,11 +11,18 @@
 
         <div id="contacts" class="width-70">
             <div class="row padding-10">
-                <input type="text" name="" id="" class="width-100 big obtique dark">
+                <input type="text" name="" id="" class="width-100 big obtique dark" ng-model="search" placeholder="Введите имя, e-mail или телефон абонента">
             </div>
             <div class="row padding-10">
 
-                <div class="contact" ng-repeat="user in users.getUsers() track by $index">
+                <div class="nothing-found" ng-show="search === ''">
+                    Начните вводить имя абонента, e-mail или телефон
+                </div>
+                <div class="nothing-found" ng-show="search !== '' && search.length > 2 && contacts.length === 0">
+                    Абонентов, удовлетвоярющим Вашему запросу не найдено
+                </div>
+
+                <div class="contact" ng-repeat="user in contacts = (users.getUsers() | phoneBook:search) track by $index">
                     <div class="contact-photo">
                         <img src="resources/images/no_photo.png" alt="Фотография отсутствует" ng-if="user.photo.value === ''">
                         <img ng-src="{{ user.photo.value }}" alt="{{ user.fio }}" ng-if="user.photo.value !== ''">
