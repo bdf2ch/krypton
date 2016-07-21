@@ -141,6 +141,7 @@ function isField (obj) {
                     title: "",
                     description: "",
                     icon: "",
+                    badge: "",
                     templateUrl: "",
                     controller: "",
                     isActive: false,
@@ -159,7 +160,10 @@ function isField (obj) {
                     }
                 });
 
-                $rootScope.$on("$routeChangeSuccess", function (prev, next) {
+                $rootScope.$on("$routeChangeStart", function (event, next, current) {
+                    $log.log("current = ", current);
+                    $log.log("next = ", next);
+
                     var length = items.length;
                     for (var i = 0; i < length; i++) {
                         if (items[i].url === next.$$route.originalPath) {

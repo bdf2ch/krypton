@@ -6,6 +6,13 @@
         .module("krypton.admin", ["ngRoute", "ngCookies", "ngSanitize", "angularFileUpload", "krypton", "krypton.ui", "krypton.app.kolenergo"])
         .config(function ($routeProvider,$sceProvider) {
             $sceProvider.enabled(false);
+
+            $routeProvider.when("/users/new",
+                {
+                templateUrl: "../templates/admin/users/new-user.html",
+                controller: newUserController
+                }
+            );
         })
         .run(kryptonAdminRun);
 
@@ -19,7 +26,7 @@
 
 
 
-    function usersController ($log, $scope, $http, $factory, $users, $modals, $kolenergo) {
+    function usersController ($log, $scope, $http, $factory, $users, $modals, $kolenergo, $location) {
         $scope.users = $users;
         $scope.modals = $modals;
         $scope.kolenergo = $kolenergo;
@@ -27,6 +34,9 @@
         $scope.newUserGroup = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
 
 
+        $scope.gotoAddUser = function () {
+            $location.url("/users/new");
+        };
 
         $scope.openNewUserGroupModal = function () {
             $modals.open("new-user-group");
@@ -121,6 +131,13 @@
                     }
                 });
         };
+    };
+
+
+
+
+    function newUserController ($scope, $log, $users) {
+
     };
 
 
