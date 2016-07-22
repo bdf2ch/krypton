@@ -545,7 +545,7 @@
 
 
 
-    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http, $hierarchy, $errors) {
+    function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http, $hierarchy, $errors, $tree) {
         $scope.kolenergo = $kolenergo;
         $scope.modals = $modals;
         $scope.hierarchy = [];
@@ -601,6 +601,11 @@
                 $kolenergo.organizations.select(organizationId);
                 $scope.hierarchy = [];
                // $hierarchy.update("test");
+            }
+
+            $scope.tree = $scope.hierarchy = $kolenergo.divisions.getByOrganizationId(organizationId);
+            for (var x = 0; x < $scope.tree.length; x++) {
+                $tree.addItem("test-tree", $scope.tree[x]);
             }
 
             $log.log("hierarchy = ", $scope.hierarchy);
@@ -941,8 +946,9 @@
 
 
 
-    function PhoneBookController ($scope, $log, $users) {
+    function PhoneBookController ($scope, $log, $users, $kolenergo) {
         $scope.users = $users;
+        $scope.kolenergo = $kolenergo;
         $scope.search = "";
     };
 

@@ -987,27 +987,27 @@ label.button {
 }
 label.button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 label.button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 label.button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 label.button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 label.button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 label.button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 label.button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 label.button.transparent {
   background: transparent;
@@ -1126,44 +1126,44 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 input[type='button'].blue[disabled],
 input[type='submit'].blue[disabled],
 button.blue[disabled] {
-  background: #bbdefb;
+  background: #BBDEFB;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -1204,22 +1204,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4caf50;
+  color: #4CAF50;
 }
 a.green:hover {
-  color: #388e3c;
+  color: #388E3C;
 }
 a.red {
-  color: #f44336;
+  color: #F44336;
 }
 a.red:hover {
-  color: #d32f2f;
+  color: #D32F2F;
 }
 a.blue {
-  color: #2196f3;
+  color: #2196F3;
 }
 a.blue:hover {
-  color: #1976d2;
+  color: #1976D2;
 }
 /**********
 ** COLORS
@@ -1439,34 +1439,162 @@ body {
   box-sizing: border-box;
 }
 #telephones #telephones-header {
-  height: 50%;
-  min-height: 200px;
-  padding-left: 50px;
-  padding-right: 50px;
+  position: relative;
+  overflow: hidden;
+  height: 40%;
+  min-height: 100px;
+  -webkit-transition: height 0.2s linear;
+}
+#telephones #telephones-header #telephones-header-bg-layout {
+  position: absolute;
+  z-index: 1;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  height: 100%;
   background: url("../images/powerlines-4.jpg");
   background-size: cover;
-  -webkit-transition: height 0.5s linear;
 }
 #telephones #telephones-header input {
   position: relative;
   height: 50px;
-  margin-top: 20%;
   border-radius: 0px;
-  -webkit-box-shadow: 1px 2px 15px 2px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 1px 2px 15px 2px rgba(0, 0, 0, 0.2);
-  box-shadow: 1px 2px 15px 2px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
 }
 #telephones #telephones-header.collapsed {
-  height: 20%;
+  height: 100px;
+}
+#telephones #telephones-header #telephones-header-content {
+  position: relative;
+  z-index: 2;
+  display: table;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1);
+}
+#telephones #telephones-header #telephones-header-content #telephones-search-container {
+  display: table-row;
+}
+#telephones #telephones-header #telephones-header-content #telephones-search-container #telephones-search {
+  display: table-cell;
+  padding-left: 100px;
+  padding-right: 100px;
+  vertical-align: middle;
 }
 #telephones #telephones-content {
-  height: 60%;
+  position: absolute;
+  top: 40%;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  box-sizing: border-box;
+  -webkit-transition: top 0.3s linear;
+  /*
+    .system-info {
+      position: relative;
+      margin-top: 0px;
+      padding-top: 70px;
+      font-size: 18px;
+      line-height: 40px;
+
+      .fa {
+        display: inline-block;
+        height: 100%;
+        //float: left;
+        font-size: 40px;
+      }
+    }
+    */
 }
-#telephones #telephones-content .system-info {
+#telephones #telephones-content.expanded {
+  top: 100px;
+}
+#telephones #telephones-content #telephones-organizations {
+  float: left;
+  height: 100%;
+  background: #FAFAFA;
+}
+#telephones #telephones-content #telephones-organizations .caption {
+  display: block;
+  padding: 10px;
   font-size: 18px;
+  color: #BDBDBD;
 }
-#telephones #telephones-content .system-info .fa {
+#telephones #telephones-content #telephones-results {
+  margin-left: 25%;
+  height: 100%;
+}
+#telephones #telephones-content #telephones-results .result-message {
+  width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+}
+#telephones #telephones-content #telephones-results .result-message .fa {
+  float: left;
+  width: 40px;
   font-size: 40px;
+  color: #BDBDBD;
+}
+#telephones #telephones-content #telephones-results .result-message .system-info {
+  display: block;
+  margin-left: 40px;
+  margin-top: 0px;
+  padding-left: 20px;
+  text-align: left;
+}
+#telephones #telephones-content #telephones-results .summary {
+  margin-bottom: 30px;
+  padding: 10px;
+  font-size: 18px;
+  color: #BDBDBD;
+}
+#telephones #telephones-content #telephones-results .contact {
+  width: 90%;
+  height: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px dotted lightgrey;
+}
+#telephones #telephones-content #telephones-results .contact:first-of-type {
+  margin-top: 20px;
+}
+#telephones #telephones-content #telephones-results .contact:last-of-type {
+  border-bottom: none;
+}
+#telephones #telephones-content #telephones-results .contact .contact-photo {
+  float: left;
+  width: 200px;
+  height: 100%;
+  border: 1px solid #F5F5F5;
+  border-radius: 50%;
+  background-size: cover !important;
+  -webkit-background-size: cover !important;
+}
+#telephones #telephones-content #telephones-results .contact .contact-photo.no-photo {
+  background: url("../images/no_photo.png");
+  background-position: -37px;
+}
+#telephones #telephones-content #telephones-results .contact .contact-details {
+  min-height: 200px;
+  margin-left: 200px;
+  padding-left: 20px;
+}
+#telephones #telephones-content #telephones-results .contact .contact-details .surname {
+  display: block;
+  font-size: 30px;
+  line-height: 30px;
+  color: #212121;
+}
+#telephones #telephones-content #telephones-results .contact .contact-details .name {
+  display: block;
+  font-size: 20px;
+  color: #616161;
 }
 #app-phones #companies {
   background: #FAFAFA;
@@ -1639,7 +1767,7 @@ body {
   font-size: 40px;
   line-height: 60px;
   text-align: center;
-  background: #2196f3;
+  background: #2196F3;
   color: white;
   border-radius: 50%;
   box-sizing: border-box;
@@ -1651,7 +1779,7 @@ body {
 }
 #login-form .login-errors {
   padding: 10px;
-  background: #ffcdd2;
+  background: #FFCDD2;
 }
 #login-form .login-errors .login-error {
   display: block;
@@ -1661,5 +1789,5 @@ body {
   padding-bottom: 10px;
   font-size: 14px;
   line-height: 13px;
-  color: #f44336;
+  color: #F44336;
 }
