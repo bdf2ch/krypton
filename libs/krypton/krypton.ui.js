@@ -1896,7 +1896,7 @@
                     }
 
                     items.push(settings);
-                    $log.log(items);
+                    $log.log("trees = ", items);
                     return true;
                 },
 
@@ -1964,6 +1964,40 @@
                 /**
                  *
                  * @param id
+                 * @param key
+                 * @returns {*}
+                 */
+                getChildrenByItemKey: function (id, key) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> getItemByKey: Не задан параметр - идентификатор древовидного списка");
+                        return false;
+                    }
+
+                    if (key === null) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> getChildrenByItemKey: Не задан параметр - знчение родительского поля элемента");
+                        return false;
+                    }
+
+                    var tree = this.getById(id);
+                    if (!tree) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$tree -> getChildrenByItemKey: Древовидный список с идентификатором '" + id + "' не найден");
+                        return false;
+                    }
+
+                    var length = tree.stack.length;
+                    var children = [];
+                    for (var i = 0; i < length; i++) {
+                        var parent = tree.stack[i][tree.parentKey].constructor === Field ? tree.stack[i][tree.parentKey].value : tree.stack[i][tree.parentKey];
+                        if (parent === key)
+                            children.push(tree.stack[i]);
+                    }
+
+                    return children;
+                },
+
+                /**
+                 *
+                 * @param id
                  * @param item
                  * @param key
                  * @returns {boolean}
@@ -2003,6 +2037,7 @@
                         }
 
                         if (parent.children === undefined) {
+                            //var children = this.getChildrenByItemKey(item[tree.key]);
                             parent.children = [];
                             parent.children.push(item);
                             parent.expanded = true;
@@ -2018,7 +2053,7 @@
                         return true;
                     }
 
-                    tree.stack.push(item);
+                    //tree.stack.push(item);
                     //tree.scope.$apply();
                 }
             }
@@ -2026,7 +2061,7 @@
 
 
 
-        function treeDirective ($log, $errors, $templateCache, $tree) {
+        function treeDirective ($log, $errors, $templateCache, $tree, $parse) {
             return {
                 restrict: "E",
                 scope: {
@@ -2067,6 +2102,21 @@
                         return false;
                     }
 
+                    if (attrs.initialKeyValue === undefined || attrs.initialKeyValue === '') {
+                        $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> tree: Не задан параметр - значение корневого поля связи древовидного списка (аттрибут 'initial-key-value')");
+                        return false;
+                    }
+
+                    if (attrs.initialKeyType === undefined || attrs.initialKeyType === '') {
+                        $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> tree: Не задан параметр - тип значения корневого поля связи древовидного списка (аттрибут 'initial-key-type')");
+                        return false;
+                    }
+
+                    if (attrs.initialKeyType !== "DATA_TYPE_INTEGER" && attrs.initialKeyType !== "DATA_TYPE_STRING" && attrs.initialKeyType !== "DATA_TYPE_FLOAT" && attrs.initialKeyType !== "DATA_TYPE_BOOLEAN") {
+                        $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> tree: Неверно задан тип параметра - тип значения корневого поля связи древовидного списка (аттрибут 'initial-key-type')");
+                        return false;
+                    }
+
                     if (attrs.display === undefined || attrs.display === '') {
                         $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> tree: Не задан параметр - поле для отображения элемента (аттрибут 'display')");
                         return false;
@@ -2076,6 +2126,8 @@
                         id: attrs.id,
                         key: attrs.key,
                         parentKey: attrs.parentKey,
+                        //initialKeyValue: ,
+                        initialKeyType: eval(attrs.initialKeyType),
                         display: attrs.display,
                         initial: [],
                         stack: [],

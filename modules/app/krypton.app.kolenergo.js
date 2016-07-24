@@ -605,9 +605,13 @@
 
             $scope.tree = $scope.hierarchy = $kolenergo.divisions.getByOrganizationId(organizationId);
             for (var x = 0; x < $scope.tree.length; x++) {
-                $tree.addItem("test-tree", $scope.tree[x]);
+                if ($scope.tree[x].parentId.value !== 0)
+                    $tree.addItem("test-tree", $scope.tree[x], $scope.tree[x].parentId.value);
+                else
+                    $tree.addItem("test-tree", $scope.tree[x]);
             }
 
+            $log.log("tree = ", $scope.tree);
             $log.log("hierarchy = ", $scope.hierarchy);
         };
         

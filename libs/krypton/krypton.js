@@ -15,6 +15,19 @@ const DATA_TYPE_BOOLEAN = 4;
 
 
 
+function toString (value) {
+    return value === undefined ? false : value.toString();
+};
+
+
+function toInteger (value) {
+    return value === undefined || isNaN(value) ? false : parseInt(value);
+};
+
+function toFloat(value, precision) {
+    
+};
+
 /**
  * Класс поля модели данных
  * @param parameters {Object} - Параметры инициализации создаваемого объекта
