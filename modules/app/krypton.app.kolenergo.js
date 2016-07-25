@@ -548,13 +548,21 @@
     function companyController ($log, $scope, $kolenergo, $filter, $modals, $rootScope, $factory, $http, $hierarchy, $errors, $tree) {
         $scope.kolenergo = $kolenergo;
         $scope.modals = $modals;
-        $scope.hierarchy = [];
+        $scope.tree = [];
         //$scope.hierarchy = $kolenergo.organizations.getCurrent() !== undefined ? $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value) : [];
         $scope.newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
         $scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
 
-        if ($kolenergo.organizations.getCurrent() !== undefined && $scope.hierarchy.length === 0)
-            $scope.hierarchy = $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value);
+        if ($kolenergo.organizations.getCurrent() !== undefined && $scope.tree.length === 0) {
+            $scope.tree = $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value);
+            $log.log("stack before = ", $tree.getById("test-tree").stack);
+            for (var i = 0; i < $scope.tree.length; i ++) {
+                $tree.addItem("test-tree", $scope.tree[i]);
+            }
+            $log.log("stack after = ", $tree.getById("test-tree").stack);
+        }
+
+        $log.log("tree = ", $scope.tree);
 
         
         $scope.newDivision._backup_.setup();
@@ -596,23 +604,23 @@
         $scope.selectOrganization = function (organizationId) {
             if ($kolenergo.organizations.getCurrent() === undefined) {
                 $kolenergo.organizations.select(organizationId);
-                $scope.hierarchy = $kolenergo.divisions.getByOrganizationId(organizationId);
+                $scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
+                for (var x = 0; x < $scope.tree.length; x++) {
+                    $tree.addItem("test-tree", $scope.tree[x]);
+                }
             } else {
                 $kolenergo.organizations.select(organizationId);
-                $scope.hierarchy = [];
-               // $hierarchy.update("test");
+                $tree.clear("test-tree");
+                $scope.tree = [];
             }
 
-            $scope.tree = $scope.hierarchy = $kolenergo.divisions.getByOrganizationId(organizationId);
-            for (var x = 0; x < $scope.tree.length; x++) {
-                if ($scope.tree[x].parentId.value !== 0)
-                    $tree.addItem("test-tree", $scope.tree[x], $scope.tree[x].parentId.value);
-                else
-                    $tree.addItem("test-tree", $scope.tree[x]);
-            }
+            //$scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
+            //$scope.tree = $filter("orderBy")($scope.tree, "id.value");
+
+
 
             $log.log("tree = ", $scope.tree);
-            $log.log("hierarchy = ", $scope.hierarchy);
+            //$log.log("hierarchy = ", $scope.hierarchy);
         };
         
         
@@ -791,6 +799,7 @@
                             $scope.hierarchy = $kolenergo.organizations.getCurrent() !== undefined ? $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value) : [];
                             $log.log("new division = ", division);
                             $hierarchy.update("test");
+                            $tree.addItem("test-tree", division);
                             $modals.close("new-division-modal");    
                         }
                        

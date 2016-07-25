@@ -38,6 +38,7 @@
                 Выберите организацию
             </div>
 
+            <!--
            <hierarchy
                    id="test"
                    source="hierarchy"
@@ -46,11 +47,12 @@
                    display-field="title"
                    on-select="selectDivision">
            </hierarchy>
+           -->
 
 
 
 
-            <tree id="test-tree" key="id" parent-key="parentId" initial-key-value="0" initial-key-type="DATA_TYPE_INTEGER" display="title"></tree>
+            <tree id="test-tree" key="id" parent-key="parentId" initial-key-value="0" initial-key-type="DATA_TYPE_INTEGER" display="title" on-select="selectDivision"></tree>
 
 
         </div>

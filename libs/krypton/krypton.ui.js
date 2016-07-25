@@ -1973,7 +1973,7 @@
                         return false;
                     }
 
-                    if (key === null) {
+                    if (key === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$tree -> getChildrenByItemKey: Не задан параметр - знчение родительского поля элемента");
                         return false;
                     }
@@ -1987,8 +1987,8 @@
                     var length = tree.stack.length;
                     var children = [];
                     for (var i = 0; i < length; i++) {
-                        var parent = tree.stack[i][tree.parentKey].constructor === Field ? tree.stack[i][tree.parentKey].value : tree.stack[i][tree.parentKey];
-                        if (parent === key)
+                        var parentKey = tree.stack[i][tree.parentKey].constructor === Field ? tree.stack[i][tree.parentKey].value : tree.stack[i][tree.parentKey];
+                        if (parentKey === key)
                             children.push(tree.stack[i]);
                     }
 
@@ -2002,7 +2002,7 @@
                  * @param key
                  * @returns {boolean}
                  */
-                addItem: function (id, item, key) {
+                addItem: function (id, item) {
                     if (id === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$tree -> addItem: Не задан параметр - идентификатор древовидного списка");
                         return false;
@@ -2029,32 +2029,202 @@
                         return false;
                     }
 
-                    if (key !== undefined) {
-                        var parent = this.getItemByKey(id, key);
-                        if (!parent) {
-                            $errors.add(ERROR_TYPE_ENGINE, "$tree -> addItem: Элемент с ключом '" + key + "' в древовидном списке '" + id + "' не найден");
-                            return false;
-                        }
+                    var itemKey = item[tree.key].constructor === Field ? item[tree.key].value : item[tree.key];
+                    var parentKey = item[tree.parentKey].constructor === Field ? item[tree.parentKey].value : item[tree.parentKey];
+                    item.children = [];
+                    item.expanded = false;
 
-                        if (parent.children === undefined) {
-                            //var children = this.getChildrenByItemKey(item[tree.key]);
-                            parent.children = [];
-                            parent.children.push(item);
-                            parent.expanded = true;
-                        } else
-                            parent.children.push(item);
+                    if (parentKey === 0 || parentKey === '') {
+                        $log.log("adding to root, ", item);
+                        //var children = this.getChildrenByItemKey(id, itemKey);
+                        //$log.log("children = ", children);
+                        item.children = this.getChildrenByItemKey(id, itemKey);
 
-                        return true;
-
-                    } else {
-                        tree.stack.push(item);
                         tree.initial.push(item);
-                        //tree.scope.$apply();
-                        return true;
+                        tree.stack.push(item);
+                        $log.log("item = ", item);
+                    } else {
+                        var parent = this.getItemByKey(id, parentKey);
+                        if (parent !== false)
+                            parent.children.push(item);
+                        tree.stack.push(item);
                     }
 
-                    //tree.stack.push(item);
-                    //tree.scope.$apply();
+                    //$log.log("item = ", item);
+                },
+
+                deleteItem: function (id, key) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> deleteItem: Не задан параметр - идентификатор древовидного списка");
+                        return false;
+                    }
+
+                    var tree = this.getById(id);
+                    if (!tree) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$tree -> deleteItem: Древовидный список с идентификатором '" + id + "' не найден");
+                        return false;
+                    }
+
+                    if (key === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> deleteItem: Не задан параметр - Значение ключевого поля удаляемого элемента древовидного списка");
+                        return false;
+                    }
+
+                    var length = tree.stack.length;
+                    for (var i = 0; i < length; i++) {
+                        var itemKey = tree.stack[i][tree.key].constructor === Field ? tree.stack[i][tree.key].value : tree.stack[i][tree.key];
+                        var parentKey = tree.stack[i][tree.parentKey].constructor === Field ? tree.stack[i][tree.parentKey].value : tree.stack[i][tree.parentKey];
+                        if (itemKey === key) {
+
+                            for (var x = 0; x < length; x++) {
+                                var stackParentKey = tree.stack[x][tree.parentKey].constructor === Field ? tree.stack[x][tree.parentKey].value : tree.stack[x][tree.parentKey];
+                                if (stackParentKey === itemKey) {
+
+                                    if (parentKey === 0 || parentKey === '') {
+                                        var initialLength = tree.initial.length;
+                                        for (var z = 0; z < initialLength; z++) {
+                                            var initialKey = tree.initial[z][tree.key].constructor === Field ? tree.initial[z][tree.key].value : tree.initial[z][tree.key];
+                                            if (initialKey === )
+                                        }
+                                    } else {
+                                        var parent = this.getItemByKey(tree.id, parentKey);
+                                        if (parent === false) {
+                                            $errors.add(ERROR_TYPE_ENGINE, "$tree -> deleteItem: Элемент со значением ключа связи '" + parentKey + "' не найден");
+                                            return false;
+                                        }
+
+
+                                    }
+
+
+                                }
+                            }
+
+                            tree.stack.splice(i, 1);
+                            return true;
+                        }
+                    }
+
+                    return false;
+                },
+
+                clear: function (id) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> clear: Не задан параметр - идентификатор древовидного списка");
+                        return false;
+                    }
+
+                    var tree = this.getById(id);
+                    if (!tree) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$tree -> clear: Древовидный список с идентификатором '" + id + "' не найден");
+                        return false;
+                    }
+
+                    var length = tree.stack.length;
+                    for (var i = 0; i < length; i++) {
+                        delete tree.stack[i].children;
+                        delete tree.stack[i].expanded;
+                    }
+
+                    tree.stack = [];
+                    tree.initial = [];
+                    return true;
+                },
+
+                expandItem: function (id, key) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> expandItem: Не задан параметр - идентификатор древовидного списка");
+                        return false;
+                    }
+
+                    if (key === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> expandItem: Не задан параметр - значение ключевого поля элемента, который требуется развернуть");
+                        return false;
+                    }
+
+                    var tree = this.getById(id);
+                    if (!tree) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$tree -> expandItem: Древовидный список с идентификатором '" + id + "' не найден");
+                        return false;
+                    }
+
+                    var length = tree.stack.length;
+                    for (var i = 0; i < length; i++) {
+                        var itemKey = tree.stack[i][tree.key].constructor === Field ? tree.stack[i][tree.key].value : tree.stack[i][tree.key];
+                        if (itemKey === key) {
+                            tree.stack[i].expanded = true;
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+
+                collapseItem: function (id, key) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> collapseItem: Не задан параметр - идентификатор древовидного списка");
+                        return false;
+                    }
+
+                    if (key === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> collapseItem: Не задан параметр - значение ключевого поля элемента, который требуется свернуть");
+                        return false;
+                    }
+
+                    var tree = this.getById(id);
+                    if (!tree) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$tree -> collapseItem: Древовидный список с идентификатором '" + id + "' не найден");
+                        return false;
+                    }
+
+                    var length = tree.stack.length;
+                    for (var i = 0; i < length; i++) {
+                        var itemKey = tree.stack[i][tree.key].constructor === Field ? tree.stack[i][tree.key].value : tree.stack[i][tree.key];
+                        if (itemKey === key) {
+                            tree.stack[i].expanded = false;
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+
+                selectItem: function (id, key) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> selectItem: Не задан параметр - идентификатор древовидного списка");
+                        return false;
+                    }
+
+                    if (key === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$tree -> selectItem: Не задан параметр - значение ключевого поля элемента, который требуется свернуть");
+                        return false;
+                    }
+
+                    var tree = this.getById(id);
+                    if (!tree) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$tree -> selectItem: Древовидный список с идентификатором '" + id + "' не найден");
+                        return false;
+                    }
+
+                    var length = tree.stack.length;
+                    for (var i = 0; i < length; i++) {
+                        var itemKey = tree.stack[i][tree.key].constructor === Field ? tree.stack[i][tree.key].value : tree.stack[i][tree.key];
+                        if (itemKey === key) {
+                            //if (tree.stack[i]._states_ !== undefined) {
+                            //    if (tree.stack[i]._states_.selected() === false) {
+                            //        tree.stack[i]._states_.selected(true);
+                                    if (tree.onSelect !== undefined)
+                                        tree.onSelect(tree.stack[i]);
+                            //    } else {
+                            //        tree.stack[i]._states_.selected(false);
+                            //    }
+                            //    //return true;
+                            //}
+                        }// else {
+                         //   if (tree.stack[i]._states_ !== undefined) {
+                         //       tree.stack[i]._states_.selected(false);
+                                //return true;
+                         //   }
+                        //}
+                    }
                 }
             }
         };
@@ -2062,6 +2232,25 @@
 
 
         function treeDirective ($log, $errors, $templateCache, $tree, $parse) {
+            var template =
+                "<div class='container nested' >" +
+                "<div class='tree-item' ng-class='{ \"with-children\": node.children.length > 0, \"expanded\": node.expanded === true, \"active\": node._states_.selected() === true }' ng-repeat='node in node.children track by $index'>" +
+                "<div class='tree-item-content' ng-click='expand(node)'>" +
+                "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event)'>" +
+                "<span ng-if='node[settings.display].type !== undefined'>{{ node[settings.display].value }}</span>" +
+                "<span ng-if='node[settings.display].type === undefined'>{{ node[settings.display] }}</span>" +
+                "</div>" +
+                "<div class='item-controls'>" +
+                "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                "<span class='collapse fa fa-chevron-up' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
+                "</div>" +
+                "</div>" +
+                "<div ng-show='node.expanded === true' ng-include=\"\'hierarchy'\"></div>" +
+                //"<div ng-init='this.children = getChildren(node)' ng-bind-html='parsedTemplate' ng-show='node.expanded === true'></div>" +
+                "</div>" +
+                "</div>";
+
+
             return {
                 restrict: "E",
                 scope: {
@@ -2077,11 +2266,11 @@
                                         "<span ng-if='node[settings.display].type === undefined'>{{ node[settings.display] }}</span>" +
                                      "</div>" +
                                     "<div class='item-controls'>" +
-                                        "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === false'></span>" +
-                                        "<span class='collapse fa fa-chevron-up' ng-if='node._hierarchy_.expanded === true' ng-click='collapse(node)'></span>" +
+                                        "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node.children.length > 0 && node.expanded === false'></span>" +
+                                        "<span class='collapse fa fa-chevron-up' ng-if='node.expanded === true' ng-click='collapse(node)'></span>" +
                                     "</div>" +
                                 "</div>" +
-                                "<div ng-include=\"\'hierarchy'\" ng-show='node._hierarchy_.expanded === true' ng-init='node.children = getChildren(node)'></div>" +
+                                "<div ng-include=\"\'hierarchy'\" ng-show='node.expanded === true'></div>" +
                             "</div>" +
                         "</div>" +
                     "</div>",
@@ -2135,8 +2324,42 @@
                         onSelect: typeof scope.onSelect === "function" ? scope.onSelect : undefined
                     };
 
-                    $tree.register(scope.settings);
+                    scope.expand = function (node) {
+                        if (node !== undefined) {
+                            var key = node[scope.settings.key].constructor === Field ? node[scope.settings.key].value : node[scope.settings.key];
+                            if (node.children.length > 0 && node.expanded === false) {
+                                if  (!$tree.expandItem(scope.settings.id, key)) {
+                                    $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> tree -> expand: Не удалось развернуть элемент с идентификатором '" + key + "' древовоидного списка");
+                                    return false;
+                                }
+                            } else {
+                                if (!$tree.collapseItem(scope.settings.id, key)) {
+                                    $errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> tree -> expand: Не удалось свернуть элемент с идентификатором '" + key + "' древовоидного списка");
+                                    return false;
+                                }
+                            }
 
+                        }
+                    };
+
+                    scope.select = function (node, event) {
+                        event.stopPropagation();
+                        if (node !== undefined) {
+                            var key = node[scope.settings.key].constructor === Field ? node[scope.settings.key].value : node[scope.settings.key];
+                            !$tree.selectItem(scope.settings.id, key)
+                                //$errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> tree -> select: Не удалось выбрать элемент с идентификатором '" + key + "' древовоидного списка");
+                                //return false;
+
+                        }
+                    };
+
+                    $templateCache.put("hierarchy", template);
+                    if (!$tree.getById(scope.settings.id))
+                        $tree.register(scope.settings);
+
+                    //scope.$watch("settings.stack.length", function (val) {
+                    //    scope.$apply();
+                    //});
                 }
             }
         };
