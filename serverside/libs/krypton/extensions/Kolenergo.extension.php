@@ -412,13 +412,22 @@
             }
 
             $id = $data -> id;
+            $result = DBManager::select("divisions", ["*"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDivision: Не удалось выбрать информацию об удаляемом отделе");
+                return false;
+            }
+
+            $division = Models::construct("Division", false);
+            $division -> fromSource($result[0]);
+
             $result = DBManager::delete("divisions", "id = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDivision: Не удалось удалить отдел");
                 return false;
             }
 
-            $result = DBManager::update("divisions", ["parent_id"], [0], "parent_id = $id");
+            $result = DBManager::update("divisions", ["parent_id"], [$division -> parentId -> value], "parent_id = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDivision: Не удалось обнулить родительский отдел в дочерних отделах удаляемого отдела");
                 return false;

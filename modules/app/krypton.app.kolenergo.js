@@ -896,6 +896,7 @@
                                 $scope.hierarchy = $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value);
                                 $modals.close("delete-division-modal");
                                 $hierarchy.update("test");
+                                $tree.deleteItem("test-tree",params.id);
                             }
                         }
                     }

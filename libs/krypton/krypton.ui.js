@@ -2080,12 +2080,16 @@
                                 var stackParentKey = tree.stack[x][tree.parentKey].constructor === Field ? tree.stack[x][tree.parentKey].value : tree.stack[x][tree.parentKey];
                                 if (stackParentKey === itemKey) {
 
+                                    $log.log("children found, ", tree.stack[x]);
+
                                     if (parentKey === 0 || parentKey === '') {
-                                        var initialLength = tree.initial.length;
-                                        for (var z = 0; z < initialLength; z++) {
-                                            var initialKey = tree.initial[z][tree.key].constructor === Field ? tree.initial[z][tree.key].value : tree.initial[z][tree.key];
-                                            if (initialKey === )
-                                        }
+                                        //var initialLength = tree.initial.length;
+                                        //for (var z = 0; z < initialLength; z++) {
+                                        //    var initialKey = tree.initial[z][tree.key].constructor === Field ? tree.initial[z][tree.key].value : tree.initial[z][tree.key];
+                                        //    if (initialKey === )
+                                        //}
+                                        $log.log("appending children of deleted item to initial");
+                                        tree.initial.push(tree.stack[x]);
                                     } else {
                                         var parent = this.getItemByKey(tree.id, parentKey);
                                         if (parent === false) {
@@ -2093,7 +2097,7 @@
                                             return false;
                                         }
 
-
+                                      
                                     }
 
 
