@@ -892,11 +892,12 @@
 
                         if (data.result !== false) {
                             if (JSON.parse(data.result) === true) {
-                                $kolenergo.divisions.delete(params.id);
-                                $scope.hierarchy = $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value);
+
+                                //$scope.hierarchy = $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value);
                                 $modals.close("delete-division-modal");
-                                $hierarchy.update("test");
+                                //$hierarchy.update("test");
                                 $tree.deleteItem("test-tree",params.id);
+                                $kolenergo.divisions.delete(params.id);
                             }
                         }
                     }

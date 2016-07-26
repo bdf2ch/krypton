@@ -153,7 +153,13 @@
         
     };
 
-    
+
+    function AdminTelephonesController ($log, $scope, $users) {
+        $scope.user = $users;
+    };
+
+
+
 
     function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $http, $settings, $session) {
         $log.log("krypton admin run");
@@ -198,6 +204,17 @@
                     title: "Настройки",
                     description : "Управление настройками системы и модулей",
                     icon: "fa-cog"
+                }));
+
+        $navigation.add(
+            $factory({ classes: ["Menu", "Model"], base_class: "Menu" })
+                .init({
+                    url: "/phones",
+                    templateUrl: "../../templates/admin/kolenergo/phones.html",
+                    controller: AdminTelephonesController,
+                    title: "Тел. справочник",
+                    description : "Управление настройками системы и модулей",
+                    icon: "fa-phone"
                 }));
 
 

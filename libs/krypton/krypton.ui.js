@@ -2070,44 +2070,87 @@
                         return false;
                     }
 
+
                     var length = tree.stack.length;
                     for (var i = 0; i < length; i++) {
                         var itemKey = tree.stack[i][tree.key].constructor === Field ? tree.stack[i][tree.key].value : tree.stack[i][tree.key];
-                        var parentKey = tree.stack[i][tree.parentKey].constructor === Field ? tree.stack[i][tree.parentKey].value : tree.stack[i][tree.parentKey];
+
                         if (itemKey === key) {
 
-                            for (var x = 0; x < length; x++) {
-                                var stackParentKey = tree.stack[x][tree.parentKey].constructor === Field ? tree.stack[x][tree.parentKey].value : tree.stack[x][tree.parentKey];
-                                if (stackParentKey === itemKey) {
+                            var item = tree.stack[i];
+                            var parentKey = item[tree.parentKey].constructor === Field ? item[tree.parentKey].value : item[tree.parentKey];
+                            var children = this.getChildrenByItemKey(id, key);
+                            if (children.length > 0) {
+                                var length = children.length;
+                                for (var x = 0; x < length; x++) {
+                                    if (children[x][tree.parentKey].constructor === Field)
+                                        children[x][tree.parentKey].value = parentKey;
+                                    else
+                                        children[x][tree.parentKey] = parentKey;
 
-                                    $log.log("children found, ", tree.stack[x]);
-
-                                    if (parentKey === 0 || parentKey === '') {
-                                        //var initialLength = tree.initial.length;
-                                        //for (var z = 0; z < initialLength; z++) {
-                                        //    var initialKey = tree.initial[z][tree.key].constructor === Field ? tree.initial[z][tree.key].value : tree.initial[z][tree.key];
-                                        //    if (initialKey === )
-                                        //}
-                                        $log.log("appending children of deleted item to initial");
-                                        tree.initial.push(tree.stack[x]);
+                                    if (parentKey === 0 || parentKey === "") {
+                                        tree.initial.push(children[x]);
                                     } else {
-                                        var parent = this.getItemByKey(tree.id, parentKey);
-                                        if (parent === false) {
-                                            $errors.add(ERROR_TYPE_ENGINE, "$tree -> deleteItem: Элемент со значением ключа связи '" + parentKey + "' не найден");
+                                        var parent = this.getItemByKey(id, parentKey);
+                                        if (!parent) {
+                                            $errors.add(ERROR_TYPE_ENGINE, "$tree -> deleteItem: Родительский элемент с идентификатором '" + parentKey + "' удаляемого элемента не найден");
                                             return false;
                                         }
-
-                                      
+                                        parent.children.push(children[x]);
                                     }
-
-
                                 }
                             }
+
+                            var parent = this.getItemByKey(id, parentKey);
+                            if (parent !== false) {
+                                if (parent.children.length > 0) {
+                                    var l = parent.children.length;
+                                    for (var z = 0; z < l; z++) {
+                                        var parentChildrenKey = parent.children[z][tree.key].constructor === Field ? parent.children[z][tree.key].value : parent.children[z][tree.key];
+                                        if (parentChildrenKey === key) {
+                                            parent.children.splice(z, 1);
+                                            return true;
+                                            //l = parent.children.length;
+                                        }
+                                    }
+                                }
+                            } else {
+                                var l = tree.initial.length;
+                                for (var z = 0; z < l; z++) {
+                                    var initialKey = tree.initial[z][tree.key].constructor === Field ? tree.initial[z][tree.key].value : tree.initial[z][tree.key];
+                                    if (initialKey === key) {
+                                        tree.initial.splice(z, 1);
+                                        return true;
+                                        //l = tree.initial.length;
+                                    }
+                                }
+                            }
+                            //var parentKey_ = parent[tree.key].constructor === Field ? parent[tree.key].value : parent[tree.key];
+
+                            //if (parentKey_ !== 0 && parentKey_ !== "") {
+                                //var parentChildren = this.getChildrenByItemKey(id, parentKey);
+                                //if (parent.children.length > 0) {
+                                //    var l = parent.children.length;
+                                //    for (var z = 0; z < l; z++) {
+                                //        var parentChildrenKey = parent.children[z][tree.key].constructor === Field ? parent.children[z][tree.key].value : parent.children[z][tree.key];
+                                //        if (parentChildrenKey === key) {
+                                //            parent.children.splice(z, 1);
+                                //            l = parent.children.length;
+                                //        }
+                                //    }
+                               // }
+                            //}
+
+
+
 
                             tree.stack.splice(i, 1);
                             return true;
                         }
                     }
+
+
+
 
                     return false;
                 },
