@@ -8,6 +8,7 @@
     Sessions::install();
     Users::install();
     Files::install();
+    Permissions::install();
     //Kolenergo::install();
 
     $template = new XTemplate("../serverside/templates/install.html");
