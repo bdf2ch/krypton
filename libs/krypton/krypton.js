@@ -130,6 +130,7 @@ function isField (obj) {
         .factory("$extensions", extensionsFactory)
         .factory("$session", sessionFactory)
         .factory("$users", usersFactory)
+        .factory("$permissions", permissionsFactory)
         .factory("$application", applicationFactory)
         .directive("uploader", uploaderDirective)
         .filter("unique", uniqueFilter)
@@ -1578,6 +1579,104 @@ function isField (obj) {
     };
 
 
+
+
+    function permissionsFactory ($log, $errors, $classes, $factory) {
+        /**
+         * PermissionRule
+         * Набор свойств и методов, описывающих правило доступа
+         */
+        $classes.add("PermissionRule", {
+            __dependencies__: [],
+            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, default_value: 0, value: 0 }),
+            code: new Field({ source: "code", type: DATA_TYPE_STRING, default_value: "", value: "", backupable: true, displayable: true, title: "Код" }),
+            title: new Field({ source: "title", type: DATA_TYPE_STRING, default_value: "", value: "", backupable: true, displayable: true, title: "Наименование" })
+        });
+
+        /**
+         * Permission
+         * Набор свойств и методов, описывающих разрешение доступа
+         */
+        $classes.add("Permission", {
+            __dependencies__: [],
+            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
+            userId: new Field({ source: "user_id", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
+            ruleId: new Field({ source: "rule_id", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
+            allowed: new Field({ source: "allowed", type: DATA_TYPE_BOOLEAN, default_value: false, value: false, backupable: true })
+        });
+
+        var rules = [];
+        var permissions = [];
+
+        return {
+            rules: {
+
+                /**
+                 * Возвращает массив всех правил доступа
+                 * @returns {array}
+                 */
+                getAll: function () {
+                    return rules;
+                },
+
+                /**
+                 * Возвращает правило доступа по коду
+                 * @param code {string} - код правила доступа
+                 * @returns {array / boolean}
+                 */
+                getByCode: function (code) {
+                    if (code === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$permissions -> rules -> getByCode: Не задан параметр - код правила доступа");
+                        return false;
+                    }
+
+                    var result = [];
+                    var length = rules.length;
+                    for (var i = 0; i < length; i++) {
+                        if (rules[i].code.value === code)
+                            return rules[i];
+                    }
+
+                    $errors.add(ERROR_TYPE_ENGINE, "$permissions -> rules -> getByCode: Правило доступа с кодом '" + code + "' не найдено");
+                    return false;
+                }
+            },
+
+            permissions: {
+
+                /**
+                 * Возвращает массив всех разрешений доступа
+                 * @returns {Array}
+                 */
+                getAll: function () {
+                    return permissions;
+                },
+
+                /**
+                 * Возвращает массив разрешений доступа по идентификатору пользователя
+                 * @param userId {number} - идентификатор пользователя
+                 * @returns {array}
+                 */
+                getByUserId: function (userId) {
+                    if (userId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$permissions -> permissions -> getByUserId: Не задан параметр - идентификатор пользователя");
+                        return false;
+                    }
+
+                    var result = [];
+                    var length = permissions.length;
+                    for (var i = 0; i < length; i++) {
+                        if (permissions[i].userId.value === userId)
+                            result.push(permissions[i]);
+                    }
+
+                    return result;
+                }
+            }
+        }
+    };
+
+
     
     /******************************
      * $application
@@ -1611,6 +1710,12 @@ function isField (obj) {
 
             get: function () {
                 return app;
+            },
+
+            setDebugMode: function (flag) {
+                if (flag !== undefined) {
+                    
+                }
             }
         }
     };

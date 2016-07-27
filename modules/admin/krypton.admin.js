@@ -163,6 +163,7 @@
 
     function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $http, $settings, $session) {
         $log.log("krypton admin run");
+        $log.log(window.krypton);
         //$location.url("/users");
         $rootScope.navigation = $navigation;
         $rootScope.session = $session;

@@ -15,6 +15,7 @@
     Krypton::$app -> addInitialData("errors", json_encode(Errors::getAll()));
     Krypton::$app -> addInitialData("userGroups", json_encode(Users::getGroups()));
     Krypton::$app -> addInitialData("users", json_encode(Users::getAll()));
+    Krypton::$app -> addInitialData("permissionRules", json_encode(Permissions::getAllRules()));
     Krypton::$app -> addInitialData("organizations", json_encode(Extensions::get("Kolenergo") -> getOrganizations()));
     Krypton::$app -> addInitialData("departments", json_encode(Extensions::get("Kolenergo") -> getDepartments()));
     Krypton::$app -> addInitialData("divisions", json_encode(Extensions::get("Kolenergo") -> getDivisions()));

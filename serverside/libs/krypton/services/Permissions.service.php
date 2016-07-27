@@ -74,6 +74,25 @@
         public static function init () {
             Services::register(get_called_class());
 
+            $rules = DBManager::select("kr_permission_rules", ["*"], "");
+            if ($rules != false) {
+                foreach ($rules as $key => $item) {
+                    $rule = Models::construct("PermissionRule", false);
+                    $rule -> fromSource($item);
+                    array_push(self::$rules, $rule);
+                }
+            }
+
+            $permissions = DBManager::select("kr_permissions", ["*"], "");
+            if ($permissions != false) {
+                foreach ($permissions as $key => $item) {
+                    $permission = Models::construct("Permission", false);
+                    $permission -> fromSource($item);
+                    array_push(self::$permissions, $permission);
+                }
+            }
+
+            return true;
         }
 
 
@@ -92,9 +111,9 @@
 
         /**
         * Добавляет новое разрешение
-        * @code {string} - 
-        * @userId {integer} -
-        * @allow {boolean} -
+        * @code {string} - код правила доступа
+        * @userId {integer} - идентификатор пользователя
+        * @allow {boolean} - разрешение доступа
         **/
         public static function addPermission ($code, $userId, $allow) {
             if ($code == null) {
@@ -117,7 +136,45 @@
                 return false;
             }
 
+            if ($allow == null && $allow != false) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermission: Не задан парметр - разрешение доступа");
+                return false;
+            }
 
+            if (gettype($allow) != "boolean") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermission: Неверно задан тип параметра - код правила");
+                return false;
+            }
+
+            $rule = self::getRuleByCode($code);
+            if (!$rule) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Правило доступа с кодом '".$code."' не найдено");
+                return false;
+            }
+
+            $user = Users::getById($userId);
+            if (!$user) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Пользователь с идентификатором ".$userId." не найден");
+                return false;
+            }
+
+            $result = DBManager::insert("kr_permissions", ["code", "user_id", "allowed"], ["'".$code."'", $userId, intval($allow)]);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Не удалось добавить разрешение в БД");
+                return false;
+            }
+
+            $id = mysql_insert_id();
+            $result = DBManager::select("kr_permissions", ["*"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Не удвлось выбрать добавленное разрешение");
+                return false;
+            }
+
+            $permission = Models::construct("Permission", false);
+            $permission -> fromSource($result[0]);
+
+            return $permission;
         }
 
 
@@ -136,41 +193,68 @@
 
 
         /**
+        * Возвращает правило доступа по его коде
+        * @code {string} - код праавила доступа
+        **/
+        public static function getRuleByCode ($code) {
+             if ($code == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> getRuleByCode: Не задан парметр - код правила");
+                return false;
+             }
+
+             if (gettype($code) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> getRuleByCode: Неверно задан тип параметра - код правила");
+                return false;
+             }
+
+             foreach (self::$rules as $key -> $rule) {
+                if ($rule -> code -> value === $code)
+                    return $rule;
+             }
+
+             return false;
+        }
+
+
+
+
+
+        /**
         * Добавляет новое правило доступа
         * @code {string} - код правила
         * @title {string} - наименование правила
         **/
-        public static function addRule ($code, $title) {
+        public static function addPermissionRule ($code, $title) {
             if ($code == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addRule: Не задан парметр - код правила");
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Не задан парметр - код правила");
                 return false;
             }
 
             if (gettype($code) != "string") {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addRule: Неверно задан тип параметра - код правила");
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Неверно задан тип параметра - код правила");
                 return false;
             }
 
             if ($title == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addRule: Не задан парметр - наименование правила");
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Не задан парметр - наименование правила");
                 return false;
             }
 
             if (gettype($title) != "string") {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addRule: Неверно задан тип параметра - наименование правила");
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Неверно задан тип параметра - наименование правила");
                 return false;
             }
 
-            $result = DBManager::insert("kr_permission_rules", ["code", "title"], ["'".$code]."'", "'".$title."'");
+            $result = DBManager::insert_row("kr_permission_rules", ["code", "title"], ["'".$code."'", "'".$title."'"]);
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addRule: Не удалось добавить правило в БД");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось добавить правило в БД");
                 return false;
             }
 
             $id = mysql_insert_id();
             $result = DBManager::select("kr_permission_rules", ["*"], "id = $id");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addRule: Не удалось выбрать добавленное правило из БД");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось выбрать добавленное правило из БД");
                 return false;
             }
 
@@ -179,18 +263,6 @@
 
             return $rule;
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     };

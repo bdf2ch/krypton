@@ -36,6 +36,7 @@
               self::$app -> run();
 
                         Settings::init();
+                        Permissions::init();
                         Users::init();
                         Sessions::init();
                         Files::init();

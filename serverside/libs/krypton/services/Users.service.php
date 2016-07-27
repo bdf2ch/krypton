@@ -123,6 +123,42 @@
                 return false;
             }
 
+            $result = Permissions::addPermissionRule("add-user-group", "Добавление групп пользователей");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Добавление групп пользователей'");
+                return false;
+            }
+
+            $result = Permissions::addPermissionRule("edit-user-group", "Редактирование групп пользователей");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Редактирование групп пользователей'");
+                return false;
+            }
+
+            $result = Permissions::addPermissionRule("delete-user-group", "Удаление групп пользователей");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Удаление групп пользователей'");
+                return false;
+            }
+
+            $result = Permissions::addPermissionRule("add-user", "Добавление пользователей");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Добавление пользователей'");
+                return false;
+            }
+
+            $result = Permissions::addPermissionRule("edit-user", "Редактирование пользователей");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Редактирование пользователей'");
+                return false;
+            }
+
+            $result = Permissions::addPermissionRule("delete-user", "Удаление пользователей");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Удаление пользователей'");
+                return false;
+            }
+
             return true;
         }
 
