@@ -310,6 +310,8 @@
   right: 0px;
   height: 30px;
   padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
   vertical-align: bottom;
   box-sizing: border-box;
   background: #E3E5F1;
@@ -1182,7 +1184,7 @@ table thead th {
   font-size: 14px;
   text-align: left;
   box-sizing: border-box;
-  background: #E0F2F1;
+  background: #E3F2FD;
 }
 table tbody tr {
   border-bottom: 1px solid black;
@@ -1193,6 +1195,15 @@ table tbody tr td {
 }
 table.stripped tbody tr:nth-child(even) {
   background: #FAFAFA;
+}
+table.selectable tr {
+  cursor: pointer;
+}
+table.selectable tr:hover {
+  background: #FAFAFA;
+}
+table.selectable tr.selected {
+  background: #EEEEEE !important;
 }
 /**********
 * LINKS
@@ -1381,6 +1392,9 @@ a.blue:hover {
   font-size: 13px;
   line-height: 14px;
 }
+.content-caption {
+  border-bottom: 1px solid lightgrey;
+}
 /**********
 ** KRYPTON ADMINISTRATION PANEL
 ***********/
@@ -1422,14 +1436,14 @@ body {
 #app-header #current-menu-title {
   float: left;
   height: 45px;
-  padding-left: 5px;
+  padding-left: 10px;
   box-sizing: border-box;
 }
 #app-header #current-menu-title #title {
   display: block;
-  margin-top: 4px;
-  font-size: 22px;
-  line-height: 21px;
+  height: 45px;
+  font-size: 24px;
+  line-height: 45px;
   color: #37474F;
 }
 #app-header #current-menu-title #description {

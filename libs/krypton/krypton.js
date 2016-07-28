@@ -143,6 +143,28 @@ function isField (obj) {
              *******************/
             $provide.factory("$navigation", function ($log, $classes, $rootScope, $errors) {
 
+                $classes.add("Submenu", {
+                    __dependencies__: [],
+                    id: "",
+                    parentId: "",
+                    title: "",
+                    description: "",
+                    templateUrl: "",
+                    controller: "",
+                    isActive: false,
+
+                    init: function (parameters) {
+                        if (parameters !== undefined) {
+                            for (var param in parameters) {
+                                if (this.hasOwnProperty(param))
+                                    this[param] = parameters[param];
+                            }
+                            return this;
+                        } else
+                            return $errors.add(ERROR_TYPE_DEFAULT, "$classes -> Submenu -> init: Не задан параметр - параметры инициализации");
+                    }
+                });
+
                 /**
                  * Menu
                  * набор свойств и методов, описывающих пункт меню
@@ -154,6 +176,7 @@ function isField (obj) {
                     url: "",
                     title: "",
                     description: "",
+                    permissionRuleCode: "",
                     icon: "",
                     badge: "",
                     templateUrl: "",
@@ -171,24 +194,52 @@ function isField (obj) {
                             return this;
                         } else
                             return $errors.add(ERROR_TYPE_DEFAULT, "$classes -> Menu -> init: Не задан параметр - параметры инициализации");
+                    },
+
+                    submenu: function () {
+
                     }
                 });
+
+
 
                 $rootScope.$on("$routeChangeStart", function (event, next, current) {
                     $log.log("current = ", current);
                     $log.log("next = ", next);
 
+                    breadcrumb = [];
                     var length = items.length;
                     for (var i = 0; i < length; i++) {
                         if (items[i].url === next.$$route.originalPath) {
+                            breadcrumb.push(items[i]);
+                            if (items[i].parentId !== "") {
+
+                                var parentId = items[i].parentId;
+                                $log.log("parentId = ", parentId);
+                                while (parentId !== "") {
+                                    for (var x = 0; x < length; x++) {
+                                        if (items[x].id === parentId) {
+                                            breadcrumb.unshift(items[x]);
+                                            parentId = items[x].parentId;
+                                        }
+                                    }
+                                }
+
+                            }
+
                             items[i].isActive = true;
                             currentMenuItem = items[i];
                         } else
                             items[i].isActive = false;
                     }
+
+                    $log.log("breadcrumb = ", breadcrumb);
                 });
 
+
+
                 var items = [];
+                var breadcrumb = [];
                 var currentMenuItem = undefined;
 
                 return {
@@ -206,6 +257,10 @@ function isField (obj) {
 
                     getCurrent: function () {
                         return currentMenuItem;
+                    },
+
+                    getBreadcrumb: function () {
+                        return breadcrumb;
                     },
 
                     /**
@@ -1329,7 +1384,7 @@ function isField (obj) {
      * $session
      * Сервис для управления текущей сессией и текущим пользователем сессии
      */
-    function sessionFactory ($log, $classes, $factory) {
+    function sessionFactory ($log, $classes, $factory, $permissions) {
         /********************
          * Session
          * Набор свойств и методов, описывающих текущую сессию пользователя
@@ -1382,6 +1437,7 @@ function isField (obj) {
         var session = undefined;
         var user = undefined;
         var groups = [];
+        var permissions = [];
 
         return {
 
@@ -1445,6 +1501,51 @@ function isField (obj) {
 
             getUserGroups: function () {
                 return groups;
+            },
+
+            permissions: {
+
+                /**
+                 * Добавляет разрешение доступа для текущей сессии
+                 * @param permission {Permission} - разрешенеи доступа
+                 * @returns {boolean}
+                 */
+                add: function (permission) {
+                    if (permission === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$session -> permissions -> add: Не задан параметр - разрешение доступа");
+                        return false;
+                    }
+
+                    if (permissions.__class__ === undefined || permission.__class__ !== "Permission") {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$session -> permissions -> add: Неверно задан тип параметра - hfphtitybt ljcnegf");
+                        return false;
+                    }
+
+                    permissions.push(permission);
+                    return true;
+                },
+
+                getByRuleCode: function (code) {
+                    if (code === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$session -> permissions -> getByRuleCode: Не звдвн параметр - код праила доступа");
+                        return false;
+                    }
+
+                    var rule = $permissions.rules.getByCode(code);
+                    if (!rule) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$session -> permissions: Правило доступа с кодом '" + code + "' не найдено");
+                        return false;
+                    }
+
+                    var length = permissions.length;
+                    for (var i = 0; i < length; i++) {
+                        if (permissions[i].id.value === rule.id.value)
+                            return permissions[i].allowed.value;
+                    }
+
+                    $errors.add(ERROR_TYPE_ENGINE, "$session -> permissions -> getByRuleCode: Разрешение");
+                    return false;
+                }
             }
         }
     };
@@ -1556,6 +1657,75 @@ function isField (obj) {
                 }
             },
 
+            users: {
+
+                /**
+                 * Возвращает массив всех пользователей
+                 * @returns {Array}
+                 */
+                getAll: function () {
+                    return users;
+                },
+
+                /**
+                 * Возвращает текущего пользователя
+                 * @returns {User / undefined}
+                 */
+                getCurrent: function () {
+                    return currentUser;
+                },
+
+                /**
+                 * Возвращает пользователя по идентификатору
+                 * @param id {number} - идентификатор пользователя
+                 * @returns {User / boolean}
+                 */
+                getById: function (id) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$users -> users -> getById: Не задан параметр - идентификатор пользователя");
+                        return false;
+                    }
+
+                    var length = user.length;
+                    for (var i = 0; i < users; i++) {
+                        if (users[i].id.value === id)
+                            return users[i];
+                    }
+
+                    return false;
+                },
+
+                /**
+                 * Выбирает текуего пользователя
+                 * @param id {number} - идентификатор пользователя
+                 * @returns {boolean}
+                 */
+                select: function (id) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$users -> users -> select: Не задан параметр - идентификатор пользователя");
+                        return false;
+                    }
+
+                    var length = users.length;
+                    var result = false;
+                    for (var i = 0; i < length; i++) {
+                        if (users[i].id.value === id) {
+                            result = true;
+                            if (users[i]._states_.selected() === false) {
+                                users[i]._states_.selected(true);
+                                currentUser = users[i];
+                            } else {
+                                users[i]._states_.selected(false);
+                                currentUser = undefined;
+                            }
+                        } else
+                            users[i]._states_.selected(false);
+                    }
+
+                    return result;
+                }
+            },
+
             
 
             
@@ -1565,6 +1735,7 @@ function isField (obj) {
             getUsers: function () {
                 return users;
             },
+
             
             addGroup: function (group) {
                 if (group === undefined) {
@@ -1581,7 +1752,7 @@ function isField (obj) {
 
 
 
-    function permissionsFactory ($log, $errors, $classes, $factory) {
+    function permissionsFactory ($log, $errors, $classes, $factory, $http) {
         /**
          * PermissionRule
          * Набор свойств и методов, описывающих правило доступа
@@ -1607,8 +1778,28 @@ function isField (obj) {
 
         var rules = [];
         var permissions = [];
+        var currentRule = undefined;
+        var currentPermission = undefined;
 
         return {
+
+            /**
+             * Производит инициализацию сервиса
+             */
+            init: function () {
+                if (window.krypton !== null && window.krypton !== undefined) {
+                    if (window.krypton.permissionRules !== null && window.krypton.permissionRules !== undefined) {
+                        var length = window.krypton.permissionRules.length;
+                        for (var i = 0; i < length; i++) {
+                            var rule = $factory({ classes: ["PermissionRule", "Model", "Backup", "States"], base_class: "PermissionRule" });
+                            rule._model_.fromAnother(window.krypton.permissionRules[i]);
+                            rule._backup_.setup();
+                            rules.push(rule);
+                        }
+                    }
+                }
+            },
+
             rules: {
 
                 /**
@@ -1617,6 +1808,14 @@ function isField (obj) {
                  */
                 getAll: function () {
                     return rules;
+                },
+
+                /**
+                 * Возвращает текущее правило доступа
+                 * @returns {PermissionRule}
+                 */
+                getCurrent: function () {
+                    return currentRule;
                 },
 
                 /**
@@ -1639,6 +1838,102 @@ function isField (obj) {
 
                     $errors.add(ERROR_TYPE_ENGINE, "$permissions -> rules -> getByCode: Правило доступа с кодом '" + code + "' не найдено");
                     return false;
+                },
+
+                /**
+                 * Выбирает текущее правило доступа
+                 * @param id {number} - идентификатор правила доступа
+                 * @returns {boolean}
+                 */
+                select: function (id) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$permissions -> rules -> select: Не задан параметр - идентификатор правила доступа");
+                        return false;
+                    }
+
+                    var length = rules.length;
+                    for (var i = 0; i < length; i++) {
+                        if (rules[i].id.value === id) {
+                            if (rules[i]._states_.selected() === false) {
+                                rules[i]._states_.selected(true);
+                                currentRule = rules[i];
+                            } else {
+                                rules[i]._states_.selected(false);
+                                currentRule = undefined;
+                            }    
+                        } else 
+                            rules[i]._states_.selected(false);
+                    }
+                    
+                    return true;
+                },
+
+                /**
+                 * Добавляет новое правило доступа
+                 * @param rule {PermissionRule} - добавляемое правило доступа
+                 * @returns {boolean}
+                 */
+                add: function (rule, onSuccess) {
+                    if (rule === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$permissions -> rules -> add: Не задан парметр - добавляемое правило доступа");
+                        return false;
+                    }
+
+                    if (rule.__class__ === undefined || rule.__class__ !== "PermissionRule") {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$permissions -> rules -> add: Неверно задан типа параметра - добавляемое правило доступа");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "addPermissionRule",
+                        code: rule.code.value,
+                        title: rule.title.value
+                    };
+
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var temp = $factory({ classes: ["PermissionRule", "Model", "Backup", "States"], base_class: "PermissionRule" });
+                                    temp._model_.fromAnother(data.result);
+                                    temp._backup_.setup();
+                                    rules.push(temp);
+                                    if (onSuccess !== undefined && typeof onSuccess === "function")
+                                        onSuccess(temp);
+                                    return true;
+                                } else
+                                    return false;
+                            }
+                        });
+                },
+
+                /**
+                 * Редактирует правило доступа
+                 * @returns {boolean}
+                 */
+                edit: function (onSuccess) {
+                    if (currentRule !== undefined) {
+                        var params = {
+                            action: "editPermissionRule",
+                            id: currentRule.id.value,
+                            code: currentRule.code.value,
+                            title: currentRule.title.value
+                        };
+                        $http.post("/serverside/libs/krypton/api.php", params)
+                            .success(function (data) {
+                                if (data !== undefined) {
+                                    $errors.checkResponse(data);
+                                    if (data.result !== undefined && data.result !== false) {
+                                        currentRule._backup_.setup();
+                                        if (onSuccess !== undefined && typeof onSuccess === "function")
+                                            onSuccess();
+                                        return true;
+                                    } else
+                                        return false;
+                                }
+                            });
+                    }
                 }
             },
 
@@ -1653,11 +1948,46 @@ function isField (obj) {
                 },
 
                 /**
+                 * Возвращает текущее разрешение доступа
+                 * @returns {Permission}
+                 */
+                getCurrent: function () {
+                    return currentPermission;
+                },
+
+                /*
+                get: function (ruleCode, userId) {
+                    if (ruleCode === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$permissions -> permissions -> get: Не задан парметр - код правила доступа");
+                        return false;
+                    }
+
+                    if (userId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$permissions -> permissions -> get: Не задан парметр - идентификатор пользователя");
+                        return false;
+                    }
+
+                    var rule = undefined;
+                    var length = rules.length;
+                    for (var i = 0; i < length; i++) {
+                        if (rules[i].code.value === ruleCode)
+                            rule = rules[i];
+                    }
+                    if (rule === undefined)
+                        return undefined;
+
+                    var user = $users.users.getById(userId);
+                    if (user === false)
+                        return undefined;
+                },
+                */
+
+                /**
                  * Возвращает массив разрешений доступа по идентификатору пользователя
                  * @param userId {number} - идентификатор пользователя
                  * @returns {array}
                  */
-                getByUserId: function (userId) {
+                getAllByUserId: function (userId) {
                     if (userId === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$permissions -> permissions -> getByUserId: Не задан параметр - идентификатор пользователя");
                         return false;
@@ -1673,7 +2003,7 @@ function isField (obj) {
                     return result;
                 }
             }
-        }
+        };
     };
 
 

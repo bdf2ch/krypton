@@ -19,10 +19,10 @@
     </column>
     <column id="users" width="80" caption="пользователи" maximizable="1">
         <column-control class="green round" content="fa fa-plus" title="Добавить пользователя" action="gotoAddUser"></column-control>
-        <column-control class="blue round" content="fa fa-pencil" title="Редактировать пользователя"></column-control>
-        <column-control class="red round" content="fa fa-times" title="Удалить пользователя"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать пользователя" ng-show="users.users.getCurrent() !== undefined" action="gotoEditUser"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить пользователя" ng-show="users.users.getCurrent() !== undefined"></column-control>
         <div class="padding-5">
-            <table class="stripped">
+            <table class="stripped selectable">
                 <thead>
                 <tr>
                     <th>Фамилия</th>
@@ -35,7 +35,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="user in users.getUsers() track by $index">
+                <tr ng-class="{ 'selected': user._states_.selected() === true }" ng-click="users.users.select(user.id.value)" ng-repeat="user in users.users.getAll() track by $index">
                     <td>{{ user.surname.value }}</td>
                     <td>{{ user.name.value }}</td>
                     <td>{{ user.fname.value }}</td>

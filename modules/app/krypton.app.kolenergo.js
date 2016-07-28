@@ -102,6 +102,8 @@
 
                 var temp = $factory({ classes: ["Menu", "Model"], base_class: "Menu" });
                 temp.init({
+                    id: "companies",
+                    parentId: "",
                     url: "/company",
                     templateUrl: "../../templates/admin/kolenergo/company.html",
                     controller: companyController,

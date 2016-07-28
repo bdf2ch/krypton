@@ -1,0 +1,86 @@
+<columns id="permission-rules">
+    <column id="rules" width="100" caption="правила доступа">
+        <column-control class="green round" content="fa fa-plus" title="Добавить правило доступа" action="openAddPermissionRuleModal"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать правило доступа" ng-show="permissions.rules.getCurrent() !== undefined" action="openEditPermissionRuleModal"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить правило доступа" ng-show="permissions.rules.getCurrent() !== undefined"></column-control>
+        <div class="padding-5">
+            <table class="stripped selectable">
+                <thead>
+                <tr>
+                    <th class="width-30">Код</th>
+                    <th class="width-70">Наименование</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-class="{'selected': rule._states_.selected() === true}" ng-click="permissions.rules.select(rule.id.value)" ng-repeat="rule in permissions.rules.getAll() track by $index">
+                    <td class="width-30">{{ rule._backup_.data.code }}</td>
+                    <td class="width-70">{{ rule._backup_.data.title }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </column>
+</columns>
+
+
+<div modal modal-id="add-permission-rule" modal-caption="Новое правило доступа" modal-on-close="closeAddPermissionRuleModal">
+    <div class="padding-10">
+        <div class="row margin-bottom-10">
+            <label for="new-permission-rule-code">Код правила</label>
+            <input type="text" id="new-permission-rule-code" name="new-permission-rule-code" class="width-100" ng-model="newPermissionRule.code.value">
+        </div>
+        <div class="row margin-bottom-10">
+            <label for="new-permission-rule-title">Наименование правила</label>
+            <input type="text" id="new-permission-rule-title" name="new-permission-rule-title" class="width-100" ng-model="newPermissionRule.title.value">
+        </div>
+
+        <div class="row">
+            <div class="width-50">
+                <button class="width-100 green" ng-disabled="newPermissionRule.title.value === '' || newPermissionRule.code.value === ''" ng-click="addPermissionRule()">Добавить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div modal modal-id="edit-permission-rule" modal-caption="Редактирование правила доступа" modal-on-close="closeEditPermissionRuleModal">
+    <div class="padding-10">
+        <div class="row margin-bottom-10">
+            <label for="current-permission-rule-code">Код правила</label>
+            <input type="text" id="current-permission-rule-code" name="current-permission-rule-code" class="width-100" ng-model="permissions.rules.getCurrent().code.value" ng-change="permissions.rules.getCurrent()._states_.changed(true)">
+        </div>
+        <div class="row margin-bottom-10">
+            <label for="current-permission-rule-title">Наименование правила</label>
+            <input type="text" id="current-permission-rule-title" name="current-permission-rule-title" class="width-100" ng-model="permissions.rules.getCurrent().title.value" ng-change="permissions.rules.getCurrent()._states_.changed(true)">
+        </div>
+
+        <div class="row">
+            <div class="width-50">
+                <button class="width-100 green" ng-disabled="permissions.rules.getCurrent().title.value === '' || permissions.rules.getCurrent().code.value === '' || permissions.rules.getCurrent()._states_.changed() === false" ng-click="editPermissionRule()">Сохранить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div modal modal-id="delete-user-group-modal" modal-caption="Удаление группы пользователей">
+    <div class="padding-10">
+        <div class="row">
+            <div class="row margin-bottom-10">
+                Вы уверены, что хотите удалить группу <b>{{ users.groups.getCurrent().title.value }}</b> ?
+            </div>
+            <div class="width-50">
+                <button class="width-100 green" ng-click="deleteUserGroup()">Удалить</button>
+            </div>
+            <div class="width-50">
+                <button class="width-100 red" ng-click="modals.close()">Отмена</button>
+            </div>
+        </div>
+    </div>
+</div>

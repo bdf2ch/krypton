@@ -45,19 +45,25 @@
 
             $result = DBManager::add_column("kr_permissions", "rule_id", "int(11) NOT NULL default 0");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'rule_id' таблицу прав доступа");
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'rule_id' в таблицу прав доступа");
                 return false;
             }
 
             $result = DBManager::add_column("kr_permissions", "user_id", "int(11) NOT NULL default 0");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'user_id' таблицу прав доступа");
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'user_id' в таблицу прав доступа");
                 return false;
             }
 
             $result = DBManager::add_column("kr_permissions", "allowed", "int(11) NOT NULL default 0");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'allowed' таблицу прав доступа");
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'allowed' в таблицу прав доступа");
+                return false;
+            }
+
+            $result = DBManager::add_column("kr_permissions", "allowed_by_default", "int(11) NOT NULL default 0");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'allowed_by_default' в таблицу прав доступа");
                 return false;
             }
 
@@ -92,6 +98,10 @@
                 }
             }
 
+            API::add("addPermissionRule", "Permissions", "addPermissionRule");
+            API::add("editPermissionRule", "Permissions", "editPermissionRule");
+
+
             return true;
         }
 
@@ -104,6 +114,44 @@
         **/
         public static function getAllPermissions () {
             return self::$permissions;
+        }
+
+
+
+
+
+        /**
+        * Возвращает разрешения доступа по идентификатору пользователя
+        * @userId {integer} - идентификатор пользователя
+        **/
+        public static function getPermissionsByUserId ($userId) {
+            if ($userId == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> getPermissionsByUserId: Не задан параметр - идентификатор пользователя");
+                return false;
+            }
+
+            if (gettype($userId) != "integer") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> getPermissionsByUserId: Невеерно задан типа параметра - идентификатор пользователя");
+                return false;
+            }
+
+            $user = Users::getById($userId);
+            if (!$user) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> getPermissionsByUserId: Пользователь с идентификатором ".$userId." не найден");
+                return false;
+            }
+
+            $result = DBManager::select("kr_permissions", ["*"], "user_id = $userId");
+            $permissions = array();
+            if ($result != false) {
+                foreach ($result as $key => $item) {
+                    $permission = Models::construct("PermissionRule", false);
+                    $permission -> fromSource($item);
+                    array_push($permissions, $permission);
+                }
+            }
+
+            return $permissions;
         }
 
 
@@ -224,28 +272,13 @@
         * @code {string} - код правила
         * @title {string} - наименование правила
         **/
-        public static function addPermissionRule ($code, $title) {
-            if ($code == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Не задан парметр - код правила");
+        public static function addPermissionRule ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Не задан параметр - объект с информацией о добавляемом правиле доступа");
                 return false;
             }
 
-            if (gettype($code) != "string") {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Неверно задан тип параметра - код правила");
-                return false;
-            }
-
-            if ($title == null) {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Не задан парметр - наименование правила");
-                return false;
-            }
-
-            if (gettype($title) != "string") {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> addPermissionRule: Неверно задан тип параметра - наименование правила");
-                return false;
-            }
-
-            $result = DBManager::insert_row("kr_permission_rules", ["code", "title"], ["'".$code."'", "'".$title."'"]);
+            $result = DBManager::insert_row("kr_permission_rules", ["code", "title"], ["'".$data -> code."'", "'".$data -> title."'"]);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось добавить правило в БД");
                 return false;
@@ -255,6 +288,42 @@
             $result = DBManager::select("kr_permission_rules", ["*"], "id = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось выбрать добавленное правило из БД");
+                return false;
+            }
+
+            $rule = Models::construct("PermissionRule", false);
+            $rule -> fromSource($result[0]);
+
+            return $rule;
+        }
+
+
+
+
+
+        /**
+        * Редактирует правило доступа
+        * @data {object} - объект с информацией о редактируемом правиле доступа
+        **/
+        public static function editPermissionRule ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Permissions -> editPermissionRule: Не задан параметр - объект с информацией о редактируемом правиле доступа");
+                return false;
+            }
+
+            $id = $data -> id;
+            $code = $data -> code;
+            $title = $data -> title;
+
+            $result = DBManager::update("kr_permission_rules", ["code", "title"], ["'".$code."'", "'".$title."'"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> editPermissionRule: Не удалось обновить информацию о редактируемом правиле доступа в БД");
+                return false;
+            }
+
+            $result = DBManager::select("kr_permission_rules", ["*"], "id = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> editPermissionRule: Не удалось выбрать из БД информацию об обновленном правиле доступа");
                 return false;
             }
 

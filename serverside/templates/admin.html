@@ -20,9 +20,9 @@
 
     <!-- Шапка приложения -->
     <div id="app-header">
-        <div id="current-menu-title" ng-show="true">
-            <span id="title">{{ navigation.getCurrent().title }}</span>
-            <span id="description">{{ navigation.getCurrent().description }}</span>
+        <div id="current-menu-title" ng-show="true" ng-repeat="menu in navigation.getBreadcrumb() track by $index">
+            <span id="title">{{ menu.title }}</span>
+            <!--<span id="description">{{ navigation.getCurrent().description }}</span>-->
         </div>
         <div id="current-menu-search" ng-show="false">
             <div class="search-box">
@@ -48,7 +48,7 @@
             <div class="current-user-fio">{{ session.getCurrentUser().name.value + " " + session.getCurrentUser().surname.value }}</div>
         </div>
 
-        <a class="menu-item" ng-href="{{ '#' + menu.url }}" ng-class="{ 'active': menu.isActive === true }" ng-repeat="menu in navigation.getAll() track by $index">
+        <a class="menu-item" ng-href="{{ '#' + menu.url }}" ng-class="{ 'active': menu.isActive === true }" title="{{ menu.description }}" ng-repeat="menu in navigation.getAll() track by $index">
             <span class="{{ 'fa ' + menu.icon }}"></span>
             &nbsp;{{ menu.title }}
         </a>

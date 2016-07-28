@@ -7,12 +7,19 @@
         .config(function ($routeProvider,$sceProvider) {
             $sceProvider.enabled(false);
 
-            $routeProvider.when("/users/new",
-                {
-                templateUrl: "../templates/admin/users/new-user.html",
-                controller: newUserController
-                }
-            );
+            $routeProvider
+                .when("/users/new",
+                    {
+                        templateUrl: "../templates/admin/users/new-user.html",
+                        controller: newUserController
+                    }
+                )
+                .when("/users/:userId",
+                    {
+                        templateUrl: "../templates/admin/users/edit-user.html",
+                        controller: AdminEditUserController
+                    }
+                );
         })
         .run(kryptonAdminRun);
 
@@ -25,6 +32,7 @@
 
 
 
+    
 
     function usersController ($log, $scope, $http, $factory, $users, $modals, $kolenergo, $location) {
         $scope.users = $users;
@@ -36,6 +44,10 @@
 
         $scope.gotoAddUser = function () {
             $location.url("/users/new");
+        };
+        
+        $scope.gotoEditUser = function () {
+            $location.url("/users/" + $users.users.getCurrent().id.value);
         };
 
         $scope.openNewUserGroupModal = function () {
@@ -139,6 +151,11 @@
     function newUserController ($scope, $log, $users) {
 
     };
+    
+    
+    function AdminEditUserController ($scope, $log, $users) {
+        
+    };
 
 
 
@@ -154,6 +171,43 @@
     };
 
 
+    function AdminPermissionRulesController ($scope, $log, $permissions, $factory, $modals) {
+        $scope.permissions = $permissions;
+        $scope.newPermissionRule = $factory({ classes: ["PermissionRule", "Model", "Backup", "States"], base_class: "PermissionRule" });
+
+        $scope.openAddPermissionRuleModal = function () {
+            $scope.newPermissionRule._backup_.setup();
+            $modals.open("add-permission-rule");
+        };
+
+        $scope.closeAddPermissionRuleModal = function () {
+            $scope.newPermissionRule._backup_.restore();
+        };
+
+        $scope.addPermissionRule = function () {
+            $permissions.rules.add($scope.newPermissionRule, function () {
+                $scope.newPermissionRule._backup_.restore();
+                $modals.close();
+            });
+        };
+
+        $scope.openEditPermissionRuleModal = function () {
+            $modals.open("edit-permission-rule");
+        };
+
+        $scope.closeEditPermissionRuleModal = function () {
+            $permissions.rules.getCurrent()._backup_.restore();
+        };
+        
+        $scope.editPermissionRule = function () {
+            $permissions.rules.edit(function () {
+                $modals.close();
+            });
+        };
+
+    };
+
+
     function AdminTelephonesController ($log, $scope, $users) {
         $scope.user = $users;
     };
@@ -161,7 +215,7 @@
 
 
 
-    function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $http, $settings, $session) {
+    function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $permissions, $http, $settings, $session) {
         $log.log("krypton admin run");
         $log.log(window.krypton);
         //$location.url("/users");
@@ -171,10 +225,13 @@
         $session.init();
         $settings.init();
         $users.init();
+        $permissions.init();
         
         
         var temp = $factory({ classes: ["Menu", "Model"], base_class: "Menu" });
         temp.init({
+            id: "users",
+            parentId: "",
             url: "/users",
             templateUrl: "../../templates/admin/users/users.html",
             controller: usersController,
@@ -184,11 +241,25 @@
         });
         $navigation.add(temp);
 
+        $navigation.add(
+            $factory({ classes: ["Menu", "Model"], base_class: "Menu" })
+                .init({
+                    id: "edit-user",
+                    parentId: "users",
+                    url: "/users/:userId",
+                    templateUrl: "../../templates/admin/users/edit-user.html",
+                    controller: AdminEditUserController,
+                    title: "Редактирование пользователя",
+                    description : "Редактирование данных пользователя"
+                }));
+
         var temp2 = $factory({ classes: ["Menu", "Model"], base_class: "Menu" });
         temp2.init({
+            id: "dashboard",
+            parentId: "",
             url: "/dashboard",
             templateUrl: "../../templates/admin/dashboard/dashboard.html",
-            controller: dashboardController(),
+            controller: dashboardController,
             title: "Дашборд",
             description: "Панель управления",
             icon: "fa-home",
@@ -199,6 +270,8 @@
         $navigation.add(
             $factory({ classes: ["Menu", "Model"], base_class: "Menu" })
                 .init({
+                    id: "settings",
+                    parentId: "",
                     url: "/settings",
                     templateUrl: "../../templates/admin/settings/settings.html",
                     controller: settingsController,
@@ -210,6 +283,21 @@
         $navigation.add(
             $factory({ classes: ["Menu", "Model"], base_class: "Menu" })
                 .init({
+                    id: "permissions",
+                    parentId: "",
+                    url: "/permissions",
+                    templateUrl: "../../templates/admin/permissions/permissions.html",
+                    controller: AdminPermissionRulesController,
+                    title: "Контроль доступа",
+                    description : "Управление правилами доступа к данным",
+                    icon: "fa-shield"
+                }));
+
+        $navigation.add(
+            $factory({ classes: ["Menu", "Model"], base_class: "Menu" })
+                .init({
+                    id: "phones",
+                    parentId: "",
                     url: "/phones",
                     templateUrl: "../../templates/admin/kolenergo/phones.html",
                     controller: AdminTelephonesController,

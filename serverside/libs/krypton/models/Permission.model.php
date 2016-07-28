@@ -8,6 +8,7 @@
             self::field("ruleId", new Field(array( "source" => "rule_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("userId", new Field(array( "source" => "user_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("allowed", new Field(array( "source" => "allowed", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("allowedByDefault", new Field(array( "source" => "allowed_by_default", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
 
 
 
