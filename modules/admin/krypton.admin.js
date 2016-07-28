@@ -153,8 +153,14 @@
     };
     
     
-    function AdminEditUserController ($scope, $log, $users) {
-        
+    function AdminEditUserController ($scope, $log, $routeParams, $users, $navigation) {
+        if ($routeParams.userId !== undefined) {
+            $log.log("params = ", $routeParams);
+            if ($users.users.getCurrent() === undefined || $users.users.getCurrent().id.value !== parseInt($routeParams.userId)) {
+                $users.users.select(parseInt($routeParams.userId));
+                $navigation.getCurrent().title = $users.users.getCurrent().name.value + " " + $users.users.getCurrent().surname.value;
+            }
+        }
     };
 
 
