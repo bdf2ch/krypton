@@ -153,13 +153,18 @@
     };
     
     
-    function AdminEditUserController ($scope, $log, $routeParams, $users, $navigation) {
+    function AdminEditUserController ($scope, $log, $routeParams, $users, $navigation, $kolenergo) {
+        $scope.users = $users;
+        $scope.kolenergo = $kolenergo;
+
         if ($routeParams.userId !== undefined) {
             $log.log("params = ", $routeParams);
             if ($users.users.getCurrent() === undefined || $users.users.getCurrent().id.value !== parseInt($routeParams.userId)) {
                 $users.users.select(parseInt($routeParams.userId));
-                $navigation.getCurrent().title = $users.users.getCurrent().name.value + " " + $users.users.getCurrent().surname.value;
             }
+
+            $navigation.getCurrent().title = $users.users.getCurrent().name.value + " " + $users.users.getCurrent().surname.value;
+            $log.log("current user = ", $users.users.getCurrent());
         }
     };
 
@@ -255,6 +260,11 @@
                     url: "/users/:userId",
                     templateUrl: "../../templates/admin/users/edit-user.html",
                     controller: AdminEditUserController,
+                    //resolve: {
+                    //    "kolenergo": function ($kolenergo) {
+
+                        //}
+                    //},
                     title: "Редактирование пользователя",
                     description : "Редактирование данных пользователя"
                 }));

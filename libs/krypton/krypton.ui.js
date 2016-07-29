@@ -1162,7 +1162,7 @@
                     "</li>" +
                 "</ul>",
                 */
-                "<div class='krypton-ui-tree'>" +
+                "<div class='krypton-ui-tree {{class}}'>" +
                     "<div class='container root'>" +
                         "<div class='tree-item' ng-class='{ \"with-children\": node._hierarchy_.haveChildren === true, \"expanded\": node._hierarchy_.expanded === true, \"active\": node._states_.selected() === true }' ng-repeat='node in initial track by $index'>" +
                             //"<div class='item-lines'>" +
@@ -1175,15 +1175,16 @@
                             //"</div>" +
                             //"<div class='item-content'>{{ node.display }}</div>" +
                             //"<div ng-include=\"\'hierarchy.html'\"></div>" +
-                            "<div class='tree-item-content' ng-click='expand(node)'>" +
-                                "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event)'>" +
+                            "<div class='tree-item-content' ng-click='expand(node); select(node, $event)'>" +
+                                "<div class='item-controls'>" +
+                                "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === false'></span>" +
+                                "<span class='collapse fa fa-chevron-up' ng-if='node._hierarchy_.expanded === true' ng-click='collapse(node)'></span>" +
+                                "</div>" +
+                                "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event); expand(node)'>" +
                                 "<span ng-if='node[displayField].type !== undefined'>{{ node[displayField].value }}</span>" +
                                 "<span ng-if='node[displayField].type === undefined'>{{ node[displayField] }}</span>" +
                                 "</div>" +
-                                "<div class='item-controls'>" +
-                                    "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === false'></span>" +
-                                    "<span class='collapse fa fa-chevron-up' ng-if='node._hierarchy_.expanded === true' ng-click='collapse(node)'></span>" +
-                                "</div>" +
+
 
                             "</div>" +
                             "<div ng-include=\"\'hierarchy'\" ng-show='node._hierarchy_.expanded === true' ng-init='node.children = getChildren(node)'></div>" +
@@ -1246,15 +1247,16 @@
                     //"</div>" +
                     //"<div class='item-content'>{{ node.display }}</div>" +
                     //"<div ng-init='this.children = getChildren(node)' ng-include=\"\'hierarchy.html'\"></div>" +
-                    "<div class='tree-item-content' ng-click='expand(node)'>" +
-                    "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event)'>" +
-                        "<span ng-if='node[displayField].type !== undefined'>{{ node[displayField].value }}</span>" +
-                        "<span ng-if='node[displayField].type === undefined'>{{ node[displayField] }}</span>" +
-                    "</div>" +
+                    "<div class='tree-item-content' ng-click='expand(node); select(node, $event)'>" +
                     "<div class='item-controls'>" +
                     "<span class='expand fa fa-chevron-down' ng-click='expand(node)' ng-show='node._hierarchy_.haveChildren === true && node._hierarchy_.expanded === false'></span>" +
                     "<span class='collapse fa fa-chevron-up' ng-if='node._hierarchy_.expanded === true' ng-click='collapse(node)'></span>" +
                     "</div>" +
+                    "<div class='item-label' ng-class='{ \"active\": node._states_.selected() === true }' ng-click='select(node, $event); expand(node)'>" +
+                        "<span ng-if='node[displayField].type !== undefined'>{{ node[displayField].value }}</span>" +
+                        "<span ng-if='node[displayField].type === undefined'>{{ node[displayField] }}</span>" +
+                    "</div>" +
+
                     "</div>" +
                     "<div ng-show='node._hierarchy_.expanded === true' ng-include=\"\'hierarchy'\"></div>" +
                     //"<div ng-init='this.children = getChildren(node)' ng-bind-html='parsedTemplate' ng-show='node.expanded === true'></div>" +
@@ -2008,11 +2010,14 @@
                         return false;
                     }
 
+
                     var tree = this.getById(id);
+                    
                     if (!tree) {
                         $errors.add(ERROR_TYPE_ENGINE, "$tree -> addItem: Древовидный список с идентификатором '" + id + "' не найден");
                         return false;
                     }
+                    
 
                     if (item === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$tree -> addItem: Не задан параметр - добавляемый элемент");
@@ -2020,12 +2025,12 @@
                     }
 
                     if (item[tree.key] === undefined) {
-                        $errors.push(ERROR_TYPE_ENGINE, "$tree -> addItem: У добавялемого элемента отсутствует поле ключевой связи '" + tree.key + "'");
+                        $errors.add(ERROR_TYPE_ENGINE, "$tree -> addItem: У добавялемого элемента отсутствует поле ключевой связи '" + tree.key + "'");
                         return false;
                     }
 
                     if (item[tree.parentKey] === undefined) {
-                        $errors.push(ERROR_TYPE_ENGINE, "$tree -> addItem: У добавялемого элемента отсутствует поле родительской ключевой связи '" + tree.parentKey + "'");
+                        $errors.add(ERROR_TYPE_ENGINE, "$tree -> addItem: У добавялемого элемента отсутствует поле родительской ключевой связи '" + tree.parentKey + "'");
                         return false;
                     }
 
@@ -2272,6 +2277,10 @@
                          //   }
                         //}
                     }
+                },
+
+                getPath: function (id, key) {
+
                 }
             }
         };

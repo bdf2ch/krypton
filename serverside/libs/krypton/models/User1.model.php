@@ -15,6 +15,10 @@
             self::field("mobile", new Field(array( "source" => "mobile_phone", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("photo", new Field(array( "source" => "photo_url", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("isAdmin", new Field(array( "source" => "is_admin", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => false, "defaultValue" => false )));
+            self::field("ldapEnabled", new Field(array( "source" => "ldap_enabled", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
+            self::field("organizationId", new Field(array( "source" => "organization_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("divisionId", new Field(array( "source" => "division_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
 
             if (is_null($parameters))
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Models -> User -> __construct: Не задан параметр - массив параметров инициализации");

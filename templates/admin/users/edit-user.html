@@ -1,1 +1,49 @@
-EDIT USER
+<div class="row width-50 padding-20">
+    <div class="row margin-bottom-10">
+        <label for="current-user-surname">Фамилия пользователя</label>
+        <input type="text" id="current-user-surname" name="current-user-surname" class="width-100" ng-model="users.users.getCurrent().surname.value" ng-change="users.users.getCurrent()._states_.changed(true)">
+    </div>
+
+    <div class="row margin-bottom-10">
+        <label for="current-user-name">Имя пользователя</label>
+        <input type="text" id="current-user-name" name="current-user-name" class="width-100" ng-model="users.users.getCurrent().name.value" ng-change="users.users.getCurrent()._states_.changed(true)">
+    </div>
+
+    <div class="row margin-bottom-10">
+        <label for="current-user-fname">Имя пользователя</label>
+        <input type="text" id="current-user-fname" name="current-user-fname" class="width-100" ng-model="users.users.getCurrent().fname.value" ng-change="users.users.getCurrent()._states_.changed(true)">
+    </div>
+
+    <div class="row margin-bottom-10">
+        <label for="current-user-group">Группа пользователей</label>
+        <select name="current-user-group"
+                id="current-user-group"
+                class="width-100"
+                ng-model="users.users.getCurrent().userGroupId.value"
+                ng-change="users.users.getCurrent()._states_.changed(true)"
+                ng-options="group.id.value as group.title.value for group in users.groups.getAll()">
+        </select>
+    </div>
+
+    <div class="row margin-bottom-10">
+        <label for="current-user-organization">Огрганизация</label>
+        <select name="current-user-organization"
+                id="current-user-organization"
+                class="width-100"
+                ng-model="users.users.getCurrent().organizationId.value"
+                ng-change="users.users.getCurrent()._states_.changed(true)"
+                ng-options="org.id.value as org.title.value for org in kolenergo.organizations.getAll()">
+        </select>
+    </div>
+
+    <div class="row margin-bottom-10">
+        <label for="current-user-division">Структурное подразделение</label>
+        <select name="current-user-division"
+                id="current-user-division"
+                class="width-100"
+                ng-model="kolenergo.divisions.getByOrganizationId().userGroupId.value"
+                ng-change="users.users.getCurrent()._states_.changed(true)"
+                ng-options="division.id.value as division.title.value for division in kolenergo.divisions.getByOrganizationId(users.users.getCurrent().organizationId.value)">
+        </select>
+    </div>
+</div>

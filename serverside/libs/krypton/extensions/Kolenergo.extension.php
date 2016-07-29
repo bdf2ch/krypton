@@ -36,6 +36,12 @@
                 return false;
             }
 
+            $result = DBManager::add_column("kr_users", "organization_id", "int(11) NOT NULL default 0");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу ползователей");
+                return false;
+            }
+
             $result = Models::extend("User1", "departmentId", new Field(array( "source" => "departmentId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             if (Errors::isError($result)) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойство 'departmentId' в класс User");
@@ -154,14 +160,15 @@
 
             Krypton::$app -> addJavaScript("modules/app/krypton.app.kolenergo.js");
 
-            $departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
-            $divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "division_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            $ldapEnabledProperty = Models::extend("User1", "ldapEnabled", new Field(array( "source" => "ldap_enabled", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
+            //$departmentIdProperty = Models::extend("User1", "departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));;
+            //$divisionIdProperty = Models::extend("User1", "divisionId", new Field(array( "source" => "division_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            //$organizationIdProperty = Models::extend("User1", "organizationId", new Field(array( "source" => "organization_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            //$ldapEnabledProperty = Models::extend("User1", "ldapEnabled", new Field(array( "source" => "ldap_enabled", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
 
             //if (!defined("ENGINE_ADMIN_MODE"))
 
-            if (Errors::isError($departmentIdProperty) && Errors::isError($divisionIdProperty))
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойства в класс User");
+            //if (Errors::isError($departmentIdProperty) && Errors::isError($divisionIdProperty))
+            //    return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойства в класс User");
 
             API::add("test", "Kolenergo", "getDepartments");
             API::add("addOrganization", "Kolenergo", "addOrganization");

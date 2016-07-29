@@ -22,6 +22,7 @@
     <div id="app-header">
         <div id="current-menu-title" ng-show="true" ng-repeat="menu in navigation.getBreadcrumb() track by $index">
             <span id="title">{{ menu.title }}</span>
+            <div class="menu-separator" ng-show="$last !== true"></div>
             <!--<span id="description">{{ navigation.getCurrent().description }}</span>-->
         </div>
         <div id="current-menu-search" ng-show="false">
@@ -34,6 +35,10 @@
             <span class="control fa fa-search" title="Поиск"></span>
             <span class="control fa fa-cog" title="Настройки"></span>
         </div>
+    </div>
+
+    <div id="new-user-stop-signal">
+        <div class="stop-repeat"></div>
     </div>
 
 

@@ -117,11 +117,18 @@
                 return false;
             }
 
+            $result = DBManager::add_column("kr_users", "is_deleted", "int(11) NOT NULL default 0");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'is_deleted' в таблицу с информацией о пользователях");
+                return false;
+            }
+
             $result = DBManager::insert_row("kr_users", ["user_group_id", "surname", "name", "fname", "email", "password", "is_admin"], [1, "''", "'Администратор'", "''", "'bdf2ch@gmail.com'", "'".md5("zx12!@#$")."'", 1]);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу пользователей");
                 return false;
             }
+
 
             $result = Permissions::addPermissionRule("add-user-group", "Добавление групп пользователей");
             if (!$result) {

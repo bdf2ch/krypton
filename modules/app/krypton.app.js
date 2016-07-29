@@ -70,8 +70,8 @@
         $rootScope.errors = $errors;
         $rootScope.application = $application;
 
-        $classes.getAll().User.departmentId = new Field({ source: "department_id", type: "integer", value: 0, default_value: 0, backupable: true });
-        $classes.getAll().User.divisionId = new Field({ source: "division_id", type: "integer", value: 0, default_value: 0, backupable: true });
+        //$classes.getAll().User.departmentId = new Field({ source: "department_id", type: "integer", value: 0, default_value: 0, backupable: true });
+        //$classes.getAll().User.divisionId = new Field({ source: "division_id", type: "integer", value: 0, default_value: 0, backupable: true });
 
         $application.init();
         $navigation.init();

@@ -181,6 +181,7 @@ function isField (obj) {
                     badge: "",
                     templateUrl: "",
                     controller: "",
+                    resolve: {},
                     isActive: false,
                     isDefault: false,
 
@@ -227,6 +228,13 @@ function isField (obj) {
 
                             }
 
+                            var breadcrumbLength = breadcrumb.length;
+                            for (var z = 0; z < breadcrumbLength; z++) {
+                                if (z === 0)
+                                    breadcrumb[z].isActive = true;
+                                else
+                                    breadcrumb[z].isActive = false;
+                            }
                             items[i].isActive = true;
                             currentMenuItem = items[i];
                         } else
@@ -280,7 +288,8 @@ function isField (obj) {
                                     $routeProvider
                                         .when("/", {
                                             templateUrl: menuItem.templateUrl,
-                                            controller: menuItem.controller
+                                            controller: menuItem.controller,
+                                            resolve: menuItem.resolve
                                         });
                                     currentMenuItem = menuItem;
                                 }

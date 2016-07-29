@@ -8,6 +8,7 @@
         .controller("LoginController", LoginController)
         .controller("PhoneBookController", PhoneBookController)
         .filter("byDepartmentId", byDepartmentIdFilter)
+        .filter("byDivisionId", byDivisionIdFilter)
         .filter("phoneBook", phoneBookFilter)
         .run(kolenergoRun);
 
@@ -61,6 +62,10 @@
 
 
             init: function () {
+                $classes.getAll().User.organizationId = new Field({ source: "organization_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
+                $classes.getAll().User.departmentId = new Field({ source: "department_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
+                $classes.getAll().User.divisionId = new Field({ source: "division_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
+
                 if (window.krypton !== null && window.krypton !== undefined) {
                     if (window.krypton.organizations !== null && window.krypton.organizations !== undefined) {
                         var length = window.krypton.organizations.length;
@@ -217,6 +222,7 @@
                 },
 
                 getByOrganizationId: function (organizationId) {
+                    $log.log("org id = ", organizationId);
                     if (organizationId === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> divisions -> getByOrganizationId: Не задан параметр - идентификатор организации");
                         return false;
@@ -963,10 +969,29 @@
 
 
 
-    function PhoneBookController ($scope, $log, $users, $kolenergo) {
+    function PhoneBookController ($scope, $log, $users, $kolenergo, $tree) {
         $scope.users = $users;
         $scope.kolenergo = $kolenergo;
         $scope.search = "";
+
+        $scope.div = 0;
+
+        //$scope.divs = $kolenergo.divisions.getByOrganizationId(8);
+        //$log.log("divs = ", $scope.divs);
+        //var length = $scope.divs.length;
+        //for (var i = 0; i < length; i++) {
+        //    $tree.addItem("test", $scope.divs[i]);
+        //
+        //}
+
+        $scope.selectDivision = function (div) {
+            $log.log("selected = ", div.id.value);
+            $kolenergo.divisions.select(div.id.value);
+            if ($scope.div !== div.id.value)
+                $scope.div = div.id.value;
+            else
+                $scope.div = 0;
+        };
     };
 
 
@@ -989,22 +1014,38 @@
     };
 
 
+    function byDivisionIdFilter () {
+        return function (input, id) {
+            if (id !== undefined || id !== 0) {
+                var result = [];
+                var length = input.length;
+                for (var i = 0; i < length; i++) {
+                    if (input[i].divisionId.value == id)
+                        result.push(input[i]);
+                }
+                return result;
+            } else
+                return input;
+        }
+    };
 
+    
     function phoneBookFilter ($log) {
         return function (input, search) {
             var result = [];
-            if (input.length > 0 ) {
-                if (search !== undefined && search !== "" && search.length > 2) {
+
+                if (search !== undefined && search !== "") {
                     var length = input.length;
                     for (var i = 0; i < length; i++) {
                         var temp = input[i].search.toLowerCase();
-                        if (temp.indexOf(search.toLocaleLowerCase()) !== -1)
+                        if (temp.indexOf(search.toLowerCase()) !== -1)
                             result.push(input[i]);
                     }
-                }
-            }
-            return result;
+                    return result;
+                } else
+                    return input;
         }
-
     };
+
+
 })();

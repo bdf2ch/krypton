@@ -1,4 +1,6 @@
-<div id="telephones" class="height-100">
+<div id="telephones">
+
+
     <div id="telephones-header" class="row" ng-class="{ 'collapsed': contacts.length > 0 }">
         <div id="telephones-header-bg-layout"></div>
         <div id="telephones-header-content">
@@ -11,24 +13,25 @@
     </div>
 
     <div id="telephones-content" ng-class="{ 'expanded': contacts.length > 0 }">
+
         <div id="telephones-organizations" class="width-25">
             <span class="caption">Организации</span>
 
             <div class="row" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-init="divisions = kolenergo.divisions.getByOrganizationId(org.id.value)">
-                <!--<hierarchy id="{{ 'org' + $index }}" source="divisions" key="id" parent-key="parentId" display-field="title"></hierarchy> -->
-                <tree id="{{ 'org' + $index }}" key="id" parent-key="parentId" initial-key-value="0" initial-key-type="DATA_TYPE_INTEGER" display="title"></tree>
+                <hierarchy class="stacked" id="{{ 'org' + $index }}" source="divisions" key="id" parent-key="parentId" display-field="title" on-select="selectDivision"></hierarchy>
+                <!-- <tree id="test" key="id" parent-key="parentId" initial-key-value="0" initial-key-type="DATA_TYPE_INTEGER" display="title"></tree> -->
             </div>
         </div>
 
 
         <div id="telephones-results" class="width-75">
 
-            <div class="result-message" ng-show="search.length < 3">
+            <div class="result-message" ng-show="search.length < 3 && contacts.length === 0">
                 <span class="fa fa-search"></span>
                 <span class="system-info">Начните вводить имя абонента, электронную почту или телефон</span>
             </div>
 
-            <div class="result-message" ng-show="search.length >=3 && contacts.length === 0">
+            <div class="result-message" ng-show="search.length >= 3 && contacts.length === 0">
                 <span class="fa fa-ban"></span>
                 <span class="system-info">По Вашему запросу не найдено ни одного абонента</span>
             </div>
@@ -37,12 +40,32 @@
                 <span class="counter">Найдено абонентов: <b>{{ contacts.length }}</b></span>
             </div>
 
-            <div class="contact" ng-repeat="user in contacts = (users.getUsers() | phoneBook:search) track by $index">
+            <div class="current-division">
+                {{ kolenergo.divisions.getCurrent().title.value }}
+            </div>
+
+            <div class="contact" ng-repeat="user in contacts = (users.users.getAll() | byDivisionId: div | phoneBook:search) track by $index">
+                <div class="contact-division">{{  }}</div>
                 <div class="contact-photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ''"></div>
                 <div class="contact-photo no-photo" ng-show="user.photo.value === ''"></div>
                 <div class="contact-details">
-                    <span class="surname">{{ user.surname.value }}</span>
-                    <span class="name">{{ user.name.value + " " + user.fname.value }}</span>
+                    <span class="fio"> {{ user.fio }} </span>
+
+                    <!--<span class="surname">{{ user.surname.value }}</span>
+                    <span class="name">{{ user.name.value + " " + user.fname.value }}</span>-->
+                    <span class="position">Должность абонента</span>
+
+                    <div class="emails">
+                        <span class="email"><span class="fa fa-at"></span>&nbsp; <a href="mailto:{{user.email.value}}">{{ user.email.value }}</a></span>
+                    </div>
+
+                    <div class="phones">
+                       <span class="phone"><span class="fa fa-phone"></span>&nbsp; 24-69, 77-41-24, 16-77</span>
+                    </div>
+
+                    <div class="mobiles">
+                        <span class="phone"><span class="fa fa-mobile-phone"></span>&nbsp; +7 (921) 555-66-77</span>
+                    </div>
                 </div>
             </div>
 

@@ -51,7 +51,8 @@ html, body {
 
 #app-wrapper {
   position: absolute;
-  top: @app-header-height;
+  //top: @app-header-height;
+  top: 0px;
   left: 0px;
   right: 0px;
   bottom: 0px;
@@ -81,8 +82,12 @@ html, body {
   box-sizing: border-box;
 
   #telephones-header {
-    position: relative;
+    position: fixed;
     overflow: hidden;
+    z-index: 5;
+    top: 0px;
+    left: 0px;
+    right: 0px;
     //vertical-align: middle;
     //width: 100%;
     height: 40%;
@@ -90,6 +95,7 @@ html, body {
     //padding-left: 50px;
     //padding-right: 50px;
     //border: 1px solid red;
+    box-sizing: border-box;
     -webkit-transition: height 0.2s linear;
 
     #telephones-header-bg-layout {
@@ -116,8 +122,9 @@ html, body {
 
     &.collapsed {
       height: 100px;
+
       #telephones-header-bg-layout {
-        -webkit-filter: blur(1px);
+      //  -webkit-filter: blur(1px);
       }
     }
 
@@ -151,10 +158,14 @@ html, body {
     left: 0px;
     right: 0px;
     bottom: 0px;
+    overflow: auto;
     //height: 50%;
+    z-index: 3;
+    //margin-top: 40%;
     box-sizing: border-box;
     //background: #FAFAFA;
     //border: 1px solid blue;
+    background: #FAFAFA;
     -webkit-transition: top 0.3s linear;
 
     &.expanded {
@@ -164,7 +175,8 @@ html, body {
     #telephones-organizations {
       float: left;
       height: 100%;
-      background: #FAFAFA;
+      //background: #FAFAFA;
+      background: white;
       //border-right: 1px solid lightgray;
 
       .caption {
@@ -178,14 +190,19 @@ html, body {
 
     #telephones-results {
       //float: left;
+      //overflow: auto;
       margin-left: 25%;
       height: 100%;
+      padding: 20px;
+      //background: #FAFAFA;
+      box-sizing: border-box;
 
       .result-message {
         width: 350px;
         margin-left: auto;
         margin-right: auto;
-        margin-top: 100px;
+        padding-top: 100px;
+        //margin-top: 100px;
 
         .fa {
           float: left;
@@ -205,20 +222,26 @@ html, body {
 
 
       .summary {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         padding: 10px;
         font-size: 18px;
         color: #BDBDBD;
       }
 
+      .current-division {
+        margin-bottom: 30px;
+        font-size: 25px;
+      }
+
      .contact {
-       width: 90%;
+       //width: 9%;
        height: 200px;
        margin-left: auto;
        margin-right: auto;
        margin-bottom: 20px;
-       padding-bottom: 20px;
-       border-bottom: 1px dotted @ui-border-color;
+       //padding-bottom: 20px;
+       border-bottom: 1px solid @ui-border-color;
+       background: white;
        //border: 1px solid red;
        //.box-shadow(1px, 1px, 12px, 5px, rgba(0, 0, 0, 0.2));
 
@@ -227,15 +250,16 @@ html, body {
        }
 
        &:last-of-type {
-         border-bottom: none;
+         //border-bottom: none;
+         //margin-bottom: 0px;
        }
 
        .contact-photo {
          float: left;
          width: 200px;
-         height: 100%;
-         border: 1px solid #F5F5F5;
-         border-radius: 50%;
+         height: 200px;
+         border-right: 1px solid #F5F5F5;
+         //border-radius: 50%;
          background-size: cover !important;
          -webkit-background-size: cover !important;
          //.box-shadow(1px, 1px, 10px, 3px, rgba(0, 0, 0, 0.2));
@@ -252,6 +276,14 @@ html, body {
          padding-left: 20px;
          //border: 1px solid blue;
 
+         .fio {
+           display: block;
+           padding: 10px;
+           padding-bottom: 5px !important;
+           font-size: 27px;
+           color: black;
+         }
+
          .surname {
            display: block;
            font-size: 30px;
@@ -265,6 +297,95 @@ html, body {
            color: #616161;
 
          }
+
+         .position {
+           padding-left: 10px;
+           font-size: 14px;
+           text-transform: uppercase;
+           color: #311B92;
+         }
+
+
+         .emails {
+           height: 30px;
+           margin-top: 15px;
+           margin-left: 10px;
+           line-height: 30px;
+           //padding: 5px;
+           //padding-left: 10px;
+
+           .fa {
+             width: 40px;
+             height: 30px;
+             //margin-top: -5px;
+             //margin-bottom: -5px;
+             border-right: 1px solid @ui-border-color;
+             box-sizing: border-box;
+             color: #004D40;
+             //text-align: center;
+           }
+
+           .email {
+             //padding: 10px;
+             height: 30px;
+             font-size: 20px;
+             color: #1E88E5;
+           }
+         }
+
+
+         .phones {
+           //margin-top: 15px;
+           //padding-left: 10px;
+           height: 30px;
+           margin-left: 10px;
+           line-height: 30px;
+           //padding:5px;
+
+           .fa {
+             width: 40px;
+             height:30px;
+
+             border-right: 1px solid @ui-border-color;
+             box-sizing: border-box;
+             color: #004D40;
+             //text-align: center;
+           }
+
+           .phone {
+             //padding: 10px;
+             height: 30px;
+             font-size: 25px;
+             color: #0D47A1;
+           }
+         }
+
+
+         .mobiles {
+           height: 30px;
+           margin-left: 10px;
+           line-height: 30px;
+           //margin-top: 15px;
+           //padding-left: 10px;
+           //padding: 5px;
+
+           .fa {
+             width: 40px;
+             height: 30px;
+             border-right: 1px solid @ui-border-color;
+             box-sizing: border-box;
+             //text-align: center;
+             color: #004D40;
+           }
+
+           .phone {
+             //padding: 10px;
+             height: 30px;
+             font-size: 25px;
+             color: #0D47A1;
+           }
+         }
+
        }
      }
 
@@ -298,7 +419,7 @@ html, body {
 #app-phones {
 
   #companies {
-    background: #FAFAFA;
+    //background: #FAFAFA;
 
     .companies-header {
       height: 50px;
@@ -311,6 +432,7 @@ html, body {
   #contacts {
     border-left: 1px solid @ui-border-color;
     box-sizing: border-box;
+    background: #FAFAFA;
 
 
 
@@ -369,6 +491,8 @@ html, body {
   }
 
 }
+
+
 
 #telephones-search-box {
   padding-top: 30px;

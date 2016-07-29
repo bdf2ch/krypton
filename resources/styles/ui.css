@@ -177,27 +177,27 @@ label.button {
 }
 label.button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 label.button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 label.button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 label.button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 label.button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 label.button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 label.button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 label.button.transparent {
   background: transparent;
@@ -316,44 +316,44 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 input[type='button'].blue[disabled],
 input[type='submit'].blue[disabled],
 button.blue[disabled] {
-  background: #bbdefb;
+  background: #BBDEFB;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -403,22 +403,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4caf50;
+  color: #4CAF50;
 }
 a.green:hover {
-  color: #388e3c;
+  color: #388E3C;
 }
 a.red {
-  color: #f44336;
+  color: #F44336;
 }
 a.red:hover {
-  color: #d32f2f;
+  color: #D32F2F;
 }
 a.blue {
-  color: #2196f3;
+  color: #2196F3;
 }
 a.blue:hover {
-  color: #1976d2;
+  color: #1976D2;
 }
 /**********
 ** COLORS
@@ -1318,6 +1318,45 @@ a.blue:hover {
 }
 .krypton-ui-tree .item-content {
   float: left;
+}
+.krypton-ui-tree.stacked .container {
+  padding-top: 0px !important;
+}
+.krypton-ui-tree.stacked .container.nested {
+  padding-left: 20px !important;
+  border-top: none !important;
+}
+.krypton-ui-tree.stacked .tree-item {
+  min-height: 0px;
+  height: auto;
+  font-size: 13px;
+}
+.krypton-ui-tree.stacked .tree-item.with-children {
+  background: transparent;
+  border: none;
+  color: #01579B;
+}
+.krypton-ui-tree.stacked .tree-item.active .tree-item-content:first-of-type {
+  background: transparent;
+  border-left: none;
+}
+.krypton-ui-tree.stacked .tree-item.active .tree-item-content:first-of-type .item-label {
+  font-weight: bold;
+}
+.krypton-ui-tree.stacked .tree-item .tree-item-content {
+  padding-top: 5px !important;
+  min-height: 0px !important;
+  border-left: none !important;
+}
+.krypton-ui-tree.stacked .tree-item .tree-item-content .item-controls {
+  display: none;
+}
+.krypton-ui-tree.stacked .tree-item .tree-item-content .item-label {
+  float: left;
+}
+.krypton-ui-tree.stacked .tree-item .item-label {
+  line-height: 12px !important;
+  margin-bottom: 0px !important;
 }
 /********************
 ** MODEL-LIST
