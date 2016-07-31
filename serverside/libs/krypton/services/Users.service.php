@@ -210,6 +210,7 @@
             API::add("addUserGroup", "Users", "addGroup");
             API::add("editUserGroup", "Users", "editGroup");
             API::add("deleteUserGroup", "Users", "deleteGroup");
+            API::add("editUser", "Users", "editUser");
         }
 
 
@@ -364,6 +365,49 @@
         }
 
 
+
+
+
+        public static function editUser ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "users -> editUser: Не задана параметр - объект с данными редактируемого пользователя");
+                return false;
+            }
+
+            $id = $data -> id;
+            $userGroupId = $data -> userGroupId;
+            $organizationId = $data -> organizationId;
+            $divisionId = $data -> divisionId;
+            $name = $data -> name;
+            $fname = $data -> fname;
+            $surname = $data -> surname;
+            $position = $data -> position;
+            $email = $data -> email;
+            $phone = $data -> phone;
+            $mobile = $data -> mobile;
+
+            $result = DBManager::update(
+                "kr_users",
+                ["user_group_id", "organization_id", "division_id", "name", "fname", "surname", "position", "email", "phone", "mobile_phone"],
+                [$userGroupId, $organizationId, $divisionId, "'".$name."'", "'".$fname."'", "'".$surname."'", "'".$position."'", "'".$email."'", "'".$phone."'", "'".$mobile."'"],
+                "id = $id"
+            );
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> edit: Не удалось обновить информацию о пользователе");
+                return false;
+            }
+
+            $result = DBManager::select("kr_users", ["*"], "id = $id");
+            if (!$result) {
+                Errors:;push(Errors::ERROR_TYPE_ENGINE, "Users -> edit: Не удалось выбрать информацию обновленного пользователя");
+                return false;
+            }
+
+            $user = Models::construct("User1", false);
+            $user -> fromSource($result[0]);
+
+            return $user;
+        }
 
 
 

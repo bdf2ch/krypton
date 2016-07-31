@@ -153,19 +153,56 @@
     };
     
     
-    function AdminEditUserController ($scope, $log, $routeParams, $users, $navigation, $kolenergo) {
+    function AdminEditUserController ($scope, $log, $routeParams, $factory, $users, $navigation, $kolenergo) {
         $scope.users = $users;
         $scope.kolenergo = $kolenergo;
+
 
         if ($routeParams.userId !== undefined) {
             $log.log("params = ", $routeParams);
             if ($users.users.getCurrent() === undefined || $users.users.getCurrent().id.value !== parseInt($routeParams.userId)) {
                 $users.users.select(parseInt($routeParams.userId));
+                $scope.uploaderData = {
+                    action: "uploadUserPhoto",
+                    userId: $users.users.getCurrent().id.value
+                };
             }
 
             $navigation.getCurrent().title = $users.users.getCurrent().name.value + " " + $users.users.getCurrent().surname.value;
             $log.log("current user = ", $users.users.getCurrent());
         }
+        
+        $scope.editUser = function () {
+            var length = $users.users.getCurrent().phones.length;
+            var phone = "";
+            for (var i = 0; i < length; i++) {
+                phone += $users.users.getCurrent().phones[i];
+                phone += i < length - 1 ? "," : "";
+            }
+            $log.log("phone = ", phone);
+            //$users.users.edit()
+        };
+
+        $scope.onCompleteUploadPhoto = function (data) {
+            $log.log("photo upload complete");
+            $log.log(data);
+            //$http.post("serverside/libs/krypton/uploader.php", $scope.uploaderData)
+            //    .success(function (data) {
+            //        if (data !== undefined) {
+            //            $log.log(data);
+            //        }
+            //    });
+            if (data.result !== false) {
+                var file = $factory({ classes: ["File", "Model", "States"], base_class: "File" });
+                file._model_.fromAnother(data.result);
+                $users.users.getCurrent().photo.value = file.url.value;
+            }
+
+        };
+        
+        $scope.addPhone = function () {
+            $users.users.getCurrent().phones.length = $users.users.getCurrent().phones.length + 1;
+        };
     };
 
 

@@ -44,7 +44,7 @@
                 {{ kolenergo.divisions.getCurrent().title.value }}
             </div>
 
-            <div class="contact" ng-repeat="user in contacts = (users.users.getAll() | byDivisionId: div | phoneBook:search) track by $index">
+            <div class="contact" ng-repeat="user in contacts = (users.users.getAll() | byDivisionId: div | phoneBook:search | orderBy: user.fio) track by $index">
                 <div class="contact-division">{{  }}</div>
                 <div class="contact-photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ''"></div>
                 <div class="contact-photo no-photo" ng-show="user.photo.value === ''"></div>
@@ -53,7 +53,7 @@
 
                     <!--<span class="surname">{{ user.surname.value }}</span>
                     <span class="name">{{ user.name.value + " " + user.fname.value }}</span>-->
-                    <span class="position">Должность абонента</span>
+                    <span class="position">{{ user.position.value }}</span>
 
                     <div class="emails">
                         <span class="email"><span class="fa fa-at"></span>&nbsp; <a href="mailto:{{user.email.value}}">{{ user.email.value }}</a></span>

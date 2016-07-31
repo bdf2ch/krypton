@@ -193,7 +193,9 @@
                 return false;
             }
 
-            $name = iconv("windows-1251", "UTF-8", $_FILES["file"]['name']);
+            //$name = iconv("windows-1251", "UTF-8", $_FILES["file"]['name']);
+            $encoding = mb_detect_encoding($_FILES["file"]["name"]);
+            $name = mb_convert_encoding($_FILES["file"]["name"], "UTF-8", $encoding);
             $tmpName  = $_FILES["file"]['tmp_name'];
             $size = $_FILES["file"]['size'];
             $type = $_FILES["file"]['type'];

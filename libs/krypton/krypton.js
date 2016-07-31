@@ -1422,6 +1422,7 @@ function isField (obj) {
          ********************/
         $classes.add("User", {
             __dependencies__: [],
+            __errors__ : [],
             id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true, displayable: true, title: "#"}),
             userGroupId: new Field({ source: "user_group_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, displayable: false }),
             name: new Field({ source: "name", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Имя" }),
@@ -1440,6 +1441,25 @@ function isField (obj) {
                 this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
                 this.search = this.fio + " " + this.email.value;
                 this.phones = this.phone.value.replace(/\s/g, '').split(",");
+            },
+
+            validate: function () {
+                if (this.name.value === "")
+                    this.__errors__.push("Вы не указали имя пользователя");
+
+                if (this.fname.value === "")
+                    this.__errors__.push("Вы не указали отчество пользователя");
+
+                if (this.surname.value === "")
+                    this.__errors__.push("Вы не указали фамилию пользователя");
+
+                if (this.email.value === "")
+                    this.__errors__.push("Вы не указали e-mail пользователя");
+
+                if (this.name.value === "")
+                    this.__errors__.push("Вы не указали имя пользователя");
+
+                return this.__errors__.length > 0 ? false : true;
             }
         });
 
@@ -1565,7 +1585,7 @@ function isField (obj) {
      * $users
      * Сервис для управления пользователями
      ******************************/
-    function usersFactory ($log, $factory) {
+    function usersFactory ($log, $errors, $http, $factory) {
         var users = [];
         var groups = [];
         var currentGroup = undefined;
@@ -1732,6 +1752,45 @@ function isField (obj) {
                     }
 
                     return result;
+                },
+
+
+                edit: function () {
+                    if (currentUser === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$users -> users -> edit: Не выбран текущий пользователь");
+                        return false;
+                    }
+
+                    if (!currentUser.validate())
+                        return false;
+
+
+                    var params = {
+                        action: "editUser",
+                        id: currentUser.id.value,
+                        userGroupId: currentUser.userGroupId.value,
+                        organizationId:currentUser.organizationId.value,
+                        divisionId: currentUser.divisionId.value,
+                        name: currentUser.name.value,
+                        fname: currentUser.fname.value,
+                        surname: currentUser.surname.value,
+                        position: currentUser.position.value,
+                        email: currentUser.email.value,
+                        phone: currentUser.phone.value,
+                        mobile: currentUser.mobile.value
+                    };
+                    
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                        $log.log("data = ", data);
+                            if (data !== undefined && data !== null) {
+                                $errors.checkResponse(data);
+                                if (data.result !== false) {
+                                    currentUser._backup_.setup();
+                                    return true;
+                                }
+                            }
+                        });
                 }
             },
 

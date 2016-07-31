@@ -530,7 +530,7 @@
                 return false;
             }
 
-            $photo_url = "uploads/users/".$userId."/".$file -> title -> value;
+            $photo_url = "/uploads/users/".$userId."/".$file -> title -> value;
             $result = DBManager::update("kr_users", ["photo_url"], ["'".$photo_url."'"], "id = $userId");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> uploadUserPhoto: Не удалось обновить фото пользователя в БД");
