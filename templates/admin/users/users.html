@@ -35,7 +35,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-class="{ 'selected': user._states_.selected() === true }" ng-click="users.users.select(user.id.value)" ng-repeat="user in users.users.getAll() track by $index">
+                <tr ng-class="{ 'selected': user._states_.selected() === true }" ng-click="users.users.select(user.id.value)" ng-repeat="user in users.users.getAll() | orderBy:'surname.value' track by $index">
                     <td>{{ user.surname.value }}</td>
                     <td>{{ user.name.value }}</td>
                     <td>{{ user.fname.value }}</td>

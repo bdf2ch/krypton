@@ -1014,13 +1014,17 @@
       }
 
       &.active {
-        .tree-item-content:first-of-type {
+        .tree-item-content {
           background: transparent;
           border-left: none;
 
           .item-label {
             font-weight: bold;
           }
+        }
+
+        .tree-item-content > .item-label {
+          font-weight: normal;
         }
       }
 

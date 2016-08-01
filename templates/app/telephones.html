@@ -26,15 +26,9 @@
 
         <div id="telephones-results" class="width-75">
 
-            <div class="result-message" ng-show="search.length < 3 && contacts.length === 0">
-                <span class="fa fa-search"></span>
-                <span class="system-info">Начните вводить имя абонента, электронную почту или телефон</span>
-            </div>
 
-            <div class="result-message" ng-show="search.length >= 3 && contacts.length === 0">
-                <span class="fa fa-ban"></span>
-                <span class="system-info">По Вашему запросу не найдено ни одного абонента</span>
-            </div>
+
+
 
             <div class="summary" ng-show="contacts.length > 0">
                 <span class="counter">Найдено абонентов: <b>{{ contacts.length }}</b></span>
@@ -44,7 +38,17 @@
                 {{ kolenergo.divisions.getCurrent().title.value }}
             </div>
 
-            <div class="contact" ng-repeat="user in contacts = (users.users.getAll() | byDivisionId: div | phoneBook:search | orderBy: user.fio) track by $index">
+            <div class="result-message" ng-show="kolenergo.divisions.getCurrent() === undefined && search.length < 3">
+                <span class="fa fa-search"></span>
+                <span class="system-info">Начните вводить имя абонента, электронную почту или телефон</span>
+            </div>
+
+            <div class="result-message" ng-show="search.length >= 3 && contacts.length === 0">
+                <span class="fa fa-ban"></span>
+                <span class="system-info">По Вашему запросу не найдено ни одного абонента</span>
+            </div>
+
+            <div class="contact" ng-repeat="user in contacts = (users.users.getAll() | byDivisionId: kolenergo.divisions.getCurrent().path.value | phoneBook:search | orderBy: 'surname.value') track by $index">
                 <div class="contact-division">{{  }}</div>
                 <div class="contact-photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ''"></div>
                 <div class="contact-photo no-photo" ng-show="user.photo.value === ''"></div>

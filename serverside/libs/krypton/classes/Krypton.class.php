@@ -13,7 +13,7 @@
         const DATA_TYPE_BOOLEAN = 3;
         const DATA_TYPE_FLOAT = 4;
 
-        private static $dbType = self::DB_TYPE_MYSQL;
+        private static $dbType = self::DB_TYPE_ORACLE;
         private $template;
         public static $app;
 
@@ -26,8 +26,17 @@
             global $db_password;
 
             session_start();
-            DBManager::connect($db_host, $db_user, $db_password);
-            DBManager::select_db("krypton");
+
+            switch (Krypton::$dbType) {
+                case Krypton::DB_TYPE_MYSQL:
+                    DBManager::connect($db_host, $db_user, $db_password);
+                    DBManager::select_db("krypton");
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+                    DBManager::connect($db_host, $db_user, $db_password);
+                    break;
+            }
+
 
             self::$app = new Application();
             self::$app -> init();

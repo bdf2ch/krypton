@@ -47,7 +47,8 @@
             organizationId: new Field({ source: "organization_id", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
             departmentId: new Field({ source: "department_id", type: DATA_TYPE_STRING, value: 0, default_value: 0, backupable: true }),
             parentId: new Field({ source: "parent_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
-            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
+            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            path: new Field({ source: "path", type: DATA_TYPE_STRING, default_value: "", value: "", backupable: true })
         });
 
         var organizations = [];
@@ -1014,15 +1015,28 @@
     };
 
 
-    function byDivisionIdFilter () {
+    function byDivisionIdFilter ($log, $kolenergo) {
         return function (input, id) {
-            if (id !== undefined || id !== 0) {
+            if (id !== -1 && id !== undefined) {
+                var divs = [];
                 var result = [];
+
+                var divLength = $kolenergo.divisions.getAll().length;
+                for (var x = 0; x < divLength; x++) {
+                    var div = $kolenergo.divisions.getAll()[x];
+                    if (div.path.value.indexOf(id) !== -1)
+                        divs.push(div);
+                }
+
                 var length = input.length;
                 for (var i = 0; i < length; i++) {
-                    if (input[i].divisionId.value == id)
-                        result.push(input[i]);
+                    var selected = divs.length;
+                    for (var z = 0; z< selected; z++) {
+                        if (input[i].divisionId.value === divs[z].id.value)
+                            result.push(input[i]);
+                    }
                 }
+                $log.log("filtered ", result.length);
                 return result;
             } else
                 return input;
@@ -1030,20 +1044,32 @@
     };
 
     
-    function phoneBookFilter ($log) {
+    function phoneBookFilter ($log, $kolenergo) {
         return function (input, search) {
             var result = [];
 
-                if (search !== undefined && search !== "") {
-                    var length = input.length;
-                    for (var i = 0; i < length; i++) {
-                        var temp = input[i].search.toLowerCase();
-                        if (temp.indexOf(search.toLowerCase()) !== -1)
-                            result.push(input[i]);
-                    }
-                    return result;
-                } else
-                    return input;
+            if ($kolenergo.divisions.getCurrent() === undefined && search.length > 2) {
+                var length = input.length;
+                for (var i = 0; i < length; i++) {
+                    var temp = input[i].search.toLowerCase();
+                    if (temp.indexOf(search.toLowerCase()) !== -1)
+                        result.push(input[i]);
+                }
+                return result;
+            }
+            else if ($kolenergo.divisions.getCurrent() === undefined) {
+
+            } else if ($kolenergo.divisions.getCurrent() !== undefined && search.length > 2) {
+                var length = input.length;
+                for (var i = 0; i < length; i++) {
+                    var temp = input[i].search.toLowerCase();
+                    if (temp.indexOf(search.toLowerCase()) !== -1)
+                        result.push(input[i]);
+                }
+                return result;
+            } else if ($kolenergo.divisions.getCurrent() !== undefined && search.length === 0) {
+                return input;
+            }
         }
     };
 

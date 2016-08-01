@@ -48,6 +48,7 @@
                                         }
                                         break;
                                     case Krypton::DB_TYPE_ORACLE:
+                                    $con1 = oci_connect('purchases', 'PURCHASES', '192.168.50.52/ORCLWORK', 'AL32UTF8');
                                         $link = oci_connect($dbuser, $dbpassword, $dbhost, "AL32UTF8");
                                         if (!$link) {
                                             $error = oci_error();
@@ -217,6 +218,17 @@
                                     return true;
                                 break;
                             case Krypton::DB_TYPE_ORACLE:
+                                 $query = "CREATE TABLE $tableName (ID INT NOT NULL, PRIMARY KEY (ID))";
+                                 $statement = oci_parse(self::$link, $query);
+
+                                 $result = oci_execute($statement, OCI_DEFAULT);
+                                 if (!$result) {
+                                     $error = oci_error();
+                                     $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                                     Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> create_table: ".$message);
+                                     return false;
+                                 } else
+                                    return true;
                                 break;
                         }
                     }
@@ -270,6 +282,17 @@
                                                     return true;
                                                 break;
                                             case Krypton::DB_TYPE_ORACLE:
+                                                $query = "ALTER TABLE $tableName ADD ($columnName $columnDefinition)";
+                                                $statement = oci_parse(self::$link, $query);
+
+                                                $result = oci_execute($statement, OCI_DEFAULT);
+                                                if (!$result) {
+                                                    $error = oci_error();
+                                                    $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                                                    Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> add_column: ".$message);
+                                                    return false;
+                                                } else
+                                                    return true;
                                                 break;
                                         }
                                     }

@@ -9,6 +9,7 @@
             self::field("departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("parentId", new Field(array( "source" => "parent_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("title", new Field(array( "source" => "title", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("path", new Field(array( "source" => "path", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
 
 
 

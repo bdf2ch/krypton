@@ -166,6 +166,7 @@
                     action: "uploadUserPhoto",
                     userId: $users.users.getCurrent().id.value
                 };
+                $log.log("uploader data = ", $scope.uploaderData);
             }
 
             $navigation.getCurrent().title = $users.users.getCurrent().name.value + " " + $users.users.getCurrent().surname.value;
@@ -180,7 +181,7 @@
                 phone += i < length - 1 ? "," : "";
             }
             $log.log("phone = ", phone);
-            //$users.users.edit()
+            $users.users.edit()
         };
 
         $scope.onCompleteUploadPhoto = function (data) {
