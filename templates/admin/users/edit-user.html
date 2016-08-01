@@ -1,8 +1,8 @@
-<div id="admin-edit-user" class="row padding-20">
-    <div class="row width-50">
+<div id="admin-edit-user" class="row">
+    <div class="chapter-content">
 
         <!-- Личные данные -->
-        <div class="row margin-bottom-20">
+        <div class="row width-90 center margin-bottom-40 padding-20">
             <span class="block-caption">Личные данные</span>
 
             <div class="row margin-bottom-10">
@@ -38,7 +38,7 @@
 
 
         <!-- Фотография пользователя -->
-        <div class="row margin-bottom-20">
+        <div class="row width-90 center margin-bottom-40">
             <span class="block-caption">Фотография пользователя</span>
 
             <img ng-src="{{users.users.getCurrent().photo.value}}" alt="" class="left" ng-show="users.users.getCurrent().photo.value !==''">
@@ -58,7 +58,7 @@
 
 
         <!-- Место работы и должность -->
-        <div class="row margin-bottom-20">
+        <div class="row width-90 center margin-bottom-40">
             <span class="block-caption">Место работы и должность</span>
 
             <div class="row margin-bottom-10">
@@ -79,7 +79,7 @@
                         class="width-100"
                         ng-model="users.users.getCurrent().divisionId.value"
                         ng-change="users.users.getCurrent()._states_.changed(true)"
-                        ng-options="division.id.value as division.title.value for division in kolenergo.divisions.getByOrganizationId(users.users.getCurrent().organizationId.value)">
+                        ng-options="division.id.value as division.title.value for division in divisions">
                 </select>
             </div>
 
@@ -96,7 +96,7 @@
 
 
         <!-- Контактная информация -->
-        <div class="row margin-bottom-20">
+        <div class="row width-90 center margin-bottom-40">
             <span class="block-caption">Контактные данные</span>
 
             <div class="row margin-bottom-10">
@@ -137,7 +137,7 @@
 
 
         <!-- Принадлежность к группам -->
-        <div class="row margin-bottom-20">
+        <div class="row width-90 center margin-bottom-40">
             <span class="block-caption">Принадлежность к группам</span>
             <div class="row margin-bottom-10">
                 <label for="current-user-group">Группа пользователей</label>
@@ -154,7 +154,7 @@
 
 
         <!-- Натсройки пользователя -->
-        <div class="row">
+        <div class="row width-90 center">
             <span class="block-caption">Настройки пользователя</span>
 
             <div class="row margin-bottom-10">
@@ -182,12 +182,17 @@
 
     </div>
 
-    <div class="width-50">
-        <div class="row width-50 text-center">
-            <button class="green" ng-disabled="users.users.getCurrent()._states_.changed() === false" ng-click="editUser()">
+
+
+    <div class="chapter-panel padding-20">
+        <div class="row width-100 text-center">
+            <button class="width-100 green" ng-disabled="users.users.getCurrent()._states_.changed() === false" ng-click="editUser()">
                 <span class="fa fa-save"></span>
                 Сохранить
             </button>
         </div>
     </div>
+
+
 </div>
+

@@ -156,12 +156,15 @@
     function AdminEditUserController ($scope, $log, $routeParams, $factory, $users, $navigation, $kolenergo) {
         $scope.users = $users;
         $scope.kolenergo = $kolenergo;
+        $scope.divisions = [];
 
 
         if ($routeParams.userId !== undefined) {
             $log.log("params = ", $routeParams);
             if ($users.users.getCurrent() === undefined || $users.users.getCurrent().id.value !== parseInt($routeParams.userId)) {
                 $users.users.select(parseInt($routeParams.userId));
+                $scope.divisions = $kolenergo.divisions.getByOrganizationId($users.users.getCurrent().organizationId.value);
+                $log.log("divisions = ", $scope.divisions);
                 $scope.uploaderData = {
                     action: "uploadUserPhoto",
                     userId: $users.users.getCurrent().id.value
