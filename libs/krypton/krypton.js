@@ -1401,9 +1401,9 @@ function isField (obj) {
         $classes.add("Session", {
             __dependencies__: [],
             userId: new Field({ source: "user_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            token: new Field ({ source: "token", type: DATA_TYPE_STRING, value: "", default_value: "" }),
-            start: new Field({ source: "start", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            end: new Field({ source: "end", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 })
+            token: new Field ({ source: "session_token", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            start: new Field({ source: "session_start", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            end: new Field({ source: "session_end", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 })
         });
 
         /**

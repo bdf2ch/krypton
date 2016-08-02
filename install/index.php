@@ -8,7 +8,7 @@
     Sessions::install();
     Permissions::install();
     Users::install();
-    Files::install();
+    //Files::install();
 
     //Kolenergo::install();
 

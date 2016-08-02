@@ -8,6 +8,8 @@
         * Производит установку модуля в системе
         **/
         public static function install () {
+
+            /*
             $result = DBManager::create_table("kr_files");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Files -> install: Не удалось создать таблицу с информацией о файлах");
@@ -55,7 +57,7 @@
                 Errors::push(Errors::ERROR_TYPE_FILE, "Files -> install: Не удалось создать папку 'uploads' в корневом каталоге на сервере");
                 return false;
             }
-
+            */
             return true;
         }
 

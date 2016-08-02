@@ -61,13 +61,45 @@
 
                 $ext = new $extension();
                 //var_dump($ext);
-                $result = DBManager::insert_row(
-                    "kr_app_extensions",
-                    ["extension_id", "extension_title", "extension_description", "extension_url", "enabled"],
-                    ["'".$ext::$id."'", "'".$ext::$title."'", "'".$ext::$description."'", "'".$ext::$url."'", 1]);
 
-                if (!result)
-                    return Errors::push(Errors::ERROR_TYPE_ENGINE, "Extensions -> load: не удалось добавить информацию о загружаемом расширении в БД");
+                switch (Krypton::getDBType()) {
+                    case Krypton::DB_TYPE_MYSQL:
+
+                        $result = DBManager::insert_row(
+                            "kr_app_extensions",
+                            ["extension_id", "extension_title", "extension_description", "extension_url", "enabled"],
+                            ["'".$ext::$id."'", "'".$ext::$title."'", "'".$ext::$description."'", "'".$ext::$url."'", 1]
+                        );
+
+                        if (!result) {
+                            Errors::push(Errors::ERROR_TYPE_ENGINE, "Extensions -> load: Не удалось добавить информацию о загружаемом расширении в БД");
+                            return false;
+                        }
+
+                        break;
+                    case Krypton::DB_TYPE_ORACLE:
+
+                        $id = DBManager::sequence_next("seq_extensions");
+                        if (!$id) {
+                            Errors::push(Errors::ERROR_TYPE_ENGINE, "Extensions -> load: Не удалось получить следующее значение последовательности 'seq_extensions'");
+                            return false;
+                        }
+
+                        $result = DBManager::insert_row(
+                            "kr_app_extensions",
+                            ["id", "extension_id", "extension_title", "extension_description", "extension_url", "enabled"],
+                            [$id, "'".$ext::$id."'", "'".$ext::$title."'", "'".$ext::$description."'", "'".$ext::$url."'", 1]
+                        );
+                        if (!$result) {
+                            $error = oci_error();
+                            $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                            Errors::push(Errors::ERROR_TYPE_DATABASE, "Extensions -> load: ".$message);
+                            return false;
+                        }
+
+                        break;
+                }
+
 
                 if (!$ext::isInstalled())
                     $ext::install();

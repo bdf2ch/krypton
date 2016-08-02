@@ -12,155 +12,305 @@
 
 
         /**
-        * Производит установку модуля в системе
+        * Производит установку сервиса
         **/
         public static function install () {
             $result = DBManager::create_table("kr_user_groups");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать таблицу с информацией о группах пользователей");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_user_groups", "title", "varchar(500) NOT NULL default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'title' в таблицу с информацией о группах пользователей");
-                return false;
-            }
-
-            $result = DBManager::insert_row("kr_user_groups", ["title"], ["'Администраторы'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу групп пользователей");
-               return false;
-            }
-
-            $result = DBManager::insert_row("kr_user_groups", ["title"], ["'Редакторы'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу групп пользователей");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать таблицу 'kr_user_groups'");
                 return false;
             }
 
             $result = DBManager::create_table("kr_users");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать таблицу с информацией о пользователях");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось создать таблицу 'kr_users'");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_users", "user_group_id", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'user_group_id' в таблицу с информацией о пользователях");
-                return false;
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::add_column("kr_user_groups", "title", "varchar(500) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'title' в таблицу 'kr_user_groups'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("kr_user_groups", ["title"], ["'Администраторы'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу 'kr_user_groups'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("kr_user_groups", ["title"], ["'Редакторы'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу 'kr_user_groups'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "user_group_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'user_group_id' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "name", "varchar(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'name' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "surname", "varchar(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'surname' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "fname", "varchar(200) default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'fname' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "email", "varchar(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'email' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "phone", "varchar(100) default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'phone' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "mobile_phone", "varchar(200) default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'mobile_phone' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "position", "varchar(500) default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'position' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "photo_url", "varchar(500) default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'photo_url' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    //$result = DBManager::add_column("kr_users", "photo", "mediumblob");
+                    //if (!$result) {
+                    //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'photo' в таблицу 'kr_users'");
+                    //    return false;
+                    //}
+
+                    $result = DBManager::add_column("kr_users", "password", "varchar(60) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'password' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "is_admin", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'is_admin' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "is_deleted", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'is_deleted' в таблицу 'kr_users'х");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("kr_users", ["user_group_id", "surname", "name", "fname", "email", "password", "is_admin"], [1, "''", "'Администратор'", "''", "'bdf2ch@gmail.com'", "'".md5("zx12!@#$")."'", 1]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $result = DBManager::add_sequence("seq_users", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить последовательность 'seq_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_user_groups", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить последовательность 'seq_user_groups'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_user_groups", "title", "VARCHAR2(500) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'title' в таблицу 'kr_user_groups'");
+                        return false;
+                    }
+
+                    $id = DBManager::sequence_next("seq_user_groups");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось получить следующее значение последовательности 'seq_user_groups'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("kr_user_groups", ["id", "title"], [$id, "'Администраторы'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу 'kr_user_groups'");
+                        return false;
+                    }
+
+                    $id = DBManager::sequence_next("seq_user_groups");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось получить следующее значение последовательности 'seq_user_groups'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("kr_user_groups", ["id", "title"], [$id, "'Редакторы'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу 'kr_user_groups'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "user_group_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'user_group_id' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "name", "VARCHAR2(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'name' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "surname", "VARCHAR2(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'surname' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "fname", "VARCHAR2(200)");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'fname' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "email", "VARCHAR2(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'email' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "phone", "VARCHAR2(100)");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'phone' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "mobile_phone", "VARCHAR2(200)");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'mobile_phone' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "position", "VARCHAR2(500)");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'position' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "photo_url", "VARCHAR2(500)");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'photo_url' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "password", "VARCHAR2(60) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'password' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "is_admin", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'is_admin' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "is_deleted", "INT DEFAULT 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'is_deleted' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $id = DBManager::sequence_next("seq_users");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось получить следующее значение последовательности 'seq_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("kr_users", ["id", "user_group_id", "surname", "name", "fname", "email", "password", "is_admin"], [$id, 1, "' '", "'Администратор'", "' '", "'bdf2ch@gmail.com'", "'".md5("zx12!@#$")."'", 1]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    break;
             }
 
-            $result = DBManager::add_column("kr_users", "name", "varchar(200) NOT NULL");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'name' в таблицу с информацией о пользователях");
-                return false;
-            }
 
-            $result = DBManager::add_column("kr_users", "surname", "varchar(200) NOT NULL");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'surname' в таблицу с информацией о пользователях");
-                return false;
-            }
+            $rule = new stdClass();
+            $rule -> code = "add-user-group";
+            $rule -> title = "Добавление групп пользователей";
 
-            $result = DBManager::add_column("kr_users", "fname", "varchar(200) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'fname' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "email", "varchar(200) NOT NULL");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'email' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "phone", "varchar(100) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'phone' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "mobile_phone", "varchar(200) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'mobile_phone' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "position", "varchar(500) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'position' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "photo_url", "varchar(500) default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'photo_url' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "photo", "mediumblob");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'photo' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "password", "varchar(60) NOT NULL default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'password' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "is_admin", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'is_admin' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_users", "is_deleted", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'is_deleted' в таблицу с информацией о пользователях");
-                return false;
-            }
-
-            $result = DBManager::insert_row("kr_users", ["user_group_id", "surname", "name", "fname", "email", "password", "is_admin"], [1, "''", "'Администратор'", "''", "'bdf2ch@gmail.com'", "'".md5("zx12!@#$")."'", 1]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Users -> install: Не удалось добавить данные в таблицу пользователей");
-                return false;
-            }
-
-
-            $result = Permissions::addPermissionRule("add-user-group", "Добавление групп пользователей");
+            $result = Permissions::addPermissionRule($rule);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Добавление групп пользователей'");
                 return false;
             }
 
-            $result = Permissions::addPermissionRule("edit-user-group", "Редактирование групп пользователей");
+            $rule -> code = "edit-user-group";
+            $rule -> title = "Редактирование групп пользователей";
+            $result = Permissions::addPermissionRule($rule);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Редактирование групп пользователей'");
                 return false;
             }
 
-            $result = Permissions::addPermissionRule("delete-user-group", "Удаление групп пользователей");
+            $rule -> code = "delete-user-group";
+            $rule -> title = "Удаление групп пользователей";
+            $result = Permissions::addPermissionRule($rule);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Удаление групп пользователей'");
                 return false;
             }
 
-            $result = Permissions::addPermissionRule("add-user", "Добавление пользователей");
+            $rule -> code = "add-user";
+            $rule -> title = "Добавление пользователей";
+            $result = Permissions::addPermissionRule($rule);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Добавление пользователей'");
                 return false;
             }
 
-            $result = Permissions::addPermissionRule("edit-user", "Редактирование пользователей");
+            $rule -> code = "edit-user";
+            $rule -> title = "Редактирование пользователей";
+            $result = Permissions::addPermissionRule($rule);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Редактирование пользователей'");
                 return false;
             }
 
-            $result = Permissions::addPermissionRule("delete-user", "Удаление пользователей");
+            $rule -> code = "delete-user";
+            $rule -> title = "Удаление пользователей";
+            $result = Permissions::addPermissionRule($rule);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить правило доступа 'Удаление пользователей'");
                 return false;
@@ -238,23 +388,56 @@
                 return false;
             }
 
-            $result = DBManager::insert_row("kr_user_groups", ["title"], ["'".$data -> title."'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> addGroup: Не удалось добавить группу пользователей");
-                return false;
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::insert_row("kr_user_groups", ["title"], ["'".$data -> title."'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> addGroup: Не удалось добавить группу пользователей");
+                        return false;
+                    }
+
+                    $id = mysql_insert_id();
+                    $result = DBManager::select("kr_user_groups", ["*"], "id = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> adGroup: Не удалось выбрать добавленную группу пользователей");
+                        return false;
+                    }
+
+                    $group = Models::construct("UserGroup", false);
+                    $group -> fromSource($result[0]);
+
+                    return $group;
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $id = DBManager::sequence_next("seq_user_groups");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось получить следующее значение последовательности 'seq_user_groups'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("kr_user_groups", ["id", "title"], [$id, "'".$data -> title."'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> addGroup: Не удалось добавить группу пользователей");
+                        return false;
+                    }
+
+                    $result = DBManager::select("kr_user_groups", ["*"], "id = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> adGroup: Не удалось выбрать добавленную группу пользователей");
+                        return false;
+                    }
+
+                    $group = Models::construct("UserGroup", false);
+                    $group -> fromSource($result[0]);
+
+                    return $group;
+                    break;
             }
 
-            $id = mysql_insert_id();
-            $result = DBManager::select("kr_user_groups", ["*"], "id = $id");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> adGroup: Не удалось выбрать добавленную группу пользователей");
-                return false;
-            }
 
-            $group = Models::construct("UserGroup", false);
-            $group -> fromSource($result[0]);
-
-            return $group;
         }
 
 

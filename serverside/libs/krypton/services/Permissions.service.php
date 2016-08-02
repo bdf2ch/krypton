@@ -21,51 +21,103 @@
         public static function install () {
             $result = DBManager::create_table("kr_permission_rules");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось создать таблицу правил доступа");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_permission_rules", "code", "varchar(200) NOT NULL default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'code' таблицу правил доступа");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_permission_rules", "title", "varchar(500) NOT NULL default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'title' таблицу правил доступа");
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось создать таблицу 'kr_permission_rules'");
                 return false;
             }
 
             $result = DBManager::create_table("kr_permissions");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось создать таблицу прав доступа");
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось создать таблицу 'kr_permissions'");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_permissions", "rule_id", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'rule_id' в таблицу прав доступа");
-                return false;
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::add_column("kr_permission_rules", "code", "varchar(200) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'code' в таблицу 'kr_permission_rules'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_permission_rules", "title", "varchar(500) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'title' таблицу 'kr_permission_rules'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_permissions", "rule_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'rule_id' в таблицу 'kr_permissions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_permissions", "user_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'user_id' в таблицу 'kr_permissions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_permissions", "allowed", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'allowed' в таблицу 'kr_permissions'");
+                        return false;
+                    }
+
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $result = DBManager::add_column("kr_permission_rules", "code", "VARCHAR2(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'code' в таблицу 'kr_permission_rules'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_permission_rules", "title", "VARCHAR2(500) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'title' таблицу 'kr_permission_rules'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_permissions", "rule_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'rule_id' в таблицу 'kr_permissions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_permissions", "user_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'user_id' в таблицу 'kr_permissions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_permissions", "allowed", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'allowed' в таблицу 'kr_permissions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_permission_rules", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить последовательность 'seq_permission_rules'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_permissions", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить последовательность 'seq_permissions'");
+                        return false;
+                    }
+
+                    break;
             }
 
-            $result = DBManager::add_column("kr_permissions", "user_id", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'user_id' в таблицу прав доступа");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_permissions", "allowed", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'allowed' в таблицу прав доступа");
-                return false;
-            }
-
-            $result = DBManager::add_column("kr_permissions", "allowed_by_default", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'allowed_by_default' в таблицу прав доступа");
-                return false;
-            }
+            //$result = DBManager::add_column("kr_permissions", "allowed_by_default", "int(11) NOT NULL default 0");
+            //if (!$result) {
+            //    Errors::push(Errors::ERROR_TYPE_DATABASE, "Permissions -> install: Не удалось добавить столбец 'allowed_by_default' в таблицу прав доступа");
+            //    return false;
+            //}
 
             return true;
         }
@@ -80,7 +132,7 @@
         public static function init () {
             Services::register(get_called_class());
 
-            $rules = DBManager::select("kr_permission_rules", ["*"], "");
+            $rules = DBManager::select("kr_permission_rules", ["*"], "''");
             if ($rules != false) {
                 foreach ($rules as $key => $item) {
                     $rule = Models::construct("PermissionRule", false);
@@ -89,7 +141,7 @@
                 }
             }
 
-            $permissions = DBManager::select("kr_permissions", ["*"], "");
+            $permissions = DBManager::select("kr_permissions", ["*"], "''");
             if ($permissions != false) {
                 foreach ($permissions as $key => $item) {
                     $permission = Models::construct("Permission", false);
@@ -206,23 +258,49 @@
                 return false;
             }
 
-            $result = DBManager::insert("kr_permissions", ["code", "user_id", "allowed"], ["'".$code."'", $userId, intval($allow)]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Не удалось добавить разрешение в БД");
-                return false;
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::insert("kr_permissions", ["code", "user_id", "allowed"], ["'".$code."'", $userId, intval($allow)]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Не удалось добавить разрешение в БД");
+                        return false;
+                    }
+
+                    $id = mysql_insert_id();
+                    $result = DBManager::select("kr_permissions", ["*"], "id = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Не удвлось выбрать добавленное разрешение");
+                        return false;
+                    }
+
+                    $permission = Models::construct("Permission", false);
+                    $permission -> fromSource($result[0]);
+
+                    return $permission;
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $id = DBManager::sequence_next("seq_permissions");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Не удалось получить следующее значение последовательности 'seq_permissions'");
+                        return false;
+                    }
+
+                    $result = DBManager::select("kr_permissions", ["*"], "id = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Не удвлось выбрать добавленное разрешение");
+                        return false;
+                    }
+
+                    $permission = Models::construct("Permission", false);
+                    $permission -> fromSource($result[0]);
+
+                    return $permission;
+                    break;
             }
-
-            $id = mysql_insert_id();
-            $result = DBManager::select("kr_permissions", ["*"], "id = $id");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermission: Не удвлось выбрать добавленное разрешение");
-                return false;
-            }
-
-            $permission = Models::construct("Permission", false);
-            $permission -> fromSource($result[0]);
-
-            return $permission;
         }
 
 
@@ -278,23 +356,56 @@
                 return false;
             }
 
-            $result = DBManager::insert_row("kr_permission_rules", ["code", "title"], ["'".$data -> code."'", "'".$data -> title."'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось добавить правило в БД");
-                return false;
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::insert_row("kr_permission_rules", ["code", "title"], ["'".$data -> code."'", "'".$data -> title."'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось добавить правило в БД");
+                        return false;
+                    }
+
+                    $id = mysql_insert_id();
+                    $result = DBManager::select("kr_permission_rules", ["*"], "id = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось выбрать добавленное правило из БД");
+                        return false;
+                    }
+
+                    $rule = Models::construct("PermissionRule", false);
+                    $rule -> fromSource($result[0]);
+
+                    return $rule;
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $id = DBManager::sequence_next("seq_permission_rules");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось получить следующее значение последовательности 'seq_permission_rules'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("kr_permission_rules", ["id", "code", "title"], [$id, "'".$data -> code."'", "'".$data -> title."'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось добавить правило в БД");
+                        return false;
+                    }
+
+                    $result = DBManager::select("kr_permission_rules", ["*"], "id = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось выбрать добавленное правило из БД");
+                        return false;
+                    }
+
+                    $rule = Models::construct("PermissionRule", false);
+                    $rule -> fromSource($result[0]);
+
+                    return $rule;
+                    break;
             }
 
-            $id = mysql_insert_id();
-            $result = DBManager::select("kr_permission_rules", ["*"], "id = $id");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Permissions -> addPermissionRule: Не удалось выбрать добавленное правило из БД");
-                return false;
-            }
 
-            $rule = Models::construct("PermissionRule", false);
-            $rule -> fromSource($result[0]);
-
-            return $rule;
         }
 
 

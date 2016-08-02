@@ -18,30 +18,218 @@
 
 
         public function install () {
-            $result = DBManager::is_table_exists("kr_users");
+
+            $result = DBManager::create_table("organizations");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Таблица с пользователями не найдена");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу 'organizations'");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_users", "department_id", "int(11) NOT NULL default 0");
+            $result = DBManager::create_table("departments");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу ползователей");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу 'departments'");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_users", "division_id", "int(11) NOT NULL default 0");
+            $result = DBManager::create_table("divisions");
             if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'division_id' в таблицу ползователей");
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу 'divisions'");
                 return false;
             }
 
-            $result = DBManager::add_column("kr_users", "organization_id", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу ползователей");
-                return false;
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::add_column("kr_users", "department_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "division_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'division_id' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "organization_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("organizations", "title", "varchar(500) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'organizations'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("departments", "title", "varchar(500) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("departments", ["title"], ["'Аппарат управления'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу 'departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("departments", ["title"], ["'Северные электрические сети'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу 'departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("departments", ["title"], ["'Центральные электрические сети'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу 'departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("divisions", "title", "varchar(500) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'divisions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("divisions", "organization_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу 'divisions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("divisions", "department_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу 'divisions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("divisions", "parent_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'parent_id' в таблицу 'divisions'");
+                        return false;
+                    }
+
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $result = DBManager::add_sequence("seq_organizations");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_organizations'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_departments");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_divisions");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_divisions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "department_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "division_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'division_id' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_users", "organization_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу 'kr_users'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("organizations", "title", "VARCHAR2(500) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'organizations'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("departments", "title", "VARCHAR2(500) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'departments'");
+                        return false;
+                    }
+
+                    $id = DBManager:sequence_next("seq_departments");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удвлось получить следующее значение последовательности 'seq_departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("departments", ["id", "title"], [$id, "'Аппарат управления'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу 'departments'");
+                        return false;
+                    }
+
+                    $id = DBManager:sequence_next("seq_departments");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удвлось получить следующее значение последовательности 'seq_departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("departments", ["id", "title"], [$id, "'Северные электрические сети'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу 'departments'");
+                        return false;
+                    }
+
+                    $id = DBManager:sequence_next("seq_departments");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удвлось получить следующее значение последовательности 'seq_departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("departments", ["id", "title"], [$id, "'Центральные электрические сети'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу 'departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("divisions", "title", "VARCHAR2(500) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'divisions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("divisions", "organization_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу 'divisions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("divisions", "department_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу 'divisions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("divisions", "parent_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'parent_id' в таблицу 'divisions'");
+                        return false;
+                    }
+
+                    break;
             }
 
+
+
+            /*
             $result = Models::extend("User1", "departmentId", new Field(array( "source" => "departmentId", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             if (Errors::isError($result)) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойство 'departmentId' в класс User");
@@ -53,94 +241,7 @@
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить свойство 'divisionId' в класс User");
                 return false;
             }
-
-            $result = DBManager::create_table("organizations");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу организаций");
-                return false;
-            }
-
-            $result = DBManager::add_column("organizations", "title", "varchar(500) NOT NULL default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу организаций");
-                return false;
-            }
-
-            $result = DBManager::create_table("departments");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу производственных отделений");
-                return false;
-            }
-
-            $result = DBManager::add_column("departments", "title", "varchar(500) NOT NULL default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу производственных отделений");
-                return false;
-            }
-
-            $result = DBManager::insert_row("departments", ["title"], ["'Аппарат управления'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу производственных отделений");
-                return false;
-            }
-
-            $result = DBManager::insert_row("departments", ["title"], ["'Северные электрические сети'"]);
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу производственных отделений");
-
-            $result = DBManager::insert_row("departments", ["title"], ["'Центральные электрические сети'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу производственных отделений");
-                return false;
-            }
-
-            $result = DBManager::create_table("divisions");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу отделов");
-                return false;
-            }
-
-            $result = DBManager::add_column("divisions", "title", "varchar(500) NOT NULL default ''");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу отделов");
-                return false;
-            }
-
-            $result = DBManager::add_column("divisions", "organization_id", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу отделов");
-                return false;
-            }
-
-            $result = DBManager::add_column("divisions", "department_id", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'department_id' в таблицу отделов");
-                return false;
-            }
-
-            $result = DBManager::add_column("divisions", "parent_id", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'parent_id' в таблицу отделов");
-                return false;
-            }
-
-            $result = DBManager::insert_row("divisions", ["department_id", "parent_id", "title"], [1, 0, "'Отдел аппарата управления'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
-                return false;
-            }
-
-            $result = DBManager::insert_row("divisions", ["department_id", "parent_id", "title"], [2, 0, "'Отдел северных сетей'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
-                return false;
-            }
-
-            $result = DBManager::insert_row("divisions", ["department_id", "parent_id", "title"], [3, 0, "'Отдел северных сетей'"]);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_DATABASE, "Kolenergo -> install: Не удалось добавить данные в таблицу отделов");
-                return false;
-            }
+            */
 
             return true;
         }

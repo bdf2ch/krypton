@@ -146,6 +146,7 @@
                                     return true;
                                 break;
                             case Krypton::DB_TYPE_ORACLE:
+                                return true;
                                 break;
                         }
                     }
@@ -182,6 +183,7 @@
                                     return true;
                                 break;
                             case Krypton::DB_TYPE_ORACLE:
+                                return true;
                                 break;
                         }
                     }
@@ -420,18 +422,20 @@
                                             Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_row: Отсутствует соединение с БД");
                                             return false;
                                         } else {
+                                            $cols = "";
+                                            foreach ($columns as $key => $column) {
+                                                $cols .= $column;
+                                                $cols .= $key < count($columns) - 1 ? ", " : "";
+                                            }
+                                            $vals = "";
+                                            foreach ($values as $key => $val) {
+                                                $vals .= $val;
+                                                $vals .= $key < count($values) - 1 ? ", " : "";
+                                            }
+
                                             switch (Krypton::getDBType()) {
                                                 case Krypton::DB_TYPE_MYSQL:
-                                                    $cols = "";
-                                                    foreach ($columns as $key => $column) {
-                                                        $cols .= $column;
-                                                        $cols .= $key < count($columns) - 1 ? ", " : "";
-                                                    }
-                                                    $vals = "";
-                                                    foreach ($values as $key => $val) {
-                                                        $vals .= $val;
-                                                        $vals .= $key < count($values) - 1 ? ", " : "";
-                                                    }
+
                                                     $query = mysql_query("INSERT INTO $tableName ($cols) VALUES ($vals)", DBManager::$link);
                                                     if (!$query) {
                                                         Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_row: ".mysql_errno()." - ".mysql_error());
@@ -440,6 +444,27 @@
                                                         return true;
                                                     break;
                                                 case Krypton::DB_TYPE_ORACLE:
+
+                                                     $query = "INSERT INTO $tableName ($cols) VALUES ($vals)";
+                                                     $statement = oci_parse(self::$link, $query);
+
+                                                     $result = oci_execute($statement, OCI_DEFAULT);
+                                                     if (!$result) {
+                                                         $error = oci_error();
+                                                         $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                                                         Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_row: ".$message);
+                                                         return false;
+                                                     } else {
+                                                        $result = oci_commit(self::$link);
+                                                        if (!$result) {
+                                                            $error = oci_error();
+                                                            $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                                                            Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_row: ".$message);
+                                                            return false;
+                                                        }
+
+                                                        return true;
+                                                     }
                                                     break;
                                             }
                                         }
@@ -591,6 +616,89 @@
             if ($table == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select: Не задан параметр - наименование таблицы");
                 return false;
+            }
+
+            if (gettype($table) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select: Неверно задан тип параметра - наименование таблицы");
+                return false;
+            }
+
+            if ($columns == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select: Не задан параметр - массив столбцов");
+                return false;
+            }
+
+            if (gettype($columns) != "array") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select: Неверно задан типа параметра - массив столбцов");
+                return false;
+            }
+
+            if ($condition == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select: Не задан параметр - условие выборки");
+                return false;
+            }
+
+            if (gettype($condition) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select: Неверно задан тип параметра - условие выборки");
+                return false;
+            }
+
+            if (!self::is_connected()) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select: Отсутствует соединение с БД");
+                return false;
+            }
+
+            $cols = "";
+            $cond = $condition != "''" ? " WHERE ".$condition : "";
+            foreach ($columns as $key => $column) {
+                $cols .= $column;
+                $cols .= $key < count($columns) - 1 ? ", " : "";
+            }
+
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $query = mysql_query("SELECT $cols FROM $table".$cond, self::$link);
+                    if (!$query) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select: ".mysql_errno()." - ".mysql_error());
+                        return false;
+                    }
+
+                    $result = array();
+                    for ($i = 0; $i < mysql_num_rows($query); $i++) {
+                        $fetched = mysql_fetch_assoc($query);
+                        array_push($result, $fetched);
+                    }
+
+                    return $result;
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $query = "SELECT $cols FROM $table".$cond;
+                    $statement = oci_parse(self::$link, $query);
+
+                    $result = oci_execute($statement, OCI_DEFAULT);
+                    if (!$result) {
+                        $error = oci_error();
+                        $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select: ".$message);
+                        return false;
+                    }
+
+                    $result = array();
+                    $rows = oci_fetch_all($statement, $result, null, null, OCI_FETCHSTATEMENT_BY_ROW);
+
+                    return $result;
+                    break;
+            }
+
+
+            /*
+            if ($table == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select: Не задан параметр - наименование таблицы");
+                return false;
             } else {
                 if (gettype($table) != "string") {
                     Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select: Неверно задан тип параметра - наименование таблицы");
@@ -643,6 +751,7 @@
                     }
                 }
             }
+            */
         }
 
 
@@ -696,6 +805,105 @@
 
 
 
+        }
+
+
+
+
+
+        /**
+        * Добавялет последовательность в БД Oracle
+        * @title {string} - наименование последовательности
+        * @start {integer} - начальное значение последовательности
+        * @step {integer} - шаг последовательности
+        **/
+        public static function add_sequence ($title, $start, $step) {
+            if ($title == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_sequence: Не задан параметр - наименование последовательности");
+                return false;
+            }
+
+            if (gettype($title) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_sequence: Неверно задан тип параметр - наименование последовательности");
+                return false;
+            }
+
+            if ($start == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_sequence: Не задан парметр - начальное значение последовательности");
+                return false;
+            }
+
+            if (gettype($start) != "integer") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_sequence: Неверно задан тип парметра - начальное значение последовательности");
+                return false;
+            }
+
+            if ($step == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_sequence: Не задан парметр - шаг последовательности");
+                return false;
+            }
+
+            if (gettype($step) != "integer") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_sequence: Неверно задан тип парметра - шаг последовательности");
+                return false;
+            }
+
+            if (Krypton::getDbType() !== Krypton::DB_TYPE_ORACLE) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> add_sequence: Последовательности доступны только при использовании СУБД Oracle");
+                return false;
+            }
+
+            if (!self::is_connected()) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> add_sequence: Отсутствует соединение с БД");
+                return false;
+            }
+
+            $query = "CREATE SEQUENCE $title START WITH $start INCREMENT BY $step NOCACHE NOCYCLE";
+            $statement = oci_parse(self::$link, $query);
+
+            $result = oci_execute($statement, OCI_DEFAULT);
+            if (!$result) {
+                $error = oci_error();
+                $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> add_sequence: ".$message);
+                return false;
+            } else
+                return true;
+        }
+
+
+
+
+        public static function sequence_next ($title) {
+            if ($title == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> sequence_next: Не задан параметр - наименование последовательности");
+                return false;
+            }
+
+            if (gettype($title) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> sequence_next: Неверно задан тип параметра - наименование последовательности");
+                return false;
+            }
+
+            if (Krypton::getDBType() != Krypton::DB_TYPE_ORACLE) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> sequence_next: Последовательности доступны только при использовании СУБД Oracle");
+                return false;
+            }
+
+            $query = "SELECT $title.nextval FROM DUAL";
+            $statement = oci_parse(self::$link, $query);
+
+            $result = oci_execute($statement, OCI_DEFAULT);
+            if (!$result) {
+                $error = oci_error();
+                $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> sequence_next: ".$message);
+                return false;
+            } else {
+                $res = oci_fetch_assoc($statement);
+                $seq = $res["NEXTVAL"];
+                return intval($seq);
+            }
         }
 
     };

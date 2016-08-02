@@ -39,19 +39,19 @@
                     if ($message == null) {
                         $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Не задан параметр - текст ошибки");
                         array_push(Errors::$errors, $error);
-                        //$error -> send();
+                        $error -> send();
                         return false;
                     } else {
                         if (gettype($message) != "string") {
                             $error = new Error(Errors::ERROR_TYPE_DEFAULT, "Errors -> push: Неверно задан тип параметра - текст ошибки");
                             array_push(Errors::$errors, $error);
-                            //$error -> send();
+                            $error -> send();
                             return false;
                         } else {
                             $error = new Error($type, $message);
                             self::$lastError = $error;
                             array_push(Errors::$errors, $error);
-                            //$error -> send();
+                            $error -> send();
                             return $error;
                         }
                     }

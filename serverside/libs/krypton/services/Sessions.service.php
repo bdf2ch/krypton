@@ -12,6 +12,86 @@
         * Производит установку модуля в системе
         **/
         public static function install () {
+            $result = DBManager::create_table("kr_sessions");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось создать таблицу 'kr_sessions'");
+                return false;
+            }
+
+            switch (Krypton::getDBType()) {
+
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::add_column("kr_sessions", "user_id", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить столбец 'user_id' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_sessions", "session_token", "varchar(50) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить столбец 'token' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_sessions", "session_start", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить столбец 'start' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_sessions", "session_end", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить столбец 'end' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $result = DBManager::add_column("kr_sessions", "user_id", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить столбец 'user_id' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_sessions", "session_token", "VARCHAR2(50) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить столбец 'token' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_sessions", "session_start", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить столбец 'start' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("kr_sessions", "session_end", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить столбец 'end' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_sessions", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить последовательность 'seq_sessions'");
+                        return false;
+                    }
+
+                    break;
+            }
+
+            $result = Settings::add("'krypton'", "'session_duration'", "'Продолжительность сессии'", "'Продолжительность сессии пользователя'", Krypton::DATA_TYPE_INTEGER, 7257600, 1);
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удвлось добавить настройку 'session_duration'");
+                return false;
+            }
+
+            return true;
+
+            /*
             if (!DBManager::is_table_exists("kr_sessions")) {
                 if (DBManager::create_table("kr_sessions")) {
                     if (DBManager::add_column("kr_sessions", "user_id", "int(11) NOT NULL default 0") &&
@@ -35,6 +115,7 @@
                 }
             } else
                 return false;
+            */
         }
 
 
@@ -61,17 +142,42 @@
 
             if (isset($_COOKIE["krypton_session"])) {
                 $token = $_COOKIE["krypton_session"];
-                $result = DBManager::select("kr_sessions", ["*"], "token = '$token' LIMIT 1");
+                $result = DBManager::select("kr_sessions", ["*"], "session_token = '$token' LIMIT 1");
                 if (!$result) {
                     $newToken = self::generateToken();
                     $start = time();
                     $end = $start + Settings::getByCode("session_duration");
 
-                    $result = DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$newToken."'", $start, $end]);
-                    if (!$result) {
-                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
-                        return false;
+
+                    switch (Krypton::getDBType()) {
+                        case Krypton::DB_TYPE_MYSQL:
+
+                            $result = DBManager::insert_row("kr_sessions", ["session_token", "session_start", "session_end"], ["'".$newToken."'", $start, $end]);
+                            if (!$result) {
+                                Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
+                                return false;
+                            }
+
+                            break;
+                        case Krypton::DB_TYPE_ORACLE:
+
+                            $id = DBManager::sequence_next("seq_sessions");
+                            if (!$id) {
+                                Errors::push(Errors::Error_TYPE_ENGINE, "Sessions -> init: Не удалось получить следкющее значение последовательности 'seq_sessions'");
+                                return false;
+                            }
+
+                            $result = DBManager::insert_row("kr_sessions", ["id", "session_token", "session_start", "session_end"], [$id, "'".$newToken."'", $start, $end]);
+                            if (!$result) {
+                                Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
+                                return false;
+                            }
+
+                            break;
                     }
+
+
+
 
                     $session = Models::construct("Session", false);
                     $session -> token -> value = $newToken;
@@ -104,7 +210,7 @@
                 $start = time();
                 $end = $start + Settings::getByCode("session_duration");
 
-                $result = DBManager::insert_row("kr_sessions", ["token", "start", "end"], ["'".$newToken."'", $start, $end]);
+                $result = DBManager::insert_row("kr_sessions", ["session_token", "session_start", "session_end"], ["'".$newToken."'", $start, $end]);
                 if (!$result) {
                     Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
                     return false;
@@ -154,7 +260,7 @@
             }
 
             $token = self::getCurrentSession() -> token -> value;
-            $result = DBManager::update("kr_sessions", ["user_id"], [$id], "token = '$token'");
+            $result = DBManager::update("kr_sessions", ["user_id"], [$id], "session_token = '$token'");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> setCurrentUserById: Не удалось установить текущего пользователя");
                 return false;
@@ -191,7 +297,7 @@
                         return false;
                     } else {
                         $currentSessionToken = self::getCurrentSession() -> token -> value;
-                        if (!DBManager::update("kr_sessions", ["user_id"], [$userId], "token = '$currentSessionToken'")) {
+                        if (!DBManager::update("kr_sessions", ["user_id"], [$userId], "session_token = '$currentSessionToken'")) {
                             return false;
                         } else {
                             if (self::$session != null)
@@ -267,7 +373,7 @@
 
 
 
-        private function generateToken () {
+        private static function generateToken () {
             $arr = array(
                 'a','b','c','d','e','f',
                 'g','h','i','j','k','l',
@@ -287,7 +393,7 @@
                     $index = rand(0, count($arr) - 1);
                     $token .= $arr[$index];
                 }
-                if (!DBManager::select("kr_sessions", ["*"], "token =  '$token'"))
+                if (!DBManager::select("kr_sessions", ["*"], "session_token =  '$token'"))
                     $success = true;
             }
 
@@ -307,7 +413,7 @@
                 return null;
             }
 
-            $result = DBManager::select("kr_sessions", ["*"], "token = '$token' LIMIT 1");
+            $result = DBManager::select("kr_sessions", ["*"], "session_token = '$token' LIMIT 1");
             return $result != false ? true : false;
         }
 
