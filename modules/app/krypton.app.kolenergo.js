@@ -14,7 +14,7 @@
 
 
 
-    function kolenergoFactory ($log, $classes, $factory, $errors, $navigation) {
+    function kolenergoFactory ($log, $classes, $factory, $errors, $navigation, $http) {
         /**
          * Organization
          * Набор свойств и методов, описывающих организацию
@@ -138,10 +138,6 @@
                 getCurrent: function () {
                     return currentOrganization;
                 },
-                
-                getCurrentDivisions: function () {
-                    return currentOrganizationDivisions;
-                },
 
                 /**
                  * Выбирает организацию по идентификатору
@@ -174,16 +170,37 @@
                 /**
                  * Добавляет новую организацию
                  * @param organization {Organization} - объект с информацией о новой организации
-                 * @returns {boolean}
+                 * @returns {Organization / boolean}
                  */
-                add: function (organization) {
-                    if (organization == undefined) {
-                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> add: Не залан параметр - объект с информацией о новой организации");
+                add: function (organization, callback) {
+                    if (organization === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> add: Не задан параметр - объект с информацией о новой организации");
                         return false;
                     }
 
-                    organizations.push(organization);
-                    return true;
+                    var params = {
+                        action: "addOrganization",
+                        title: organization.title.value
+                    };
+
+                    $http.post("/serverside/libs/krypton.api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
+                                    organization._model_.fromAnother(data.result);
+                                    organization._backup_.setup();
+                                    organizations.push(organization);
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback(organization);
+
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
                 },
 
                 /**
