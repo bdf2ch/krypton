@@ -14,10 +14,10 @@
         public function init () {
             $info = DBManager::select("kr_app_info", ["*"], "''");
             if ($info != false) {
-                $this -> title = $info[0]["title"];
-                $this -> description = $info[0]["description"];
-                $this -> inDebugMode = boolval($info[0]["is_in_debug_mode"]);
-                $this -> inConstructionMode = boolval($info[0]["is_in_construction_mode"]);
+                $this -> title = $info[0]["TITLE"];
+                $this -> description = $info[0]["DESCRIPTION"];
+                $this -> inDebugMode = boolval($info[0]["IS_IN_DEBUG_MODE"]);
+                $this -> inConstructionMode = boolval($info[0]["IS_IN_CONSTRUCTION_MODE"]);
             }
 
                 $extensions = DBManager::select("kr_app_extensions", ["*"], "''");

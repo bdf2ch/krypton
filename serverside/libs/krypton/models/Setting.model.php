@@ -4,12 +4,12 @@
         public static $fields = array();
 
         public function __construct ($parameters) {
-            self::field("extensionId", new Field(array( "source" => "extensions_id", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("code", new Field(array( "source" => "code", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("title", new Field(array( "source" => "title", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("description", new Field(array( "source" => "description", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("type", new Field(array( "source" => "type", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 2, "defaultValue" => 2 )));
-            self::field("value", new Field(array( "source" => "value", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("extensionId", new Field(array( "source" => "EXTENSION_ID", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("code", new Field(array( "source" => "CODE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("title", new Field(array( "source" => "TITLE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("description", new Field(array( "source" => "DESCRIPTION", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("type", new Field(array( "source" => "TYPE", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 2, "defaultValue" => 2 )));
+            self::field("value", new Field(array( "source" => "VALUE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
 
 
             if (is_null($parameters))

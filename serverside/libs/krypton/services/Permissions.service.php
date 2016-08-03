@@ -1,6 +1,6 @@
 <?php
 
-    class Permissions extends Service {
+    class Permissions implements Service {
         public static $rules = array();
         public static $permissions = array();
 

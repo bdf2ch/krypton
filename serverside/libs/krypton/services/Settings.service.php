@@ -1,6 +1,6 @@
 <?php
 
-    class Settings {
+    class Settings implements Service {
         private static $items = array();
 
 
@@ -141,13 +141,13 @@
             if ($settings != false) {
                 foreach ($settings as $key => $item) {
                     $setting = new Setting (
-                        $item["extension_id"],
-                        $item["code"],
-                        $item["title"],
-                        intval($item["type"]),
-                        $item["value"],
-                        $item["description"],
-                        $item["is_system"]
+                        $item["EXTENSION_ID"],
+                        $item["CODE"],
+                        $item["TITLE"],
+                        intval($item["TYPE"]),
+                        $item["VALUE"],
+                        $item["DESCRIPTION"],
+                        $item["IS_SYSTEM"]
                     );
                     array_push(self::$items, $setting);
                 }
@@ -226,8 +226,8 @@
                 return false;
             }
 
-            if ($type != Krypton::DATA_TYPE_INTEGER && $type != Krypton::DATA_TYPE_FLOAT && $type != Krypton::DATA_TYPE_STRING && $type != Krypton::DATA_TYPE_STRING) {
-                Errors::push(Errors::ERROR_TYE_DEFAULT, "Settings -> add: Неверно задано значение параметра - тип значения настройки");
+            if ($type != Krypton::DATA_TYPE_INTEGER && $type != Krypton::DATA_TYPE_FLOAT && $type != Krypton::DATA_TYPE_STRING && $type != Krypton::DATA_TYPE_BOOLEAN) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Settings -> add: Неверно задано значение параметра - тип значения настройки");
                 return false;
             }
 

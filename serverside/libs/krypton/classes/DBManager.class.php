@@ -442,7 +442,9 @@
                                                         return false;
                                                     } else
                                                         return true;
+
                                                     break;
+
                                                 case Krypton::DB_TYPE_ORACLE:
 
                                                      $query = "INSERT INTO $tableName ($cols) VALUES ($vals)";
@@ -465,6 +467,7 @@
 
                                                         return true;
                                                      }
+
                                                     break;
                                             }
                                         }
@@ -523,25 +526,47 @@
                                                 Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> update_row: Отсутствует соединение с БД");
                                                 return false;
                                             } else {
+
+                                                $colsAndVals = "";
+                                                foreach ($columns as $colkey => $column) {
+                                                    $colsAndVals .= $column."=".$values[$colkey];
+                                                    $colsAndVals .= $colkey < count($columns) - 1 ? ", " : "";
+                                                }
+                                                $colsAndVals .= $condition != null ? " WHERE $condition" : "";
+
                                                 switch (Krypton::getDBType()) {
                                                     case Krypton::DB_TYPE_MYSQL:
-                                                        $colsAndVals = "";
-                                                        foreach ($columns as $colkey => $column) {
-                                                            $colsAndVals .= $column."=".$values[$colkey];
-                                                            $colsAndVals .= $colkey < count($columns) - 1 ? ", " : "";
-                                                        }
-                                                        $colsAndVals .= $condition != null ? " WHERE $condition" : "";
-                                                        // echo("</br></br>colsAndVals: ".$colsAndVals."</br>");
                                                         $query = mysql_query("UPDATE $table SET $colsAndVals", DBManager::$link);
-                                                        if ($query == false) {
-                                                            //Errors::push_generic_mysql();
+                                                        if (!$query) {
                                                             Errors::push(Errors::ERROR_TYPE_DATABASE, "DBManager -> update: ".mysql_errno().": ".mysql_error());
                                                             return false;
-                                                        } else {
+                                                        } else
                                                             return true;
-                                                        }
+
                                                         break;
+
                                                     case Krypton::DB_TYPE_ORACLE:
+
+                                                        $query = "UPDATE $table SET $colsAndVals";
+                                                        $statement = oci_parse(self::$link, $query);
+
+                                                        $result = oci_execute($statement, OCI_DEFAULT);
+                                                        if (!$result) {
+                                                            $error = oci_error();
+                                                            $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                                                            Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_row: ".$message);
+                                                            return false;
+                                                        } else {
+                                                            $result = oci_commit(self::$link);
+                                                            if (!$result) {
+                                                                $error = oci_error();
+                                                                $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                                                                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_row: ".$message);
+                                                                return false;
+                                                            } else
+                                                                return true;
+                                                        }
+
                                                         break;
                                                 }
                                             }
@@ -591,6 +616,7 @@
             }
 
             switch (Krypton::getDBType()) {
+
                 case Krypton::DB_TYPE_MYSQL:
                     $query = mysql_query("DELETE FROM $table WHERE $condition", self::$link);
                     if (!$query) {
@@ -599,7 +625,26 @@
                     } else
                         return true;
                     break;
+
                 case Krypton::DB_TYPE_ORACLE:
+                    $query = "DELETE FROM $table WHERE $condition";
+                    $statement = oci_parse(self::$link, $query);
+                    $result = oci_execute($statement, OCI_DEFAULT);
+                    if (!$result) {
+                        $error = oci_error();
+                        $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_row: ".$message);
+                        return false;
+                    } else {
+                        $result = oci_commit(self::$link);
+                        if (!$result) {
+                            $error = oci_error();
+                            $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                            Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> insert_row: ".$message);
+                            return false;
+                        } else
+                            return true;
+                    }
                     break;
             }
         }

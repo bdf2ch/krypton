@@ -4,21 +4,21 @@
         public static $fields = array();
 
         public function __construct ($parameters) {
-            self::field("id", new Field(array( "source" => "id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("userGroupId", new Field(array( "source" => "user_group_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("surname", new Field(array( "source" => "surname", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("name", new Field(array( "source" => "name", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("fname", new Field(array( "source" => "fname", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("position", new Field(array( "source" => "position", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("email", new Field(array( "source" => "email", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("phone", new Field(array( "source" => "phone", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("mobile", new Field(array( "source" => "mobile_phone", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("photo", new Field(array( "source" => "photo_url", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("isAdmin", new Field(array( "source" => "is_admin", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => false, "defaultValue" => false )));
-            self::field("ldapEnabled", new Field(array( "source" => "ldap_enabled", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
-            self::field("organizationId", new Field(array( "source" => "organization_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("divisionId", new Field(array( "source" => "division_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("departmentId", new Field(array( "source" => "department_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("id", new Field(array( "source" => "ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("userGroupId", new Field(array( "source" => "USER_GROUP_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("surname", new Field(array( "source" => "SURNAME", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("name", new Field(array( "source" => "NAME", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("fname", new Field(array( "source" => "FNAME", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("position", new Field(array( "source" => "POSITION", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("email", new Field(array( "source" => "EMAIL", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("phone", new Field(array( "source" => "PHONE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("mobile", new Field(array( "source" => "MOBILE_PHONE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("photo", new Field(array( "source" => "PHOTO_URL", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("isAdmin", new Field(array( "source" => "IS_ADMIN", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => false, "defaultValue" => false )));
+            self::field("ldapEnabled", new Field(array( "source" => "LDAP_ENABLED", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
+            self::field("organizationId", new Field(array( "source" => "ORGANIZATION_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("divisionId", new Field(array( "source" => "DIVISION_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("departmentId", new Field(array( "source" => "DEPARTMENT_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
 
             if (is_null($parameters))
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Models -> User -> __construct: Не задан параметр - массив параметров инициализации");

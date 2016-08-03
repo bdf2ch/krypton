@@ -1,6 +1,6 @@
 <?php
 
-    class Users extends Service {
+    class Users implements Service {
 
         public static $description = "Users description";
         public static $clientSideExtensionUrl = "modules/app/krypton.app.users.js";
@@ -609,7 +609,7 @@
                 return false;
             }
 
-            $result = DBManager::select("kr_users", ["*"], "id = $id LIMIT 1");
+            $result = DBManager::select("kr_users", ["*"], "ID = $id");
             if (!$result)
                 return $result;
 

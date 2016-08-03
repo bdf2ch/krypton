@@ -223,9 +223,9 @@
 
                 case self::DB_TYPE_ORACLE:
 
-                    $result = DBManager::add_sequence("seq_extensions");
+                    $result = DBManager::add_sequence("seq_extensions", 1, 1);
                     if (!$result) {
-                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удвлось добавить последовательность 'seq_extensions'");
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить последовательность 'seq_extensions'");
                         return false;
                     }
 
@@ -277,7 +277,7 @@
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_url", "VARCHAR2(200) NOT NULL");
+                    $result = DBManager::add_column("kr_app_extensions", "extension_url", "VARCHAR2(200)");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_url' в таблицу 'kr_app_extensions'");
                         return false;

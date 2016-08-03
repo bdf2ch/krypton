@@ -4,7 +4,7 @@
     require_once "serverside/libs/krypton/classes/Krypton.class.php";
 
     /*** Создание и инициализация нового приложения Krypton ***/
-    $app = new Krypton(["LDAP", "Kolenergo"]);
+    $app = new Krypton(["Kolenergo"]);
 
     Krypton::$app -> addInitialData("application", json_encode(Krypton::$app));
     Krypton::$app -> addInitialData("extensions", json_encode(Krypton::$app -> extensions));

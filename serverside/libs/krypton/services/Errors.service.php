@@ -1,6 +1,6 @@
 <?php
 
-    class Errors extends Service {
+    class Errors implements Service {
         const ERROR_TYPE_DEFAULT = 1;
         const ERROR_TYPE_ENGINE = 2;
         const ERROR_TYPE_DATABASE = 3;

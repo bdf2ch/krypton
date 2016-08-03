@@ -4,9 +4,9 @@
         public static $fields = array();
 
         public function __construct ($parameters) {
-            self::field("id", new Field(array( "source" => "id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("code", new Field(array( "source" => "code", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("title", new Field(array( "source" => "title", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("id", new Field(array( "source" => "ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("code", new Field(array( "source" => "CODE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("title", new Field(array( "source" => "TITLE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
 
 
 

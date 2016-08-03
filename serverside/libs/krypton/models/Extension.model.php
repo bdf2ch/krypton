@@ -4,11 +4,11 @@
         public static $fields = array();
 
         public function __construct ($parameters) {
-            self::field("id", new Field(array( "source" => "extension_id", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("title", new Field(array( "source" => "extension_title", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("description", new Field(array( "source" => "extension_description", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("url", new Field(array( "source" => "extension_url", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("enabled", new Field(array( "source" => "enabled", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
+            self::field("id", new Field(array( "source" => "EXTENSION_ID", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("title", new Field(array( "source" => "EXTENSION_TITLE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("description", new Field(array( "source" => "EXTENSION_DESCRIPTION", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("url", new Field(array( "source" => "EXTENSION_URL", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("enabled", new Field(array( "source" => "ENABLED", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
 
 
             if (is_null($parameters))

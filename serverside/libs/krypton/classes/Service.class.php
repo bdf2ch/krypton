@@ -1,9 +1,9 @@
 <?php
 
-    abstract class Service {
+    interface Service {
 
-        public static abstract function install ();
-        public static abstract function init ();
+        public static function install ();
+        public static function init ();
 
     };
 

@@ -1,6 +1,6 @@
 <?php
 
-    class Files extends Service {
+    class Files implements Service {
         private static $items = array();
 
 

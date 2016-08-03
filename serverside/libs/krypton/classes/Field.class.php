@@ -2,10 +2,10 @@
 
     class Field {
 
-        public static $type = KRYPTON::DATA_TYPE_INTEGER;
-        public static $source;
-        public static $value;
-        public static $defaultValue;
+        public $type = KRYPTON::DATA_TYPE_INTEGER;
+        public $source;
+        public $value;
+        public $defaultValue;
 
         public function __construct ($parameters) {
             if ($parameters == null)

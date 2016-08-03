@@ -1,6 +1,6 @@
 <?php
 
-    class Sessions {
+    class Sessions implements Service {
 
         private static $session = false;
         private static $user = false;
@@ -142,7 +142,7 @@
 
             if (isset($_COOKIE["krypton_session"])) {
                 $token = $_COOKIE["krypton_session"];
-                $result = DBManager::select("kr_sessions", ["*"], "session_token = '$token' LIMIT 1");
+                $result = DBManager::select("kr_sessions", ["*"], "SESSION_TOKEN = '$token'");
                 if (!$result) {
                     $newToken = self::generateToken();
                     $start = time();
@@ -192,7 +192,7 @@
                     self::$session = $session;
 
                     if ($session -> userId -> value != 0) {
-                        $result = DBManager::select("kr_users", ["*"], "id = ".$session -> userId -> value);
+                        $result = DBManager::select("kr_users", ["*"], "ID = ".$session -> userId -> value);
                         if (!$result) {
                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Пользователь с идентификатором ".$session -> userId -> value." не найден");
                             return false;
@@ -210,11 +210,35 @@
                 $start = time();
                 $end = $start + Settings::getByCode("session_duration");
 
-                $result = DBManager::insert_row("kr_sessions", ["session_token", "session_start", "session_end"], ["'".$newToken."'", $start, $end]);
-                if (!$result) {
-                    Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
-                    return false;
+                switch (Krypton::getDBType()) {
+                    case Krypton::DB_TYPE_MYSQL:
+
+                        $result = DBManager::insert_row("kr_sessions", ["session_token", "session_start", "session_end"], ["'".$newToken."'", $start, $end]);
+                        if (!$result) {
+                            Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
+                            return false;
+                        }
+
+                        break;
+
+                    case Krypton::DB_TYPE_ORACLE:
+
+                        $id = DBManager::sequence_next("seq_sessions");
+                        if (!$id) {
+                            Errors::push(Errors::Error_TYPE_ENGINE, "Sessions -> init: Не удвлось получить следующее значение последовательности 'seq_sessions'");
+                            return false;
+                        }
+
+                        $result = DBManager::insert_row("kr_sessions", ["id", "session_token", "session_start", "session_end"], [$id, "'".$newToken."'", $start, $end]);
+                        if (!$result) {
+                            Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> init: Не удалось добавить новый токен");
+                            return false;
+                        }
+
+                        break;
                 }
+
+
 
                 $session = Models::construct("Session", false);
                 $session -> token -> value = $newToken;
@@ -332,7 +356,7 @@
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Session -> login: Неверно задан тип параметра - пароль");
 
             $passwd = md5($password);
-            $result = DBManager::select("kr_users", ["*"], "email = '$email' AND password = '$password' LIMIT 1");
+            $result = DBManager::select("kr_users", ["*"], "email = '$email' AND password = '$password'");
             if (!$result)
                 return $result;
 
@@ -413,7 +437,7 @@
                 return null;
             }
 
-            $result = DBManager::select("kr_sessions", ["*"], "session_token = '$token' LIMIT 1");
+            $result = DBManager::select("kr_sessions", ["*"], "session_token = '$token'");
             return $result != false ? true : false;
         }
 

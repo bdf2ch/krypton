@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+- phpMyAdmin XML Dump
+- version 4.6.3
+- https://www.phpmyadmin.net
+-
+- Хост: localhost
+- Время создания: Авг 03 2016 г., 11:42
+- Версия сервера: 5.5.23
+- Версия PHP: 5.5.34
+-->
+
+<pma_xml_export version="1.0">
+    <!--
+    - База данных: 'krypton'
+    -->
+    <database name="krypton">
+        <!-- Таблица divisions -->
+        <table name="divisions">
+            <column name="ID">-1</column>
+            <column name="TITLE">Филиал ПАО «МРСК Северо-Запада» «Колэнерго»</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">0</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">4</column>
+            <column name="TITLE">ПО «Северные электрические сети»</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">-1</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\4\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">5</column>
+            <column name="TITLE">ПО «Центральные электрические сети»</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">-1</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\5\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">6</column>
+            <column name="TITLE">ПО «Аппарат управления»</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">-1</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">46</column>
+            <column name="TITLE">Руководство филиала</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\46\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">47</column>
+            <column name="TITLE">Управление экономики и тарифообразования</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\47\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">48</column>
+            <column name="TITLE">Отдел бизнес-планирования</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">47</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\47\48\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">49</column>
+            <column name="TITLE">Сектор тарифообразования</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">47</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\47\49\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">50</column>
+            <column name="TITLE">Финансовый отдел</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\50\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">53</column>
+            <column name="TITLE">Сектор страховой защиты</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">50</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\50\53\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">54</column>
+            <column name="TITLE">Сектор финансов</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">50</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\50\54\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">55</column>
+            <column name="TITLE">Сектор бюджетного контроля</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">50</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\50\55\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">56</column>
+            <column name="TITLE">Управление бухгалтерского и налогового учета и отчетности</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\56\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">57</column>
+            <column name="TITLE">Отдел внутренней бухгалтерской и налоговой отчетности</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">56</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\56\57\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">58</column>
+            <column name="TITLE">Отдел учета расчетов с контрагентами</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">56</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\56\58\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">59</column>
+            <column name="TITLE">Отдел учета имущества</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">56</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\56\59\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">60</column>
+            <column name="TITLE">Отдел учета расчетов с персоналом</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">56</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\56\60\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">61</column>
+            <column name="TITLE">Сектор договорной работы</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">56</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\56\61\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">62</column>
+            <column name="TITLE">Управление правового обеспечения и управления собственностью</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\62\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">63</column>
+            <column name="TITLE">Отдел правового обеспечения</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">62</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\62\63\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">64</column>
+            <column name="TITLE">Отдел управления собственностью</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">62</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\62\64\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">65</column>
+            <column name="TITLE">Управление реализации услуг и учета электроэнергии, энергосбережения и повышения энергоэффективности</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\65\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">66</column>
+            <column name="TITLE">Отдел реализации услуг</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">65</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\65\66\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">67</column>
+            <column name="TITLE">Отдел балансов и учета электроэнергии</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">65</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\65\67\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">68</column>
+            <column name="TITLE">Сектор мониторинга и оптимизации потерь</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">65</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\65\68\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">69</column>
+            <column name="TITLE">Сектор энергосбережения и повышения энергоэффективности</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">65</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\65\69\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">70</column>
+            <column name="TITLE">Отдел взаимодействия с клиентами</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\70\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">71</column>
+            <column name="TITLE">Центр обслуживания клиентов</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">70</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\70\71\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">72</column>
+            <column name="TITLE">Управление перспективного развития и технологического присоединения</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\72\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">73</column>
+            <column name="TITLE">Отдел технологического присоединения</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">72</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\72\73\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">74</column>
+            <column name="TITLE">Сектор перспективного развития</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">72</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\72\74\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">75</column>
+            <column name="TITLE">Управление эксплуатации</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\75\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">76</column>
+            <column name="TITLE">Отдел эксплуатации ЛЭП и РС</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">75</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\75\76\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">77</column>
+            <column name="TITLE">Отдел эксплуатации ПСТ</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">75</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\75\77\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">78</column>
+            <column name="TITLE">Отдел организации ремонтов</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">75</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\75\78\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">79</column>
+            <column name="TITLE">Отдел эксплуатации зданий и сооружений</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">75</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\75\79\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">80</column>
+            <column name="TITLE">Служба релейной защиты и автоматики</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">75</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\75\80\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">81</column>
+            <column name="TITLE">Центр управления сетями</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\81\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">82</column>
+            <column name="TITLE">Диспетчерская служба</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">81</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\81\82\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">83</column>
+            <column name="TITLE">Служба электрических режимов</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">81</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\81\83\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">84</column>
+            <column name="TITLE">Сектор безопасности технологических процессов</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">81</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\81\84\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">85</column>
+            <column name="TITLE">Сектор метрологии и контроля качества электроэнергии</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\85\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">86</column>
+            <column name="TITLE">Отдел технологического развития и инноваций</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\86\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">87</column>
+            <column name="TITLE">Служба производственной безопасности и производственного контроля</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\87\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">88</column>
+            <column name="TITLE">Отдел охраны труда</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">87</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\87\88\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">89</column>
+            <column name="TITLE">Сектор надежности и экологии</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">87</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\87\89\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">90</column>
+            <column name="TITLE">Управление капитального строительства</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\90\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">91</column>
+            <column name="TITLE">Отдел капитального строительства</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">90</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\90\91\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">92</column>
+            <column name="TITLE">Сектор подготовки строительства</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">91</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\90\91\92\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">93</column>
+            <column name="TITLE">Сектор отчетов</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">90</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\90\93\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">94</column>
+            <column name="TITLE">Группа проектирования</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">90</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\90\94\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">95</column>
+            <column name="TITLE">Отдел инвестиций</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\95\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">96</column>
+            <column name="TITLE">Управление корпоративных и технологических АСУ</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\96\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">97</column>
+            <column name="TITLE">Отдел корпоративных информационных систем управления</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">96</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\96\97\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">98</column>
+            <column name="TITLE">Отдел заказчика</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">96</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\96\98\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">99</column>
+            <column name="TITLE">Отдел автоматизированных систем технологического управления</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">96</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\96\99\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">101</column>
+            <column name="TITLE">Сектор эксплуатации информационных технологий</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">96</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\96\101\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">102</column>
+            <column name="TITLE">Управление по работе с персоналом</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\102\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">103</column>
+            <column name="TITLE">Отдел кадров и социальной политики</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">102</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\102\103\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">104</column>
+            <column name="TITLE">Отдел развития персонала</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">102</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\102\104\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">105</column>
+            <column name="TITLE">Учебно-тренинговый образовательный центр подготовки персонала</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">102</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\102\105\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">106</column>
+            <column name="TITLE">Сектор менеджмента качества</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">102</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\102\106\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">107</column>
+            <column name="TITLE">Служба психофизиологической надежности персонала</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">102</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\102\107\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">109</column>
+            <column name="TITLE">Отдел организации труда и заработной платы</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">102</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\102\109\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">110</column>
+            <column name="TITLE">Служба безопасности</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\110\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">111</column>
+            <column name="TITLE">Отдел мобилизационной подготовки и гражданской обороны</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\111\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">112</column>
+            <column name="TITLE">Сектор по защите государственной тайны</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\112\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">113</column>
+            <column name="TITLE">Управление логистики и МТО</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\113\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">114</column>
+            <column name="TITLE">Отдел логистики</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">113</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\113\114\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">115</column>
+            <column name="TITLE">Отдел механизации и транспорта</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">113</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\113\115\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">116</column>
+            <column name="TITLE">Отдел по связям с общественностью</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\116\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">117</column>
+            <column name="TITLE">Отдел управления делами</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">6</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\117\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">118</column>
+            <column name="TITLE">Сектор хозяйственного обеспечения</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">117</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH">-1\6\117\118\</column>
+        </table>
+        <table name="divisions">
+            <column name="ID">144</column>
+            <column name="TITLE">Служба учета электроэнергии</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">145</column>
+            <column name="TITLE">Группа технологического присоединения и взаимодействия с клиентами</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">146</column>
+            <column name="TITLE">Производственно-технический отдел</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">147</column>
+            <column name="TITLE">Группа метрологии и контроля качества электроэнергии</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">148</column>
+            <column name="TITLE">Служба диагностики, изоляции и защиты от перенапряжений</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">149</column>
+            <column name="TITLE">Служба эксплуатации зданий и сооружений</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">150</column>
+            <column name="TITLE">Служба механизации и транспорта</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">151</column>
+            <column name="TITLE">Служба производственной безопасности и производственного контроля</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">152</column>
+            <column name="TITLE">Оперативно-диспетчерская служба</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">153</column>
+            <column name="TITLE">Служба релейной защиты и автоматики</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">154</column>
+            <column name="TITLE">Служба подстанций</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">155</column>
+            <column name="TITLE">Служба воздушных линий</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">156</column>
+            <column name="TITLE">Служба распределительных сетей</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">157</column>
+            <column name="TITLE">Отдел материально-технического обеспечения</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">158</column>
+            <column name="TITLE">Группа документационного обеспечения</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">159</column>
+            <column name="TITLE">Служба корпоративных и технологических автоматизированных систем управления</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">160</column>
+            <column name="TITLE">Отдел капитального строительства</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">5</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">161</column>
+            <column name="TITLE">Служба учета электроэнергии</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">162</column>
+            <column name="TITLE">Отдел технологического присоединения и взаимодействия с клиентами</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">163</column>
+            <column name="TITLE">Производственно-технический отдел</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">164</column>
+            <column name="TITLE">Отдел метрологии и контроля качества электроэнергии</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">165</column>
+            <column name="TITLE">Служба диагностики, изоляции и защиты от перенапряжений</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">166</column>
+            <column name="TITLE">Служба эксплуатации зданий и сооружений</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">167</column>
+            <column name="TITLE">Служба механизации и транспорта</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">168</column>
+            <column name="TITLE">Служба производственной безопасности и производственного контроля</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">169</column>
+            <column name="TITLE">Оперативно-диспетчерская служба</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">170</column>
+            <column name="TITLE">Служба релейной защиты и автоматики</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">171</column>
+            <column name="TITLE">Служба подстанций</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">172</column>
+            <column name="TITLE">Служба воздушных линий</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">173</column>
+            <column name="TITLE">Служба распределительных сетей</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">174</column>
+            <column name="TITLE">Отдел материально-технического обеспечения</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">175</column>
+            <column name="TITLE">Группа документационного обеспечения</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">176</column>
+            <column name="TITLE">Служба корпоративных и технологических автоматизированных систем управления</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">177</column>
+            <column name="TITLE">Отдел капитального строительства</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+        <table name="divisions">
+            <column name="ID">178</column>
+            <column name="TITLE">Служба по работе с дебиторской задолженностью</column>
+            <column name="DEPARTMENT_ID">0</column>
+            <column name="PARENT_ID">4</column>
+            <column name="ORGANIZATION_ID">8</column>
+            <column name="PATH"></column>
+        </table>
+    </database>
+</pma_xml_export>

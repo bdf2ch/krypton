@@ -4,10 +4,10 @@
         public static $fields = array();
 
         public function __construct ($parameters) {
-            self::field("userId", new Field(array( "source" => "user_id", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("token", new Field(array( "source" => "session_token", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("start", new Field(array( "source" => "session_start", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("end", new Field(array( "source" => "session_end", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("userId", new Field(array( "source" => "USER_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("token", new Field(array( "source" => "SESSION_TOKEN", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("start", new Field(array( "source" => "SESSION_START", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("end", new Field(array( "source" => "SESSION_END", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
 
 
             if (is_null($parameters))

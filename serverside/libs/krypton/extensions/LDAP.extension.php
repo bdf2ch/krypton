@@ -1,57 +1,155 @@
 <?php
 
-    class LDAP extends ExtensionInterface {
+    class LDAP implements ExtensionInterface {
+           public static $id;
+                //public static $description;
+                //public static $url;
+                public static $installed;
+                public static $enabled = true;
+
+
         public static $title = "LDAP";
         public static $description = "LDAP description";
         public static $url = "";
 
 
         public function __construct () {
-            parent::__construct();
-        }
+                   //parent::__construct();
+                   $class = get_called_class();
+                   self::$id = $class;
+               }
+
+               public function load () {
+                           $class = get_called_class();
+
+                           if (!Krypton::$app -> isExtensionLoaded($class)) {
+                               switch (Krypton::getDBType()) {
+                                   case Krypton::DB_TYPE_MYSQL:
+
+                                       $result = DBManager::insert_row(
+                                           "kr_app_extensions",
+                                           ["extension_id", "extension_title", "extension_description", "extension_url", "enabled"],
+                                           ["'".$class::$id."'", "'".$class::$title."'", "'".$class::$description."'", "'".$class::$url."'", 1]
+                                       );
+                                       if (!$result) {
+                                           Errors::push(Errors::ERROR_TYPE_ENGINE, "Extension -> load: Не удалось подключить расширение '".$class."' к приложению");
+                                           return false;
+                                       }
+
+                                       break;
+                                   case Krypton::DB_TYPE_ORACLE:
+                                       $id = DBManager::sequence_next("seq_extensions");
+                                       if (!$id) {
+                                           Errors::push(Errors::ERROR_TYPE_ENGINE, "ExtensionInterface -> load: Не удалось получить следующее значение последовательности 'seq_extensions'");
+                                           return false;
+                                       }
+
+                                       $result = DBManager::insert_row(
+                                           "kr_app_extensions",
+                                           ["id", "extension_id", "extension_title", "extension_description", "extension_url", "enabled"],
+                                           [$id, "'".$class::$id."'", "'".$class::$title."'", "'".$class::$description."'", "'".$class::$url."'", 1]
+                                       );
+                                       if (!$result) {
+                                           Errors::push(Errors::ERROR_TYPE_ENGINE, "Extension -> load: Не удалось подключить расширение '".$class."' к приложению");
+                                           return false;
+                                       }
+
+                                       break;
+                               }
+
+
+
+                               $extension = Models::load("Extension", false);
+                               $extension -> id -> value = $class::$id;
+                               $extension -> title -> value = $class::$title;
+                               $extension -> description -> value = $class::$description;
+                               $extension -> url -> value = $class::$url;
+                               array_push(Krypton::$app -> extensions, $extension);
+                           } else
+                               Extensions::get($class) -> init();
+
+                           return true;
+                       }
+
+
+                       public function getUrl () {
+                           return self::$url != "" ? self::$url : false;
+                       }
+
+
+                       public function setEnabled ($flag) {
+                           if ($flag == null)
+                               Errors::push(Errors::ERROR_TYPE_DEFAULT, "ExtensionInterface -> setEnabled");
+                       }
+
+
 
 
         /**
         * Производит установку модуля
         **/
         public function install () {
-            $result = DBManager::is_table_exists("kr_users");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Таблица с пользователями не найдена");
+            //$result = DBManager::is_table_exists("kr_users");
+            //if (!$result)
+             //   return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Таблица с пользователями не найдена");
 
-            $result = DBManager::add_column("kr_users", "ldap_enabled", "int(11) NOT NULL default 1");
-            if (!$result)
-                return Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ldap_enabledd' в таблицу ползователей");
 
-            $result = DBManager::create_table(self::$id);
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалочь создать таблицу с информацией об LDAP");
-                return false;
-            }
+            //$result = DBManager::create_table(self::$id);
+            //if (!$result) {
+            //    Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалочь создать таблицу с информацией об LDAP");
+            //    return false;
+            //}
 
-            $result = DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить столбец 'user_id' в таблицу с информацией об LDAP");
-                return false;
-            }
-
-            $result = DBManager::add_column(self::$id, "enabled", "int(11) NOT NULL default 1");
-            if (!$result) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить столбец 'enabled' в таблицу с информацией об LDAP");
-                return false;
-            }
-
-            $result = Settings::add("'".self::$id."'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", Krypton::DATA_TYPE_STRING, "''", 1);
+            $result = Settings::add("'ldap'", "'ldap_server'", "'Адрес сервера LDAP'", "'Сетевой адрес сервера аутентификации LDAP'", Krypton::DATA_TYPE_STRING, "'10.50.0.1'", 1);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить настройку 'ldap_server'");
                 return false;
             }
 
-            $result = Settings::add("'".self::$id."'", "'ldap_enabled'", "'Авторизация LDAP включена'", "'Авторизация пользователей посредством Active Directory включена'", Krypton::DATA_TYPE_BOOLEAN, 1, 0);
+            $result = Settings::add("'ldap'", "'ldap_enabled'", "'Авторизация LDAP включена'", "'Авторизация пользователей посредством Active Directory включена'", Krypton::DATA_TYPE_BOOLEAN, 1, 0);
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить настройку 'ldap_enabled'");
                 return false;
             }
+
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::add_column("kr_users", "ldap_enabled", "int(11) NOT NULL default 1");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ldap_enabled' в таблицу ползователей");
+                        return false;
+                    }
+
+
+                    //$result = DBManager::add_column(self::$id, "user_id", "int(11) NOT NULL default 0");
+                    //if (!$result) {
+                    //    Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить столбец 'user_id' в таблицу с информацией об LDAP");
+                    //    return false;
+                    //}
+
+                    //$result = DBManager::add_column(self::$id, "enabled", "int(11) NOT NULL default 1");
+                    //if (!$result) {
+                    //    Errors::push(Errors::ERROR_TYPE_ENGINE, "LDAP -> install: Не удалось добавить столбец 'enabled' в таблицу с информацией об LDAP");
+                    //    return false;
+                    //}
+
+
+
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $result = DBManager::add_column("kr_users", "ldap_enabled", "INT DEFAULT 1 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ldap_enabled' в таблицу ползователей");
+                        return false;
+                    }
+
+                    break;
+             }
+
+
 
             return true;
         }
@@ -62,7 +160,8 @@
         * Проверяет, установлен ли модуль в системе
         **/
         public function isInstalled () {
-            return DBManager::is_table_exists(self::$id);
+            //return DBManager::is_table_exists(self::$id);
+            return true;
         }
 
 
@@ -71,7 +170,7 @@
         * Производит инициализацию модуля
         **/
         public function init () {
-            parent::_init_();
+            //parent::_init_();
             //var_dump(self::login("kolu0897", "zx12!@#$"));
             if (self::isInstalled() == true) {
 

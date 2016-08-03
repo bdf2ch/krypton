@@ -4,11 +4,11 @@
         public static $fields = array();
 
         public function __construct ($parameters) {
-            self::field("title", new Field(array( "source" => "name", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("type", new Field(array( "source" => "type", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
-            self::field("size", new Field(array( "source" => "size", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("isFolder", new Field(array( "source" => "is_folder", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
-            self::field("url", new Field(array( "source" => "url", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("title", new Field(array( "source" => "NAME", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("type", new Field(array( "source" => "TYPE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("size", new Field(array( "source" => "SIZE", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("isFolder", new Field(array( "source" => "IS_FOLDER", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("url", new Field(array( "source" => "URL", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
 
 
             if (is_null($parameters))

@@ -1,6 +1,6 @@
 <?php
 
-    class Extensions extends Service {
+    class Extensions implements Service {
         public static $items = array();
 
         public function __construct () {
@@ -84,6 +84,8 @@
                             Errors::push(Errors::ERROR_TYPE_ENGINE, "Extensions -> load: Не удалось получить следующее значение последовательности 'seq_extensions'");
                             return false;
                         }
+
+                        echo("</br>extensions sequense next = ".$id."</br>");
 
                         $result = DBManager::insert_row(
                             "kr_app_extensions",
