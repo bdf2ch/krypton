@@ -13,7 +13,7 @@
         const DATA_TYPE_BOOLEAN = 3;
         const DATA_TYPE_FLOAT = 4;
 
-        private static $dbType = self::DB_TYPE_MYSQL;
+        private static $dbType = self::DB_TYPE_ORACLE;
         private $template;
         public static $app;
 

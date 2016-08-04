@@ -183,7 +183,7 @@
                         title: organization.title.value
                     };
 
-                    $http.post("/serverside/libs/krypton.api.php", params)
+                    $http.post("/serverside/libs/krypton/api.php", params)
                         .success(function (data) {
                             if (data !== undefined) {
                                 $errors.checkResponse(data);
@@ -203,28 +203,75 @@
                     return false;
                 },
 
+                edit: function (callback) {
+                    if (currentOrganization === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> organizations -> edit: Не выбрана текущая организация");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "editOrganization",
+                        id: currentOrganization.id.value,
+                        title: currentOrganization.title.value
+                    };
+
+                    currentOrganization._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    currentOrganization._backup_.setup();
+                                    currentOrganization._states_.loading(false);
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback();
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
+                },
+
                 /**
                  * Удаляет организацию с заданным идентификатором
                  * @param id {number} - идентификатор организации
                  * @returns {boolean}
                  */
-                delete: function (organizationId) {
-                    if (organizationId === undefined) {
-                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> delete: Не задан параметр - идентификатор организации");
+                delete: function (callback) {
+                    if (currentOrganization === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> delete: Не выбрана текущая организация");
                         return false;
                     }
 
-                    var length = organizations.length;
-                    for (var i = 0; i < length; i++) {
-                        if (organizations[i].id.value === organizationId) {
-                            organizations.splice(i, 1);
-                            currentOrganization = undefined;
-                            return true;
-                        }
-                    }
+                    var params = {
+                        action: "deleteOrganization",
+                        id: currentOrganization.id.value
+                    };
 
-                    $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> delete: Организация с идентификатором " + organizationId + " не найдена");
-                    return false;
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            currentOrganization._states_.loading(false);
+                            $log.log(data);
+                            if (data !== undefined && data !== null) {
+                                $errors.checkResponse(data);
+                                if (data.result !== false) {
+                                    if (JSON.parse(data.result) === true) {
+                                        var length = organizations.length;
+                                        for (var i = 0; i < length; i++) {
+                                            if (organizations[i].id.value === currentOrganization.id.value) {
+                                                currentOrganization._states_.loading(false);
+                                                currentOrganization = undefined;
+                                                organizations.splice(i, 1);
+                                                if (callback !== undefined && typeof callback === "function")
+                                                    callback();
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
                 },
 
             },
@@ -301,14 +348,41 @@
                  * @param division {Division} - объект с информацией о новом отделе
                  * @returns {boolean}
                  */
-                add: function (division) {
+                add: function (division, callback) {
                     if (division == undefined) {
-                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> divisions -> add: Не залан параметр - объект с информацией о новом отделе");
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> divisions -> add: Не задан параметр - объект с информацией о новом отделе");
                         return false;
                     }
 
-                    divisions.push(division);
-                    return true;
+                    var params = {
+                        action: "addDivision",
+                        organizationId: division.organizationId.value,
+                        departmentId: division.departmentId.value,
+                        parentId: division.parentId.value,
+                        title: division.title.value,
+                        path: division.path.value
+                    };
+
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+                                    division._model_.fromAnother(data.result);
+                                    division._backup_.setup();
+                                    divisions.push(division);
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback(division);
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
+
+                    //divisions.push(division);
+                    //return true;
                 },
 
                 /**
@@ -677,26 +751,11 @@
          * Добавляет новую организацию
          */
         $scope.addOrganization = function () {
-            var params = {
-                action: "addOrganization",
-                title: $scope.newOrganization.title.value
-            };
             $scope.newOrganization._states_.loading(true);
-            $http.post("/serverside/libs/krypton/api.php", params)
-                .success(function (data) {
-                    $scope.newOrganization._states_.loading(false);
-                    if (data !== undefined) {
-                        $log.log(data);
-                        $errors.checkResponse(data);
-                        if (data.result !== false) {
-                            var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
-                            organization._model_.fromAnother(data.result);
-                            organization._backup_.setup();
-                            $kolenergo.organizations.add(organization);
-                            $modals.close("new-organization-modal");
-                        }
-                    }
-                });
+            $kolenergo.organizations.add($scope.newOrganization, function () {
+                $modals.close();
+                $scope.newOrganization._states_.loading(false);
+            });
         };
 
 
@@ -723,28 +782,9 @@
          * Сохраняет изменения измененнной организации
          */
         $scope.editOrganization = function () {
-            var params = {
-                action: "editOrganization",
-                id: $kolenergo.organizations.getCurrent().id.value,
-                title: $kolenergo.organizations.getCurrent().title.value
-            };
-            $kolenergo.organizations.getCurrent()._states_.loading(true);
-            $http.post("/serverside/libs/krypton/api.php", params)
-                .success(function (data) {
-                    $kolenergo.organizations.getCurrent()._states_.loading(false);
-                    if (data !== undefined && data !== null) {
-                        $log.log(data);
-                        $errors.checkResponse(data);
-
-                        if (data.result !== false) {
-                            var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
-                            organization._model_.fromAnother(data.result);
-                            $kolenergo.organizations.getCurrent()._model_.fromAnother(organization);
-                            $kolenergo.organizations.getCurrent()._backup_.setup();
-                            $modals.close("edit-organization-modal");
-                        }
-                    }
-                });
+            $kolenergo.organizations.edit(function () {
+                $modals.close();
+            });
         };
 
 
@@ -762,26 +802,9 @@
          * Удаляет организацию
          */
         $scope.deleteOrganization = function () {
-            var params = {
-                action: "deleteOrganization",
-                id: $kolenergo.organizations.getCurrent().id.value
-            };
-            $kolenergo.organizations.getCurrent()._states_.loading(true);
-            $http.post("/serverside/libs/krypton/api.php", params)
-                .success(function (data) {
-                    $kolenergo.organizations.getCurrent()._states_.loading(false);
-                    $log.log(data);
-                    if (data !== undefined && data !== null) {
-                        $errors.checkResponse(data);
-
-                        if (data.result !== false) {
-                            if (JSON.parse(data.result) === true) {
-                                $kolenergo.organizations.delete(params.id);
-                                $modals.close("delete-organization-modal");
-                            }
-                        }
-                    }
-                });
+            $kolenergo.organizations.delete(function () {
+                $modals.close();
+            });
         };
 
         
@@ -803,6 +826,8 @@
         
         
         $scope.addDivision = function () {
+
+            /*
             var params = {
                 action: "addDivision",
                 title: $scope.newDivision.title.value,
@@ -831,6 +856,14 @@
                        
                     }
                 });
+                */
+            $kolenergo.divisions.add($scope.newDivision, function (div) {
+                $scope.newDivision._backup_.restore();
+                if ($kolenergo.divisions.getCurrent() !== undefined)
+                    $scope.newDivision.parentId.value = $kolenergo.divisions.getCurrent().id.value;
+                $tree.addItem("test-tree", div);
+                $modals.close();
+            });
         };
         
         
