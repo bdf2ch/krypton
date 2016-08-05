@@ -322,8 +322,6 @@
                         return false;
                     }
 
-                    $log.log("divisions select");
-
                     var length = divisions.length;
                     for (var i = 0; i < length; i++) {
                         if  (divisions[i].id.value === divisionId) {
@@ -380,34 +378,103 @@
                         });
 
                     return false;
+                },
 
-                    //divisions.push(division);
-                    //return true;
+                edit: function (callback) {
+                    if (currentDivision === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> divisions -> edit: Не выбрано текущее структурное подразделение");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "editDivision",
+                        id: currentDivision.id.value,
+                        departmentId: currentDivision.departmentId.value,
+                        parentId: currentDivision.parentId.value,
+                        title: currentDivision.title.value
+                    };
+
+                    currentDivision._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    currentDivision._backup_.setup();
+                                    currentDivision._states_.loading(false);
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback(currentDivision);
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
                 },
 
                 /**
                  * Удаляет структурное подразделение с заданным идентификатором
-                 * @param id {number} - идентификатор структурного подразделения
+                 * @callback {function} - callback-функция
                  * @returns {boolean}
                  */
-                delete: function (divisionId) {
-                    if (divisionId === undefined) {
-                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> divisions -> delete: Не задан параметр - идентификатор структурного подразделения");
+                delete: function (callback) {
+                    if (currentDivision === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> divisions -> delete: Не выбрано текущее структурное подразделение");
                         return false;
                     }
 
-                    var length = divisions.length;
-                    for (var i = 0; i < length; i++) {
-                        if (divisions[i].id.value === divisionId) {
-                            divisions.splice(i, 1);
-                            currentDivision = undefined;
-                            return true;
-                        }
-                    }
+                    var params = {
+                        action: "deleteDivision",
+                        id: currentDivision.id.value
+                    };
 
-                    $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> divisions -> delete: Структурное подразделение с идентификатором " + divisionId + " не найдено");
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            currentDivision._states_.loading(false);
+                            $log.log(data);
+                            if (data !== undefined && data !== null) {
+                                $errors.checkResponse(data);
+                                if (data.result !== false) {
+                                    if (JSON.parse(data.result) === true) {
+                                        var length = divisions.length;
+                                        for (var i = 0; i < length; i++) {
+                                            if (divisions[i].id.value === currentDivision.id.value) {
+                                                currentDivision._states_.loading(false);
+                                                currentDivision = undefined;
+                                                divisions.splice(i, 1);
+                                                if (callback !== undefined && typeof callback === "function")
+                                                    callback();
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                }
+            },
+
+
+            getUsersByDivisionId: function (id) {
+                if (id === undefined) {
+                    $errors.push(ERROR_TYPE_DEFAULT, "$kolenergo -> getUsersByDivisionId: Не задан парметр - идентификатор структурного подразделения");
                     return false;
-                },
+                }
+
+                var params = {
+                    action: "getUsersByDivisionId",
+                    id: id
+                };
+
+                $http.post("/serverside/libs/krypton/api.php", params)
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            $errors.checkResponse(data);
+                            if (data.result !== undefined && data.result !== false) {
+                                return data.result;
+                            }
+                        }
+                    });
             },
 
 
@@ -826,37 +893,6 @@
         
         
         $scope.addDivision = function () {
-
-            /*
-            var params = {
-                action: "addDivision",
-                title: $scope.newDivision.title.value,
-                parentId: $scope.newDivision.parentId.value,
-                organizationId: $scope.newDivision.organizationId.value
-            };
-            $scope.newDivision._states_.loading(true);
-            $http.post("/serverside/libs/krypton/api.php", params)
-                .success(function (data) {
-                    $scope.newDivision._states_.loading(false);
-                    if (data !== undefined) {
-                        $log.log(data);
-                        $errors.checkResponse(data);
-                        
-                        if (data.result !== false) {
-                            var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
-                            division._model_.fromAnother(data.result);
-                            division._backup_.setup();
-                            $kolenergo.addDivision(division);
-                            $scope.hierarchy = $kolenergo.organizations.getCurrent() !== undefined ? $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value) : [];
-                            $log.log("new division = ", division);
-                            $hierarchy.update("test");
-                            $tree.addItem("test-tree", division);
-                            $modals.close("new-division-modal");    
-                        }
-                       
-                    }
-                });
-                */
             $kolenergo.divisions.add($scope.newDivision, function (div) {
                 $scope.newDivision._backup_.restore();
                 if ($kolenergo.divisions.getCurrent() !== undefined)
@@ -869,7 +905,6 @@
         
         
         $scope.selectDivision = function (division) {
-            $log.log("select division");
             if (division !== undefined) {
                 $kolenergo.divisions.select(division.id.value);
                 if (division._states_.selected() === true)
@@ -896,33 +931,9 @@
 
 
         $scope.editDivision = function () {
-            var params = {
-                action: "editDivision",
-                id: $kolenergo.divisions.getCurrent().id.value,
-                title: $kolenergo.divisions.getCurrent().title.value,
-                parentId: $kolenergo.divisions.getCurrent().parentId.value,
-                organizationId: $kolenergo.divisions.getCurrent().organizationId.value
-            };
-            $kolenergo.divisions.getCurrent()._states_.loading(true);
-            $http.post("/serverside/libs/krypton/api.php", params)
-                .success(function (data) {
-                    $kolenergo.divisions.getCurrent()._states_.loading(false);
-                    if (data !== undefined) {
-                        $log.log(data);
-                        
-                        $errors.checkResponse(data);
-                        
-                        if (data.result !== false) {
-                            var division = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
-                            division._model_.fromAnother(data.result);
-                            $kolenergo.divisions.getCurrent()._model_.fromAnother(division);
-                            $kolenergo.divisions.getCurrent()._backup_.setup();
-                            $log.log("updated division = ", $kolenergo.divisions.getCurrent());
-                            $modals.close("edit-division-modal");    
-                        }
-                      
-                    }
-                });
+            $kolenergo.divisions.edit(function () {
+                $modals.close();
+            });
         };
 
 
@@ -937,30 +948,11 @@
          * Удаляет структурное подразделение
          */
         $scope.deleteDivision = function () {
-            var params = {
-                action: "deleteDivision",
-                id: $kolenergo.divisions.getCurrent().id.value
-            };
-            $kolenergo.divisions.getCurrent()._states_.loading(true);
-            $http.post("/serverside/libs/krypton/api.php", params)
-                .success(function (data) {
-                    $kolenergo.divisions.getCurrent()._states_.loading(false);
-                    $log.log("data = ", data);
-                    if (data !== undefined && data !== null) {
-                        $errors.checkResponse(data);
-
-                        if (data.result !== false) {
-                            if (JSON.parse(data.result) === true) {
-
-                                //$scope.hierarchy = $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value);
-                                $modals.close("delete-division-modal");
-                                //$hierarchy.update("test");
-                                $tree.deleteItem("test-tree",params.id);
-                                $kolenergo.divisions.delete(params.id);
-                            }
-                        }
-                    }
-                });
+            var id = $kolenergo.divisions.getCurrent().id.value;
+            $kolenergo.divisions.delete(function () {
+                $modals.close("delete-division-modal");
+                $tree.deleteItem("test-tree", id);
+            });
         };
 
 
@@ -1037,11 +1029,12 @@
 
         $scope.selectDivision = function (div) {
             $log.log("selected = ", div.id.value);
-            $kolenergo.divisions.select(div.id.value);
-            if ($scope.div !== div.id.value)
-                $scope.div = div.id.value;
-            else
-                $scope.div = 0;
+            //$kolenergo.divisions.select(div.id.value);
+            //if ($scope.div !== div.id.value)
+            //    $scope.div = div.id.value;
+            //else
+            //    $scope.div = 0;
+            $kolenergo.getUsersByDivisionId(div.id.value);
         };
     };
 

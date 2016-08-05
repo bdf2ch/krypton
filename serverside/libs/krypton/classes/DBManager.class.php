@@ -951,6 +951,67 @@
             }
         }
 
+
+
+        public static function select_connect_by_prior ($table, $columns, $key, $parentKey, $start) {
+            if ($table == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Не задан параметр - наименование таблицы");
+                return false;
+            }
+
+            if (gettype($table) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - наименование таблицы");
+                return false;
+            }
+
+            if ($columns == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Не задан параметр - массив столбцов");
+                return false;
+            }
+
+            if (gettype($columns) != "array") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - массив столбцов");
+                return false;
+            }
+
+            if ($key == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Не задан параметр - поле связи");
+                return false;
+            }
+
+            if (gettype($key) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - поле связи");
+                return false;
+            }
+
+            if ($parentKey == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Не задан параметр - поле связи родителя");
+                return false;
+            }
+
+            if (gettype($parentKey) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - поле связи родителя");
+                return false;
+            }
+
+            if ($start != null && gettype($start) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - значение ключа связи корневого элемента");
+                return false;
+            }
+
+            if (Krypton::getDBType() !== Krypton::DB_TYPE_ORACLE) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select_connect_by_prior: Выборка иерархических данных доступна только для СУБД Oracle");
+                return false;
+            }
+
+            if (!self::is_connected()) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select_connect_by_prior: Отсутствует соединение с БД");
+                return false;
+            }
+
+            
+        }
+
     };
 
 ?>

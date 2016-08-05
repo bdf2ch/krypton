@@ -353,6 +353,7 @@
             API::add("deleteDivision", "Kolenergo", "deleteDivision");
             API::add("uploadUserPhoto", "Kolenergo", "uploadUserPhoto");
             API::add("login", "Kolenergo", "login");
+            API::add("getUsersByDivisionId", "Kolenergo", "getUsersByDivisionId");
 
 
 
@@ -630,15 +631,16 @@
             $id = $data -> id;
             $parentId = $data -> parentId;
             $title = $data -> title;
+            $departmentId = $data -> departmentId;
             $division = Models::construct("Division", false);
 
-            $result = DBManager::update("divisions", ["title", "parent_id"], ["'$title'", $parentId], "id = $id");
+            $result = DBManager::update("divisions", ["TITLE", "PARENT_ID", "DEPARTMENT_ID"], ["'$title'", $parentId, $departmentId], "ID = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editDivision: Не удалось обновить информацию об отделе");
                 return false;
             }
 
-            $result = DBManager::select("divisions", ["*"], "id = $id");
+            $result = DBManager::select("divisions", ["*"], "ID = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось выбрать измененный отдел");
                 return false;
@@ -697,18 +699,46 @@
 
 
 
-        public static function getChildrenByDivisionId ($data) {
+        public static function getUsersByDivisionId ($data) {
             if ($data == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> getChildrenByDivisionId: Не задан параметр - объект с информацией о выбранном отделе");
                 return false;
             }
 
             $id = $data -> id;
-            $divisions = DBManager::select("kr_divisions", ["*"], "START WITH id = $id CONNECT BY PRIOR id = parent_id");
+            $result = new stdClass();
+            $result -> divisions = array();
+            $result -> users = array();
+
+            $divisions = DBManager::select("kr_divisions", ["*"], "START WITH ID = $id CONNECT BY PRIOR ID = PARENT_ID");
             if (!$divisions) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getChildrenByDivisionId: Не удалось выбрать дочерние отделы относительно отдела с идентификатором ".$id);
                 return false;
             }
+
+            $ids = "";
+            for ($x = 0; $x < sizeof($divisions); $x++) {
+                $division = Models::construct("Division", false);
+                $division -> fromSource($divisions[$x]);
+                array_push($result -> divisions, $division);
+                $ids += $division -> id -> value;
+                $ids += $x < sizeof($divisions) - 1 ? ", " : "";
+            }
+            $ids = "(".$ids.")";
+
+            $users = DBManager::select("kr_users", ["*"], "DIVISION_ID IN ".$ids);
+            if (!$users) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getUsersByDivisionId: Не удалось выбрать пользователей по идентификаторам отделов");
+                return false;
+            }
+
+            for ($i = 0; $i < sizeof($users); $i++) {
+                $user = Models::construct("User1", false);
+                $user -> fromSource($users[$i]);
+                array_push($result -> users, $user);
+            }
+
+            return $result;
         }
 
 
