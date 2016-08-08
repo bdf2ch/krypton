@@ -22,8 +22,19 @@
         $classes.add("Organization", {
             __dependencies__: [],
             __icon__: "",
+            errors: [],
             id: new Field ({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            title: new Field ({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
+            title: new Field ({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+
+            validate: function () {
+                this.errors.splice(0, this.errors.length);
+
+                if (this.title.value === "")
+                    this.errors.push("Вы не указали наименование организации");
+                $log.log(this.errors);
+
+                return this.errors.length;
+            }
         });
 
         /**
@@ -48,7 +59,17 @@
             departmentId: new Field({ source: "department_id", type: DATA_TYPE_STRING, value: 0, default_value: 0, backupable: true }),
             parentId: new Field({ source: "parent_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
             title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
-            path: new Field({ source: "path", type: DATA_TYPE_STRING, default_value: "", value: "", backupable: true })
+            path: new Field({ source: "path", type: DATA_TYPE_STRING, default_value: "", value: "", backupable: true }),
+
+            validate: function () {
+                this.__errors__ = [];
+                if (this.organizationId.value === 0)
+                    this.__errors__.push("Вы не указали организацию");
+                if (this.title.value === "")
+                    this.__errors__.push("Вы не указали наименование стр. подразделения");
+
+                return this.__errors__.length;
+            }
         });
 
         var organizations = [];
@@ -120,7 +141,13 @@
                 $navigation.add(temp);
             },
             
-            
+
+            departments: {
+                getAll: function () {
+                    return departments;
+                }
+            },
+
             
             organizations: {
                 /**
@@ -719,6 +746,7 @@
         //$scope.hierarchy = $kolenergo.organizations.getCurrent() !== undefined ? $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value) : [];
         $scope.newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
         $scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+        $scope.submitted = false;
 
         if ($kolenergo.organizations.getCurrent() !== undefined && $scope.tree.length === 0) {
             $scope.tree = $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value);
@@ -810,6 +838,9 @@
             $log.log("org add close");
             $scope.newOrganization._backup_.restore();
             $log.log("new org title = ", $scope.newOrganization.title.value);
+            $scope.new_organization.$setValidity();
+            $scope.new_organization.$setPristine();
+            $scope.submitted = false;
         };
 
 
@@ -818,11 +849,14 @@
          * Добавляет новую организацию
          */
         $scope.addOrganization = function () {
-            $scope.newOrganization._states_.loading(true);
-            $kolenergo.organizations.add($scope.newOrganization, function () {
-                $modals.close();
-                $scope.newOrganization._states_.loading(false);
-            });
+            $scope.submitted = true;
+            if ($scope.new_organization.$valid) {
+                $scope.newOrganization._states_.loading(true);
+                $kolenergo.organizations.add($scope.newOrganization, function () {
+                    $modals.close();
+                    $scope.newOrganization._states_.loading(false);
+                });
+            }
         };
 
 
@@ -841,6 +875,9 @@
          */
         $scope.closeEditOrganizationModal = function () {
             $kolenergo.organizations.getCurrent()._backup_.restore();
+            //$scope.edit_organization.$setValidity();
+            //$scope.edit_organization.$setPristine();
+            //$scope.submitted = false;
         };
 
 
@@ -849,9 +886,12 @@
          * Сохраняет изменения измененнной организации
          */
         $scope.editOrganization = function () {
-            $kolenergo.organizations.edit(function () {
-                $modals.close();
-            });
+            //$scope.submitted = true;
+            if ($kolenergo.organizations.getCurrent().validate() === 0) {
+                $kolenergo.organizations.edit(function () {
+                    $modals.close();
+                });
+            }
         };
 
 
@@ -886,6 +926,9 @@
 
         $scope.closeAddNewDivisionModal = function () {
             $scope.newDivision._backup_.restore();
+            $scope.edit_organization.$setValidity();
+            $scope.edit_organization.$setPristine();
+            $scope.submitted = false;
             if ($kolenergo.divisions.getCurrent() !== undefined)
                 $scope.newDivision.parentId.value = $kolenergo.divisions.getCurrent().id.value;
         };
@@ -893,13 +936,17 @@
         
         
         $scope.addDivision = function () {
-            $kolenergo.divisions.add($scope.newDivision, function (div) {
-                $scope.newDivision._backup_.restore();
-                if ($kolenergo.divisions.getCurrent() !== undefined)
-                    $scope.newDivision.parentId.value = $kolenergo.divisions.getCurrent().id.value;
-                $tree.addItem("test-tree", div);
-                $modals.close();
-            });
+            $scope.submitted = true;
+            if ($scope.new_division.$valid) {
+                $kolenergo.divisions.add($scope.newDivision, function (div) {
+                    $scope.newDivision._backup_.restore();
+                    if ($kolenergo.divisions.getCurrent() !== undefined)
+                        $scope.newDivision.parentId.value = $kolenergo.divisions.getCurrent().id.value;
+                    $tree.addItem("test-tree", div);
+                    $modals.close();
+                });
+            }
+
         };
         
         
@@ -924,6 +971,9 @@
 
 
         $scope.closeEditDivisionModal = function () {
+            $scope.edit_division.$setValidity();
+            $scope.edit_division.$setPristine();
+            $scope.submitted = false;
             $kolenergo.divisions.getCurrent()._backup_.restore();
             $kolenergo.divisions.getCurrent()._states_.changed(false);
         };
@@ -931,9 +981,14 @@
 
 
         $scope.editDivision = function () {
-            $kolenergo.divisions.edit(function () {
-                $modals.close();
-            });
+            //$scope.submitted = true;
+            if ($scope.edit_division.$valid) {
+                $kolenergo.divisions.edit(function () {
+                    $modals.close();
+                });
+            } else
+                $scope.submitted = true;
+            //$scope.submitted = false;
         };
 
 

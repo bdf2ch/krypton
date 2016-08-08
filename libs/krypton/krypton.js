@@ -341,7 +341,7 @@ function isField (obj) {
             __dependencies__: [],
             _model_: {
                 __instance__: "",
-                errors: [],
+                _errors_: [],
                 db_table: "",
 
                 /**

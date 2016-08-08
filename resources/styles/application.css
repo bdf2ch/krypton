@@ -852,6 +852,13 @@
   background: white;
   box-sizing: content-box;
 }
+.krypton-ui-modal .modal-errors {
+  padding: 10px;
+  background: #FFCDD2;
+}
+.krypton-ui-modal .modal-errors .error {
+  color: #F44336;
+}
 /**
 *
 **/
@@ -1136,7 +1143,8 @@ button {
   padding: 10px;
   border: none;
   cursor: pointer;
-  line-height: 12px;
+  line-height: 14px;
+  font-size: 14px;
   box-sizing: border-box;
   outline: none;
 }

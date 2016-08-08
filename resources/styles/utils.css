@@ -282,7 +282,8 @@ button {
   padding: 10px;
   border: none;
   cursor: pointer;
-  line-height: 12px;
+  line-height: 14px;
+  font-size: 14px;
   box-sizing: border-box;
   outline: none;
 }

@@ -994,10 +994,10 @@
                 return false;
             }
 
-            if ($start != null && gettype($start) != "string") {
-                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - значение ключа связи корневого элемента");
-                return false;
-            }
+            //if ($start != null) {
+            //    Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - значение ключа связи корневого элемента");
+            //    return false;
+            //}
 
             if (Krypton::getDBType() !== Krypton::DB_TYPE_ORACLE) {
                 Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select_connect_by_prior: Выборка иерархических данных доступна только для СУБД Oracle");
@@ -1009,7 +1009,29 @@
                 return false;
             }
 
-            
+            $cols = "";
+            foreach ($columns as $index => $col) {
+                $cols .= $col;
+                $cols .= $index < sizeof($columns) - 1 ? ", " : "";
+            }
+
+            $query = "SELECT $cols FROM $table ";
+            $query .= $start != null && $start != "" ? "START WITH $key = $start " : "";
+            $query .= "CONNECT BY PRIOR $key = $parentKey";
+            //echo($query);
+            $statement = oci_parse(self::$link, $query);
+
+            $result = oci_execute($statement, OCI_DEFAULT);
+            if (!$result) {
+                $error = oci_error();
+                $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> select_connect_by_prior: ".$message);
+                return false;
+            } else {
+                $tree = array();
+                $rows = oci_fetch_all($statement, $tree, null, null, OCI_FETCHSTATEMENT_BY_ROW);
+                return $tree;
+            }
         }
 
     };

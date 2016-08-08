@@ -710,27 +710,30 @@
             $result -> divisions = array();
             $result -> users = array();
 
-            $divisions = DBManager::select("kr_divisions", ["*"], "START WITH ID = $id CONNECT BY PRIOR ID = PARENT_ID");
+            $divisions = DBManager::select_connect_by_prior("divisions", ["*"], "ID", "PARENT_ID", $id);
             if (!$divisions) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getChildrenByDivisionId: Не удалось выбрать дочерние отделы относительно отдела с идентификатором ".$id);
                 return false;
             }
+
+
 
             $ids = "";
             for ($x = 0; $x < sizeof($divisions); $x++) {
                 $division = Models::construct("Division", false);
                 $division -> fromSource($divisions[$x]);
                 array_push($result -> divisions, $division);
-                $ids += $division -> id -> value;
-                $ids += $x < sizeof($divisions) - 1 ? ", " : "";
+                $ids .= $division -> id -> value;
+                $ids .= $x < sizeof($divisions) - 1 ? "," : "";
             }
             $ids = "(".$ids.")";
+            //echo($ids);
 
             $users = DBManager::select("kr_users", ["*"], "DIVISION_ID IN ".$ids);
-            if (!$users) {
-                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getUsersByDivisionId: Не удалось выбрать пользователей по идентификаторам отделов");
-                return false;
-            }
+            //if (!$users) {
+            //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getUsersByDivisionId: Не удалось выбрать пользователей по идентификаторам отделов");
+            //    return false;
+            //}
 
             for ($i = 0; $i < sizeof($users); $i++) {
                 $user = Models::construct("User1", false);
