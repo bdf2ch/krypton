@@ -48,7 +48,7 @@
                                         }
                                         break;
                                     case Krypton::DB_TYPE_ORACLE:
-                                    $con1 = oci_connect('purchases', 'PURCHASES', '192.168.50.52/ORCLWORK', 'AL32UTF8');
+                                        //$con1 = oci_connect('purchases', 'PURCHASES', '192.168.50.52/ORCLWORK', 'AL32UTF8');
                                         $link = oci_connect($dbuser, $dbpassword, $dbhost, "AL32UTF8");
                                         if (!$link) {
                                             $error = oci_error();

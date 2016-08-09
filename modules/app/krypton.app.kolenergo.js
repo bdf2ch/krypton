@@ -7,6 +7,7 @@
         .controller("UserAccountController", UserAccountController)
         .controller("LoginController", LoginController)
         .controller("PhoneBookController", PhoneBookController)
+        .filter("byOrganizationId", byOrganizationIdFilter)
         .filter("byDepartmentId", byDepartmentIdFilter)
         .filter("byDivisionId", byDivisionIdFilter)
         .filter("phoneBook", phoneBookFilter)
@@ -22,19 +23,8 @@
         $classes.add("Organization", {
             __dependencies__: [],
             __icon__: "",
-            errors: [],
-            id: new Field ({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            title: new Field ({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
-
-            validate: function () {
-                this.errors.splice(0, this.errors.length);
-
-                if (this.title.value === "")
-                    this.errors.push("Вы не указали наименование организации");
-                $log.log(this.errors);
-
-                return this.errors.length;
-            }
+            id: new Field ({ source: "ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            title: new Field ({ source: "TITLE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
         });
 
         /**
@@ -44,8 +34,9 @@
         $classes.add("Department", {
             __dependencies__: [],
             __icon__: "",
-            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
+            id: new Field({ source: "ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            organizationId: new Field({ source: "ORGANIZATION_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
+            title: new Field({ source: "TITLE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
         });
 
         /**
@@ -54,22 +45,12 @@
          */
         $classes.add("Division", {
             __dependencies__: [],
-            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            organizationId: new Field({ source: "organization_id", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
-            departmentId: new Field({ source: "department_id", type: DATA_TYPE_STRING, value: 0, default_value: 0, backupable: true }),
-            parentId: new Field({ source: "parent_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
-            title: new Field({ source: "title", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
-            path: new Field({ source: "path", type: DATA_TYPE_STRING, default_value: "", value: "", backupable: true }),
-
-            validate: function () {
-                this.__errors__ = [];
-                if (this.organizationId.value === 0)
-                    this.__errors__.push("Вы не указали организацию");
-                if (this.title.value === "")
-                    this.__errors__.push("Вы не указали наименование стр. подразделения");
-
-                return this.__errors__.length;
-            }
+            id: new Field({ source: "ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            organizationId: new Field({ source: "ORGANIZATION_ID", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
+            departmentId: new Field({ source: "DEPARTMENT_ID", type: DATA_TYPE_STRING, value: 0, default_value: 0, backupable: true }),
+            parentId: new Field({ source: "PARENT_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
+            title: new Field({ source: "TITLE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            path: new Field({ source: "PATH", type: DATA_TYPE_STRING, default_value: "", value: "", backupable: true })
         });
 
         var organizations = [];
@@ -77,13 +58,21 @@
         var divisions = [];
 
         var currentOrganization = undefined;
+        var newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
+        var currentDepartment = undefined;
+        var newDepartment = $factory({ classes: ["Department", "Model", "Backup", "States"], base_class: "Department" });
         var currentDivision = undefined;
+        var newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
         var currentOrganizationDivisions = [];
         
         return {
 
 
             init: function () {
+                newOrganization._backup_.setup();
+                newDepartment._backup_.setup();
+                newDivision._backup_.setup();
+
                 $classes.getAll().User.organizationId = new Field({ source: "organization_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
                 $classes.getAll().User.departmentId = new Field({ source: "department_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
                 $classes.getAll().User.divisionId = new Field({ source: "division_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
@@ -143,8 +132,182 @@
             
 
             departments: {
+
+                /**
+                 * Возвращает массив всех производственных отделений
+                 * @returns {Array}
+                 */
                 getAll: function () {
                     return departments;
+                },
+
+                /**
+                 * Возвращает текущее производственное отделение
+                 * @returns {Department / undefined}
+                 */
+                getCurrent: function () {
+                    return currentDepartment;
+                },
+
+                /**
+                 * Возвращает новое производственное отделение
+                 * @returns {*}
+                 */
+                getNew: function () {
+                    return newDepartment;
+                },
+
+                /**
+                 * Выбирает производственное отделение по идентификатору
+                 * @param departmentId {number} - идентификатор производственного отделения
+                 * @returns {boolean}
+                 */
+                select: function (departmentId) {
+                    if (departmentId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> departments -> select: Не задан параметр - идентификатор производственного отделения");
+                        return false;
+                    }
+
+                    var length = departments.length;
+                    for (var i = 0; i < length; i++) {
+                        if  (departments[i].id.value === departmentId) {
+                            if (departments[i]._states_.selected() === false) {
+                                departments[i]._states_.selected(true);
+                                currentDepartment = departments[i];
+                                newDivision.departmentId.value = departmentId;
+                            } else {
+                                departments[i]._states_.selected(false);
+                                currentDepartment = undefined;
+                                newDivision.departmentId.value = 0;
+                            }
+                        } else
+                            departments[i]._states_.selected(false);
+                    }
+
+                    $log.log("current dep = ", currentDepartment);
+
+                    return true;
+                },
+
+                /**
+                 * Добавляет новое производственное отделение
+                 * @param department {Department} - объект с информацией о новом производственном отделении
+                 * @param callback {function} - callback-функция
+                 * @returns {boolean}
+                 */
+                add: function (callback) {
+                    /*
+                    if (department === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> departments -> add: Не задан параметр - объект с информацией о новом производственном отделении");
+                        return false;
+                    }
+                    */
+
+                    var params = {
+                        action: "addDepartment",
+                        organizationId: newDepartment.organizationId.value,
+                        title: newDepartment.title.value
+                    };
+
+                    newDepartment._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            newDepartment._states_.loading(false);
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var department = $factory({ classes: ["Department", "Model", "Backup", "States"], base_class: "Department" });
+                                    department._model_.fromAnother(data.result);
+                                    department._backup_.setup();
+                                    departments.push(department);
+                                    newDepartment.title.value = "";
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback(department);
+
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;    
+                },
+
+                /**
+                 * Сохраняет изменения отредактированного производственного отделения
+                 * @param callback {function} - callback-функция
+                 * @returns {boolean}
+                 */
+                edit: function (callback) {
+                    if (currentDepartment === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> departments -> edit: Не выбрано текущее производственное отделение");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "editDepartment",
+                        id: currentDepartment.id.value,
+                        organizationId: currentDepartment.organizationId.value,
+                        title: currentDepartment.title.value
+                    };
+
+                    currentDepartment._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    currentDepartment._backup_.setup();
+                                    currentDepartment._states_.loading(false);
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback();
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
+                },
+
+                /**
+                 * Удаляет производственное отделение с заданным идентификатором
+                 * @param id {number} - идентификатор производственного отделения
+                 * @returns {boolean}
+                 */
+                delete: function (callback) {
+                    if (currentDepartment === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> departments -> delete: Не выбрано текущее производственное отделение");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "deleteDepartment",
+                        id: currentDepartment.id.value
+                    };
+
+                    currentDepartment._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            currentDepartment._states_.loading(false);
+                            $log.log(data);
+                            if (data !== undefined && data !== null) {
+                                $errors.checkResponse(data);
+                                if (data.result !== false) {
+                                    if (JSON.parse(data.result) === true) {
+                                        var length = departments.length;
+                                        for (var i = 0; i < length; i++) {
+                                            if (departments[i].id.value === currentDepartment.id.value) {
+                                                currentDepartment._states_.loading(false);
+                                                currentDepartment = undefined;
+                                                departments.splice(i, 1);
+                                                if (callback !== undefined && typeof callback === "function")
+                                                    callback();
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
                 }
             },
 
@@ -166,12 +329,17 @@
                     return currentOrganization;
                 },
 
+                getNew: function () {
+                    return newOrganization;
+                },
+
                 /**
                  * Выбирает организацию по идентификатору
                  * @param organizationId {number} - идентификатор организации
+                 * @callback {function} - callback-функция
                  * @returns {boolean}
                  */
-                select: function (organizationId) {
+                select: function (organizationId, callback) {
                     if (organizationId === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> organizations -> select: Не задан параметр - идентификатор организации");
                         return false;
@@ -183,35 +351,47 @@
                             if (organizations[i]._states_.selected() === false) {
                                 organizations[i]._states_.selected(true);
                                 currentOrganization = organizations[i];
+                                newDepartment.organizationId.value = currentOrganization.id.value;
+                                newDivision.organizationId.value = currentOrganization.id.value;
                             } else {
                                 organizations[i]._states_.selected(false);
                                 currentOrganization = undefined;
+                                newDepartment.organizationId.value = 0;
+                                newDivision.organizationId.value = 0;
                             }
                         } else
                             organizations[i]._states_.selected(false);
                     }
+
+                    $log.log("current org = ", currentOrganization);
+                    if (callback !== undefined && typeof callback === "function")
+                        callback(currentOrganization);
 
                     return true;
                 },
 
                 /**
                  * Добавляет новую организацию
-                 * @param organization {Organization} - объект с информацией о новой организации
+                 * @callback {function} - callback-функция
                  * @returns {Organization / boolean}
                  */
-                add: function (organization, callback) {
+                add: function (callback) {
+                    /*
                     if (organization === undefined) {
                         $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> organizations -> add: Не задан параметр - объект с информацией о новой организации");
                         return false;
                     }
+                    */
 
                     var params = {
                         action: "addOrganization",
-                        title: organization.title.value
+                        title: newOrganization.title.value
                     };
 
+                    newOrganization._states_.loading(true);
                     $http.post("/serverside/libs/krypton/api.php", params)
                         .success(function (data) {
+                            newOrganization._states_.loading(false);
                             if (data !== undefined) {
                                 $errors.checkResponse(data);
                                 if (data.result !== undefined && data.result !== false) {
@@ -219,6 +399,7 @@
                                     organization._model_.fromAnother(data.result);
                                     organization._backup_.setup();
                                     organizations.push(organization);
+                                    newOrganization._backup_.restore();
                                     if (callback !== undefined && typeof  callback === "function")
                                         callback(organization);
 
@@ -276,6 +457,7 @@
                         id: currentOrganization.id.value
                     };
 
+                    currentOrganization._states_.loading(true);
                     $http.post("/serverside/libs/krypton/api.php", params)
                         .success(function (data) {
                             currentOrganization._states_.loading(false);
@@ -339,6 +521,14 @@
                 },
 
                 /**
+                 * Возвращает новое структурное подразделение
+                 * @returns {Division}
+                 */
+                getNew: function () {
+                    return newDivision;
+                },
+
+                /**
                  * Выбирает отдел по идентификатору
                  * @param divisionId {number} - идентификатор отдела
                  * @returns {boolean}
@@ -356,10 +546,12 @@
                             if (divisions[i]._states_.selected() === false) {
                                 divisions[i]._states_.selected(true);
                                 currentDivision = divisions[i];
+                                newDivision.parentId.value = divisionId;
                                 $log.log("cur div = ", currentDivision);
                             } else {
                                 divisions[i]._states_.selected(false);
                                 currentDivision = undefined;
+                                newDivision.parentId.value = 0;
                             }
                         } else
                             divisions[i]._states_.selected(false);
@@ -370,26 +562,29 @@
 
                 /**
                  * Добавляет новый отдел
-                 * @param division {Division} - объект с информацией о новом отделе
                  * @returns {boolean}
                  */
-                add: function (division, callback) {
+                add: function (callback) {
+                    /*
                     if (division == undefined) {
                         $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> divisions -> add: Не задан параметр - объект с информацией о новом отделе");
                         return false;
                     }
+                    */
 
                     var params = {
                         action: "addDivision",
-                        organizationId: division.organizationId.value,
-                        departmentId: division.departmentId.value,
-                        parentId: division.parentId.value,
-                        title: division.title.value,
-                        path: division.path.value
+                        organizationId: newDivision.organizationId.value,
+                        departmentId: newDivision.departmentId.value,
+                        parentId: newDivision.parentId.value,
+                        title: newDivision.title.value,
+                        path: newDivision.path.value
                     };
 
+                    newDivision._states_.loading(true);
                     $http.post("/serverside/libs/krypton/api.php", params)
                         .success(function (data) {
+                            newDivision._states_.loading(false);
                             if (data !== undefined) {
                                 $errors.checkResponse(data);
                                 if (data.result !== undefined && data.result !== false) {
@@ -397,6 +592,7 @@
                                     division._model_.fromAnother(data.result);
                                     division._backup_.setup();
                                     divisions.push(division);
+                                    newDivision.title.value = "";
                                     if (callback !== undefined && typeof  callback === "function")
                                         callback(division);
                                     return true;
@@ -744,8 +940,9 @@
         $scope.modals = $modals;
         $scope.tree = [];
         //$scope.hierarchy = $kolenergo.organizations.getCurrent() !== undefined ? $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value) : [];
-        $scope.newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
-        $scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
+        //$scope.newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
+        //$scope.newDepartment = $factory({ classes: ["Department", "Model", "Backup", "States"], base_class: "Department" });
+        //$scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
         $scope.submitted = false;
 
         if ($kolenergo.organizations.getCurrent() !== undefined && $scope.tree.length === 0) {
@@ -760,61 +957,66 @@
         $log.log("tree = ", $scope.tree);
 
         
-        $scope.newDivision._backup_.setup();
-
-
-        $scope.onSelectDepartment = function (departmentId) {
-            $log.log("onSelect fired");
-            if (departmentId !== undefined) {
-                var length = $kolenergo.getDepartments().length;
-                for (var i = 0; i < length; i++) {
-                    var department = $kolenergo.getDepartments()[i];
-                    if (department.id.value === departmentId) {
-                        department._states_.selected(true);
-                        $scope.currentDepartment = department;
-                    } else
-                        department._states_.selected(false);
-                }
-                $scope.divisions = $filter("byDepartmentId")($scope.divisions, department.id.value);
-                $log.log("filter = ", $scope.divisions);
-            }
-        };
+        //$scope.newDivision._backup_.setup();
 
 
         
-        $scope.selectDivision = function (division) {
-            if (division !== undefined) {
+        //$scope.selectDivision = function (division) {
+        //    if (division !== undefined) {
                 //$log.log("onSelectHierarchyItem", division);
-                $scope.currentDivision = division;
-                $log.log("current division = ", $scope.currentDivision);
-                $scope.newDivision.parentId.value = $scope.currentDivision.id.value;
-            } else {
-                $scope.currentDivision = undefined;
-                $scope.newDivision.parentId.value = 0;
-            }
-        };
+        //        $scope.currentDivision = division;
+        //        $log.log("current division = ", $scope.currentDivision);
+                //$scope.newDivision.parentId.value = $scope.currentDivision.id.value;
+        //    } else {
+        //        $scope.currentDivision = undefined;
+                //$scope.newDivision.parentId.value = 0;
+        //    }
+        //};
 
 
         
         $scope.selectOrganization = function (organizationId) {
+            $log.log("org select callback");
+            $kolenergo.organizations.select(organizationId, function (org) {
+                if (org !== undefined) {
+                    //$scope.newDepartment.organizationId.value = organizationId;
+                    $scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
+                    for (var x = 0; x < $scope.tree.length; x++) {
+                        $tree.addItem("test-tree", $scope.tree[x]);
+                    }
+                }// else {
+                //    $scope.newDepartment.organizationId.value = 0;
+                //}
+            });
+            //$scope.newDepartment.organizationId.value = organizationId;
+            //$scope.$apply(function () {
+            //    $scope.newDepartment.organizationId.value = organizationId;
+            //});
+
+            /*
             if ($kolenergo.organizations.getCurrent() === undefined) {
                 $kolenergo.organizations.select(organizationId);
+                //$scope.newDepartment.organizationId.value = organizationId;
                 $scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
                 for (var x = 0; x < $scope.tree.length; x++) {
                     $tree.addItem("test-tree", $scope.tree[x]);
                 }
             } else {
                 $kolenergo.organizations.select(organizationId);
+                //$scope.newDepartment.organizationId.value = 0;
+                //$scope.newDepartment._backup_.restore();
+                $log.log("new dep org id = ", $scope.newDepartment);
                 $tree.clear("test-tree");
                 $scope.tree = [];
             }
+            */
 
             //$scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
             //$scope.tree = $filter("orderBy")($scope.tree, "id.value");
 
 
 
-            $log.log("tree = ", $scope.tree);
+            //$log.log("tree = ", $scope.tree);
             //$log.log("hierarchy = ", $scope.hierarchy);
         };
         
@@ -825,8 +1027,8 @@
          */
         $scope.openAddOrganizationModal = function () {
             $modals.open("new-organization-modal");
-            $scope.newOrganization._backup_.restore();
-            $scope.newOrganization._backup_.setup();
+            //$scope.newOrganization._backup_.restore();
+            //$scope.newOrganization._backup_.setup();
         };
 
 
@@ -836,8 +1038,8 @@
          */
         $scope.closeAddOrganizationModal = function () {
             $log.log("org add close");
-            $scope.newOrganization._backup_.restore();
-            $log.log("new org title = ", $scope.newOrganization.title.value);
+            //$scope.newOrganization._backup_.restore();
+            //$log.log("new org title = ", $scope.newOrganization.title.value);
             $scope.new_organization.$setValidity();
             $scope.new_organization.$setPristine();
             $scope.submitted = false;
@@ -851,10 +1053,10 @@
         $scope.addOrganization = function () {
             $scope.submitted = true;
             if ($scope.new_organization.$valid) {
-                $scope.newOrganization._states_.loading(true);
-                $kolenergo.organizations.add($scope.newOrganization, function () {
+                //$scope.newOrganization._states_.loading(true);
+                $kolenergo.organizations.add(function () {
                     $modals.close();
-                    $scope.newOrganization._states_.loading(false);
+                    //$scope.newOrganization._states_.loading(false);
                 });
             }
         };
@@ -875,9 +1077,9 @@
          */
         $scope.closeEditOrganizationModal = function () {
             $kolenergo.organizations.getCurrent()._backup_.restore();
-            //$scope.edit_organization.$setValidity();
-            //$scope.edit_organization.$setPristine();
-            //$scope.submitted = false;
+            $scope.edit_organization.$setValidity();
+            $scope.edit_organization.$setPristine();
+            $scope.submitted = false;
         };
 
 
@@ -886,8 +1088,8 @@
          * Сохраняет изменения измененнной организации
          */
         $scope.editOrganization = function () {
-            //$scope.submitted = true;
-            if ($kolenergo.organizations.getCurrent().validate() === 0) {
+            $scope.submitted = true;
+            if ($scope.edit_organization.$valid) {
                 $kolenergo.organizations.edit(function () {
                     $modals.close();
                 });
@@ -914,23 +1116,130 @@
             });
         };
 
+
+        $scope.selectDepartment = function (departmentId) {
+            //if ($kolenergo.departments.getCurrent() === undefined) {
+            //    $kolenergo.departments.select(departmentId);
+                //$scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
+                //for (var x = 0; x < $scope.tree.length; x++) {
+                //    $tree.addItem("test-tree", $scope.tree[x]);
+                //}
+            //} else {
+                $kolenergo.departments.select(departmentId);
+            //$scope.newDivision.departmentId.value = departmentId;
+                //$tree.clear("test-tree");
+                //$scope.tree = [];
+            //}
+        };
+
+
+        /**
+         * Открывает модальное окно добавления нового производственного отделения
+         */
+        $scope.openAddDepartmentModal = function () {
+            $modals.open("new-department-modal");
+            //$scope.newDepartment._backup_.restore();
+            //$scope.newDepartment._backup_.setup();
+        };
+
+
+
+        /**
+         * Закрывает модальное окно добавления нового производственного отделения
+         */
+        $scope.closeAddDepartmentModal = function () {
+            //$scope.newDepartment._backup_.restore();
+            $scope.new_department.$setValidity();
+            $scope.new_department.$setPristine();
+            $scope.submitted = false;
+        };
+
+
+
+        /**
+         * Добавляет новое производственное отделение
+         */
+        $scope.addDepartment = function () {
+            $scope.submitted = true;
+            if ($scope.new_department.$valid) {
+                //$scope.newDepartment._states_.loading(true);
+                $kolenergo.departments.add(function () {
+                    $modals.close();
+                    //$scope.newDepartment._states_.loading(false);
+                });
+            }
+        };
+
+
+        /**
+         * Открывает модальное окно редактирования производственного отделения
+         */
+        $scope.openEditDepartmentModal = function () {
+            $modals.open("edit-department-modal");
+        };
+
+
+
+        /**
+         * Закрывает модальное окно редактирования производственного отделения
+         */
+        $scope.closeEditDepartmentModal = function () {
+            $kolenergo.departments.getCurrent()._backup_.restore();
+            $scope.edit_department.$setValidity();
+            $scope.edit_department.$setPristine();
+            $scope.submitted = false;
+        };
+
+
+
+        /**
+         * Сохраняет изменения измененнного производственного отделения
+         */
+        $scope.editDepartment = function () {
+            $scope.submitted = true;
+            if ($scope.edit_department.$valid) {
+                $kolenergo.departments.edit(function () {
+                    $modals.close();
+                });
+            }
+        };
+
+
+        /**
+         * Открывает модальное окно удаления производственного отделения
+         */
+        $scope.openDeleteDepartmentModal = function () {
+            $modals.open("delete-department-modal");
+        };
+
+
+
+        /**
+         * Удаляет производственное отделение
+         */
+        $scope.deleteDepartment = function () {
+            $kolenergo.departments.delete(function () {
+                $modals.close();
+            });
+        };
+
         
 
         $scope.openAddNewDivisionModal = function () {
             $modals.open("new-division-modal");
-            if ($kolenergo.organizations.getCurrent() !== undefined)
-                $scope.newDivision.organizationId.value = $kolenergo.organizations.getCurrent().id.value;
+            //if ($kolenergo.organizations.getCurrent() !== undefined)
+            //    $scope.newDivision.organizationId.value = $kolenergo.organizations.getCurrent().id.value;
         };
 
 
 
         $scope.closeAddNewDivisionModal = function () {
-            $scope.newDivision._backup_.restore();
+            //$scope.newDivision._backup_.restore();
             $scope.edit_organization.$setValidity();
             $scope.edit_organization.$setPristine();
             $scope.submitted = false;
-            if ($kolenergo.divisions.getCurrent() !== undefined)
-                $scope.newDivision.parentId.value = $kolenergo.divisions.getCurrent().id.value;
+            //if ($kolenergo.divisions.getCurrent() !== undefined)
+            //    $scope.newDivision.parentId.value = $kolenergo.divisions.getCurrent().id.value;
         };
         
         
@@ -938,10 +1247,10 @@
         $scope.addDivision = function () {
             $scope.submitted = true;
             if ($scope.new_division.$valid) {
-                $kolenergo.divisions.add($scope.newDivision, function (div) {
-                    $scope.newDivision._backup_.restore();
-                    if ($kolenergo.divisions.getCurrent() !== undefined)
-                        $scope.newDivision.parentId.value = $kolenergo.divisions.getCurrent().id.value;
+                $kolenergo.divisions.add(function (div) {
+                    //$scope.newDivision._backup_.restore();
+                    //if ($kolenergo.divisions.getCurrent() !== undefined)
+                    //    $scope.newDivision.parentId.value = $kolenergo.divisions.getCurrent().id.value;
                     $tree.addItem("test-tree", div);
                     $modals.close();
                 });
@@ -954,11 +1263,11 @@
         $scope.selectDivision = function (division) {
             if (division !== undefined) {
                 $kolenergo.divisions.select(division.id.value);
-                if (division._states_.selected() === true)
-                    $scope.newDivision.parentId.value = division.id.value;
-                else
-                    $scope.newDivision.parentId.value = 0;
-                $log.log("new div parentId = ", $scope.newDivision.parentId.value);
+                //if (division._states_.selected() === true)
+                    //$scope.newDivision.parentId.value = division.id.value;
+                //else
+                //    $scope.newDivision.parentId.value = 0;
+                //$log.log("new div parentId = ", $scope.newDivision.parentId.value);
             }
         };
 
@@ -1096,8 +1405,22 @@
 
 
 
+    function byOrganizationIdFilter () {
+        return function (input, id) {
+            if (id !== undefined || id !== 0) {
+                var result = [];
+                var length = input.length;
+                for (var i = 0; i < length; i++) {
+                    if (input[i].organizationId.value === id)
+                        result.push(input[i]);
+                }
+                return result;
+            }
+        }
+    };
 
-
+    
+    
     function byDepartmentIdFilter () {
         return function (input, id) {
             if (id !== undefined || id !== 0) {

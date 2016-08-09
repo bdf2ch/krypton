@@ -1647,7 +1647,7 @@
     
     
     
-    function modalsFactory ($log, $errors, $compile, $window) {
+    function modalsFactory ($log, $errors, $compile, $window, $rootScope) {
         var items = [];
         var currentModal = undefined;
 
@@ -1732,7 +1732,7 @@
                         content.innerHTML = items[i].content;
                         $compile(modal)(items[i].scope);
                         angular.element(modal).css("display", "block");
-
+                        
                         var fog = document.getElementsByClassName("krypton-ui-fog");
                         document.body.style.overflow = "hidden";
                         fog[0].classList.add("visible");

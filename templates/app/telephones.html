@@ -17,7 +17,7 @@
         <div id="telephones-organizations" class="width-25">
             <span class="caption">Организации</span>
 
-            <div class="row" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-init="divisions = kolenergo.divisions.getByOrganizationId(org.id.value)">
+            <div class="row" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-init="divisions = kolenergo.divisions.getAll()">
                 <hierarchy class="stacked" id="{{ 'org' + $index }}" source="divisions" key="id" parent-key="parentId" display-field="title" on-select="selectDivision"></hierarchy>
                 <!-- <tree id="test" key="id" parent-key="parentId" initial-key-value="0" initial-key-type="DATA_TYPE_INTEGER" display="title"></tree> -->
             </div>
