@@ -1,13 +1,13 @@
 <?php
 
-    //$db_host = "127.0.0.1";
-    //$db_name = "krypton";
-    //$db_user = "root";
-    //$db_password = "l1mpb1zk1t";
+    $db_host = "127.0.0.1";
+    $db_name = "krypton";
+    $db_user = "root";
+    $db_password = "l1mpb1zk1t";
 
-    $db_host = "10.50.0.70/PDBKOLENERGO";
-    $db_user = "kolenergo";
-    $db_password = "kolenergo";
+    //$db_host = "10.50.0.70/PDBKOLENERGO";
+    //$db_user = "kolenergo";
+    //$db_password = "kolenergo";
 
     $ldap_host = "10.50.0.1";
 

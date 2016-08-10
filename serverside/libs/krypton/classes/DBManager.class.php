@@ -1034,6 +1034,54 @@
             }
         }
 
+
+
+        public static function count ($table) {
+            if ($table == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> count: Не задан параметр - наименование таблицы");
+                return false;
+            }
+
+            if (gettype($table) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> count: Неверно задан тип параметра - наименование таблицы");
+                return false;
+            }
+
+            if (!self::is_connected()) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> count: Отсутствует соединение с БД");
+                return false;
+            }
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+                    $result = mysql_query("SELECT COUNT(*) AS TOTAL FROM $table");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> count: ".mysql_errno()." - ".mysql_error());
+                        return false;
+                    }
+
+                    $result = mysql_fetch_assoc($query);
+                    return intval($result["TOTAL"]);
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+                    $query = "SELECT COUNT(*) AS TOTAL FROM $table";
+                    $statement = oci_parse(self::$link, $query);
+
+                    $result = oci_execute($statement, OCI_DEFAULT);
+                    if (!$result) {
+                        $error = oci_error();
+                        $message = $error != false ? $error["code"]." - ".$error["message"]: "";
+                        Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> count: ".$message);
+                        return false;
+                    } else {
+                        $res = oci_fetch_assoc($statement);
+                        $total = $res["TOTAL"];
+                        return intval($total);
+                    }
+                    break;
+            }
+        }
+
     };
 
 ?>

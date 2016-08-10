@@ -854,10 +854,10 @@
 }
 .krypton-ui-modal .modal-errors {
   padding: 10px;
-  background: #FFCDD2;
+  background: #ffcdd2;
 }
 .krypton-ui-modal .modal-errors .error {
-  color: #F44336;
+  color: #f44336;
 }
 /**
 *
@@ -1050,27 +1050,27 @@ label.button {
 }
 label.button.blue {
   color: white;
-  background: #2196F3;
+  background: #2196f3;
 }
 label.button.blue:hover {
-  background: #1976D2;
+  background: #1976d2;
 }
 label.button.green {
   color: white;
-  background: #4CAF50;
+  background: #4caf50;
 }
 label.button.green:hover {
-  background: #388E3C;
+  background: #388e3c;
 }
 label.button.green[disabled] {
-  background: #C8E6C9;
+  background: #c8e6c9;
 }
 label.button.red {
   color: white;
-  background: #F44336;
+  background: #f44336;
 }
 label.button.red:hover {
-  background: #D32F2F;
+  background: #d32f2f;
 }
 label.button.transparent {
   background: transparent;
@@ -1190,44 +1190,44 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196F3;
+  background: #2196f3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976D2;
+  background: #1976d2;
 }
 input[type='button'].blue[disabled],
 input[type='submit'].blue[disabled],
 button.blue[disabled] {
-  background: #BBDEFB;
+  background: #bbdefb;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4CAF50;
+  background: #4caf50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388E3C;
+  background: #388e3c;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #C8E6C9;
+  background: #c8e6c9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #F44336;
+  background: #f44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #D32F2F;
+  background: #d32f2f;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -1277,22 +1277,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4CAF50;
+  color: #4caf50;
 }
 a.green:hover {
-  color: #388E3C;
+  color: #388e3c;
 }
 a.red {
-  color: #F44336;
+  color: #f44336;
 }
 a.red:hover {
-  color: #D32F2F;
+  color: #d32f2f;
 }
 a.blue {
-  color: #2196F3;
+  color: #2196f3;
 }
 a.blue:hover {
-  color: #1976D2;
+  color: #1976d2;
 }
 /**********
 ** COLORS

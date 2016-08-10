@@ -13,7 +13,7 @@
         const DATA_TYPE_BOOLEAN = 3;
         const DATA_TYPE_FLOAT = 4;
 
-        private static $dbType = self::DB_TYPE_ORACLE;
+        private static $dbType = self::DB_TYPE_MYSQL;
         private $template;
         public static $app;
 
@@ -159,61 +159,61 @@
             switch (self::getDBType()) {
                 case self::DB_TYPE_MYSQL:
 
-                    $result = DBManager::add_column("kr_app_info", "title", "varchar(200) NOT NULL default ''");
+                    $result = DBManager::add_column("kr_app_info", "TITLE", "varchar(200) NOT NULL default ''");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'title' в таблицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_info", "description", "varchar(200) default ''");
+                    $result = DBManager::add_column("kr_app_info", "DESCRIPTION", "varchar(200) default ''");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'description' в таблиицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_info", "is_in_debug_mode", "int(11) NOT NULL default 0");
+                    $result = DBManager::add_column("kr_app_info", "IS_IN_DEBUG_MODE", "int(11) NOT NULL default 0");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'is_in_debug_mode' в таблиицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_info", "is_in_construction_mode", "int(11) NOT NULL default 0");
+                    $result = DBManager::add_column("kr_app_info", "IS_IN_CONSTRUCTION_MODE", "int(11) NOT NULL default 0");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'is_in_construction_mode' в таблицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::insert_row("kr_app_info", ["title", "description", "is_in_debug_mode", "is_in_construction_mode"], [ "''", "''", 0, 0]);
+                    $result = DBManager::insert_row("kr_app_info", ["TITLE", "DESCRIPTION", "IS_IN_DEBUG_MODE", "IS_IN_CONSTRUCTION_MODE"], [ "''", "''", 0, 0]);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить данные в таблицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_id", "varchar(200) NOT NULL default ''");
+                    $result = DBManager::add_column("kr_app_extensions", "EXTENSION_ID", "varchar(200) NOT NULL default ''");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_id' в таблицу 'kr_app_extensions'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_title", "varchar(200) NOT NULL default ''");
+                    $result = DBManager::add_column("kr_app_extensions", "EXTENSION_TITLE", "varchar(200) NOT NULL default ''");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_title' в таблицу 'kr_app_extensions'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_description", "varchar(200) NOT NULL default ''");
+                    $result = DBManager::add_column("kr_app_extensions", "EXTENSION_DESCRIPTION", "varchar(200) NOT NULL default ''");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_description' в таблицу 'kr_app_extensions'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_url", "varchar(200) NOT NULL default ''");
+                    $result = DBManager::add_column("kr_app_extensions", "EXTENSION_URL", "varchar(200) NOT NULL default ''");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_url' в таблицу 'kr_app_extensions'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "enabled", "int(11) NOT NULL default '1'");
+                    $result = DBManager::add_column("kr_app_extensions", "ENABLED", "int(11) NOT NULL default '1'");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'enabled' в таблицу 'kr_app_extensions'");
                         return false;
@@ -229,61 +229,61 @@
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_info", "title", "VARCHAR2(200) NOT NULL");
+                    $result = DBManager::add_column("kr_app_info", "TITLE", "VARCHAR2(200) NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'title' в таблицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_info", "description", "varchar(200) default ''");
+                    $result = DBManager::add_column("kr_app_info", "DESCRIPTION", "varchar(200) default ''");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'description' в таблиицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_info", "is_in_debug_mode", "INT DEFAULT 0 NOT NULL");
+                    $result = DBManager::add_column("kr_app_info", "IS_IN_DEBUG_MODE", "INT DEFAULT 0 NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'is_in_debug_mode' в таблиицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_info", "is_in_construction_mode", "INT DEFAULT 0 NOT NULL");
+                    $result = DBManager::add_column("kr_app_info", "IS_IN_CONSTRUCTION_MODE", "INT DEFAULT 0 NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось Добавить столбец 'is_in_construction_mode' в таблицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::insert_row("kr_app_info", ["id", "title", "description", "is_in_debug_mode", "is_in_construction_mode"], [1, "' '", "' '", 0, 0]);
+                    $result = DBManager::insert_row("kr_app_info", ["ID", "TITLE", "DESCRIPTION", "IS_IN_DEBUG_MODE", "IS_IN_CONSTRUCTION_MODE"], [1, "' '", "' '", 0, 0]);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить данные в таблицу 'kr_app_info'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_id", "VARCHAR2(200) NOT NULL");
+                    $result = DBManager::add_column("kr_app_extensions", "EXTENSION_ID", "VARCHAR2(200) NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_id' в таблицу 'kr_app_extensions'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_title", "VARCHAR2(200) NOT NULL");
+                    $result = DBManager::add_column("kr_app_extensions", "EXTENSION_TITLE", "VARCHAR2(200) NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_title' в таблицу 'kr_app_extensions'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_description", "VARCHAR2(200) NOT NULL");
+                    $result = DBManager::add_column("kr_app_extensions", "EXTENSION_DESCRIPTION", "VARCHAR2(200) NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_description' в таблицу 'kr_app_extensions'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "extension_url", "VARCHAR2(200)");
+                    $result = DBManager::add_column("kr_app_extensions", "EXTENSION_URL", "VARCHAR2(200)");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'extension_url' в таблицу 'kr_app_extensions'");
                         return false;
                     }
 
-                    $result = DBManager::add_column("kr_app_extensions", "enabled", "INT DEFAULT 1 NOT NULL");
+                    $result = DBManager::add_column("kr_app_extensions", "ENABLED", "INT DEFAULT 1 NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Krypton -> install: Не удалось добавить столбец 'enabled' в таблицу 'kr_app_extensions'");
                         return false;

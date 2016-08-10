@@ -892,6 +892,7 @@
                     $modals.close();
                 });
             }
+            $log.log("errors = ", $kolenergo.organizations.getCurrent().errors);
         };
 
 
