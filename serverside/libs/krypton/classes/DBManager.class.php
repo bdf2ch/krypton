@@ -953,7 +953,7 @@
 
 
 
-        public static function select_connect_by_prior ($table, $columns, $key, $parentKey, $start) {
+        public static function select_connect_by_prior ($table, $columns, $condition, $key, $parentKey, $start) {
             if ($table == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Не задан параметр - наименование таблицы");
                 return false;
@@ -971,6 +971,16 @@
 
             if (gettype($columns) != "array") {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - массив столбцов");
+                return false;
+            }
+
+            if ($condition == null && $condition != "") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Не задан параметр - условие выборки");
+                return false;
+            }
+
+            if (gettype($condition) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> select_connect_by_prior: Неверно задан тип параметра - условие выборки");
                 return false;
             }
 
@@ -1016,6 +1026,7 @@
             }
 
             $query = "SELECT $cols FROM $table ";
+            $query .= $condition != '' ? "WHERE ".$condition." " : '';
             $query .= $start != null && $start != "" ? "START WITH $key = $start " : "";
             $query .= "CONNECT BY PRIOR $key = $parentKey";
             //echo($query);

@@ -370,7 +370,7 @@
             API::add("login", "Kolenergo", "login");
             API::add("getUsersByDivisionId", "Kolenergo", "getUsersByDivisionId");
 
-            self::importUsers();
+            //self::importUsers();
 
 
 
@@ -854,7 +854,7 @@
             $result -> divisions = array();
             $result -> users = array();
 
-            $divisions = DBManager::select_connect_by_prior("divisions", ["*"], "ID", "PARENT_ID", $id);
+            $divisions = DBManager::select_connect_by_prior("divisions", ["*"], "", "ID", "PARENT_ID", $id);
             if (!$divisions) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getChildrenByDivisionId: Не удалось выбрать дочерние отделы относительно отдела с идентификатором ".$id);
                 return false;
@@ -873,7 +873,7 @@
             $ids = "(".$ids.")";
             //echo($ids);
 
-            $users = DBManager::select("kr_users", ["*"], "DIVISION_ID IN ".$ids);
+            $users = DBManager::select("kr_users", ["*"], "DIVISION_ID IN ".$ids." AND IS_DISPLAYABLE = 1");
             //if (!$users) {
             //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getUsersByDivisionId: Не удалось выбрать пользователей по идентификаторам отделов");
             //    return false;
@@ -993,7 +993,7 @@
 
             $mysql_encoding = mysql_query("SET NAMES utf8");
 
-            $mysql_users = mysql_query("SELECT * FROM kr_users", $mysql_link);
+            $mysql_users = mysql_query("SELECT * FROM kr_users");
             if (!$mysql_users) {
                 echo("mysql cant select users");
                 return false;
@@ -1005,12 +1005,22 @@
                     echo("error getting sequence");
                     return false;
                 }
-                $user = mysql_fetch_assoc($mysql_users[$i]);
+                $user = mysql_fetch_assoc($mysql_users);
+                //var_dump($user);
+
+                $name = $user["name"] == "" ? " " : $user["name"];
+                $surname = $user["surname"] == "" ? " " : $user["surname"];
+                $fname = $user["fname"] == "" ? " " : $user["fname"];
+                $email = $user["email"] == "" ? " " : $user["email"];
+                $phone = $user["phone"] == "" ? " " : $user["phone"];
+                $mobile = $user["mobile_phone"] == "" ? " " : $user["mobile_phone"];
+                $position = $user["position"] == "" ? " " : $user["position"];
+                $photo_url = $user["photo_url"] == "" ? " " : $user["photo_url"];
 
                 $result = DBManager::insert_row(
                     "kr_users",
-                    ["ID", "USER_GROUP_ID", "NAME", "SURNAME", "FNAME", "EMAIL", "POSITION", "PASSWORD", "IS_ADMIN", "DEPARTMENT_ID", "ORGANIZATION_ID"],
-                    [$id, intval($user["user_group_id"]), $user["name"], $user["surname"], $user["fname"], $user["email"], $user["position"], "'$id'", 0, 0, 67]
+                    ["ID", "USER_GROUP_ID", "NAME", "SURNAME", "FNAME", "EMAIL", "PHONE", "MOBILE_PHONE", "POSITION", "PASSWORD", "PHOTO_URL", "IS_ADMIN", "DEPARTMENT_ID", "DIVISION_ID", "ORGANIZATION_ID"],
+                    [$id, intval($user["user_group_id"]), "'".$name."'", "'".$surname."'", "'".$fname."'", "'".$email."'", "'".$phone."'", "'".$mobile."'", "'".$position."'", "'".$id."'", "'".$photo_url."'", 0, 0, 0, 67]
                 );
                 if (!$result) {
                     echo("error inserting user</br>");

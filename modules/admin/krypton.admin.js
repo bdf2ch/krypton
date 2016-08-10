@@ -4,6 +4,7 @@
 (function () {
     angular
         .module("krypton.admin", ["ngRoute", "ngCookies", "ngSanitize", "angularFileUpload", "krypton", "krypton.ui", "krypton.app.kolenergo"])
+        .filter("userSearch", userSearchFilter)
         .config(function ($routeProvider,$sceProvider) {
             $sceProvider.enabled(false);
 
@@ -38,8 +39,20 @@
         $scope.users = $users;
         $scope.modals = $modals;
         $scope.kolenergo = $kolenergo;
-
         $scope.newUserGroup = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
+        $scope.search = {
+            keyword: "ss"
+        };
+        $scope.searchResult = [];
+        
+        $scope.$watch("users.users.searchKeyWord", function (newVal, oldVal) {
+            $log.log("search = ", newVal);
+            if (newVal.length > 2) {
+                $users.users.search(function (result) {
+                    $scope.searchResult = result;
+                });
+            }
+        }, true);
 
 
         $scope.gotoAddUser = function () {
@@ -157,6 +170,7 @@
         $scope.users = $users;
         $scope.kolenergo = $kolenergo;
         $scope.divisions = [];
+        //$scope.search = "";
 
 
         if ($routeParams.userId !== undefined) {
@@ -177,13 +191,13 @@
         }
         
         $scope.editUser = function () {
-            var length = $users.users.getCurrent().phones.length;
-            var phone = "";
-            for (var i = 0; i < length; i++) {
-                phone += $users.users.getCurrent().phones[i];
-                phone += i < length - 1 ? "," : "";
-            }
-            $log.log("phone = ", phone);
+            //var length = $users.users.getCurrent().phones.length;
+            //var phone = "";
+            //for (var i = 0; i < length; i++) {
+            //    phone += $users.users.getCurrent().phones[i];
+            //    phone += i < length - 1 ? "," : "";
+            //}
+            //$log.log("phone = ", phone);
             $users.users.edit()
         };
 
@@ -370,5 +384,21 @@
             });
 
         $log.log(window.krypton);
+    };
+
+
+    function userSearchFilter () {
+        return function (input, search) {
+            if (search !== undefined && search !== "") {
+                var length = input.length;
+                var result = [];
+                for (var i = 0; i < length; i++) {
+                    if (input[i].search.toLowerCase().indexOf(search.toLowerCase()) !== -1)
+                        result.push(input[i]);
+                }
+                return result;
+            } else
+                return input;
+        }
     };
 })();

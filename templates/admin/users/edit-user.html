@@ -1,6 +1,5 @@
-<div id="admin-edit-user" class="row">
-    <div class="chapter-content">
-
+<columns id="admin-edit-user">
+    <column id="user-details" width="80" show-header="0">
         <!-- Личные данные -->
         <div class="row width-90 center margin-bottom-40 padding-20">
             <span class="block-caption">Личные данные</span>
@@ -168,31 +167,22 @@
             </div>
 
         </div>
+    </column>
 
-
-
-
-
-
-
-
-
-
-
-
-    </div>
-
-
-
-    <div class="chapter-panel padding-20">
-        <div class="row width-100 text-center">
-            <button class="width-100 green" ng-disabled="users.users.getCurrent()._states_.changed() === false" ng-click="editUser()">
-                <span class="fa fa-save"></span>
-                Сохранить
-            </button>
+    <column id="user-menu" width="20" show-header="0" class="control-panel">
+        <div class="row padding-10">
+            <div class="row margin-bottom-5">
+                <button class="width-100 green" ng-disabled="users.users.getCurrent()._states_.changed() === false" ng-click="editUser()">
+                    <span class="fa fa-save"></span>
+                    Сохранить
+                </button>
+            </div>
+            <div class="row">
+                <button class="width-100 red" ng-show="users.users.getCurrent()._states_.changed() === true" ng-click="users.users.getCurrent()._backup_.restore(); users.users.getCurrent()._states_.changed(false)">
+                    <span class="fa fa-ban"></span>
+                    Отменить изменения
+                </button>
+            </div>
         </div>
-    </div>
-
-
-</div>
-
+    </column>
+</columns>

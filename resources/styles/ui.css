@@ -954,6 +954,9 @@ a.blue:hover {
   bottom: 0px;
   overflow: auto;
 }
+.krypton-columns .columns-column .column-content.no-header {
+  top: 0px;
+}
 /***************
 ** HIERARCHY
 ***************/

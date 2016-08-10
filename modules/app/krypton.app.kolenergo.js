@@ -495,6 +495,21 @@
                     return divisions;
                 },
 
+                getById: function (id) {
+                    if (id === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> divisions -> getById: Не задана параметр - идентификатор структурного подразделения");
+                        return false;
+                    }
+
+                    var length = divisions.length;
+                    for (var i = 0; i < length; i++) {
+                        if (divisions[i].id.value === id)
+                            return divisions[i];
+                    }
+
+                    return false;
+                },
+
                 getByOrganizationId: function (organizationId) {
                     $log.log("org id = ", organizationId);
                     if (organizationId === undefined) {
@@ -678,7 +693,7 @@
             },
 
 
-            getUsersByDivisionId: function (id) {
+            getUsersByDivisionId: function (id, callback) {
                 if (id === undefined) {
                     $errors.push(ERROR_TYPE_DEFAULT, "$kolenergo -> getUsersByDivisionId: Не задан парметр - идентификатор структурного подразделения");
                     return false;
@@ -694,7 +709,15 @@
                         if (data !== undefined) {
                             $errors.checkResponse(data);
                             if (data.result !== undefined && data.result !== false) {
-                                return data.result;
+                                var users = [];
+                                var length = data.result.users.length;
+                                for (var i = 0; i < length; i++) {
+                                    var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+                                    user._model_.fromAnother(data.result.users[i]);
+                                    users.push(user);
+                                }
+                                if (callback !== undefined && typeof callback === "function")
+                                    callback(users);
                             }
                         }
                     });
@@ -756,9 +779,15 @@
 
 
 
-    function kolenergoRun ($log, $kolenergo, $classes, $http) {
+    function kolenergoRun ($log, $kolenergo, $classes, $http, $tree) {
         $log.log("krypton.app.kolenergo run...");
         $kolenergo.init();
+
+        //var length = $kolenergo.divisions.getAll().length;
+        //for (var i = 0; i < length; i++) {
+        //    var item = $kolenergo.divisions.getAll()[i];
+        //    $tree.addItem("test", item);
+       // }
     };
 
 
@@ -1380,6 +1409,7 @@
         $scope.users = $users;
         $scope.kolenergo = $kolenergo;
         $scope.search = "";
+        $scope.contacts = [];
 
         $scope.div = 0;
 
@@ -1391,6 +1421,8 @@
         //
         //}
 
+
+
         $scope.selectDivision = function (div) {
             $log.log("selected = ", div.id.value);
             //$kolenergo.divisions.select(div.id.value);
@@ -1398,7 +1430,11 @@
             //    $scope.div = div.id.value;
             //else
             //    $scope.div = 0;
-            $kolenergo.getUsersByDivisionId(div.id.value);
+            $scope.contacts = [];
+            $kolenergo.getUsersByDivisionId(div.id.value, function (result) {
+                $scope.contacts = result;
+                $log.log("contacts = ", $scope.contacts);
+            });
         };
     };
 

@@ -22,6 +22,9 @@
         <column-control class="blue round" content="fa fa-pencil" title="Редактировать пользователя" ng-show="users.users.getCurrent() !== undefined" action="gotoEditUser"></column-control>
         <column-control class="red round" content="fa fa-times" title="Удалить пользователя" ng-show="users.users.getCurrent() !== undefined"></column-control>
         <div class="padding-5">
+            <div class="row margin-bottom-5">
+                <input type="text" name="" id="" class="width-100" ng-model="users.users.searchKeyWord">
+            </div>
             <table class="stripped selectable">
                 <thead>
                 <tr>
@@ -29,9 +32,9 @@
                     <th>Имя</th>
                     <th>Отчество</th>
                     <th>Должность</th>
+                    <th>Стр. подразделение</th>
                     <th>E-mail</th>
                     <th>Телефон</th>
-                    <th>Произв. отд.</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -40,9 +43,9 @@
                     <td>{{ user.name.value }}</td>
                     <td>{{ user.fname.value }}</td>
                     <td>{{ user.position.value }}</td>
+                    <td>{{ kolenergo.divisions.getById(user.divisionId.value).title.value }}</td>
                     <td>{{ user.email.value }}</td>
                     <td>{{ user.phone.value }}</td>
-                    <td>{{ kolenergo.getDepartmentById(user.departmentId.value).title.value }}</td>
                 </tr>
                 </tbody>
             </table>
