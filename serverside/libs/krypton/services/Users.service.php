@@ -385,7 +385,7 @@
             $result -> users = array();
             $result -> total = 0;
 
-            $total = DBManager::select("kr_users", ["COUNT *"], "''");
+            $total = DBManager::select("kr_users", ["COUNT(*)"], "''");
             if (!$total) {
                 Errors:;push(Errors::ERROR_TYPE_ENGINE, "Users -> getInitialData: Не удалось получить общее количество пользователей");
                 return false;
