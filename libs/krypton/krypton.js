@@ -1590,6 +1590,8 @@ function isField (obj) {
         var groups = [];
         var currentGroup = undefined;
         var currentUser = undefined;
+        var start = 0;
+        var limit = 15;
         var searchKeyWord = "";
 
         return {
@@ -1725,6 +1727,10 @@ function isField (obj) {
                     }
 
                     return false;
+                },
+                
+                getNextPage: function () {
+                    
                 },
 
                 /**

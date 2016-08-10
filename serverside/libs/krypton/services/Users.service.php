@@ -351,8 +351,8 @@
         * Выполняет инициализацию модуля
         **/
         public static function init () {
-            /*
-            $users = DBManager::select("kr_users", ["*"], "''");
+
+            $users = DBManager::select("kr_users", ["*"], "'LIMIT 20'");
             if ($users != false) {
                 foreach ($users as $key => $item) {
                     $user = Models::load("User1", false);
@@ -360,7 +360,7 @@
                     array_push(self::$items, $user);
                 }
             }
-            */
+
 
             $groups = DBManager::select("kr_user_groups", ["*"], "''");
             if ($groups != false) {
@@ -376,6 +376,22 @@
             API::add("deleteUserGroup", "Users", "deleteGroup");
             API::add("editUser", "Users", "editUser");
             API::add("searchUser", "Users", "search");
+        }
+
+
+
+        public static function getInitialData () {
+            $result = new stdClass();
+            $result -> users = array();
+            $result -> total = 0;
+
+            $total = DBManager::select("kr_users", ["COUNT *"], "''");
+            if (!$total) {
+                Errors:;push(Errors::ERROR_TYPE_ENGINE, "Users -> getInitialData: Не удалось получить общее количество пользователей");
+                return false;
+            }
+
+
         }
 
 
