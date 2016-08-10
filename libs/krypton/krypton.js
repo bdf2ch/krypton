@@ -1423,17 +1423,17 @@ function isField (obj) {
         $classes.add("User", {
             __dependencies__: [],
             __errors__ : [],
-            id: new Field({ source: "id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true, displayable: true, title: "#"}),
-            userGroupId: new Field({ source: "user_group_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, displayable: false }),
-            name: new Field({ source: "name", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Имя" }),
-            fname: new Field({ source: "fname", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Отчество" }),
-            surname: new Field({ source: "surname", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Фамилия" }),
-            position: new Field({ source: "position", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
-            email: new Field({ source: "email", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
-            phone: new Field({ source: "phone", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
-            mobile: new Field({ source: "mobile_phone", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
-            photo: new Field({ source: "photo_url", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
-            isAdmin: new Field({ source: "is_admin", type: DATA_TYPE_BOOLEAN, value: false, default_value: false, backupable: true }),
+            id: new Field({ source: "ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true, displayable: true, title: "#"}),
+            userGroupId: new Field({ source: "USER_GROUP_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true, displayable: false }),
+            name: new Field({ source: "NAME", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Имя" }),
+            fname: new Field({ source: "FNAME", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Отчество" }),
+            surname: new Field({ source: "SURNAME", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true, displayable: true, title: "Фамилия" }),
+            position: new Field({ source: "POSITION", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            email: new Field({ source: "EMAIL", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            phone: new Field({ source: "PHONE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            mobile: new Field({ source: "MOBILE_PHONE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            photo: new Field({ source: "PHOTO_URL", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            isAdmin: new Field({ source: "IS_ADMIN", type: DATA_TYPE_BOOLEAN, value: false, default_value: false, backupable: true }),
             fio: "",
             phones: [],
             
@@ -1590,6 +1590,9 @@ function isField (obj) {
         var groups = [];
         var currentGroup = undefined;
         var currentUser = undefined;
+        var start = 0;
+        var limit = 15;
+        var searchKeyWord = "";
 
         return {
             init: function () {
@@ -1687,6 +1690,8 @@ function isField (obj) {
             },
 
             users: {
+                
+                searchKeyWord: searchKeyWord,
 
                 /**
                  * Возвращает массив всех пользователей
@@ -1722,6 +1727,10 @@ function isField (obj) {
                     }
 
                     return false;
+                },
+                
+                getNextPage: function () {
+                    
                 },
 
                 /**
@@ -1761,10 +1770,6 @@ function isField (obj) {
                         return false;
                     }
 
-                    if (!currentUser.validate())
-                        return false;
-
-
                     var params = {
                         action: "editUser",
                         id: currentUser.id.value,
@@ -1779,16 +1784,60 @@ function isField (obj) {
                         phone: currentUser.phone.value,
                         mobile: currentUser.mobile.value
                     };
-                    
+
                     $http.post("/serverside/libs/krypton/api.php", params)
                         .success(function (data) {
-                        $log.log("data = ", data);
+                            $log.log("data = ", data);
                             if (data !== undefined && data !== null) {
                                 $errors.checkResponse(data);
                                 if (data.result !== false) {
                                     currentUser._backup_.setup();
+                                    currentUser._states_.changed(false);
                                     return true;
                                 }
+                            }
+                        });
+
+                },
+
+                search: function (callback) {
+                    var params = {
+                        action: "searchUser",
+                        userGroupId: currentGroup !== undefined ? currentGroup.id.value : 0,
+                        search: this.searchKeyWord
+                    };
+
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== null && data.result !== false) {
+                                    users = [];
+                                    var length = data.result.length;
+                                    for (var i = 0; i < length; i++) {
+                                        var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+                                        user._model_.fromAnother(data.result[i]);
+                                        user._backup_.setup();
+                                        users.push(user);
+                                    }
+
+                                    if (currentUser !== undefined) {
+                                        var found = false;
+                                        var length = users.length;
+                                        for (var x = 0; x < length; x++) {
+                                            if (users[x].id.value === currentUser.id.value)
+                                                found = true;
+                                        }
+                                        if (found === false)
+                                            currentUser = undefined;
+                                    }
+
+                                    if (callback !== undefined && typeof callback === "function")
+                                        callback(users);
+
+                                    return true;
+                                } else 
+                                    return false;
                             }
                         });
                 }

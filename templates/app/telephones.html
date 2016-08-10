@@ -17,7 +17,7 @@
         <div id="telephones-organizations" class="width-25">
             <span class="caption">Организации</span>
 
-            <div class="row" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-init="divisions = kolenergo.divisions.getByOrganizationId(org.id.value)">
+            <div class="row" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-init="divisions = kolenergo.divisions.getAll()">
                 <hierarchy class="stacked" id="{{ 'org' + $index }}" source="divisions" key="id" parent-key="parentId" display-field="title" on-select="selectDivision"></hierarchy>
                 <!-- <tree id="test" key="id" parent-key="parentId" initial-key-value="0" initial-key-type="DATA_TYPE_INTEGER" display="title"></tree> -->
             </div>
@@ -38,7 +38,7 @@
                 {{ kolenergo.divisions.getCurrent().title.value }}
             </div>
 
-            <div class="result-message" ng-show="kolenergo.divisions.getCurrent() === undefined && search.length < 3">
+            <div class="result-message" ng-show="contacts.length === 0 && search.length < 3">
                 <span class="fa fa-search"></span>
                 <span class="system-info">Начните вводить имя абонента, электронную почту или телефон</span>
             </div>
@@ -48,7 +48,7 @@
                 <span class="system-info">По Вашему запросу не найдено ни одного абонента</span>
             </div>
 
-            <div class="contact" ng-repeat="user in contacts = (users.users.getAll() | byDivisionId: kolenergo.divisions.getCurrent().path.value | phoneBook:search | orderBy: 'surname.value') track by $index">
+            <div class="contact" ng-repeat="user in contacts | orderBy: 'surname.value' track by $index">
                 <div class="contact-division">{{  }}</div>
                 <div class="contact-photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ''"></div>
                 <div class="contact-photo no-photo" ng-show="user.photo.value === ''"></div>

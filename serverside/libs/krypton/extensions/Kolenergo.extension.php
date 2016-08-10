@@ -136,6 +136,12 @@
                         return false;
                     }
 
+                    $result = DBManager::add_column("departments", "ORGANIZATION_ID", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ORGANIZATION_ID' в таблицу 'departments'");
+                        return false;
+                    }
+
                     $result = DBManager::add_column("departments", "title", "varchar(500) NOT NULL default ''");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'departments'");
@@ -227,6 +233,12 @@
                     $result = DBManager::add_column("organizations", "title", "VARCHAR2(500) NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'organizations'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("departments", "ORGANIZATION_ID", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ORGANIZATION_ID' в таблицу 'departments'");
                         return false;
                     }
 
@@ -348,12 +360,17 @@
             API::add("addOrganization", "Kolenergo", "addOrganization");
             API::add("editOrganization", "Kolenergo", "editOrganization");
             API::add("deleteOrganization", "Kolenergo", "deleteOrganization");
+            API::add("addDepartment", "Kolenergo", "addDepartment");
+            API::add("editDepartment", "Kolenergo", "editDepartment");
+            API::add("deleteDepartment", "Kolenergo", "deleteDepartment");
             API::add("addDivision", "Kolenergo", "addDivision");
             API::add("editDivision", "Kolenergo", "editDivision");
             API::add("deleteDivision", "Kolenergo", "deleteDivision");
             API::add("uploadUserPhoto", "Kolenergo", "uploadUserPhoto");
             API::add("login", "Kolenergo", "login");
             API::add("getUsersByDivisionId", "Kolenergo", "getUsersByDivisionId");
+
+            //self::importUsers();
 
 
 
@@ -543,6 +560,132 @@
 
 
         /**
+        * Добавляет производственное отделение
+        * @data {object} - объект с информацией о добавляемом производственном отделении
+        **/
+        public function addDepartment ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> addDepartment: Не задан парметр - объект с информацией о производственном отделении");
+                return false;
+            }
+
+
+            $organizationId = $data -> organizationId;
+            $title = $data -> title;
+            $department = Models::construct("Department", false);
+
+            switch (Krypton::getDBType()) {
+
+                case Krypton::DB_TYPE_MYSQL:
+
+                    $result = DBManager::insert_row("departments", ["ORGANIZATION_ID", "TITLE"], [$organizationId, "'$title'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDepartment: Не удалось добавить организацию");
+                        return false;
+                    }
+
+                    $id = mysql_insert_id();
+                    $result = DBManager::select("departments", ["*"], "id = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDepartment: Не удалось выбрать добавленное производственное отделение");
+                        return false;
+                    }
+
+                    $department -> fromSource($result[0]);
+                    break;
+
+                case Krypton::DB_TYPE_ORACLE:
+
+                    $id = DBManager::sequence_next("seq_departments");
+                    if (!$id) {
+                        Errors:push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDepartment: Не удалось получить следующее значенеи последовательности 'seq_departments'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("departments", ["ID", "ORGANIZATION_ID", "TITLE"], [$id, $organizationId, "'$title'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDepartment: Не удалось добавить производственное отделеник");
+                        return false;
+                    }
+
+                    $result = DBManager::select("departments", ["*"], "id = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDepartment: Не удалось выбрать добавленное производственное отделение");
+                        return false;
+                    }
+
+                    $department -> fromSource($result[0]);
+                    break;
+            }
+
+            array_push(self::$departments, $department);
+            return $department;
+        }
+
+
+
+
+
+        /**
+        * Сохраняет изменения в измененнной организации
+        * @data {object} - объект с информацией о редактируемой организации
+        **/
+        public function editDepartment ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> editDepartment: Не задан параметр - объект с информацией о производственном отделении");
+                return false;
+            }
+
+            $id = $data -> id;
+            $organizationId = $data -> organizationId;
+            $title = $data -> title;
+
+            $result = DBManager::update("departments", ["ORGANIZATION_ID", "TITLE"], [$organizationId, "'$title'"], "ID = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editDepartment: Не удалось сохранить изменения измененного производственного отделения");
+                return false;
+            }
+
+            $result = DBManager::select("departments", ["*"], "ID = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editDepartment: Не удалось выбрать отредактированное производственное отделение");
+                return false;
+            }
+
+            $department = Models::construct("Department", false);
+            $department -> fromSource($result[0]);
+            return $department;
+        }
+
+
+
+
+
+        /**
+        * Удаляет организацию
+        * @data {object} - объект с информацией об удаляемой организации
+        **/
+        public function deleteDepartment ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> deleteDepartment: Не задан рарметр - объект с информацией о производственном отделении");
+                return false;
+            }
+
+            $id = $data -> id;
+            $result = DBManager::delete("departments", "ID = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deleteDepartment: Не удалось удалить производственное отделение");
+                return false;
+            }
+
+            return true;
+        }
+
+
+
+
+
+        /**
         * Возвращает массив отделов
         **/
         public static function getDivisions () {
@@ -564,6 +707,7 @@
             }
 
             $organizationId = $data -> organizationId;
+            $departmentId = $data -> departmentId;
             $parentId = $data -> parentId;
             $title = $data -> title;
             $division = Models::construct("Division", false);
@@ -571,14 +715,14 @@
             switch (Krypton::getDBType()) {
 
                 case Krypton::DB_TYPE_MYSQL:
-                    $result = DBManager::insert_row("divisions", ["organization_id", "parent_id", "title"], [$organizationId, $parentId, "'$title'"]);
+                    $result = DBManager::insert_row("divisions", ["ORGANIZATION_ID", "DEPARTMENT_ID", "PARENT_ID", "TITLE"], [$organizationId, $departmentId, $parentId, "'$title'"]);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось добавить отдел");
                         return false;
                     }
 
                     $id = mysql_insert_id();
-                    $result = DBManager::select("divisions", ["*"], "id = $id");
+                    $result = DBManager::select("divisions", ["*"], "ID = $id");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось выбрать добавленный отдел");
                         return false;
@@ -594,13 +738,13 @@
                         return false;
                     }
 
-                    $result = DBManager::insert_row("divisions", ["id", "organization_id", "parent_id", "title"], [$id, $organizationId, $parentId, "'$title'"]);
+                    $result = DBManager::insert_row("divisions", ["ID", "ORGANIZATION_ID", "DEPARTMENT_ID", "PARENT_ID", "TITLE"], [$id, $organizationId, $departmentId, $parentId, "'$title'"]);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось добавить отдел");
                         return false;
                     }
 
-                    $result = DBManager::select("divisions", ["*"], "id = $id");
+                    $result = DBManager::select("divisions", ["*"], "ID = $id");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addDivision: Не удалось выбрать добавленный отдел");
                         return false;
@@ -710,7 +854,7 @@
             $result -> divisions = array();
             $result -> users = array();
 
-            $divisions = DBManager::select_connect_by_prior("divisions", ["*"], "ID", "PARENT_ID", $id);
+            $divisions = DBManager::select_connect_by_prior("divisions", ["*"], "", "ID", "PARENT_ID", $id);
             if (!$divisions) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getChildrenByDivisionId: Не удалось выбрать дочерние отделы относительно отдела с идентификатором ".$id);
                 return false;
@@ -729,7 +873,7 @@
             $ids = "(".$ids.")";
             //echo($ids);
 
-            $users = DBManager::select("kr_users", ["*"], "DIVISION_ID IN ".$ids);
+            $users = DBManager::select("kr_users", ["*"], "DIVISION_ID IN ".$ids." AND IS_DISPLAYABLE = 1");
             //if (!$users) {
             //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getUsersByDivisionId: Не удалось выбрать пользователей по идентификаторам отделов");
             //    return false;
@@ -834,6 +978,60 @@
 
             return $file;
         }
+
+
+
+        public static function importUsers () {
+
+            $mysql_link = mysql_connect("127.0.0.1", "root", "");
+            if (!$mysql_link) {
+                echo("mysql cant connect");
+                return false;
+            }
+
+            $mysql_select_db = mysql_select_db("krypton");
+
+            $mysql_encoding = mysql_query("SET NAMES utf8");
+
+            $mysql_users = mysql_query("SELECT * FROM kr_users");
+            if (!$mysql_users) {
+                echo("mysql cant select users");
+                return false;
+            }
+
+            for ($i = 0; $i < mysql_num_rows($mysql_users); $i++) {
+                $id = DBManager::sequence_next("seq_users");
+                if (!$id) {
+                    echo("error getting sequence");
+                    return false;
+                }
+                $user = mysql_fetch_assoc($mysql_users);
+                //var_dump($user);
+
+                $name = $user["name"] == "" ? " " : $user["name"];
+                $surname = $user["surname"] == "" ? " " : $user["surname"];
+                $fname = $user["fname"] == "" ? " " : $user["fname"];
+                $email = $user["email"] == "" ? " " : $user["email"];
+                $phone = $user["phone"] == "" ? " " : $user["phone"];
+                $mobile = $user["mobile_phone"] == "" ? " " : $user["mobile_phone"];
+                $position = $user["position"] == "" ? " " : $user["position"];
+                $photo_url = $user["photo_url"] == "" ? " " : $user["photo_url"];
+
+                $result = DBManager::insert_row(
+                    "kr_users",
+                    ["ID", "USER_GROUP_ID", "NAME", "SURNAME", "FNAME", "EMAIL", "PHONE", "MOBILE_PHONE", "POSITION", "PASSWORD", "PHOTO_URL", "IS_ADMIN", "DEPARTMENT_ID", "DIVISION_ID", "ORGANIZATION_ID"],
+                    [$id, intval($user["user_group_id"]), "'".$name."'", "'".$surname."'", "'".$fname."'", "'".$email."'", "'".$phone."'", "'".$mobile."'", "'".$position."'", "'".$id."'", "'".$photo_url."'", 0, 0, 0, 67]
+                );
+                if (!$result) {
+                    echo("error inserting user</br>");
+                    return false;
+                }
+
+                echo("finish");
+            }
+
+        }
+
 
 
 

@@ -351,7 +351,8 @@
         * Выполняет инициализацию модуля
         **/
         public static function init () {
-            $users = DBManager::select("kr_users", ["*"], "''");
+
+            $users = DBManager::select("kr_users", ["*"], "'LIMIT 20'");
             if ($users != false) {
                 foreach ($users as $key => $item) {
                     $user = Models::load("User1", false);
@@ -359,6 +360,7 @@
                     array_push(self::$items, $user);
                 }
             }
+
 
             $groups = DBManager::select("kr_user_groups", ["*"], "''");
             if ($groups != false) {
@@ -373,6 +375,23 @@
             API::add("editUserGroup", "Users", "editGroup");
             API::add("deleteUserGroup", "Users", "deleteGroup");
             API::add("editUser", "Users", "editUser");
+            API::add("searchUser", "Users", "search");
+        }
+
+
+
+        public static function getInitialData () {
+            $result = new stdClass();
+            $result -> users = array();
+            $result -> total = 0;
+
+            $total = DBManager::select("kr_users", ["COUNT *"], "''");
+            if (!$total) {
+                Errors:;push(Errors::ERROR_TYPE_ENGINE, "Users -> getInitialData: Не удалось получить общее количество пользователей");
+                return false;
+            }
+
+
         }
 
 
@@ -583,16 +602,16 @@
 
             $result = DBManager::update(
                 "kr_users",
-                ["user_group_id", "organization_id", "division_id", "name", "fname", "surname", "position", "email", "phone", "mobile_phone"],
-                [$userGroupId, $organizationId, $divisionId, "'".$name."'", "'".$fname."'", "'".$surname."'", "'".$position."'", "'".$email."'", "'".$phone."'", "'".$mobile."'"],
-                "id = $id"
+                ["ORGANIZATION_ID", "DIVISION_ID", "NAME", "FNAME", "SURNAME", "POSITION", "EMAIL", "PHONE", "MOBILE_PHONE"],
+                [$organizationId, $divisionId, "'".$name."'", "'".$fname."'", "'".$surname."'", "'".$position."'", "'".$email."'", "'".$phone."'", "'".$mobile."'"],
+                "ID = $id"
             );
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> edit: Не удалось обновить информацию о пользователе");
                 return false;
             }
 
-            $result = DBManager::select("kr_users", ["*"], "id = $id");
+            $result = DBManager::select("kr_users", ["*"], "ID = $id");
             if (!$result) {
                 Errors:;push(Errors::ERROR_TYPE_ENGINE, "Users -> edit: Не удалось выбрать информацию обновленного пользователя");
                 return false;
@@ -660,6 +679,29 @@
 
 
         public static function uploadPhoto () {}
+
+
+        public static function search ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> search: Не задан параметр - объект с условиями поиска");
+                return false;
+            }
+
+            $userGroupId = $data -> userGroupId;
+            $search = $data -> search;
+
+            $result = DBManager::select("kr_users", ["*"], "LOWER(SURNAME) LIKE '%' || LOWER('$search') || '%'");
+            if ($result != false) {
+                $users = array();
+                $length = sizeof($result);
+                for ($i = 0; $i < $length; $i++) {
+                    $user = Models::construct("User1", false);
+                    $user -> fromSource($result[$i]);
+                    array_push($users, $user);
+                }
+                return $users;
+            }
+        }
 
     };
 

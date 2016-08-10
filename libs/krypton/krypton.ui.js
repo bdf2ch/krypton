@@ -832,8 +832,8 @@
             require: "^columns",
             transclude: true,
             template: 
-                "<div class='columns-column' style='width: {{currentWidth}}%;'>" +
-                    "<div class='column-header' ng-show='isMinimized === false'>" +
+                "<div class='columns-column {{ class }}' style='width: {{currentWidth}}%;'>" +
+                    "<div class='column-header' ng-show='isMinimized === false && showHeader === true'>" +
                         "<div class='left'>" +
                             "<span class='header-caption' ng-show='showCaption === true'>{{ caption }}</span>" +
                             "<button class='small transparent' ng-show='showMaximizeButton === true && isMaximized === false' ng-click='max()' title='Развернуть колонку'><span class='fa fa-arrows-h' area-hidden='true'></span></button>" +
@@ -842,14 +842,15 @@
                         "<div class='right'>" + 
                             "<button ng-repeat='control in controls' ng-show='control.isVisible' class='{{ \"small rounded \" +  control.class }}' ng-click='control.action()' title='{{ control.title }}'><span class='{{ control.content }}'></span></button>" +
                         "</div>" +
-                "   </div>" +
-                    "<div class='column-content' ng-show='isMinimized === false' ng-transclude></div>" +
+                    "</div>" +
+                    "<div class='column-content' ng-class='{\"no-header\": showHeader === false}' ng-show='isMinimized === false' ng-transclude></div>" +
                 "</div>",
             replace: true,
             scope: {
                 id: "@",
                 caption: "@",
                 width: "@",
+                class: "@",
                 maximizable: "@",
                 onMaximize: "&",
                 onMinimize: "&"
@@ -865,9 +866,12 @@
             },
             link: function (scope, element, attrs, ctrl) {
                 var showCaption = scope.showCaption = false;
+                //var showHeader = scope.showHeader = true;
                 var showMaximizeButton = scope.showMaximizeButton = false;
                 var currentWidth = scope.currentWidth = parseInt(scope.width);
 
+                var showHeader = scope.showHeader = attrs.showHeader !== undefined && attrs.showHeader === "0" ? false : true;
+                //scope.showHeader = scope.showHeader === undefined || scope.showHeader === "1" ? true : false;
                 scope.showCaption = scope.caption !== undefined && scope.caption !== "" ? true : false;
                 scope.showMaximizeButton = scope.maximizable !== undefined && scope.maximizable === "1" ? true : false;
 
@@ -1647,7 +1651,7 @@
     
     
     
-    function modalsFactory ($log, $errors, $compile, $window) {
+    function modalsFactory ($log, $errors, $compile, $window, $rootScope) {
         var items = [];
         var currentModal = undefined;
 
@@ -1732,7 +1736,7 @@
                         content.innerHTML = items[i].content;
                         $compile(modal)(items[i].scope);
                         angular.element(modal).css("display", "block");
-
+                        
                         var fog = document.getElementsByClassName("krypton-ui-fog");
                         document.body.style.overflow = "hidden";
                         fog[0].classList.add("visible");

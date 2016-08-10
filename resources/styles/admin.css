@@ -348,6 +348,9 @@
   bottom: 0px;
   overflow: auto;
 }
+.krypton-columns .columns-column .column-content.no-header {
+  top: 0px;
+}
 /***************
 ** HIERARCHY
 ***************/
@@ -1675,17 +1678,6 @@ ul.test li {
 #admin-edit-user img {
   width: 300px;
 }
-.chapter-content {
-  position: relative;
-  margin-right: 250px;
-  box-sizing: border-box;
-  border: 1px solid blue;
-}
-.chapter-panel {
-  position: relative;
-  float: right;
-  width: 250px;
-  box-sizing: border-box;
-  background: #EFEBE9;
-  border: 1px solid red;
+.control-panel {
+  background: #00838F;
 }

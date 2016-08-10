@@ -27,7 +27,25 @@
         </div>
 
     </column>
-    <column id="department-divisions" width="80" caption="Структурные подразделения" maximizable="1">
+
+    <column id="companies-departments" width="20" caption="Произв. отделения">
+        <column-control class="green round" content="fa fa-plus" title="Добавить производственное отделние" ng-show="kolenergo.organizations.getCurrent() !== undefined" action="openAddDepartmentModal"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать производственное отделение" action="openEditDepartmentModal" ng-show="kolenergo.departments.getCurrent() !== undefined"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить производственное отделение" action="openDeleteDepartmentModal" ng-show="kolenergo.departments.getCurrent() !== undefined"></column-control>
+
+        <div class="system-info" ng-show="kolenergo.organizations.getCurrent() === undefined">
+            <span class="fa fa-building" aria-hidden="true"></span>&nbsp; Выберите организацию
+        </div>
+
+        <div class="list-item" ng-class="{'active': dep._states_.selected() === true}" ng-repeat="dep in kolenergo.departments.getAll() | byOrganizationId:kolenergo.organizations.getCurrent().id.value track by $index" ng-click="selectDepartment(dep.id.value)">
+            <div class="list-item-icon">
+                <span class="fa fa-building-o" aria-hidden="true"></span>
+            </div>
+            <div class="list-item-content-lead only" title="{{ dep._backup_.data.title }}">{{ dep._backup_.data.title }}</div>
+        </div>
+    </column>
+
+    <column id="department-divisions" width="60" caption="Структурные подразделения" maximizable="1">
         <column-control class="green round" content="fa fa-plus" ng-show="kolenergo.organizations.getCurrent() !== undefined" title="Добавить подразделение" action="openAddNewDivisionModal"></column-control>
         <column-control class="blue round" content="fa fa-pencil"  ng-show="kolenergo.divisions.getCurrent() !== undefined"  title="Редактировать подразделение" action="openEditDivisionModal"></column-control>
         <column-control class="red round" content="fa fa-times" title="Удалить структурное подразделение" action="openDeleteDivisionModal" ng-show="kolenergo.divisions.getCurrent() !== undefined"></column-control>
@@ -35,7 +53,7 @@
         <div class="padding-5">
 
             <div class="system-info" ng-show="kolenergo.organizations.getCurrent() === undefined">
-                Выберите организацию
+                <span class="fa fa-building" aria-hidden="true"></span>&nbsp; Выберите организацию
             </div>
 
             <!--
@@ -66,12 +84,12 @@
         <div class="padding-10">
             <div class="row margin-bottom-10">
                 <label for="new-organization-title">Наименование организации</label>
-                <input type="text" id="new-organization-title" name="title" class="width-100" ng-model="newOrganization.title.value" required>
+                <input type="text" id="new-organization-title" name="title" class="width-100" ng-model="kolenergo.organizations.getNew().title.value" required>
             </div>
 
             <div class="row">
                 <div class="width-50">
-                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="new_organization.$pristine" />
+                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="new_organization.$pristine === true || kolenergo.organizations.getNew()._states_.loading() === true" />
                 </div>
                 <div class="width-50">
                     <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
@@ -88,31 +106,31 @@
 </div>
 
 
-<div modal modal-id="edit-organization-modal" modal-caption="Редактирование организации" modal-on-close="closeEditOrganizationModal" ng-init="org = kolenergo.organizations.getCurrent()">
-    <form ng-submit="editOrganization()" novalidate>
+<div modal modal-id="edit-organization-modal" modal-caption="Редактирование организации" modal-on-close="closeEditOrganizationModal">
+    <form name="edit_organization" ng-submit="editOrganization()" novalidate>
         <div class="padding-10">
             <div class="row margin-bottom-10">
                 <label for="current-organization-title">Наименование организации</label>
-                <input type="text" id="current-organization-title" name="title" class="width-100" ng-model="kolenergo.organizations.getCurrent().title.value">
+                <input type="text" id="current-organization-title" name="title" class="width-100" ng-model="kolenergo.organizations.getCurrent().title.value" required>
             </div>
 
             <div class="row">
                 <div class="width-50">
-                    <input type="submit" class="width-100 green" value="Сохранить" ng-disabled="kolenergo.organizations.getCurrent()._states_.loading() === true" />
+                    <input type="submit" class="width-100 green" value="Сохранить" ng-disabled="edit_organization.$pristine === true || kolenergo.organizations.getCurrent()._states_.loading() === true" />
                 </div>
                 <div class="width-50">
                     <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
                 </div>
             </div>
         </div>
-    </form>
-
-    <div class="modal-errors" ng-show="org.errors.length > 0">
-        <div class="error" ng-repeat="error in org.errors track by $index">
-            <span class="fa fa-exclamation-circle"></span>&nbsp;
+        <div class="modal-errors" ng-show="edit_organization.$invalid && submitted === true">
+            <div class="error" ng-show="edit_organization.title.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали наименование организации
+            </div>
         </div>
-    </div>
+    </form>
 </div>
+
 
 
 <div modal modal-id="delete-organization-modal" modal-caption="Удаление организации">
@@ -134,12 +152,113 @@
 </div>
 
 
+<div modal modal-id="new-department-modal" modal-caption="Новое производственнное отделение" modal-on-close="closeAddDepartmentModal">
+    <form name="new_department" ng-submit="addDepartment()" novalidate>
+        <div class="padding-10">
+            <div class="row margin-bottom-10">
+                <label for="new-department-organization">Организация</label>
+                <select name="organization"
+                        id="new-department-organization"
+                        class="width-100"
+                        ng-model="kolenergo.departments.getNew().organizationId.value"
+                        required
+                        ng-options="organization.id.value as organization.title.value for organization in kolenergo.organizations.getAll()">
+                </select>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="new-department-title">Наименование произв. отделения</label>
+                <input type="text" id="new-department-title" name="title" class="width-100" ng-model="kolenergo.departments.getNew().title.value" required>
+            </div>
+
+            <div class="row">
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="new_department.$pristine === true || kolenergo.departments.getNew()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-errors" ng-show="new_department.$invalid && submitted === true">
+            <div class="error" ng-show="new_department.organization.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не выбрали организацию
+            </div>
+            <div class="error" ng-show="new_department.title.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали наименование произв. отделения
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div modal modal-id="edit-department-modal" modal-caption="Редактирорвание произв. отделения" modal-on-close="closeEditDepartmentModal">
+    <form name="edit_department" ng-submit="editDepartment()" novalidate>
+        <div class="padding-10">
+            <div class="row margin-bottom-10">
+                <label for="current-department-organization">Организация</label>
+                <select name="organization"
+                        id="current-department-organization"
+                        class="width-100"
+                        ng-model="kolenergo.departments.getCurrent().organizationId.value"
+                        required
+                        ng-options="organization.id.value as organization.title.value for organization in kolenergo.organizations.getAll()">
+                </select>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="current-department-title">Наименование произв. отделения</label>
+                <input type="text" id="current-department-title" name="title" class="width-100" ng-model="kolenergo.departments.getCurrent().title.value" required>
+            </div>
+
+            <div class="row">
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Сохранить" ng-disabled="edit_department.$pristine === true || kolenergo.departments.getCurrent()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-errors" ng-show="edit_department.$invalid && submitted === true">
+            <div class="error" ng-show="edit_department.organization.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не выбрали организацию
+            </div>
+            <div class="error" ng-show="edit_department.title.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали наименование произв. отделения
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div modal modal-id="delete-department-modal" modal-caption="Удаление произв. отделения">
+    <form name="delete_department" ng-submit="deleteDepartment()" novalidate>
+        <div class="padding-10">
+            <div class="row">
+                <div class="row margin-bottom-10">
+                    Вы уверены, что хотите удалить <b>{{ kolenergo.departments.getCurrent().title.value }}</b> ?
+                </div>
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Удалить" ng-disabled="kolenergo.departments.getCurrent()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
 <div modal modal-id="new-division-modal" modal-caption="Новое структурное подразделение" modal-on-close="closeAddNewDivisionModal">
     <form name="new_division" ng-submit="addDivision()" novalidate>
         <div class="padding-10">
             <div class="row margin-bottom-10">
                 <label for="new-division-title">Наименование подразделения</label>
-                <input type="text" id="new-division-title" name="title" class="width-100" ng-model="newDivision.title.value" required>
+                <input type="text" id="new-division-title" name="title" class="width-100" ng-model="kolenergo.divisions.getNew().title.value" required>
             </div>
 
             <div class="row margin-bottom-10">
@@ -147,20 +266,19 @@
                 <select name="organization"
                         id="new-division-organization"
                         class="width-100"
-                        ng-model="newDivision.organizationId.value"
+                        ng-model="kolenergo.divisions.getNew().organizationId.value"
                         required
                         ng-options="organization.id.value as organization.title.value for organization in kolenergo.organizations.getAll()">
                 </select>
-                <input type="hidden" ng-model="newDivision.organizationId.value" required>
             </div>
 
-            <div class="row margin-bottom-10" ng-show="kolenergo.organizations.getCurrent().id === 8">
+            <div class="row margin-bottom-10">
                 <label for="new-division-department">Производственное отделение</label>
                 <select name="new-division-department"
                         id="new-division-department"
                         class="width-100"
-                        ng-model="newDivision.departmentId.value"
-                        ng-options="department.id.value as department.title.value for department in kolenergo.departments.getAll()">
+                        ng-model="kolenergo.divisions.getNew().departmentId.value"
+                        ng-options="department.id.value as department.title.value for department in kolenergo.departments.getAll() | byOrganizationId:kolenergo.organizations.getCurrent().id.value">
                 </select>
             </div>
 
@@ -169,14 +287,14 @@
                 <select name="new-division-parent"
                         id="new-division-parent"
                         class="width-100"
-                        ng-model="newDivision.parentId.value"
+                        ng-model="kolenergo.divisions.getNew().parentId.value"
                         ng-options="division.id.value as division.title.value for division in kolenergo.getDivisions()">
                 </select>
             </div>
 
             <div class="row">
                 <div class="width-50">
-                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="newDivision._states_.loading() === true" />
+                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="kolenergo.divisions.getNew()._states_.loading() === true" />
                 </div>
                 <div class="width-50">
                     <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
@@ -208,6 +326,16 @@
                        ng-model="kolenergo.divisions.getCurrent().title.value"
                        ng-change="kolenergo.divisions.getCurrent()._states_.changed(true)"
                        required>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="current-division-department">Производственное отделение</label>
+                <select name="department"
+                        id="current-division-department"
+                        class="width-100"
+                        ng-model="kolenergo.divisions.getCurrent().departmentId.value"
+                        ng-options="department.id.value as department.title.value for department in kolenergo.departments.getAll() | byOrganizationId: kolenergo.divisions.getCurrent().organizationId.value">
+                </select>
             </div>
 
             <div class="row margin-bottom-10">
