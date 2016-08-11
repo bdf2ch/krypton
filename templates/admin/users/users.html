@@ -25,6 +25,17 @@
             <div class="row margin-bottom-5">
                 <input type="text" name="" id="" class="width-100" ng-model="users.users.searchKeyWord">
             </div>
+            <div class="row">
+                <div class="pagination right">
+                    <a class="page" ng-show="users.users.pages.current() - 1 > 0" ng-click="users.users.pages.set(users.users.pages.current() - 1)"><span class="fa fa-arrow-left"></span></a>
+                    <a class="page" ng-show="users.users.pages.current() - 1 > 0" ng-click="users.users.pages.set(users.users.pages.current() - 1)">{{ users.users.pages.current() - 1 }}</a>
+                    <a class="page current">{{ users.users.pages.current() }}</a>
+                    <a class="page" ng-show="users.users.pages.current() + 1 <= users.users.pages.total()" ng-click="users.users.pages.set(users.users.pages.current() + 1)">{{ users.users.pages.current() + 1}}</a>
+                    <a class="page" ng-show="users.users.pages.current() + 1 <= users.users.pages.total()" ng-click="users.users.pages.set(users.users.pages.current() + 1)"><span class="fa fa-arrow-right"></span></a>
+                    <span class="middle" ng-show="users.users.pages.current() !== users.users.pages.total()">..</span>
+                    <a class="page" href ng-show="users.users.pages.current() !== users.users.pages.total()" ng-click="users.users.pages.set(users.users.pages.total())">{{ users.users.pages.total() }}</a>
+                </div>
+            </div>
             <table class="stripped selectable">
                 <thead>
                 <tr>

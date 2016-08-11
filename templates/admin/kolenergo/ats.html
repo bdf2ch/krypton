@@ -1,0 +1,173 @@
+<columns id="admin-ats">
+
+    <column id="ats-organizations" width="20" caption="организации">
+        <div class="list-item" ng-class="{'active': org._states_.selected() === true}" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-click="kolenergo.organizations.select(org.id.value)">
+            <div class="list-item-icon">
+                <span class="fa fa-building" aria-hidden="true"></span>
+            </div>
+            <div class="list-item-content-lead only" title="{{ org._backup_.data.title }}">{{ org._backup_.data.title }}</div>
+        </div>
+    </column>
+
+    <column id="ats-ats" width="20" caption="АТС">
+        <column-control class="green round" content="fa fa-plus" title="Добавить АТС" action="openNewATSModal" ng-show="kolenergo.organizations.getCurrent() !== undefined"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать АТС" action="openEditATSModal" ng-show="kolenergo.ats.getCurrent() !== undefined"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить АТС" action="openDeleteATSModal" ng-show="kolenergo.ats.getCurrent() !== undefined"></column-control>
+
+        <div class="list-item" ng-class="{'active': ats._states_.selected() === true}" ng-repeat="ats in kolenergo.ats.getAll() | byOrganizationId:kolenergo.organizations.getCurrent().id.value track by $index" ng-click="kolenergo.ats.select(ats.id.value)">
+            <div class="list-item-icon">
+                <span class="fa fa-building" aria-hidden="true"></span>
+            </div>
+            <div class="list-item-content-lead only" title="{{ ats._backup_.data.title }}">{{ ats._backup_.data.title }}</div>
+        </div>
+    </column>
+
+    <column id="ats-codes" width="60" caption="Коды выходов">
+
+        <column-control class="green round" content="fa fa-plus" title="Добавить код выхода АТС" action="openNewATSCodeModal" ng-show="kolenergo.ats.getCurrent() !== undefined"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать код выхода АТС" action="openEditATSCodeModal" ng-show="kolenergo.codes.getCurrent() !== undefined"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить код выхода АТС" action="openDeleteATSCodeModal" ng-show="kolenergo.codes.getCurrent() !== undefined"></column-control>
+
+        <div class="row padding-5">
+            <table>
+                <thead>
+                <tr>
+                    <th>Организация</th>
+                    <th>Исходная АТС</th>
+                    <th>Целевая АТС</th>
+                    <th>Код</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </column>
+
+</columns>
+
+
+<div modal modal-id="new-ats-modal" modal-caption="Новая АТС" modal-on-close="closeNewATSModal">
+    <form name="new_ats" ng-submit="addATS()" novalidate>
+        <div class="padding-10">
+            <div class="row margin-bottom-10">
+                <label for="new-ats-title">Наименование АТС</label>
+                <input type="text" id="new-ats-title" name="title" class="width-100" ng-model="kolenergo.ats.getNew().title.value" required>
+            </div>
+
+            <div class="row">
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="new_ats.$pristine === true || kolenergo.ats.getNew()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-errors" ng-show="new_ats.$invalid && submitted === true">
+            <div class="error" ng-show="new_ats.title.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали наименование АТС
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div modal modal-id="edit-ats-modal" modal-caption="Редактирование АТС" modal-on-close="closeEditATSModal">
+    <form name="edit_ats" ng-submit="editATS()" novalidate>
+        <div class="padding-10">
+            <div class="row margin-bottom-10">
+                <label for="current-ats-title">Наименование АТС</label>
+                <input type="text" id="current-ats-title" name="title" class="width-100" ng-model="kolenergo.ats.getCurrent().title.value" required>
+            </div>
+
+            <div class="row">
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Сохранить" ng-disabled="edit_ats.$pristine === true || kolenergo.ats.getCurrent()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+        <div class="modal-errors" ng-show="edit_ats.$invalid && submitted === true">
+            <div class="error" ng-show="edit_ats.title.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали наименование АТС
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div modal modal-id="new-ats-code-modal" modal-caption="Новый код АТС" modal-on-close="closeNewATSCodeModal">
+    <form name="new_ats_code" ng-submit="addATSCode()" novalidate>
+        <div class="padding-10">
+            <div class="row margin-bottom-10">
+                <label for="new-ats-code-organization">Исходная организация</label>
+                <!--<input type="text" id="new-ats-code-organization" name="title" class="width-100" ng-model="kolenergo.organizations.getCurrent().title.value" disabled>-->
+                <select id="new-ats-code-organization"
+                        class="width-100"
+                        ng-model="kolenergo.organizations.getCurrent().id.value"
+                        ng-options="org.id.value as org.title.value for org in kolenergo.organizations.getAll()">
+                </select>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="new-ats-code-ats">Исходная АТС</label>
+                <!--<input type="text" id="new-ats-code-ats" name="title" class="width-100" ng-model="kolenergo.ats.getCurrent().title.value" disabled>-->
+                <select id="new-ats-code-ats"
+                        class="width-100"
+                        ng-model="kolenergo.codes.getNew().atsId.value"
+                        ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll()">
+                </select>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="new-ats-code-target-organization">Целевая организация</label>
+                <select id="new-ats-code-target-organization"
+                        class="width-100"
+                        ng-model="newATSCodeOrganizationId"
+                        ng-options="org.id.value as org.title.value for org in kolenergo.organizations.getAll()">
+                </select>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="new-ats-code-target-ats">Целевая АТС</label>
+                <select name="target-ats"
+                        id="new-ats-code-target-ats"
+                        class="width-100"
+                        ng-model="kolenergo.codes.getNew().targetAtsId.value"
+                        required
+                        ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll() | byOrganizationId:newATSCodeOrganizationId">
+                </select>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="new-ats-code-code">Код выхода</label>
+                <input type="text" id="new-ats-code-code" name="title" class="width-100" ng-model="kolenergo.codes.getNew().code.value" required>
+            </div>
+
+            <div class="row">
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="new_ats.$pristine === true || kolenergo.ats.getNew()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-errors" ng-show="new_ats_code.$invalid && submitted === true">
+            <div class="error" ng-show="new_ats_code.title.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали наименование АТС
+            </div>
+        </div>
+    </form>
+</div>

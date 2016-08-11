@@ -189,27 +189,27 @@ label.button {
 }
 label.button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 label.button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 label.button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 label.button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 label.button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 label.button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 label.button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 label.button.transparent {
   background: transparent;
@@ -329,44 +329,44 @@ input[type='button'].blue,
 input[type='submit'].blue,
 button.blue {
   color: white;
-  background: #2196f3;
+  background: #2196F3;
 }
 input[type='button'].blue:hover,
 input[type='submit'].blue:hover,
 button.blue:hover {
-  background: #1976d2;
+  background: #1976D2;
 }
 input[type='button'].blue[disabled],
 input[type='submit'].blue[disabled],
 button.blue[disabled] {
-  background: #bbdefb;
+  background: #BBDEFB;
 }
 input[type='button'].green,
 input[type='submit'].green,
 button.green {
   color: white;
-  background: #4caf50;
+  background: #4CAF50;
 }
 input[type='button'].green:hover,
 input[type='submit'].green:hover,
 button.green:hover {
-  background: #388e3c;
+  background: #388E3C;
 }
 input[type='button'].green[disabled],
 input[type='submit'].green[disabled],
 button.green[disabled] {
-  background: #c8e6c9;
+  background: #C8E6C9;
 }
 input[type='button'].red,
 input[type='submit'].red,
 button.red {
   color: white;
-  background: #f44336;
+  background: #F44336;
 }
 input[type='button'].red:hover,
 input[type='submit'].red:hover,
 button.red:hover {
-  background: #d32f2f;
+  background: #D32F2F;
 }
 input[type='button'].transparent,
 input[type='submit'].transparent,
@@ -416,22 +416,22 @@ a:hover {
   color: #1565C0;
 }
 a.green {
-  color: #4caf50;
+  color: #4CAF50;
 }
 a.green:hover {
-  color: #388e3c;
+  color: #388E3C;
 }
 a.red {
-  color: #f44336;
+  color: #F44336;
 }
 a.red:hover {
-  color: #d32f2f;
+  color: #D32F2F;
 }
 a.blue {
-  color: #2196f3;
+  color: #2196F3;
 }
 a.blue:hover {
-  color: #1976d2;
+  color: #1976D2;
 }
 /**********
 ** COLORS
@@ -603,4 +603,35 @@ a.blue:hover {
   font-size: 22px;
   color: #BDBDBD;
   border-bottom: 1px dotted lightgrey;
+}
+/***** PAGINATION *****/
+.pagination {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.pagination a {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  text-decoration: none;
+  color: #2196F3;
+  background: #BBDEFB;
+  cursor: pointer;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.pagination a:hover {
+  color: white;
+  background: #1976D2;
+}
+.pagination a.current {
+  font-weight: bold;
+  color: white;
+  background: #2196F3;
+}
+.pagination .middle {
+  display: inline-block;
+  vertical-align: bottom;
 }

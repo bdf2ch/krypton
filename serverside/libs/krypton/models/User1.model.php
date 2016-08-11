@@ -15,10 +15,12 @@
             self::field("mobile", new Field(array( "source" => "MOBILE_PHONE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("photo", new Field(array( "source" => "PHOTO_URL", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("isAdmin", new Field(array( "source" => "IS_ADMIN", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => false, "defaultValue" => false )));
+
             self::field("ldapEnabled", new Field(array( "source" => "LDAP_ENABLED", "type" => Krypton::DATA_TYPE_BOOLEAN, "value" => true, "defaultValue" => true )));
             self::field("organizationId", new Field(array( "source" => "ORGANIZATION_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("divisionId", new Field(array( "source" => "DIVISION_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("departmentId", new Field(array( "source" => "DEPARTMENT_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("atsId", new Field(array( "source" => "ATS_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
 
             if (is_null($parameters))
                 return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Models -> User -> __construct: Не задан параметр - массив параметров инициализации");

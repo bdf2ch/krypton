@@ -53,9 +53,34 @@
             path: new Field({ source: "PATH", type: DATA_TYPE_STRING, default_value: "", value: "", backupable: true })
         });
 
+        /**
+         * ATS
+         * Набор свойств и методов, описывающих АТС
+         */
+        $classes.add("ATS", {
+            __dependencies__: [],
+            id: new Field({ source: "ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            organizationId: new Field({ source: "ORGANIZATION_ID", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
+            title: new Field({ source: "TITLE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
+        });
+
+        /**
+         * ATSCode
+         * Набор свойств и методов, описывающихкод выхода с одной АТС на другую
+         */
+        $classes.add("ATSCode", {
+            __dependencies__: [],
+            id: new Field({ source: "ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            atsId: new Field({ source: "ATS_ID", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
+            targetAtsId: new Field({ source: "TARGET_ATS_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
+            code: new Field({ source: "CODE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
+        });
+
         var organizations = [];
         var departments = [];
         var divisions = [];
+        var ats = [];
+        var codes = [];
 
         var currentOrganization = undefined;
         var newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
@@ -63,7 +88,10 @@
         var newDepartment = $factory({ classes: ["Department", "Model", "Backup", "States"], base_class: "Department" });
         var currentDivision = undefined;
         var newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
-        var currentOrganizationDivisions = [];
+        var currentATS = undefined;
+        var newATS = $factory({ classes: ["ATS", "Model", "Backup", "States"], base_class: "ATS" });
+        var currentATSCode = undefined;
+        var newATSCode = $factory({ classes: ["ATSCode", "Model", "Backup", "States"], base_class: "ATSCode" });
         
         return {
 
@@ -72,10 +100,13 @@
                 newOrganization._backup_.setup();
                 newDepartment._backup_.setup();
                 newDivision._backup_.setup();
+                newATS._backup_.setup();
+                newATSCode._backup_.setup();
 
-                $classes.getAll().User.organizationId = new Field({ source: "organization_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
-                $classes.getAll().User.departmentId = new Field({ source: "department_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
-                $classes.getAll().User.divisionId = new Field({ source: "division_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
+                $classes.getAll().User.organizationId = new Field({ source: "ORGANIZATION_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
+                $classes.getAll().User.departmentId = new Field({ source: "DEPARTMENT_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
+                $classes.getAll().User.divisionId = new Field({ source: "DIVISION_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
+                $classes.getAll().User.atsId = new Field({ source: "ATS_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
 
                 if (window.krypton !== null && window.krypton !== undefined) {
                     if (window.krypton.organizations !== null && window.krypton.organizations !== undefined) {
@@ -112,9 +143,31 @@
                         }
                         $log.log("divisions = ", divisions);
                     }
+
+                    if (window.krypton.ats !== null && window.krypton.ats !== undefined) {
+                        var length = window.krypton.ats.length;
+                        for (var i = 0; i < length; i++) {
+                            var temp = $factory({ classes: ["ATS", "Model", "Backup", "States"], base_class: "ATS" });
+                            temp._model_.fromAnother(window.krypton.ats[i]);
+                            temp._backup_.setup();
+                            ats.push(temp);
+                        }
+                        $log.log("ats = ", ats);
+                    }
+
+                    if (window.krypton.atsCodes !== null && window.krypton.atsCodes !== undefined) {
+                        var length = window.krypton.atsCodes.length;
+                        for (var i = 0; i < length; i++) {
+                            var temp = $factory({ classes: ["ATSCode", "Model", "Backup", "States"], base_class: "ATSCode" });
+                            temp._model_.fromAnother(window.krypton.atsCodes[i]);
+                            temp._backup_.setup();
+                            codes.push(temp);
+                        }
+                        $log.log("ats codes = ", codes);
+                    }
                 }
 
-                $classes.getAll().User.departmentId = new Field({ source: "departementId", type: "integer", value: 0, default_value: 0, backupable: true, displayable: true, title: "Произв. отделение" });
+                //$classes.getAll().User.departmentId = new Field({ source: "departementId", type: "integer", value: 0, default_value: 0, backupable: true, displayable: true, title: "Произв. отделение" });
 
                 var temp = $factory({ classes: ["Menu", "Model"], base_class: "Menu" });
                 temp.init({
@@ -353,11 +406,13 @@
                                 currentOrganization = organizations[i];
                                 newDepartment.organizationId.value = currentOrganization.id.value;
                                 newDivision.organizationId.value = currentOrganization.id.value;
+                                newATS.organizationId.value = currentOrganization.id.value;
                             } else {
                                 organizations[i]._states_.selected(false);
                                 currentOrganization = undefined;
                                 newDepartment.organizationId.value = 0;
                                 newDivision.organizationId.value = 0;
+                                newATS.organizationId.value = 0;
                             }
                         } else
                             organizations[i]._states_.selected(false);
@@ -689,6 +744,206 @@
                                 }
                             }
                         });
+                }
+            },
+
+            ats: {
+                getAll: function () {
+                    return ats;
+                },
+
+                getCurrent: function () {
+                    return currentATS;
+                },
+
+                getNew: function () {
+                    return newATS;
+                },
+
+                select: function (atsId) {
+                    if (atsId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> ats -> select: Не задан параметр - идентификатор АТС");
+                        return false;
+                    }
+
+                    var length = ats.length;
+                    for (var i = 0; i < length; i++) {
+                        if  (ats[i].id.value === atsId) {
+                            $log.log("div found", ats[i]);
+                            if (ats[i]._states_.selected() === false) {
+                                ats[i]._states_.selected(true);
+                                currentATS = ats[i];
+                                newATSCode.atsId.value = currentATS.id.value;
+                                $log.log("cur ats = ", currentATS);
+                            } else {
+                                ats[i]._states_.selected(false);
+                                currentATS = undefined;
+                                newATSCode.atsId.value = 0;
+                            }
+                        } else
+                            ats[i]._states_.selected(false);
+                    }
+
+                    return true;
+                },
+
+                add: function (callback) {
+                    var params = {
+                        action: "addATS",
+                        organizationId: newATS.organizationId.value,
+                        title: newATS.title.value
+                    };
+
+                    newATS._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            newATS._states_.loading(false);
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var temp = $factory({ classes: ["ATS", "Model", "Backup", "States"], base_class: "ATS" });
+                                    temp._model_.fromAnother(data.result);
+                                    temp._backup_.setup();
+                                    ats.push(temp);
+                                    newATS._backup_.restore();
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback(temp);
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
+                },
+
+                edit: function (callback) {
+                    if (currentATS === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> ats -> edit: Не выбрана текущая АТС");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "editATS",
+                        id: currentATS.id.value,
+                        title: currentATS.title.value
+                    };
+
+                    currentATS._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    currentATS._backup_.setup();
+                                    currentATS._states_.loading(false);
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback();
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
+                }
+            },
+
+            codes: {
+                getAll: function () {
+                    return codes;
+                },
+
+                getCurrent: function () {
+                    return currentATSCode;
+                },
+
+                getNew: function () {
+                    return newATSCode;
+                },
+
+                select: function (codeId) {
+                    if (codeId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> codes -> select: Не задан параметр - идентификатор кода АТС");
+                        return false;
+                    }
+
+                    var length = codes.length;
+                    for (var i = 0; i < length; i++) {
+                        if  (codes[i].id.value === atsId) {
+                            $log.log("code found", codes[i]);
+                            if (codes[i]._states_.selected() === false) {
+                                codes[i]._states_.selected(true);
+                                currentATSCode = codes[i];
+                                $log.log("cur code = ", currentATSCode);
+                            } else {
+                                codes[i]._states_.selected(false);
+                                currentATSCode = undefined;
+                            }
+                        } else
+                            codes[i]._states_.selected(false);
+                    }
+
+                    return true;
+                },
+
+                add: function (callback) {
+                    var params = {
+                        action: "addATSCode",
+                        atsId: newATSCode.atsId.value,
+                        targetAtsId: newATSCode.targetAtsId.value,
+                        code: newATSCode.code.value
+                    };
+
+                    newATSCode._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            newATSCode._states_.loading(false);
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var temp = $factory({ classes: ["ATSCode", "Model", "Backup", "States"], base_class: "ATSCode" });
+                                    temp._model_.fromAnother(data.result);
+                                    temp._backup_.setup();
+                                    codes.push(temp);
+                                    newATSCode._backup_.restore();
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback(temp);
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
+                },
+
+                edit: function (callback) {
+                    if (currentATSCode === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> codes -> edit: Не выбран текущий код АТС");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "editATSCode",
+                        id: currentATSCode.id.value,
+                        targetAtsId: currentATSCode.targetAtsId.value,
+                        code: currentATSCode.code.value
+                    };
+
+                    currentATSCode._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    currentATSCode._backup_.setup();
+                                    currentATSCode._states_.loading(false);
+                                    if (callback !== undefined && typeof callback === "function")
+                                        callback();
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
                 }
             },
 

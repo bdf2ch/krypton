@@ -71,7 +71,7 @@
                                 }
                                 break;
                             case Krypton::DATA_TYPE_STRING:
-                                if (gettype($data[$field -> source]) != "string")
+                                if (gettype($data[$field -> source]) != "string" && $data[$field -> source] != null && $data[$field -> source] != "")
                                     return Errors::push(Errors::ERROR_TYPE_DEFAULT, "Model -> fromSource: Тип значения параметра в наборе данных не соответствует типу значения свойства модели данных {string}");
                                 else {
                                     $field -> value = strval($data[$field -> source]);

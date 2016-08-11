@@ -40,9 +40,6 @@
         $scope.modals = $modals;
         $scope.kolenergo = $kolenergo;
         $scope.newUserGroup = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
-        $scope.search = {
-            keyword: "ss"
-        };
         $scope.searchResult = [];
         
         $scope.$watch("users.users.searchKeyWord", function (newVal, oldVal) {
@@ -51,6 +48,8 @@
                 $users.users.search(function (result) {
                     $scope.searchResult = result;
                 });
+            } else if (newVal.length < 3 && oldVal.length > 2) {
+                $users.users.pages.set(1);
             }
         }, true);
 
@@ -274,8 +273,71 @@
     };
 
 
-    function AdminTelephonesController ($log, $scope, $users) {
+    function AdminATSController ($log, $scope, $users, $kolenergo, $modals) {
         $scope.user = $users;
+        $scope.kolenergo = $kolenergo;
+        $scope.modals = $modals;
+        $scope.submitted = false;
+        $scope.newATSCodeOrganizationId = 0;
+
+        $scope.openNewATSModal = function () {
+            $modals.open("new-ats-modal");
+        };
+
+        $scope.closeNewATSModal = function () {
+            $scope.new_ats.$setValidity();
+            $scope.new_ats.$setPristine();
+            $scope.submitted = false;
+        };
+
+        $scope.addATS = function () {
+            $scope.submitted = true;
+            if ($scope.new_ats.$valid) {
+                $kolenergo.ats.add(function () {
+                    $modals.close();
+                });
+            } 
+        };
+
+        $scope.openEditATSModal = function () {
+            $modals.open("edit-ats-modal");
+        };
+
+        $scope.closeEditATSModal = function () {
+            $scope.edit_ats.$setValidity();
+            $scope.edit_ats.$setPristine();
+            $scope.submitted = false;
+            $kolenergo.ats.getCurrent()._backup_.restore();
+            $kolenergo.ats.getCurrent()._states_.changed(false);
+        };
+
+        $scope.editATS = function () {
+            $scope.submitted = true;
+            if ($scope.edit_ats.$valid) {
+                $kolenergo.ats.edit(function () {
+                    $modals.close();
+                });
+            }
+        };
+
+        $scope.openNewATSCodeModal = function () {
+            $modals.open("new-ats-code-modal");
+        };
+
+        $scope.closeNewATSCodeModal = function () {
+            $scope.new_ats_code.$setValidity();
+            $scope.new_ats_code.$setPristine();
+            $scope.submitted = false;
+        };
+
+        $scope.addATSCode = function () {
+            $scope.submitted = true;
+            if ($scope.new_ats_code.$valid) {
+                $kolenergo.codes.add(function () {
+                    $modals.close();
+                });
+            }
+        };
     };
 
 
@@ -369,19 +431,19 @@
                 .init({
                     id: "phones",
                     parentId: "",
-                    url: "/phones",
-                    templateUrl: "../../templates/admin/kolenergo/phones.html",
-                    controller: AdminTelephonesController,
-                    title: "Тел. справочник",
-                    description : "Управление настройками системы и модулей",
+                    url: "/ats",
+                    templateUrl: "../../templates/admin/kolenergo/ats.html",
+                    controller: AdminATSController,
+                    title: "АТС",
+                    description : "Управление АТС и кодами связи между АТС",
                     icon: "fa-phone"
                 }));
 
 
-        $http.post("../../serverside/libs/krypton/api.php", { action: "test", data: {} })
-            .success(function (data) {
-                $log.log(data);
-            });
+        //$http.post("../../serverside/libs/krypton/api.php", { action: "test", data: {} })
+        //    .success(function (data) {
+        //        $log.log(data);
+        //    });
 
         $log.log(window.krypton);
     };

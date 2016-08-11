@@ -19,6 +19,8 @@
     Krypton::$app -> addInitialData("organizations", json_encode(Extensions::get("Kolenergo") -> getOrganizations()));
     Krypton::$app -> addInitialData("departments", json_encode(Extensions::get("Kolenergo") -> getDepartments()));
     Krypton::$app -> addInitialData("divisions", json_encode(Extensions::get("Kolenergo") -> getDivisions()));
+    Krypton::$app -> addInitialData("ats", json_encode(Extensions::get("Kolenergo") -> getATS()));
+    Krypton::$app -> addInitialData("atsCodes", json_encode(Extensions::get("Kolenergo") -> getATSCodes()));
 
     //var_dump(Sessions::getCurrentUser());
 

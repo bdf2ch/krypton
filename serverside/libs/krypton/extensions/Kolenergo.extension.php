@@ -14,6 +14,8 @@
         public static $organizations = array();
         public static $departments = array();
         public static $divisions = array();
+        public static $ats = array();
+        public static $codes = array();
 
 
 
@@ -108,6 +110,18 @@
                 return false;
             }
 
+            $result = DBManager::create_table("ats");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу 'ats'");
+                return false;
+            }
+
+            $result = DBManager::create_table("ats_codes");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу 'ats_codes'");
+                return false;
+            }
+
             switch (Krypton::getDBType()) {
 
                 case Krypton::DB_TYPE_MYSQL:
@@ -190,6 +204,36 @@
                         return false;
                     }
 
+                    $result = DBManager::add_column("ats", "ORGANIZATION_ID", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ORGANIZATION_ID' в таблицу 'ats'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("ats", "TITLE", "varchar(11) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'TITLE' в таблицу 'ats'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("ats_codes", "ATS_ID", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ATS_ID' в таблицу 'ats_codes'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("ats_codes", "TARGET_ATS_ID", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'TARGET_ATS_ID' в таблицу 'ats_codes'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("ats_codes", "CODE", "varchar(11) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'CODE' в таблицу 'ats_codes'");
+                        return false;
+                    }
+
                     break;
 
                 case Krypton::DB_TYPE_ORACLE:
@@ -209,6 +253,18 @@
                     $result = DBManager::add_sequence("seq_divisions", 1, 1);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_divisions'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_ats", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_ats'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_ats_codes", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_ats_codes'");
                         return false;
                     }
 
@@ -308,6 +364,36 @@
                         return false;
                     }
 
+                    $result = DBManager::add_column("ats", "ORGANIZATION_ID", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ORGANIZATION_ID' в таблицу 'ats'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("ats", "TITLE", "VARCHAR2(500) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'TITLE' в таблицу 'ats'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("ats_codes", "ATS_ID", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ATS_ID' в таблицу 'ats_codes'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("ats_codes", "TARGET_ATS_ID", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'TARGET_ATS_ID' в таблицу 'ats_codes'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("ats_codes", "CODE", "VARCHAR2(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'CODE' в таблицу 'ats_codes'");
+                        return false;
+                    }
+
                     break;
             }
 
@@ -366,6 +452,9 @@
             API::add("addDivision", "Kolenergo", "addDivision");
             API::add("editDivision", "Kolenergo", "editDivision");
             API::add("deleteDivision", "Kolenergo", "deleteDivision");
+            API::add("addATS", "Kolenergo", "addATS");
+            API::add("editATS", "Kolenergo", "editATS");
+            API::add("addATSCode", "Kolenergo", "addATSCode");
             API::add("uploadUserPhoto", "Kolenergo", "uploadUserPhoto");
             API::add("login", "Kolenergo", "login");
             API::add("getUsersByDivisionId", "Kolenergo", "getUsersByDivisionId");
@@ -404,6 +493,24 @@
                         $division = Models::load("Division", false);
                         $division -> fromSource($item);
                         array_push(self::$divisions, $division);
+                    }
+                }
+
+                $ats = DBManager::select("ats", ["*"], "''");
+                if ($ats != false) {
+                    foreach ($ats as $key => $item) {
+                        $temp = Models::load("ATS", false);
+                        $temp -> fromSource($item);
+                        array_push(self::$ats, $temp);
+                    }
+                }
+
+                $codes = DBManager::select("ats_codes", ["*"], "''");
+                if ($codes != false) {
+                    foreach ($codes as $key => $item) {
+                        $temp = Models::load("ATSCode", false);
+                        $temp -> fromSource($item);
+                        array_push(self::$codes, $temp);
                     }
                 }
             }
@@ -1034,6 +1141,137 @@
 
 
 
+        public static function getATS () {
+            return self::$ats;
+        }
+
+
+
+        public static function addATS ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> addATS: Не задан аргумент - объект с параметрами");
+                return false;
+            }
+
+            $organizationId = $data -> organizationId;
+            $title = $data -> title;
+            $ats = Models::construct("ATS", false);
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+                    $id = DBManager::sequence_next("seq_ats");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addATS: Не удалось получить следующее значение последовательности 'seq_ats'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("ats", ["ID", "ORGANIZATION_ID", "TITLE"], [$id, $organizationId, "'$title'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addATS: Не удвлось добавить АТС");
+                        return false;
+                    }
+
+                    $result = DBManager::select("ats", ["*"], "ID = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addATS: Не удалось выбрать добавленную АТС");
+                        return false;
+                    }
+
+                    $ats -> fromSource($result[0]);
+                    array_push(self::$ats, $ats);
+                    return $ats;
+
+                    break;
+            }
+        }
+
+
+
+
+
+        /**
+        * Сохраняет изменения в измененнной АТС
+        * @data {object} - объект с информацией о редактируемой АТС
+        **/
+        public function editATS ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> editATS: Не задан аргумент - объект с параметрами");
+                return false;
+            }
+
+            $id = $data -> id;
+            $title = $data -> title;
+
+            $result = DBManager::update("ats", ["TITLE"], ["'$title'"], "ID = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editATS: Не удалось сохранить измененную АТС");
+                return false;
+            }
+
+            $result = DBManager::select("ats", ["*"], "ID = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editATS: Не удалось выбрать отредактированную АТС");
+                return false;
+            }
+
+            $ats = Models::construct("ATS", false);
+            $ats -> fromSource($result[0]);
+            return $ats;
+        }
+
+
+
+
+
+        public static function getATSCodes () {
+            return self::$codes;
+        }
+
+
+
+
+        public static function addATSCode ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> addATSCode: Не задан аргумент - объект с параметрами");
+                return false;
+            }
+
+            $atsId = $data -> atsId;
+            $targetAtsId = $data -> targetAtsId;
+            $code = $data -> code;
+            $atsCode = Models::construct("ATSCode", false);
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+                    $id = DBManager::sequence_next("seq_ats_codes");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addATSCode: Не удалось получить следующее значение последовательности 'seq_ats_codes'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("ats_codes", ["ID", "ATS_ID", "TARGET_ATS_ID", "CODE"], [$id, $atsId, $targetAtsId, "'$code'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addATSCode: Не удалось добавить код АТС");
+                        return false;
+                    }
+
+                    $result = DBManager::select("ats_codes", ["*"], "ID = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addATSCode: Не удалось выбрать добавленный код АТС");
+                        return false;
+                    }
+
+                    $atsCode -> fromSource($result[0]);
+                    array_push(self::$codes, $atsCode);
+                    return $atsCode;
+
+                    break;
+            }
+        }
 
     };
 

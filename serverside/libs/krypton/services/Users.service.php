@@ -6,6 +6,7 @@
         public static $clientSideExtensionUrl = "modules/app/krypton.app.users.js";
         private static $items = array();
         private static $groups = array();
+        private static $itemsOnPage = 25;
 
 
 
@@ -352,6 +353,7 @@
         **/
         public static function init () {
 
+            /*
             $users = DBManager::select("kr_users", ["*"], "'LIMIT 20'");
             if ($users != false) {
                 foreach ($users as $key => $item) {
@@ -360,6 +362,7 @@
                     array_push(self::$items, $user);
                 }
             }
+            */
 
 
             $groups = DBManager::select("kr_user_groups", ["*"], "''");
@@ -376,6 +379,7 @@
             API::add("deleteUserGroup", "Users", "deleteGroup");
             API::add("editUser", "Users", "editUser");
             API::add("searchUser", "Users", "search");
+            API::add("getPageOfUsers", "Users", "getPageOfUsers");
         }
 
 
@@ -383,15 +387,49 @@
         public static function getInitialData () {
             $result = new stdClass();
             $result -> users = array();
-            $result -> total = 0;
+            $result -> groups = array();
+            $result -> itemsOnPage = self::$itemsOnPage;
 
-            $total = DBManager::select("kr_users", ["COUNT(*)"], "''");
+            $total = DBManager::count("kr_users");
             if (!$total) {
                 Errors:;push(Errors::ERROR_TYPE_ENGINE, "Users -> getInitialData: Не удалось получить общее количество пользователей");
                 return false;
             }
+            $result -> total = $total;
 
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+                    $users = DBManager::select("kr_users", ["*"], "LIMIT 25");
+                    if ($users != false) {
+                        foreach ($users as $key => $item) {
+                            $user = Models::construct("User1", false);
+                            $user -> fromSource($item);
+                            array_push($result -> users, $user);
+                        }
+                    }
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+                    $users = DBManager::select("kr_users", ["*"], "!NOWHERE! ORDER BY SURNAME OFFSET 0 ROWS FETCH NEXT ".self::$itemsOnPage." ROWS ONLY");
+                    if ($users != false) {
+                        foreach ($users as $key => $item) {
+                            $user = Models::construct("User1", false);
+                            $user -> fromSource($item);
+                            array_push($result -> users, $user);
+                        }
+                    }
+                    break;
+            }
 
+            $groups = DBManager::select("kr_user_groups", ["*"], "''");
+            if ($groups != false) {
+                foreach ($groups as $key => $item) {
+                    $group = Models::construct("UserGroup", false);
+                    $group -> fromSource($item);
+                    array_push($result -> groups, $group);
+                }
+            }
+
+            return $result;
         }
 
 
@@ -690,7 +728,7 @@
             $userGroupId = $data -> userGroupId;
             $search = $data -> search;
 
-            $result = DBManager::select("kr_users", ["*"], "LOWER(SURNAME) LIKE '%' || LOWER('$search') || '%'");
+            $result = DBManager::select("kr_users", ["*"], "LOWER(SURNAME) || ' ' || LOWER(NAME) || ' ' || LOWER(FNAME) || ' ' || LOWER(EMAIL) LIKE '%' || LOWER('$search') || '%'");
             if ($result != false) {
                 $users = array();
                 $length = sizeof($result);
@@ -701,6 +739,44 @@
                 }
                 return $users;
             }
+        }
+
+
+        public static function getPageOfUsers ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getPageOfUsers: Не задан аргумент - объект с параметрами");
+                return false;
+            }
+
+            $start = $data -> start;
+            $size = $data -> size;
+            $end = $start + $size;
+            $result = array();
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+                    $users = DBManager::select("kr_users", ["*"], "!NOWHERE! LIMIT $start, $size");
+                    if ($users != false) {
+                        foreach ($users as $key => $item) {
+                            $user = Models::construct("User1", false);
+                            $user -> fromSource($item);
+                            array_push($result, $user);
+                        }
+                    }
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+                    $users = DBManager::select("kr_users", ["*"], "!NOWHERE! OFFSET $start ROWS FETCH NEXT $size ROWS ONLY");
+                    if ($users != false) {
+                        foreach ($users as $key => $item) {
+                            $user = Models::construct("User1", false);
+                            $user -> fromSource($item);
+                            array_push($result, $user);
+                        }
+                    }
+                    break;
+            }
+
+            return $result;
         }
 
     };

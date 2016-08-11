@@ -694,7 +694,20 @@
             }
 
             $cols = "";
-            $cond = $condition != "''" ? " WHERE ".$condition : "";
+            //$cond = $condition != "''" ? " WHERE ".$condition : "";
+            //$cond .= $condition != "''" && strpos($condition, "!NOWHERE!") != false ? " ".$condition : " WHERE ".$condition;
+            $cond = "";
+            if ($condition != "''") {
+                $start = strpos($condition, "!NOWHERE!");
+                //echo("start = ".var_dump($start)."</br>");
+                if (gettype($start) != "boolean")
+                    $cond .= " ".substr($condition, ($start + 9));
+                else
+                    $cond .= " WHERE ".$condition;
+            } else
+                $cond = "";
+
+            //echo("condition = ".$cond."</br>");
             foreach ($columns as $key => $column) {
                 $cols .= $column;
                 $cols .= $key < count($columns) - 1 ? ", " : "";
@@ -1089,6 +1102,32 @@
                         $total = $res["TOTAL"];
                         return intval($total);
                     }
+                    break;
+            }
+        }
+
+
+
+        public static function sql ($sql) {
+            if ($sql == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> sql: Не задан параметр - выражение sql");
+                return false;
+            }
+
+            if (gettype($sql) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "DB -> sql: Неверно задан тип параметра - выражение sql");
+                return false;
+            }
+
+            if (!self::is_connected()) {
+                Errors::push(Errors::ERROR_TYPE_DATABASE, "DB -> sql: Отсутствует соединение с БД");
+                return false;
+            }
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
                     break;
             }
         }

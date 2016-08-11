@@ -1590,34 +1590,89 @@ function isField (obj) {
         var groups = [];
         var currentGroup = undefined;
         var currentUser = undefined;
-        var start = 0;
-        var limit = 15;
+
+        var total = 0;
+        var itemsOnPage = 0;
+        var pages = 0;
+        var currentPage = 1;
         var searchKeyWord = "";
 
+
+        /**
+         * Получает набор пользователей выбранной страницы
+         * @param callback {function} - callиack-функция
+         */
+        var getPageOfUsers = function (callback) {
+            var start = itemsOnPage * currentPage - itemsOnPage;
+
+            var params = {
+                action: "getPageOfUsers",
+                start: start,
+                size: itemsOnPage
+            };
+
+            $http.post("/serverside/libs/krypton/api.php", params)
+                .success(function (data) {
+                    if (data !== undefined && data !== null) {
+                        $errors.checkResponse(data);
+                        if (data.result !== undefined && data.result !== false) {
+                            $log.log(data);
+                            users = [];
+                            var length = data.result.length;
+                            for (var i = 0; i < length; i++) {
+                                var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+                                user._model_.fromAnother(data.result[i]);
+                                user._backup_.setup();
+                                users.push(user);
+                            }
+                            if (callback !== undefined && typeof callback === "function")
+                                callback(users);
+                            return true;
+                        } else
+                            return false;
+                    }
+                });
+        };
+        
+        
+
         return {
+
+            /**
+             * Производит инициализацию сервиса
+             */
             init: function () {
                 if (window.krypton !== null && window.krypton !== undefined) {
-                    if (window.krypton.users !== null && window.krypton.users !== undefined) {
-                        var length = window.krypton.users.length;
+                    if (window.krypton.users.users !== null && window.krypton.users.users !== undefined) {
+                        var length = window.krypton.users.users.length;
                         for (var i = 0; i < length; i++) {
                             var user = $factory({ classes: ["User", "Model", "States", "Backup"], base_class: "User" });
-                            user._model_.fromAnother(window.krypton.users[i]);
+                            user._model_.fromAnother(window.krypton.users.users[i]);
                             user._backup_.setup();
                             users.push(user);
                         }
-                        $log.log("users = ", users);
                     }
 
-                    if (window.krypton.userGroups !== null && window.krypton.userGroups !== undefined) {
-                        var length = window.krypton.userGroups.length;
+                    if (window.krypton.users.groups !== null && window.krypton.users.groups !== undefined) {
+                        var length = window.krypton.users.groups.length;
                         for (var i = 0; i < length; i++) {
                             var group = $factory({ classes: ["UserGroup", "Model", "States", "Backup"], base_class: "UserGroup" });
-                            group._model_.fromAnother(window.krypton.userGroups[i]);
+                            group._model_.fromAnother(window.krypton.users.groups[i]);
                             group._backup_.setup();
                             groups.push(group);
                         }
-                        $log.log("groups = ", groups);
                     }
+
+                    if (window.krypton.users.total !== null && window.krypton.users.total !== undefined) {
+                        total = window.krypton.users.total;
+                    }
+
+                    if (window.krypton.users.itemsOnPage !== null && window.krypton.users.itemsOnPage !== undefined) {
+                        itemsOnPage = window.krypton.users.itemsOnPage;
+                    }
+
+                    pages = Math.ceil(total / itemsOnPage);
+                    $log.log("pages = ", pages);
                 }
             },
             
@@ -1728,10 +1783,6 @@ function isField (obj) {
 
                     return false;
                 },
-                
-                getNextPage: function () {
-                    
-                },
 
                 /**
                  * Выбирает текуего пользователя
@@ -1840,6 +1891,32 @@ function isField (obj) {
                                     return false;
                             }
                         });
+                },
+
+                pages: {
+                    total: function () {
+                        return pages;
+                    },
+                    current: function () {
+                        return currentPage;
+                    },
+                    set: function (page) {
+                        if (page === undefined) {
+                            $errors.add(ERROR_TYPE_DEFAULT, "$users -> users -> pages -> set: Не задан параметр - номер страницы");
+                            return false;
+                        }
+
+                        currentPage = page;
+                        getPageOfUsers();
+                    },
+                    prev: function () {
+                        currentPage--;
+                        return currentPage;
+                    },
+                    next: function () {
+                        currentPage++;
+                        return currentPage;
+                    }
                 }
             },
 

@@ -780,3 +780,42 @@ table {
 }
 
 
+
+/***** PAGINATION *****/
+.pagination {
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+
+  a {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    text-decoration: none;
+    color: @color-blue;
+    background: @color-light-blue;
+    cursor: pointer;
+    border-radius: 4px;
+    box-sizing: border-box;
+
+    &:hover {
+      color: white;
+      background: @color-blue-hover;
+    }
+
+    &.current {
+      font-weight: bold;
+      color: white;
+      background: @color-blue;
+    }
+  }
+
+  .middle {
+    display: inline-block;
+    vertical-align: bottom;
+  }
+}
+
+
