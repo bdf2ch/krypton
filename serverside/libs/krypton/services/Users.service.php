@@ -727,17 +727,28 @@
 
             $userGroupId = $data -> userGroupId;
             $search = $data -> search;
+            $answer = new stdClass();
+            $answer -> users = array();
+            $answer -> phones = array();
 
-            $result = DBManager::select("kr_users", ["*"], "LOWER(SURNAME) || ' ' || LOWER(NAME) || ' ' || LOWER(FNAME) || ' ' || LOWER(EMAIL) LIKE '%' || LOWER('$search') || '%'");
+            $result = DBManager::select("kr_users", ["*"], "LOWER(SURNAME) || ' ' || LOWER(NAME) || ' ' || LOWER(FNAME) || ' ' || LOWER(EMAIL) LIKE '%' || LOWER('$search') || '%' AND IS_DISPLAYABLE = 1 ORDER BY SURNAME");
             if ($result != false) {
-                $users = array();
+                //$users = array();
                 $length = sizeof($result);
                 for ($i = 0; $i < $length; $i++) {
                     $user = Models::construct("User1", false);
                     $user -> fromSource($result[$i]);
-                    array_push($users, $user);
+                    array_push($answer -> users, $user);
+                    $phones = DBManager::select("phones", ["*"], "USER_ID = ".$user -> id -> value);
+                    if ($phones != false) {
+                        foreach ($phones as $key => $item) {
+                            $phone = Models::construct("Phone", false);
+                            $phone -> fromSource($item);
+                            array_push($answer -> phones, $phone);
+                        }
+                    }
                 }
-                return $users;
+                return $answer;
             }
         }
 

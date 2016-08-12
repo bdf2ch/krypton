@@ -11,6 +11,8 @@
 
     $ldap_host = "10.50.0.1";
 
+    $extensions_dir = $_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR."serverside".DIRECTORY_SEPARATOR."libs".DIRECTORY_SEPARATOR."krypton".DIRECTORY_SEPARATOR."extensions";
+
     function __autoload($class) {
         if (defined("ENGINE_INSTALL_MODE")) {
             if (file_exists($_SERVER["DOCUMENT_ROOT"]."/serverside/libs/krypton/classes/".$class.".class.php"))

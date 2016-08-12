@@ -10,7 +10,10 @@
         .filter("byOrganizationId", byOrganizationIdFilter)
         .filter("byDepartmentId", byDepartmentIdFilter)
         .filter("byDivisionId", byDivisionIdFilter)
+        .filter("byATSId", byATSIdFilter)
+        .filter("byUserId", byUserIdFilter)
         .filter("phoneBook", phoneBookFilter)
+        .directive("notZero", notZeroDirective)
         .run(kolenergoRun);
 
 
@@ -76,11 +79,24 @@
             code: new Field({ source: "CODE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
         });
 
+        /**
+         * Phone
+         * Набор свойств и методов, описывающихкод выхода с одной АТС на другую
+         */
+        $classes.add("Phone", {
+            __dependencies__: [],
+            id: new Field({ source: "ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            atsId: new Field({ source: "ATS_ID", type: DATA_TYPE_INTEGER, default_value: 0, value: 0, backupable: true }),
+            userId: new Field({ source: "USER_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true }),
+            phone: new Field({ source: "PHONE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
+        });
+
         var organizations = [];
         var departments = [];
         var divisions = [];
         var ats = [];
         var codes = [];
+        var phones = [];
 
         var currentOrganization = undefined;
         var newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
@@ -92,6 +108,8 @@
         var newATS = $factory({ classes: ["ATS", "Model", "Backup", "States"], base_class: "ATS" });
         var currentATSCode = undefined;
         var newATSCode = $factory({ classes: ["ATSCode", "Model", "Backup", "States"], base_class: "ATSCode" });
+        var currentPhone = undefined;
+        var newPhone = $factory({ classes: ["Phone", "Model", "Backup", "States"], base_class: "Phone" });
         
         return {
 
@@ -102,6 +120,7 @@
                 newDivision._backup_.setup();
                 newATS._backup_.setup();
                 newATSCode._backup_.setup();
+                newPhone._backup_.setup();
 
                 $classes.getAll().User.organizationId = new Field({ source: "ORGANIZATION_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
                 $classes.getAll().User.departmentId = new Field({ source: "DEPARTMENT_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0, backupable: true });
@@ -384,6 +403,21 @@
 
                 getNew: function () {
                     return newOrganization;
+                },
+
+                getById: function (organizationId) {
+                    if (organizationId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> organizations -> getById: Не задан параметр - идентификатор организации");
+                        return false;
+                    }
+
+                    var length = organizations.length;
+                    for (var i = 0; i < length; i++) {
+                        if (organizations[i].id.value === organizationId)
+                            return organizations[i];
+                    }
+
+                    return false;
                 },
 
                 /**
@@ -760,6 +794,21 @@
                     return newATS;
                 },
 
+                getById: function (atsId) {
+                    if (atsId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> ats -> getById: Не задан идентификатор АТС");
+                        return false;
+                    }
+
+                    var length = ats.length;
+                    for (var i = 0; i < length; i++) {
+                        if (ats[i].id.value === atsId)
+                            return ats[i];
+                    }
+
+                    return false;
+                },
+
                 select: function (atsId) {
                     if (atsId === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> ats -> select: Не задан параметр - идентификатор АТС");
@@ -868,7 +917,7 @@
 
                     var length = codes.length;
                     for (var i = 0; i < length; i++) {
-                        if  (codes[i].id.value === atsId) {
+                        if  (codes[i].id.value === codeId) {
                             $log.log("code found", codes[i]);
                             if (codes[i]._states_.selected() === false) {
                                 codes[i]._states_.selected(true);
@@ -944,6 +993,135 @@
                         });
 
                     return false;
+                }
+            },
+
+            phones: {
+                getAll: function () {
+                    return phones;
+                },
+
+                getCurrent: function () {
+                    return currentPhone;
+                },
+
+                getNew: function () {
+                    return newPhone;
+                },
+
+                getByUserId: function (userId) {
+                    if (userId === null) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> phones -> getByUserId: Не задан параметр - идентификатор пользователя");
+                        return false;
+                    }
+
+                    var result = [];
+                    var length = phones.length;
+                    for (var i = 0; i < length; i++) {
+                        if (phones[i].userId.value === userId)
+                            result.push(phones[i]);
+                    }
+
+                    return result;
+                },
+
+                select: function (phoneId) {
+                    if (phoneId === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> phones -> select: Не задан параметр - идентификатор телефона");
+                        return false;
+                    }
+
+                    var length = phones.length;
+                    for (var i = 0; i < length; i++) {
+                        if  (phones[i].id.value === phoneId) {
+                            $log.log("phone found", phones[i]);
+                            if (phones[i]._states_.selected() === false) {
+                                phones[i]._states_.selected(true);
+                                currentPhone = phones[i];
+                            } else {
+                                phones[i]._states_.selected(false);
+                                currentPhone = undefined;
+                            }
+                        } else
+                            phones[i]._states_.selected(false);
+                    }
+
+                    return true;
+                },
+                
+                append: function (phone) {
+                    if (phone === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> phones -> add: Не задан параметр - телефон пользователя");
+                        return false;
+                    }
+                    
+                    phones.push(phone);
+                },
+
+                add: function (callback) {
+                    var params = {
+                        action: "addPhone",
+                        atsId: newPhone.atsId.value,
+                        userId: newPhone.userId.value,
+                        phone: newPhone.phone.value
+                    };
+
+                    newPhone._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            newPhone._states_.loading(false);
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var temp = $factory({ classes: ["Phone", "Model", "Backup", "States"], base_class: "Phone" });
+                                    temp._model_.fromAnother(data.result);
+                                    temp._backup_.setup();
+                                    phones.push(temp);
+                                    newPhone._backup_.restore();
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback(temp);
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;    
+                },
+
+                edit: function (callback) {
+                    if (currentPhone === undefined) {
+                        $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> phones -> edit: Не выбран текущий телефонС");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "editPhone",
+                        id: currentPhone.id.value,
+                        atsId: currentPhone.atsId.value,
+                        phone: currentPhone.phone.value
+                    };
+
+                    currentPhone._states_.loading(true);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    currentPhone._backup_.setup();
+                                    currentPhone._states_.loading(false);
+                                    if (callback !== undefined && typeof  callback === "function")
+                                        callback();
+                                    return true;
+                                }
+                            }
+                        });
+
+                    return false;
+                },
+
+                clear: function () {
+                    phones = [];
+                    return true;
                 }
             },
 
@@ -1756,6 +1934,35 @@
         }
     };
 
+    function byATSIdFilter ($log) {
+        return function (input, id) {
+            if (id !== undefined || id !== 0) {
+                var result = [];
+                var length = input.length;
+                for (var i = 0; i < length; i++) {
+                    if (input[i].atsId.value === id)
+                        result.push(input[i]);
+                }
+                    return result;
+            } else 
+                return [];
+        }
+    };
+
+    function byUserIdFilter () {
+        return function (input, id) {
+            if (id !== undefined || id !== 0) {
+                var result = [];
+                var length = input.length;
+                for (var i = 0; i < length; i++) {
+                    if (input[i].userId.value === id)
+                        result.push(input[i]);
+                }
+                return result;
+            }
+        }
+    };
+
     
     function phoneBookFilter ($log, $kolenergo) {
         return function (input, search) {
@@ -1782,6 +1989,31 @@
                 return result;
             } else if ($kolenergo.divisions.getCurrent() !== undefined && search.length === 0) {
                 return input;
+            }
+        }
+    };
+
+
+
+    function notZeroDirective ($log) {
+        return {
+            restrict: "A",
+            require: "?ngModel",
+            link: function (scope, element, attrs, ngModel) {
+                if (!ngModel)
+                    return;
+
+                $log.log(ngModel);
+
+
+                scope.$watch(attrs.ngModel, function (val) {
+                    $log.log("ngModel = ", val);
+                    if (val === 0)
+                        ngModel.$setValidity("zero", false);
+                    else
+                        ngModel.$setValidity("zero", true);
+                });
+
             }
         }
     };

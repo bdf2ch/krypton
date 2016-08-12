@@ -43,12 +43,13 @@
 
 
               self::$app -> run();
-
+                        //Extensions::init();
                         Settings::init();
                         Permissions::init();
                         Users::init();
                         Sessions::init();
                         Files::init();
+
 
 
             $template = "/serverside/templates/application.html";

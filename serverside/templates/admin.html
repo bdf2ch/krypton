@@ -55,7 +55,7 @@
 
         <a class="menu-item" ng-href="{{ '#' + menu.url }}" ng-class="{ 'active': menu.isActive === true }" title="{{ menu.description }}" ng-show="menu.parentId === ''" ng-repeat="menu in navigation.getAll() track by $index">
             <span class="{{ 'fa ' + menu.icon }}"></span>
-            &nbsp;{{ menu.title }}
+            &nbsp;&nbsp;{{ menu.title }}
         </a>
     </div>
 

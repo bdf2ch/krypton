@@ -122,6 +122,12 @@
                 return false;
             }
 
+            $result = DBManager::create_table("phones");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу 'phones'");
+                return false;
+            }
+
             switch (Krypton::getDBType()) {
 
                 case Krypton::DB_TYPE_MYSQL:
@@ -144,7 +150,7 @@
                         return false;
                     }
 
-                    $result = DBManager::add_column("organizations", "title", "varchar(500) NOT NULL default ''");
+                    $result = DBManager::add_column("organizations", "title", "varchar(500) NOT NULL default ' '");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'organizations'");
                         return false;
@@ -156,7 +162,7 @@
                         return false;
                     }
 
-                    $result = DBManager::add_column("departments", "title", "varchar(500) NOT NULL default ''");
+                    $result = DBManager::add_column("departments", "title", "varchar(500) NOT NULL default ' '");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'departments'");
                         return false;
@@ -180,7 +186,7 @@
                         return false;
                     }
 
-                    $result = DBManager::add_column("divisions", "title", "varchar(500) NOT NULL default ''");
+                    $result = DBManager::add_column("divisions", "title", "varchar(500) NOT NULL default ' '");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'divisions'");
                         return false;
@@ -210,7 +216,7 @@
                         return false;
                     }
 
-                    $result = DBManager::add_column("ats", "TITLE", "varchar(11) NOT NULL default ''");
+                    $result = DBManager::add_column("ats", "TITLE", "varchar(11) NOT NULL default ' '");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'TITLE' в таблицу 'ats'");
                         return false;
@@ -228,9 +234,27 @@
                         return false;
                     }
 
-                    $result = DBManager::add_column("ats_codes", "CODE", "varchar(11) NOT NULL default ''");
+                    $result = DBManager::add_column("ats_codes", "CODE", "varchar(200) NOT NULL default ' '");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'CODE' в таблицу 'ats_codes'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("phones", "ATS_ID", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ATS_ID' в таблицу 'phones'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("phones", "USER_ID", "int(11) NOT NULL default 0");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'USER_ID' в таблицу 'phones'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("phones", "PHONE", "varchar(200) NOT NULL default ' '");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'PHONE' в таблицу 'phones'");
                         return false;
                     }
 
@@ -265,6 +289,12 @@
                     $result = DBManager::add_sequence("seq_ats_codes", 1, 1);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_ats_codes'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_sequence("seq_phones", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_phones'");
                         return false;
                     }
 
@@ -394,6 +424,24 @@
                         return false;
                     }
 
+                    $result = DBManager::add_column("phones", "ATS_ID", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ATS_ID' в таблицу 'phones'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("phones", "USER_ID", "INT DEFAULT 0 NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'USER_ID' в таблицу 'phones'");
+                        return false;
+                    }
+
+                    $result = DBManager::add_column("phones", "PHONE", "VARCHAR2(200) NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'PHONE' в таблицу 'phones'");
+                        return false;
+                    }
+
                     break;
             }
 
@@ -455,6 +503,8 @@
             API::add("addATS", "Kolenergo", "addATS");
             API::add("editATS", "Kolenergo", "editATS");
             API::add("addATSCode", "Kolenergo", "addATSCode");
+            API::add("addPhone", "Kolenergo", "addPhone");
+            API::add("editPhone", "Kolenergo", "editPhone");
             API::add("uploadUserPhoto", "Kolenergo", "uploadUserPhoto");
             API::add("login", "Kolenergo", "login");
             API::add("getUsersByDivisionId", "Kolenergo", "getUsersByDivisionId");
@@ -1271,6 +1321,84 @@
 
                     break;
             }
+        }
+
+
+
+        public static function addPhone ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> addPhone: Не задан аргумент - объект с параметрами");
+                return false;
+            }
+
+            $atsId = $data -> atsId;
+            $userId = $data -> userId;
+            $phone = $data -> phone;
+            $temp = Models::construct("Phone", false);
+
+            switch (Krypton::getDBType()) {
+                case Krypton::DB_TYPE_MYSQL:
+                    break;
+                case Krypton::DB_TYPE_ORACLE:
+                    $id = DBManager::sequence_next("seq_phones");
+                    if (!$id) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addPhone: Не удалось получить следующее значение последовательности 'seq_phones'");
+                        return false;
+                    }
+
+                    $result = DBManager::insert_row("phones", ["ID", "ATS_ID", "USER_ID", "PHONE"], [$id, $atsId, $userId, "'$phone'"]);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addPhone: Не удалось добавить телефон");
+                        return false;
+                    }
+
+                    $result = DBManager::select("phones", ["*"], "ID = $id");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addPhone: Не удалось выбрать добавленный телефон");
+                        return false;
+                    }
+
+                    $temp -> fromSource($result[0]);
+                    //array_push(self::$phones, $temp);
+                    return $temp;
+
+                    break;
+            }
+        }
+
+
+
+
+        /**
+        * Сохраняет Измененный телефон
+        * @data {object} - объект с информацией о телефоне
+        **/
+        public function editPhone ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> editPhone: Не задан аргумент - объект с параметрами");
+                return false;
+            }
+
+            $id = $data -> id;
+            $atsId = $data -> atsId;
+            //$userId = $data -> userId;
+            $phone = $data -> phone;
+
+            $result = DBManager::update("phones", ["ATS_ID", "PHONE"], [$atsId, "'$phone'"], "ID = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editPhone: Не удалось сохранить измененный телефоне");
+                return false;
+            }
+
+            $result = DBManager::select("phones", ["*"], "ID = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editPhone: Не удалось выбрать измененный телефон");
+                return false;
+            }
+
+            $temp = Models::construct("Phone", false);
+            $temp -> fromSource($result[0]);
+            return $temp;
         }
 
     };

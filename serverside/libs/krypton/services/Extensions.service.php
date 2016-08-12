@@ -40,11 +40,17 @@
 
 
         public static function init () {
+            global $extensions_dir;
+            //$files = scandir($extensions_dir);
+            //var_dump($files);
+
             Services::register(get_called_class());
             foreach (Krypton::$extensions as $key => $ext) {
                 $extension = new $ext();
                 $extension::init();
             }
+
+            //return true;
         }
 
 

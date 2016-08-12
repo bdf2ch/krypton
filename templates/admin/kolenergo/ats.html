@@ -14,9 +14,13 @@
         <column-control class="blue round" content="fa fa-pencil" title="Редактировать АТС" action="openEditATSModal" ng-show="kolenergo.ats.getCurrent() !== undefined"></column-control>
         <column-control class="red round" content="fa fa-times" title="Удалить АТС" action="openDeleteATSModal" ng-show="kolenergo.ats.getCurrent() !== undefined"></column-control>
 
+        <div class="system-info" ng-show="kolenergo.organizations.getCurrent() === undefined">
+            <span class="fa fa-building" aria-hidden="true"></span>&nbsp; Выберите организацию
+        </div>
+
         <div class="list-item" ng-class="{'active': ats._states_.selected() === true}" ng-repeat="ats in kolenergo.ats.getAll() | byOrganizationId:kolenergo.organizations.getCurrent().id.value track by $index" ng-click="kolenergo.ats.select(ats.id.value)">
             <div class="list-item-icon">
-                <span class="fa fa-building" aria-hidden="true"></span>
+                <span class="fa fa-phone-square" aria-hidden="true"></span>
             </div>
             <div class="list-item-content-lead only" title="{{ ats._backup_.data.title }}">{{ ats._backup_.data.title }}</div>
         </div>
@@ -24,26 +28,31 @@
 
     <column id="ats-codes" width="60" caption="Коды выходов">
 
-        <column-control class="green round" content="fa fa-plus" title="Добавить код выхода АТС" action="openNewATSCodeModal" ng-show="kolenergo.ats.getCurrent() !== undefined"></column-control>
+        <column-control class="green round" content="fa fa-plus" title="Добавить код выхода АТС" ng-show="kolenergo.codes.getNew().atsId.value !== 0" action="openNewATSCodeModal"></column-control>
         <column-control class="blue round" content="fa fa-pencil" title="Редактировать код выхода АТС" action="openEditATSCodeModal" ng-show="kolenergo.codes.getCurrent() !== undefined"></column-control>
         <column-control class="red round" content="fa fa-times" title="Удалить код выхода АТС" action="openDeleteATSCodeModal" ng-show="kolenergo.codes.getCurrent() !== undefined"></column-control>
 
-        <div class="row padding-5">
-            <table>
+
+        <div class="system-info" ng-show="kolenergo.ats.getCurrent() === undefined">
+            <span class="fa fa-phone-square" aria-hidden="true"></span>&nbsp; Выберите АТС
+        </div>
+
+        <div class="row padding-5" ng-show="kolenergo.ats.getCurrent() !== undefined">
+            <table class="stripped selectable">
                 <thead>
                 <tr>
-                    <th>Организация</th>
-                    <th>Исходная АТС</th>
-                    <th>Целевая АТС</th>
-                    <th>Код</th>
+                    <!--<th>Исходная АТС</th>-->
+                    <th class="width-40">Организация</th>
+                    <th class="width-40">АТС</th>
+                    <th class="width-20 text-center">Код</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                <tr ng-class="{ 'selected': code._states_.selected() === true }" ng-click="kolenergo.codes.select(code.id.value)" ng-repeat="code in kolenergo.codes.getAll() | byATSId:kolenergo.ats.getCurrent().id.value track by $index" ng-init="sourceAts = kolenergo.ats.getById(code.atsId.value); targetAts = kolenergo.ats.getById(code.targetAtsId.value)">
+                    <!--<td>{{ kolenergo.ats.getById(code.atsId.value).title.value }}</td>-->
+                    <td class="width-40">{{ kolenergo.organizations.getById(sourceAts.organizationId.value)._backup_.data.title }}</td>
+                    <td class="width-40">{{ kolenergo.ats.getById(code.targetAtsId.value)._backup_.data.title }}</td>
+                    <td class="width-20 text-center">{{ code._backup_.data.code }}</td>
                 </tr>
                 </tbody>
             </table>
@@ -111,20 +120,21 @@
         <div class="padding-10">
             <div class="row margin-bottom-10">
                 <label for="new-ats-code-organization">Исходная организация</label>
-                <!--<input type="text" id="new-ats-code-organization" name="title" class="width-100" ng-model="kolenergo.organizations.getCurrent().title.value" disabled>-->
                 <select id="new-ats-code-organization"
                         class="width-100"
                         ng-model="kolenergo.organizations.getCurrent().id.value"
+                        disabled
                         ng-options="org.id.value as org.title.value for org in kolenergo.organizations.getAll()">
                 </select>
             </div>
 
             <div class="row margin-bottom-10">
                 <label for="new-ats-code-ats">Исходная АТС</label>
-                <!--<input type="text" id="new-ats-code-ats" name="title" class="width-100" ng-model="kolenergo.ats.getCurrent().title.value" disabled>-->
                 <select id="new-ats-code-ats"
+                        name="ats"
                         class="width-100"
                         ng-model="kolenergo.codes.getNew().atsId.value"
+                        disabled
                         ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll()">
                 </select>
             </div>
@@ -140,23 +150,24 @@
 
             <div class="row margin-bottom-10">
                 <label for="new-ats-code-target-ats">Целевая АТС</label>
-                <select name="target-ats"
+                <select name="target_ats"
                         id="new-ats-code-target-ats"
                         class="width-100"
                         ng-model="kolenergo.codes.getNew().targetAtsId.value"
                         required
+                        not-zero
                         ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll() | byOrganizationId:newATSCodeOrganizationId">
                 </select>
             </div>
 
             <div class="row margin-bottom-10">
                 <label for="new-ats-code-code">Код выхода</label>
-                <input type="text" id="new-ats-code-code" name="title" class="width-100" ng-model="kolenergo.codes.getNew().code.value" required>
+                <input type="text" id="new-ats-code-code" name="code" class="width-100" ng-model="kolenergo.codes.getNew().code.value" required>
             </div>
 
             <div class="row">
                 <div class="width-50">
-                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="new_ats.$pristine === true || kolenergo.ats.getNew()._states_.loading() === true" />
+                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="new_ats_code.$pristine === true || kolenergo.codes.getNew()._states_.loading() === true" />
                 </div>
                 <div class="width-50">
                     <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
@@ -165,8 +176,11 @@
         </div>
 
         <div class="modal-errors" ng-show="new_ats_code.$invalid && submitted === true">
-            <div class="error" ng-show="new_ats_code.title.$error.required">
-                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали наименование АТС
+            <div class="error" ng-show="new_ats_code.target_ats.$error.zero">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не выбрали целевую АТС
+            </div>
+            <div class="error" ng-show="new_ats_code.code.$error.required">
+                <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали код выхода
             </div>
         </div>
     </form>

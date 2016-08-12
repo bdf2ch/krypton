@@ -1789,7 +1789,7 @@ function isField (obj) {
                  * @param id {number} - идентификатор пользователя
                  * @returns {boolean}
                  */
-                select: function (id) {
+                select: function (id, callback) {
                     if (id === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$users -> users -> select: Не задан параметр - идентификатор пользователя");
                         return false;
@@ -1810,6 +1810,9 @@ function isField (obj) {
                         } else
                             users[i]._states_.selected(false);
                     }
+
+                    if (callback !== undefined && typeof callback === "function")
+                        callback(currentUser);
 
                     return result;
                 },
@@ -1864,10 +1867,10 @@ function isField (obj) {
                                 $errors.checkResponse(data);
                                 if (data.result !== undefined && data.result !== null && data.result !== false) {
                                     users = [];
-                                    var length = data.result.length;
+                                    var length = data.result.users.length;
                                     for (var i = 0; i < length; i++) {
                                         var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
-                                        user._model_.fromAnother(data.result[i]);
+                                        user._model_.fromAnother(data.result.users[i]);
                                         user._backup_.setup();
                                         users.push(user);
                                     }
@@ -1884,13 +1887,18 @@ function isField (obj) {
                                     }
 
                                     if (callback !== undefined && typeof callback === "function")
-                                        callback(users);
+                                        callback(data.result);
 
                                     return true;
                                 } else 
                                     return false;
                             }
                         });
+                },
+                
+                clear: function () {
+                    users = [];
+                    return true;
                 },
 
                 pages: {

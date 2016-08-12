@@ -40,13 +40,20 @@
         $scope.modals = $modals;
         $scope.kolenergo = $kolenergo;
         $scope.newUserGroup = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
-        $scope.searchResult = [];
+        //$scope.searchResult = [];
         
         $scope.$watch("users.users.searchKeyWord", function (newVal, oldVal) {
             $log.log("search = ", newVal);
             if (newVal.length > 2) {
                 $users.users.search(function (result) {
-                    $scope.searchResult = result;
+                    //$scope.searchResult = result;
+                    var length = result.phones.length;
+                    for (var i = 0; i < length; i++) {
+                        var phone = $factory({ classes: ["Phone", "Model", "States", "Backup"], base_class: "Phone" });
+                        phone._model_.fromAnother(result.phones[i]);
+                        phone._backup_.setup();
+                        $kolenergo.phones.add(phone);
+                    }
                 });
             } else if (newVal.length < 3 && oldVal.length > 2) {
                 $users.users.pages.set(1);
@@ -187,16 +194,20 @@
 
             $navigation.getCurrent().title = $users.users.getCurrent().name.value + " " + $users.users.getCurrent().surname.value;
             $log.log("current user = ", $users.users.getCurrent());
+
+
+            var phones = $kolenergo.phones.getByUserId($users.users.getCurrent().id.value);
+            $users.users.getCurrent().phones = phones;
         }
         
         $scope.editUser = function () {
             //var length = $users.users.getCurrent().phones.length;
-            //var phone = "";
-            //for (var i = 0; i < length; i++) {
-            //    phone += $users.users.getCurrent().phones[i];
-            //    phone += i < length - 1 ? "," : "";
-            //}
-            //$log.log("phone = ", phone);
+           // var phone = "";
+           // for (var i = 0; i < length; i++) {
+           //     phone += $users.users.getCurrent().phones[i];
+           //     phone += i < length - 1 ? "," : "";
+           // }
+           // $log.log("phone = ", phone);
             $users.users.edit()
         };
 
@@ -218,7 +229,8 @@
         };
         
         $scope.addPhone = function () {
-            $users.users.getCurrent().phones.length = $users.users.getCurrent().phones.length + 1;
+            var phone = $factory({ classes: ["Phone", "Model", "Backup", "States"], base_class: "Phone" });
+            $users.users.getCurrent().phones.push(phone);
         };
     };
 
@@ -331,6 +343,7 @@
         };
 
         $scope.addATSCode = function () {
+            $log.log($scope.new_ats_code);
             $scope.submitted = true;
             if ($scope.new_ats_code.$valid) {
                 $kolenergo.codes.add(function () {
@@ -338,6 +351,87 @@
                 });
             }
         };
+    };
+
+
+
+    function AdminPhonesController ($log, $scope, $kolenergo, $users, $modals, $factory) {
+        $scope.kolenergo = $kolenergo;
+        $scope.users = $users;
+        $scope.search = "";
+        $scope.submitted = false;
+
+        $users.users.clear();
+        
+        $scope.$watch("users.users.searchKeyWord", function (newVal, oldVal) {
+            $log.log("search = ", newVal);
+            if (newVal.length > 2) {
+                $users.users.search(function (result) {
+                    //$scope.searchResult = result;
+                    $kolenergo.phones.clear();
+                    var length = result.phones.length;
+                    for (var i = 0; i < length; i++) {
+                        var phone = $factory({ classes: ["Phone", "Model", "States", "Backup"], base_class: "Phone" });
+                        phone._model_.fromAnother(result.phones[i]);
+                        phone._backup_.setup();
+                        $kolenergo.phones.append(phone);
+                    }
+                    $log.log("phones = ", $kolenergo.phones.getAll());
+                });
+            } else if (newVal.length < 3 && oldVal.length > 2) {
+                $users.users.pages.set(1);
+            }     
+        });
+
+        $scope.selectUser = function (id) {
+            $users.users.select(id, function () {
+                $kolenergo.phones.getNew().userId.value = id;
+            });
+        };
+
+        $scope.openNewPhoneModal = function () {
+            $modals.open("new-phone-modal");
+        };
+
+        $scope.closeNewPhoneModal = function () {
+            $scope.submitted = false;
+            $scope.new_phone.$setPristine();
+            $scope.new_phone.$setValidity();
+            $kolenergo.phones.getNew()._backup_.restore();
+        };
+        
+        
+        $scope.addPhone = function () {
+            $scope.submitted = true;
+            if ($scope.new_phone.$valid) {
+                $kolenergo.phones.add(function () {
+                    $modals.close();
+                });
+            }
+        };
+
+
+        $scope.openEditPhoneModal = function () {
+            $modals.open("edit-phone-modal");
+        };
+
+        $scope.closeEditPhoneModal = function () {
+            $scope.edit_phone.$setValidity();
+            $scope.edit_phone.$setPristine();
+            $scope.submitted = false;
+            $kolenergo.phones.getCurrent()._backup_.restore();
+            $kolenergo.phones.getCurrent()._states_.changed(false);
+        };
+
+        $scope.editPhone = function () {
+            $scope.submitted = true;
+            if ($scope.edit_phone.$valid) {
+                $kolenergo.phones.edit(function () {
+                    $modals.close();
+                });
+            }
+        };
+
     };
 
 
@@ -429,12 +523,25 @@
         $navigation.add(
             $factory({ classes: ["Menu", "Model"], base_class: "Menu" })
                 .init({
-                    id: "phones",
+                    id: "ats",
                     parentId: "",
                     url: "/ats",
                     templateUrl: "../../templates/admin/kolenergo/ats.html",
                     controller: AdminATSController,
-                    title: "АТС",
+                    title: "Справочник АТС",
+                    description : "Управление АТС и кодами связи между АТС",
+                    icon: "fa-phone-square"
+                }));
+
+        $navigation.add(
+            $factory({ classes: ["Menu", "Model"], base_class: "Menu" })
+                .init({
+                    id: "phones",
+                    parentId: "",
+                    url: "/phones",
+                    templateUrl: "../../templates/admin/kolenergo/phones.html",
+                    controller: AdminPhonesController,
+                    title: "Тел. справочник",
                     description : "Управление АТС и кодами связи между АТС",
                     icon: "fa-phone"
                 }));

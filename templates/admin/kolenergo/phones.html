@@ -1,0 +1,175 @@
+<columns id="admin-phones">
+    <column id="filters" width="20" show-header="0">
+        <div class="row padding-10">
+            <div class="row ">
+                <select name=""
+                        id="users-filter-organization"
+                        class="width-100"
+                        ng-model="kolenergo.organization.getCurrent().id.value"
+                        ng-options="org.id.value as org.title.value for org in kolenergo.organizations.getAll()">
+                </select>
+            </div>
+        </div>
+
+    </column>
+
+    <column id="users" width="60" caption="пользователи">
+        <div class="row padding-10">
+
+            <div class="row margin-bottom-10">
+                <div class="row">
+                    <input type="text" name="" id="" class="width-100" ng-model="users.users.searchKeyWord">
+                </div>
+            </div>
+
+            <div class="row">
+                <table class="stripped selectable">
+                    <thead>
+                    <tr>
+                        <th>Фамилия, имя, отчество</th>
+                        <th>Должность</th>
+                        <th>Организация</th>
+                        <th>Стр. подразделение</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-class="{ 'selected': user._states_.selected() === true }" ng-repeat="user in users.users.getAll() track by $id(user)" ng-click="selectUser(user.id.value)">
+                        <td>{{ user.fio }}</td>
+                        <td>{{ user.position.value }}</td>
+                        <td>{{ kolenergo.organizations.getById(user.organizationId.value).title.value }}</td>
+                        <td>{{ kolenergo.divisions.getById(user.divisionId.value).title.value }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="system-info" ng-show="users.users.searchKeyWord.length < 3 && users.users.getAll().length === 0">
+                    <span class="fa fa-search" aria-hidden="true"></span>&nbsp; Начните вводить имя пользователя
+                </div>
+
+                <div class="system-info" ng-show="users.users.searchKeyWord.length > 2 && users.users.getAll().length === 0">
+                    <span class="fa fa-ban" aria-hidden="true"></span>&nbsp; По Вашему запросу ничего не найдено
+                </div>
+            </div>
+
+        </div>
+    </column>
+
+
+    <column id="phones" width="20" caption="телефоны">
+        <column-control class="green round" content="fa fa-plus" title="Добавить телефон" action="openNewPhoneModal" ng-show="users.users.getCurrent() !== undefined"></column-control>
+        <column-control class="blue round" content="fa fa-pencil" title="Редактировать телефон" action="openEditPhoneModal" ng-show="kolenergo.phones.getCurrent() !== undefined"></column-control>
+        <column-control class="red round" content="fa fa-times" title="Удалить телефон" action="openDeletePhoneModal" ng-show="kolenergo.phones.getCurrent() !== undefined"></column-control>
+
+        <div class="system-info" ng-show="users.users.getCurrent() === undefined">
+            <span class="fa fa-user" aria-hidden="true"></span>&nbsp; Выберите пользователя
+        </div>
+
+        <div class="system-info" ng-show="users.users.getCurrent() !== undefined && phones.length === 0">
+            <span class="fa fa-ban" aria-hidden="true"></span>&nbsp; Телефоны отсутствуют
+        </div>
+
+        <div class="list-item"
+             ng-class="{'active': phone._states_.selected() === true}"
+             ng-repeat="phone in phones = (kolenergo.phones.getAll()|byUserId:users.users.getCurrent().id.value) track by $id(phone)"
+             ng-show="users.users.getCurrent() !== undefined"
+             ng-click="kolenergo.phones.select(phone.id.value)">
+            <div class="list-item-icon">
+                <span class="fa fa-phone"></span>
+            </div>
+            <div class="list-item-content-lead" title="{{ phone._backup_.data.phone }}">{{ phone._backup_.data.phone }}</div>
+            <div class="list-item-content-secondary">АТС: {{ kolenergo.ats.getById(phone.atsId.value).title.value }}</div>
+        </div>
+    </column>
+
+</columns>
+
+
+<div modal modal-id="new-phone-modal" modal-caption="Новый телефон" modal-on-close="closeNewPhoneModal">
+    <form name="new_phone" ng-submit="addPhone()" novalidate>
+        <div class="padding-10">
+            <div class="row margin-bottom-10">
+                <label for="new-phone-ats">АТС</label>
+                <select id="new-phone-ats"
+                        name="ats"
+                        class="width-100"
+                        not-zero
+                        ng-model="kolenergo.phones.getNew().atsId.value"
+                        ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll() | byOrganizationId:users.users.getCurrent().organizationId.value">
+                </select>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="new-phone-phone">Телефон</label>
+                <input type="text"
+                       id="new-phone-phone"
+                       name="phone"
+                       class="width-100"
+                       ng-model="kolenergo.phones.getNew().phone.value"
+                       required >
+            </div>
+
+            <div class="row">
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Добавить" ng-disabled="new_phone.$pristine === true || kolenergo.phones.getNew()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="modal-errors" ng-show="new_phone.$invalid && submitted === true">
+        <div class="error" ng-show="new_phone.ats.$error.zero">
+            <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не выбрали АТС
+        </div>
+        <div class="error" ng-show="new_phone.phone.$error.required">
+            <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали телефон
+        </div>
+    </div>
+</div>
+
+
+
+<div modal modal-id="edit-phone-modal" modal-caption="Редактирование телефона" modal-on-close="closeEditPhoneModal">
+    <form name="edit_phone" ng-submit="editPhone()" novalidate>
+        <div class="padding-10">
+            <div class="row margin-bottom-10">
+                <label for="current-phone-ats">АТС</label>
+                <select id="current-phone-ats"
+                        name="ats"
+                        class="width-100"
+                        not-zero
+                        ng-model="kolenergo.phones.getCurrent().atsId.value"
+                        ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll() | byOrganizationId:users.users.getCurrent().organizationId.value">
+                </select>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="current-phone-phone">Телефон</label>
+                <input type="text"
+                       id="current-phone-phone"
+                       name="phone"
+                       class="width-100"
+                       ng-model="kolenergo.phones.getCurrent().phone.value"
+                       required>
+            </div>
+
+            <div class="row">
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Сохранить" ng-disabled="edit_phone.$pristine === true || kolenergo.phones.getNew()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+    <div class="modal-errors" ng-show="edit_phone.$invalid && submitted === true">
+        <div class="error" ng-show="edit_phone.phone.$error.required">
+            <span class="fa fa-exclamation-circle"></span>&nbsp; Вы не указали телефон
+        </div>
+    </div>
+</div>
