@@ -362,7 +362,8 @@
         $scope.submitted = false;
 
         $users.users.clear();
-        
+
+
         $scope.$watch("users.users.searchKeyWord", function (newVal, oldVal) {
             $log.log("search = ", newVal);
             if (newVal.length > 2) {
@@ -383,15 +384,18 @@
             }     
         });
 
+
         $scope.selectUser = function (id) {
             $users.users.select(id, function () {
                 $kolenergo.phones.getNew().userId.value = id;
             });
         };
 
+
         $scope.openNewPhoneModal = function () {
             $modals.open("new-phone-modal");
         };
+
 
         $scope.closeNewPhoneModal = function () {
             $scope.submitted = false;
@@ -415,6 +419,7 @@
             $modals.open("edit-phone-modal");
         };
 
+
         $scope.closeEditPhoneModal = function () {
             $scope.edit_phone.$setValidity();
             $scope.edit_phone.$setPristine();
@@ -422,6 +427,7 @@
             $kolenergo.phones.getCurrent()._backup_.restore();
             $kolenergo.phones.getCurrent()._states_.changed(false);
         };
+
 
         $scope.editPhone = function () {
             $scope.submitted = true;
@@ -432,12 +438,25 @@
             }
         };
 
+
+        $scope.openDeletePhoneModal = function () {
+            $modals.open("delete-phone-modal");
+        };
+
+
+        $scope.deletePhone = function () {
+            $kolenergo.phones.delete(function () {
+                $modals.close();
+            });
+        };
+
     };
 
 
 
 
     function kryptonAdminRun ($log, $location, $navigation, $factory, $rootScope, $users, $permissions, $http, $settings, $session) {
+        $log.log(window.krypton);
         $log.log("krypton admin run");
         $log.log(window.krypton);
         //$location.url("/users");
@@ -552,7 +571,7 @@
         //        $log.log(data);
         //    });
 
-        $log.log(window.krypton);
+
     };
 
 

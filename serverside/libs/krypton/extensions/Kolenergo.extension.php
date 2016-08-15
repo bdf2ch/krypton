@@ -505,6 +505,7 @@
             API::add("addATSCode", "Kolenergo", "addATSCode");
             API::add("addPhone", "Kolenergo", "addPhone");
             API::add("editPhone", "Kolenergo", "editPhone");
+            API::add("deletePhone", "Kolenergo", "deletePhone");
             API::add("uploadUserPhoto", "Kolenergo", "uploadUserPhoto");
             API::add("login", "Kolenergo", "login");
             API::add("getUsersByDivisionId", "Kolenergo", "getUsersByDivisionId");
@@ -1325,6 +1326,12 @@
 
 
 
+
+
+        /**
+        *
+        *
+        **/
         public static function addPhone ($data) {
             if ($data == null) {
                 Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> addPhone: Не задан аргумент - объект с параметрами");
@@ -1369,6 +1376,7 @@
 
 
 
+
         /**
         * Сохраняет Измененный телефон
         * @data {object} - объект с информацией о телефоне
@@ -1399,6 +1407,30 @@
             $temp = Models::construct("Phone", false);
             $temp -> fromSource($result[0]);
             return $temp;
+        }
+
+
+
+
+
+        /**
+        * Удаляет телефон
+        * @data {object} - объект с информацией об удаляемом телефоне
+        **/
+        public function deletePhone ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> deletePhone: Не задан парметр - объект с информацией о телефоне");
+                return false;
+            }
+
+            $id = $data -> id;
+            $result = DBManager::delete("phones", "ID = $id");
+            if (!$result) {
+                Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> deletePhone: Не удалось удалить телефон");
+                return false;
+            }
+
+            return true;
         }
 
     };

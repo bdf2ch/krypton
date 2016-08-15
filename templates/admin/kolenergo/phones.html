@@ -173,3 +173,23 @@
         </div>
     </div>
 </div>
+
+
+
+<div modal modal-id="delete-phone-modal" modal-caption="Удаление телефона">
+    <form name="delete_phone" ng-submit="deletePhone()" novalidate>
+        <div class="padding-10">
+            <div class="row">
+                <div class="row margin-bottom-10">
+                    Вы уверены, что хотите удалить <b>{{ kolenergo.phones.getCurrent().phone.value }}</b> ?
+                </div>
+                <div class="width-50">
+                    <input type="submit" class="width-100 green" value="Удалить" ng-disabled="kolenergo.phones.getCurrent()._states_.loading() === true" />
+                </div>
+                <div class="width-50">
+                    <input type="button" class="width-100 red" value="Отмена" ng-click="modals.close()" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

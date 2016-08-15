@@ -1643,7 +1643,7 @@ function isField (obj) {
              */
             init: function () {
                 if (window.krypton !== null && window.krypton !== undefined) {
-                    if (window.krypton.users.users !== null && window.krypton.users.users !== undefined) {
+                    if (window.krypton.users !== null && window.krypton.users !== undefined) {
                         var length = window.krypton.users.users.length;
                         for (var i = 0; i < length; i++) {
                             var user = $factory({ classes: ["User", "Model", "States", "Backup"], base_class: "User" });

@@ -1119,6 +1119,47 @@
                     return false;
                 },
 
+                /**
+                 * Удаляет текущий телефон
+                 * @callback {function} - callback-функция
+                 * @returns {boolean}
+                 */
+                delete: function (callback) {
+                    if (currentPhone === undefined) {
+                        $errors.add(ERROR_TYPE_ENGINE, "$kolenergo -> phones -> delete: Не выбран текущий телефон");
+                        return false;
+                    }
+
+                    var params = {
+                        action: "deletePhone",
+                        id: currentPhone.id.value
+                    };
+
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            currentPhone._states_.loading(false);
+                            $log.log(data);
+                            if (data !== undefined && data !== null) {
+                                $errors.checkResponse(data);
+                                if (data.result !== false) {
+                                    if (JSON.parse(data.result) === true) {
+                                        var length = phones.length;
+                                        for (var i = 0; i < length; i++) {
+                                            if (phones[i].id.value === currentPhone.id.value) {
+                                                currentPhone._states_.loading(false);
+                                                currentPhone = undefined;
+                                                phones.splice(i, 1);
+                                                if (callback !== undefined && typeof callback === "function")
+                                                    callback();
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                },
+
                 clear: function () {
                     phones = [];
                     return true;

@@ -585,7 +585,8 @@ a.blue:hover {
   margin-top: 100px;
   text-align: center;
   font-size: 17px;
-  color: #BDBDBD;
+  color: #E0E0E0;
+  text-shadow: #ffffff 0px 1px 0px;
 }
 .badge {
   display: inline-block;
