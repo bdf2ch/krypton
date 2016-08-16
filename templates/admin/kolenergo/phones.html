@@ -23,6 +23,7 @@
             </div>
 
             <div class="row">
+
                 <table class="stripped selectable">
                     <thead>
                     <tr>
@@ -32,7 +33,7 @@
                         <th>Стр. подразделение</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody ng-show="users.users.isLoading() === false">
                     <tr ng-class="{ 'selected': user._states_.selected() === true }" ng-repeat="user in users.users.getAll() track by $id(user)" ng-click="selectUser(user.id.value)">
                         <td>{{ user.fio }}</td>
                         <td>{{ user.position.value }}</td>
@@ -41,6 +42,10 @@
                     </tr>
                     </tbody>
                 </table>
+
+                <div class="system-info" ng-show="users.users.isLoading() === true">
+                    <span class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true"></span>&nbsp; Загрузка...
+                </div>
 
                 <div class="system-info" ng-show="users.users.searchKeyWord.length < 3 && users.users.getAll().length === 0">
                     <span class="fa fa-search" aria-hidden="true"></span>&nbsp; Начните вводить имя пользователя

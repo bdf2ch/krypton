@@ -1400,10 +1400,11 @@ function isField (obj) {
          ********************/
         $classes.add("Session", {
             __dependencies__: [],
-            userId: new Field({ source: "user_id", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            token: new Field ({ source: "session_token", type: DATA_TYPE_STRING, value: "", default_value: "" }),
-            start: new Field({ source: "session_start", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            end: new Field({ source: "session_end", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 })
+            userId: new Field({ source: "USER_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            token: new Field ({ source: "SESSION_TOKEN", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            start: new Field({ source: "SESSION_START", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            end: new Field({ source: "SESSION_END", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
+            ip: new Field({ source: "IP", type: DATA_TYPE_STRING, value: "", default_value: "" }),
         });
 
         /**
@@ -1589,7 +1590,9 @@ function isField (obj) {
         var users = [];
         var groups = [];
         var currentGroup = undefined;
+        var groupsIsLoading = false;
         var currentUser = undefined;
+        var usersIsLoading = false;
 
         var total = 0;
         var itemsOnPage = 0;
@@ -1748,6 +1751,10 @@ function isField (obj) {
                 
                 searchKeyWord: searchKeyWord,
 
+                isLoading: function () {
+                    return usersIsLoading;
+                },
+
                 /**
                  * Возвращает массив всех пользователей
                  * @returns {Array}
@@ -1769,17 +1776,40 @@ function isField (obj) {
                  * @param id {number} - идентификатор пользователя
                  * @returns {User / boolean}
                  */
-                getById: function (id) {
+                getById: function (id, callback) {
                     if (id === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$users -> users -> getById: Не задан параметр - идентификатор пользователя");
                         return false;
                     }
 
-                    var length = user.length;
+                    var length = users.length;
                     for (var i = 0; i < users; i++) {
                         if (users[i].id.value === id)
                             return users[i];
                     }
+
+                    var params = {
+                        action: "getUserById",
+                        id: id
+                    };
+
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined && data !== null) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+                                    user._model_.fromAnother(data.result);
+                                    user._backup_.setup();
+                                    users.push(user);
+                                    if (callback !== undefined && typeof callback === "function")
+                                        callback(user);
+                                    
+                                    return user;
+                                }
+                            } else
+                                return false;
+                        });
 
                     return false;
                 },
@@ -1861,8 +1891,10 @@ function isField (obj) {
                         search: this.searchKeyWord
                     };
 
+                    usersIsLoading = true;
                     $http.post("/serverside/libs/krypton/api.php", params)
                         .success(function (data) {
+                            usersIsLoading = false;
                             if (data !== undefined) {
                                 $errors.checkResponse(data);
                                 if (data.result !== undefined && data.result !== null && data.result !== false) {
@@ -1885,6 +1917,7 @@ function isField (obj) {
                                         if (found === false)
                                             currentUser = undefined;
                                     }
+
 
                                     if (callback !== undefined && typeof callback === "function")
                                         callback(data.result);

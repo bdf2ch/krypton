@@ -46,9 +46,21 @@
                         return false;
                     }
 
+                    $result = DBManager::add_column("kr_sessions", "IP", "varchar(16) NOT NULL default ''");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'ip' в таблицу 'kr_sessions'");
+                        return false;
+                    }
+
                     break;
 
                 case Krypton::DB_TYPE_ORACLE:
+
+                    $result = DBManager::add_sequence("seq_sessions", 1, 1);
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить последовательность 'seq_sessions'");
+                        return false;
+                    }
 
                     $result = DBManager::add_column("kr_sessions", "USER_ID", "INT DEFAULT 0 NOT NULL");
                     if (!$result) {
@@ -74,9 +86,9 @@
                         return false;
                     }
 
-                    $result = DBManager::add_sequence("seq_sessions", 1, 1);
+                    $result = DBManager::add_column("kr_users", "IP", "VARCHAR2(16)");
                     if (!$result) {
-                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Sessions -> install: Не удалось добавить последовательность 'seq_sessions'");
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Users -> install: Не удалось добавить столбец 'ip' в таблицу 'kr_users'");
                         return false;
                     }
 
@@ -163,6 +175,7 @@
                 } else {
                     $session = Models::construct("Session", false);
                     $session -> fromSource($result[0]);
+                    $session -> ip -> value = $_SERVER["REMOTE_ADDR"];
                     self::$session = $session;
 
                     if ($session -> userId -> value != 0) {
@@ -174,6 +187,7 @@
 
                         $user = Models::construct("User1", false);
                         $user -> fromSource($result[0]);
+                        $user -> ip -> value = strval($_SERVER["REMOTE_ADDR"]);
                         self::$user = $user;
                     }
 
@@ -218,6 +232,7 @@
                 $session -> token -> value = $newToken;
                 $session -> start -> value = $start;
                 $session -> end -> value = $end;
+                $session -> ip -> value = $_SERVER["REMOTE_ADDR"];
                 self::$session = $session;
                 setcookie("krypton_session", $newToken, $end, "/", $_SERVER["SERVER_NAME"]);
 

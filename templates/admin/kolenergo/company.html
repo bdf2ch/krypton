@@ -16,12 +16,26 @@
                     on-select="onSelectDepartment">
             </model-list>
             -->
-
+            <!--
             <div class="list-item" ng-class="{'active': org._states_.selected() === true}" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-click="selectOrganization(org.id.value)">
                 <div class="list-item-icon">
                     <span class="fa fa-building" aria-hidden="true"></span>
                 </div>
                 <div class="list-item-content-lead only" title="{{ org._backup_.data.title }}">{{ org._backup_.data.title }}</div>
+            </div>
+            -->
+
+
+            <div class="list-item"
+                 ng-class="{'active': org._states_.selected() === true}"
+                 ng-repeat="org in kolenergo.organizations.getAll() track by $index"
+                 ng-click="selectOrganization(org.id.value)">
+                <div class="list-item-icon">
+                    <span class="fa fa-building"></span>
+                </div>
+                <div class="list-item-content-lead" title="{{ org._backup_.data.title }}">{{ org._backup_.data.title }}</div>
+                <div class="list-item-content-secondary" ng-show="org._backup_.data.subnetMask !== ''">Подсети: {{ org._backup_.data.subnetMask }}</div>
+                <div class="list-item-content-secondary" ng-show="org._backup_.data.subnetMask === ''">Подсети не указаны</div>
             </div>
 
         </div>
@@ -84,7 +98,22 @@
         <div class="padding-10">
             <div class="row margin-bottom-10">
                 <label for="new-organization-title">Наименование организации</label>
-                <input type="text" id="new-organization-title" name="title" class="width-100" ng-model="kolenergo.organizations.getNew().title.value" required>
+                <input type="text"
+                       id="new-organization-title"
+                       name="title"
+                       class="width-100"
+                       ng-model="kolenergo.organizations.getNew().title.value"
+                       placeholder="Введите наименование"
+                       required>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="new-organization-subnet">Маска подсети</label>
+                <input type="text"
+                       id="new-organization-subnet"
+                       name="subnet" class="width-100"
+                       ng-model="kolenergo.organizations.getNew().subnetMask.value"
+                       placeholder="Введите маску подсети">
             </div>
 
             <div class="row">
@@ -111,7 +140,22 @@
         <div class="padding-10">
             <div class="row margin-bottom-10">
                 <label for="current-organization-title">Наименование организации</label>
-                <input type="text" id="current-organization-title" name="title" class="width-100" ng-model="kolenergo.organizations.getCurrent().title.value" required>
+                <input type="text"
+                       id="current-organization-title"
+                       name="title"
+                       class="width-100"
+                       ng-model="kolenergo.organizations.getCurrent().title.value"
+                       placeholder="Введите наименование"
+                       required>
+            </div>
+
+            <div class="row margin-bottom-10">
+                <label for="current-organization-subnet">Маска подсети</label>
+                <input type="text"
+                       id="current-organization-subnet"
+                       name="subnet" class="width-100"
+                       ng-model="kolenergo.organizations.getCurrent().subnetMask.value"
+                       placeholder="Введите маску подсети">
             </div>
 
             <div class="row">

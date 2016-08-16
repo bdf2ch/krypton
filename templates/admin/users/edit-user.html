@@ -1,7 +1,199 @@
 <columns id="admin-edit-user">
     <column id="user-details" width="80" show-header="0">
 
+
+        <div class="focused-content-container padding-30">
+
+            <div class="focused-content padding-30">
+
+                <!-- Личные данные -->
+                <div class="caption">Личные данные</div>
+
+                <div class="row margin-bottom-10">
+                    <label for="current-user-surname">Фамилия пользователя</label>
+                    <input type="text"
+                           id="current-user-surname"
+                           name="current-user-surname"
+                           class="width-100"
+                           ng-model="users.users.getCurrent().surname.value"
+                           ng-change="users.users.getCurrent()._states_.changed(true)">
+                </div>
+
+                <div class="row margin-bottom-10">
+                    <label for="current-user-name">Имя пользователя</label>
+                    <input type="text"
+                           id="current-user-name"
+                           name="current-user-name"
+                           class="width-100"
+                           ng-model="users.users.getCurrent().name.value"
+                           ng-change="users.users.getCurrent()._states_.changed(true)">
+                </div>
+
+                <div class="row margin-bottom-10">
+                    <label for="current-user-fname">Отчество пользователя</label>
+                    <input type="text"
+                           id="current-user-fname"
+                           name="current-user-fname"
+                           class="width-100"
+                           ng-model="users.users.getCurrent().fname.value"
+                           ng-change="users.users.getCurrent()._states_.changed(true)">
+                </div></br></br>
+
+
+
+                <!-- Фотография пользователя -->
+                <div class="caption">
+                    Фотография пользователя
+                    <label for="userfile" class="button blue round right">
+                        <span class="fa fa-upload"></span>&nbsp; Загрузить фото
+                        <input
+                                type="file"
+                                name="userfile"
+                                id="userfile"
+                                uploader
+                                uploader-url="/serverside/libs/krypton/api.php"
+                                uploader-data="uploaderData"
+                                uploader-on-complete-upload="onCompleteUploadPhoto"/>
+                    </label>
+                </div>
+
+                <div class="row margin-bottom-10">
+                    <img ng-src="{{ users.users.getCurrent().photo.value }}" alt="" class="left" ng-show="users.users.getCurrent().photo.value !== ''">
+                    <img src="../resources/images/no_photo.png" alt="" class="" ng-show="users.users.getCurrent().photo.value === ' '">
+
+                    <!--
+                    <label for="userfile" class="button blue">
+                        <span class="fa fa-upload"></span>&nbsp; Загрузить фото
+                        <input
+                                type="file"
+                                name="userfile"
+                                id="userfile"
+                                uploader
+                                uploader-url="/serverside/libs/krypton/api.php"
+                                uploader-data="uploaderData"
+                                uploader-on-complete-upload="onCompleteUploadPhoto"/>
+                    </label>
+                    -->
+                </div>
+                </br></br>
+
+
+                <!-- Место работы и должность -->
+                <div class="caption">Место работы и должность</div>
+
+                <div class="row margin-bottom-10">
+                    <label for="current-user-organization">Огрганизация</label>
+                    <select name="current-user-organization"
+                            id="current-user-organization"
+                            class="width-100"
+                            ng-model="users.users.getCurrent().organizationId.value"
+                            ng-change="users.users.getCurrent()._states_.changed(true)"
+                            ng-options="org.id.value as org.title.value for org in kolenergo.organizations.getAll()">
+                    </select>
+                </div>
+
+                <div class="row margin-bottom-10">
+                    <label for="current-user-division">Структурное подразделение</label>
+                    <select name="current-user-division"
+                            id="current-user-division"
+                            class="width-100"
+                            ng-model="users.users.getCurrent().divisionId.value"
+                            ng-change="users.users.getCurrent()._states_.changed(true)"
+                            ng-options="division.id.value as division.title.value for division in kolenergo.divisions.getAll() | byOrganizationId:users.users.getCurrent().organizationId.value">
+                    </select>
+                </div>
+
+                <div class="row margin-bottom-10">
+                    <label for="current-user-position">Должность пользователя</label>
+                    <input type="text"
+                           id="current-user-position"
+                           name="current-user-position"
+                           class="width-100"
+                           ng-model="users.users.getCurrent().position.value"
+                           ng-change="users.users.getCurrent()._states_.changed(true)">
+                </div></br></br>
+
+
+                <!-- Контактная информация -->
+                <div class="caption">Контактные данные</div>
+
+                <div class="row margin-bottom-10">
+                    <label for="current-user-email">E-mail пользователя</label>
+                    <input type="text"
+                           id="current-user-email"
+                           name="current-user-email"
+                           class="width-100"
+                           ng-model="users.users.getCurrent().email.value"
+                           ng-change="users.users.getCurrent()._states_.changed(true)">
+                </div>
+
+
+
+                <div class="row">
+                    <label for="current-user-mobile">Мобильный телефон пользователя</label>
+                    <input type="text"
+                           id="current-user-mobile"
+                           name="current-user-mobile"
+                           class="width-100 margin-bottom-10"
+                           ng-model="users.users.getCurrent().mobile.value"
+                           ng-change="users.users.getCurrent()._states_.changed(true)">
+                </div>
+
+                <div class="row">
+                    <label for="current-user-phone" class="width-100">
+                        Телефоны пользователя
+                        <a href="" class="right" ng-click="addPhone()">Добавить</a>
+                    </label>
+                    <input type="text"
+                           id="current-user-phone"
+                           name="current-user-phone"
+                           class="width-100 margin-bottom-10"
+                           ng-repeat="phone in users.users.getCurrent().phones track by $index"
+                           ng-model="phone.phone.value" />
+
+                </div>
+                <br><br>
+
+
+                <!-- Принадлежность к группам -->
+                <div class="caption">Принадлежность к группам</div>
+
+                <div class="row margin-bottom-10">
+                    <label for="current-user-group">Группа пользователей</label>
+                    <select name="current-user-group"
+                            id="current-user-group"
+                            class="width-100"
+                            ng-model="users.users.getCurrent().userGroupId.value"
+                            ng-change="users.users.getCurrent()._states_.changed(true)"
+                            ng-options="group.id.value as group.title.value for group in users.groups.getAll()">
+                    </select>
+                </div>
+                <br><br>
+
+
+                <!-- Настройки пользователя -->
+                <div class="caption">Настройки пользователя</div>
+
+                <div class="row margin-bottom-10">
+                    <input type="checkbox" class="left" id="current-user-is-admin" name="current-user-is-admin" ng-model="users.users.getCurrent().isAdmin.value" ng-change="users.users.getCurrent()._states_.changed(true)">
+                    <label for="current-user-is-admin" class="left">Пользователь является администратором</label>
+                </div>
+
+                <div class="row margin-bottom-10">
+                    <input type="checkbox" class="left" id="current-user-is-ldap-enabled" name="current-user-is-admin" ng-model="users.users.getCurrent().isAdmin.value" ng-change="users.users.getCurrent()._states_.changed(true)">
+                    <label for="current-user-is-ldap-enabled" class="left">Авторизация посредством ActiveDirectory</label>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
         <!-- Личные данные -->
+        <!--
         <div class="row margin-bottom-40 odd">
             <div class="row width-90 center padding-20">
                 <span class="block-caption">Личные данные</span>
@@ -37,12 +229,14 @@
                 </div>
             </div>
         </div>
+        -->
 
 
 
 
 
         <!-- Фотография пользователя -->
+        <!--
         <div class="row width-90 center margin-bottom-40">
             <span class="block-caption">Фотография пользователя</span>
 
@@ -60,9 +254,11 @@
                         uploader-on-complete-upload="onCompleteUploadPhoto"/>
             </label>
         </div>
+        -->
 
 
         <!-- Место работы и должность -->
+        <!--
         <div class="row margin-bottom-40 odd">
             <div class="row width-90 center padding-20 odd">
                 <span class="block-caption">Место работы и должность</span>
@@ -100,9 +296,10 @@
                 </div>
             </div>
         </div>
-
+        -->
 
         <!-- Контактная информация -->
+        <!--
         <div class="row width-90 center margin-bottom-40">
             <span class="block-caption">Контактные данные</span>
 
@@ -142,9 +339,10 @@
 
             </div>
         </div>
-
+        -->
 
         <!-- Принадлежность к группам -->
+        <!--
         <div class="row margin-bottom-40 odd">
             <div class="row width-90 padding-20 center">
                 <span class="block-caption">Принадлежность к группам</span>
@@ -160,9 +358,10 @@
                 </div>
             </div>
         </div>
-
+        -->
 
         <!-- Натсройки пользователя -->
+        <!--
         <div class="row width-90 center">
             <span class="block-caption">Настройки пользователя</span>
 
@@ -177,10 +376,11 @@
             </div>
 
         </div>
+        -->
     </column>
 
-    <column id="user-menu" width="20" show-header="0" class="contr">
-        <div class="row padding-10">
+    <column id="user-menu" width="20" show-header="0" class="control-panel">
+        <div class="row padding-30">
             <div class="row margin-bottom-5">
                 <button class="width-100 green" ng-disabled="users.users.getCurrent()._states_.changed() === false" ng-click="editUser()">
                     <span class="fa fa-save"></span>
@@ -193,6 +393,15 @@
                     Отменить изменения
                 </button>
             </div>
+        </div>
+
+        <div class="row padding-30">
+            <a href="" class="hash">Личные данные</a>
+            <a href="" class="hash">Фотография пользователя</a>
+            <a href="" class="hash">Место работы и должность</a>
+            <a href="" class="hash">Контактные данные</a>
+            <a href="" class="hash">Принадлежность к группам</a>
+            <a href="" class="hash" ng-click="$columns.">Настройки пользователя</a>
         </div>
     </column>
 </columns>

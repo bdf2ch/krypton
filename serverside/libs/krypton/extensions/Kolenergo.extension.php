@@ -98,6 +98,12 @@
                 return false;
             }
 
+            //$result = DBManager::create_table("subnet_masks");
+            //if (!$result) {
+            //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу 'subnet_masks'");
+            //    return false;
+            //}
+
             $result = DBManager::create_table("departments");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось создать таблицу 'departments'");
@@ -155,6 +161,24 @@
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'title' в таблицу 'organizations'");
                         return false;
                     }
+
+                    $result = DBManager::add_column("organizations", "SUBNET_MASK", "varchar(500) NOT NULL default ' '");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'subnet_mask' в таблицу 'organizations'");
+                        return false;
+                    }
+
+                    //$result = DBManager::add_column("subnet_masks", "ORGANIZATION_ID", "int(11) NOT NULL default 0");
+                    //if (!$result) {
+                    //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу 'subnet_masks'");
+                    //    return false;
+                    //}
+
+                    //$result = DBManager::add_column("subnet_masks", "MASK", "varchar(30) NOT NULL default ''");
+                    //if (!$result) {
+                    //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'mask' в таблицу 'subnet_masks'");
+                    //    return false;
+                    //}
 
                     $result = DBManager::add_column("departments", "ORGANIZATION_ID", "int(11) NOT NULL default 0");
                     if (!$result) {
@@ -268,6 +292,12 @@
                         return false;
                     }
 
+                     //$result = DBManager::add_sequence("seq_subnet_masks", 1, 1);
+                     //if (!$result) {
+                     //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_subnet_masks'");
+                     //    return false;
+                     //}
+
                     $result = DBManager::add_sequence("seq_departments", 1, 1);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить последовательность 'seq_departments'");
@@ -322,6 +352,24 @@
                         return false;
                     }
 
+                    $result = DBManager::add_column("organizations", "SUBNET_MASK", "VARCHAR2(500) DEFAULT ' ' NOT NULL");
+                    if (!$result) {
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'subnet_mask' в таблицу 'organizations'");
+                        return false;
+                    }
+
+                    //$result = DBManager::add_column("subnet_masks", "ORGANIZATION_ID", "INT DEFAULT 0 NOT NULL");
+                    //if (!$result) {
+                    //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'organization_id' в таблицу 'subnet_masks'");
+                    //    return false;
+                    //}
+
+                    //$result = DBManager::add_column("subnet_masks", "MASK", "VARCHAR2(30) DEFAULT ' ' NOT NULL");
+                    //if (!$result) {
+                    //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'mask' в таблицу 'subnet_masks'");
+                    //    return false;
+                    //}
+
                     $result = DBManager::add_column("departments", "ORGANIZATION_ID", "INT DEFAULT 0 NOT NULL");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось добавить столбец 'ORGANIZATION_ID' в таблицу 'departments'");
@@ -336,7 +384,7 @@
 
                     $id = DBManager::sequence_next("seq_departments");
                     if (!$id) {
-                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удвлось получить следующее значение последовательности 'seq_departments'");
+                        Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> install: Не удалось получить следующее значение последовательности 'seq_departments'");
                         return false;
                     }
 
@@ -570,6 +618,16 @@
 
 
 
+        public static function getOrganizationByUserIP ($ip) {
+            if ($ip == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> getOrganizationByUserIP: Не задан параметр - IP пользователя");
+                return false;
+            }
+
+            
+        }
+
+
 
         /**
         * Возвращает массив организаций
@@ -594,20 +652,21 @@
 
 
             $title = $data -> title;
+            $subnetMask = $data -> subnetMask;
             $organization = Models::construct("Organization", false);
 
             switch (Krypton::getDBType()) {
 
                 case Krypton::DB_TYPE_MYSQL:
 
-                    $result = DBManager::insert_row("organizations", ["title"], ["'$title'"]);
+                    $result = DBManager::insert_row("organizations", ["TITLE", "SUBNET_MASK"], ["'$title'", "'$subnetMask'"]);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addOrganization: Не удалось добавить организацию");
                         return false;
                     }
 
                     $id = mysql_insert_id();
-                    $result = DBManager::select("organizations", ["*"], "id = $id");
+                    $result = DBManager::select("organizations", ["*"], "ID = $id");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addOrganization: Не удалось выбрать добавленную организацию");
                         return false;
@@ -624,13 +683,13 @@
                         return false;
                     }
 
-                    $result = DBManager::insert_row("organizations", ["id", "title"], [$id, "'$title'"]);
+                    $result = DBManager::insert_row("organizations", ["ID", "TITLE", "SUBNET_MASK"], [$id, "'$title'", "'$subnetMask'"]);
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addOrganization: Не удалось добавить организацию");
                         return false;
                     }
 
-                    $result = DBManager::select("organizations", ["*"], "id = $id");
+                    $result = DBManager::select("organizations", ["*"], "ID = $id");
                     if (!$result) {
                         Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> addOrganization: Не удалось выбрать добавленную организацию");
                         return false;
@@ -661,14 +720,15 @@
 
             $id = $data -> id;
             $title = $data -> title;
+            $subnetMask = $data -> subnetMask;
 
-            $result = DBManager::update("organizations", ["title"], ["'$title'"], "id = $id");
+            $result = DBManager::update("organizations", ["TITLE", "SUBNET_MASK"], ["'$title'", "'$subnetMask'"], "ID = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editOrganization: Не удалось сохранить изменения измененной организации");
                 return false;
             }
 
-            $result = DBManager::select("organizations", ["*"], "id = $id");
+            $result = DBManager::select("organizations", ["*"], "ID = $id");
             if (!$result) {
                 Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> editOrganization: Не удалось выбрать отредактированную организацию");
                 return false;

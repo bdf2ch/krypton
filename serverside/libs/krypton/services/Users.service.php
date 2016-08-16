@@ -380,6 +380,7 @@
             API::add("editUser", "Users", "editUser");
             API::add("searchUser", "Users", "search");
             API::add("getPageOfUsers", "Users", "getPageOfUsers");
+            API::add("getUserById", "Users", "getUserById");
         }
 
 
@@ -685,6 +686,30 @@
             $user = Models::construct("User1", false);
             $user -> fromSource($result[0]);
             return $user;
+        }
+
+
+
+        /**
+        * Возвращает информацию о пользователе по идентификатору пользователя
+        * @data {object} - объект с параметрами
+        **/
+        public static function getUserById ($data) {
+            if ($data == null) {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Users -> getUserById: Не задан аргумент - объект с параметрами");
+                return false;
+            }
+
+            $id = $data -> id;
+            $user = Models::construct("User1", false);
+
+            $result = DBManager::select("kr_users", ["*"], "ID = $id");
+            if ($result != false) {
+                $user -> fromSource($result[0]);
+                return $user;
+            }
+
+            return false;
         }
 
 

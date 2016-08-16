@@ -175,29 +175,23 @@
     function AdminEditUserController ($scope, $log, $routeParams, $factory, $users, $navigation, $kolenergo) {
         $scope.users = $users;
         $scope.kolenergo = $kolenergo;
-        $scope.divisions = [];
-        //$scope.search = "";
-
+        //$scope.divisions = [];
 
         if ($routeParams.userId !== undefined) {
-            $log.log("params = ", $routeParams);
             if ($users.users.getCurrent() === undefined || $users.users.getCurrent().id.value !== parseInt($routeParams.userId)) {
-                $users.users.select(parseInt($routeParams.userId));
-                $scope.divisions = $kolenergo.divisions.getByOrganizationId($users.users.getCurrent().organizationId.value);
-                $log.log("divisions = ", $scope.divisions);
-                $scope.uploaderData = {
-                    action: "uploadUserPhoto",
-                    userId: $users.users.getCurrent().id.value
-                };
-                $log.log("uploader data = ", $scope.uploaderData);
+                $log.log("other");
+                $users.users.getById(parseInt($routeParams.userId), function (user) {
+                    $users.users.select(user.id.value);
+                    //$scope.divisions = $kolenergo.divisions.getByOrganizationId($users.users.getCurrent().organizationId.value);
+                    $scope.uploaderData = {
+                        action: "uploadUserPhoto",
+                        userId: $users.users.getCurrent().id.value
+                    };
+                    $navigation.getCurrent().title = $users.users.getCurrent().name.value + " " + $users.users.getCurrent().surname.value;
+                    var phones = $kolenergo.phones.getByUserId($users.users.getCurrent().id.value);
+                    $users.users.getCurrent().phones = phones;
+                });
             }
-
-            $navigation.getCurrent().title = $users.users.getCurrent().name.value + " " + $users.users.getCurrent().surname.value;
-            $log.log("current user = ", $users.users.getCurrent());
-
-
-            var phones = $kolenergo.phones.getByUserId($users.users.getCurrent().id.value);
-            $users.users.getCurrent().phones = phones;
         }
         
         $scope.editUser = function () {

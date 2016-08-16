@@ -8,6 +8,7 @@
             self::field("token", new Field(array( "source" => "SESSION_TOKEN", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
             self::field("start", new Field(array( "source" => "SESSION_START", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("end", new Field(array( "source" => "SESSION_END", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
+            self::field("ip", new Field(array( "source" => "IP", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
 
 
             if (is_null($parameters))

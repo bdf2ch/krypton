@@ -6,6 +6,7 @@
         public function __construct ($parameters) {
             self::field("id", new Field(array( "source" => "ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("title", new Field(array( "source" => "TITLE", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("subnetMask", new Field(array( "source" => "SUBNET_MASK", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
 
 
 

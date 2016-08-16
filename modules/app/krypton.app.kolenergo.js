@@ -27,7 +27,8 @@
             __dependencies__: [],
             __icon__: "",
             id: new Field ({ source: "ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
-            title: new Field ({ source: "TITLE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
+            title: new Field ({ source: "TITLE", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true }),
+            subnetMask: new Field({ source: "SUBNET_MASK", type: DATA_TYPE_STRING, value: "", default_value: "", backupable: true })
         });
 
         /**
@@ -134,7 +135,7 @@
                             var organization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
                             organization._model_.fromAnother(window.krypton.organizations[i]);
                             organization._backup_.setup();
-                            $log.log(organization._backup_.data);
+                            //$log.log(organization._backup_.data);
                             organizations.push(organization);
                         }
                         $log.log("organizations = ", organizations);
@@ -474,7 +475,8 @@
 
                     var params = {
                         action: "addOrganization",
-                        title: newOrganization.title.value
+                        title: newOrganization.title.value,
+                        subnetMask: newOrganization.subnetMask.value
                     };
 
                     newOrganization._states_.loading(true);
@@ -509,7 +511,8 @@
                     var params = {
                         action: "editOrganization",
                         id: currentOrganization.id.value,
-                        title: currentOrganization.title.value
+                        title: currentOrganization.title.value,
+                        subnetMask: currentOrganization.subnetMask.value
                     };
 
                     currentOrganization._states_.loading(true);
@@ -603,7 +606,7 @@
                     $log.log("org id = ", organizationId);
                     if (organizationId === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> divisions -> getByOrganizationId: Не задан параметр - идентификатор организации");
-                        return false;
+                        //return false;
                     }
 
                     var result = [];
