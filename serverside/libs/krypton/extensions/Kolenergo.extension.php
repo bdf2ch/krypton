@@ -586,7 +586,9 @@
                     }
                 }
 
-                $divisions = DBManager::select("divisions", ["*"], "''");
+                $divisions = DBManager::select("divisions", ["*"], "!NOWHERE!ORDER BY PARENT_ID");
+                //$divisions = DBManager::select_connect_by_prior("divisions", ["*"], "", "ID", "PARENT_ID");
+                //var_dump($divisions);
                 if ($divisions != false) {
                     foreach ($divisions as $key => $item) {
                         $division = Models::load("Division", false);
@@ -624,7 +626,18 @@
                 return false;
             }
 
-            
+            if (gettype($ip) != "string") {
+                Errors::push(Errors::ERROR_TYPE_DEFAULT, "Kolenergo -> getOrganizationByUserIP: Неверно задан тип параметра - IP пользователя");
+                return false;
+            }
+
+            $result = DBManager::select("organizations", ["*"], "SUBNET_MASK LIKE '%$ip%'");
+            if ($result !== false) {
+                $organization = Models::construct("Organization", false);
+                $organization -> fromSource($result[0]);
+                return $organization;
+            } else
+                return false;
         }
 
 

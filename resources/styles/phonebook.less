@@ -1,0 +1,117 @@
+@import-once "utils.less";
+
+@phone-book-header-height-expanded: 300px;
+@phone-book-header-height-collapsed: 100px;
+@phone-book-organizations-width: 400px;
+@phone-book-contact-height: 200px;
+
+#phone-book {
+  overflow: auto;
+  background: #FAFAFA;
+
+  #phone-book-header {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: @phone-book-header-height-expanded;
+    background: url("../images/powerlines-4.jpg");
+    background-size: cover;
+    box-sizing: border-box;
+    -webkit-transition: height 0.2s linear;
+    //border: 1px solid red;
+
+    &.collapsed {
+      height: @phone-book-header-height-collapsed;
+
+      input[type='text'] {
+        margin-top: @phone-book-header-height-collapsed / 2 - 25px;
+      }
+    }
+
+    input[type='text'] {
+      display: block;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: @phone-book-header-height-expanded / 2 - 25px;
+      padding: 25px !important;
+      border: none;
+      -webkit-transition: margin-top 0.2s linear;
+      .box-shadow(1px, 1px, 12px, 5px, rgba(0, 0, 0, 0.2));
+    }
+  }
+
+
+
+  #phone-book-organizations {
+    position: absolute;
+    overflow: auto;
+    top: @phone-book-header-height-expanded;
+    left: 0px;
+    bottom: 0px;
+    width: @phone-book-organizations-width;
+    background: white;
+    -webkit-transition: top 0.2s linear;
+    //border: 1px solid green;
+
+    &.expanded {
+      top: @phone-book-header-height-collapsed;
+    }
+  }
+
+
+
+  #phone-book-contacts {
+    position: absolute;
+    overflow: auto;
+    left: @phone-book-organizations-width;
+    top: @phone-book-header-height-expanded;
+    right: 0px;
+    bottom: 0px;
+    padding: 30px;
+    background: #FAFAFA;
+    -webkit-transition: top 0.2s linear;
+    //border: 1px solid blue;
+
+    &.expanded {
+      top: @phone-book-header-height-collapsed;
+    }
+
+    .contact {
+      height: @phone-book-contact-height;
+      margin-bottom: 20px;
+      background: white;
+      .box-shadow(1px, 1px, 10px, 0.5px, rgba(0, 0, 0, 0.1));
+
+      &:last-of-type {
+        margin-bottom: 0px;
+      }
+    }
+
+    .notification {
+      display: block;
+      width: 400px;
+      height: 50px;
+      margin-left: auto;
+      margin-right: auto;
+      //margin-top: @phone-book-header-height-expanded;
+      margin-top: 100px;
+      text-align: center;
+      color: #E0E0E0;
+      text-shadow: rgb(255, 255, 255) 0px 1px 0px;
+      //border: 1px solid blue;
+
+      .fa {
+        display: inline-block;
+        float: left;
+        font-size: 45px;
+      }
+
+      .message {
+        font-size: 20px;
+      }
+    }
+  }
+
+}

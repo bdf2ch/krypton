@@ -1,0 +1,29 @@
+<div id="phone-book">
+
+    <div id="phone-book-header" ng-class="{ 'collapsed': contacts.length > 0 }">
+        <input type="text" name="search" id="phone-book-search" ng-model="search" placeholder="Введите имя, e-mail или телефон абонента">
+    </div>
+
+
+    <div id="phone-book-organizations" ng-class="{ 'expanded': contacts.length > 0 }">
+        <div class="row" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-init="divisions = kolenergo.divisions.getAll()">
+            <hierarchy class="stacked" id="{{ 'org' + $index }}" source="divisions" key="id" parent-key="parentId" display-field="title" on-select="selectDivision"></hierarchy>
+            <!-- <tree id="test" key="id" parent-key="parentId" initial-key-value="0" initial-key-type="DATA_TYPE_INTEGER" display="title"></tree> -->
+        </div>
+    </div>
+
+
+    <div id="phone-book-contacts" ng-class="{ 'expanded': contacts.length > 0 }">
+
+        <div class="notification" ng-show="contacts.length === 0 && search.length < 3">
+            <span class="fa fa-search"></span>
+            <span class="message">Начните вводить имя абонента,<br> электронную почту или телефон</span>
+        </div>
+
+        <div class="contact" ng-repeat="user in contacts | orderBy: 'surname.value' track by $index">
+
+        </div>
+
+    </div>
+
+</div>

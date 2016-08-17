@@ -1,0 +1,52 @@
+#phone-book {
+  overflow: auto;
+  background: #FAFAFA;
+}
+#phone-book #phone-book-header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 40%;
+  background: url("../images/powerlines-4.jpg");
+  background-size: cover;
+  box-sizing: border-box;
+  -webkit-transition: height 0.2s linear;
+  border: 1px solid red;
+}
+#phone-book #phone-book-header.collapsed {
+  height: 100px;
+}
+#phone-book #phone-book-header input[type='text'] {
+  display: block;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 25px !important;
+  border: none;
+}
+#phone-book #phone-book-organizations {
+  position: absolute;
+  top: 40%;
+  left: 0px;
+  bottom: 0px;
+  width: 400px;
+  background: white;
+  -webkit-transition: height 0.2s linear;
+  border: 1px solid green;
+}
+#phone-book #phone-book-organizations.expanded {
+  top: 100px;
+}
+#phone-book #phone-book-contacts {
+  position: absolute;
+  left: 400px;
+  top: 40%;
+  right: 0px;
+  bottom: 0px;
+  background: #FAFAFA;
+  border: 1px solid blue;
+}
+#phone-book #phone-book-contacts.expanded {
+  top: 100px;
+}

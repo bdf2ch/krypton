@@ -1888,6 +1888,7 @@
 
         function treeFactory ($log, $errors) {
             var items = [];
+            $log.log("trees = ", items);
 
             return {
                 /**
@@ -2021,7 +2022,6 @@
                         $errors.add(ERROR_TYPE_ENGINE, "$tree -> addItem: Древовидный список с идентификатором '" + id + "' не найден");
                         return false;
                     }
-                    
 
                     if (item === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$tree -> addItem: Не задан параметр - добавляемый элемент");
@@ -2051,6 +2051,7 @@
 
                         tree.initial.push(item);
                         tree.stack.push(item);
+                        //tree.scope.$apply();
                         $log.log("item = ", item);
                     } else {
                         var parent = this.getItemByKey(id, parentKey);
@@ -2406,16 +2407,25 @@
                         event.stopPropagation();
                         if (node !== undefined) {
                             var key = node[scope.settings.key].constructor === Field ? node[scope.settings.key].value : node[scope.settings.key];
-                            !$tree.selectItem(scope.settings.id, key)
+                            !$tree.selectItem(scope.settings.id, key);
                                 //$errors.add(ERROR_TYPE_ENGINE, "krypton.ui -> tree -> select: Не удалось выбрать элемент с идентификатором '" + key + "' древовоидного списка");
                                 //return false;
 
                         }
                     };
 
+                    var tree = $tree.getById(scope.settings.id);
                     $templateCache.put("hierarchy", template);
-                    if (!$tree.getById(scope.settings.id))
+                    if (!tree) {
                         $tree.register(scope.settings);
+                    } else {
+                        scope.settings.initial = tree.initial;
+                        scope.settings.stack = tree.stack;
+                    }
+
+                    //scope.$apply();
+
+
 
                     //scope.$watch("settings.stack.length", function (val) {
                     //    scope.$apply();

@@ -28,7 +28,7 @@
                     controller: "UserAccountController"
                 })
                 .when("/phones", {
-                    templateUrl: "templates/app/telephones.html",
+                    templateUrl: "templates/app/phonebook.html",
                     controller: "PhoneBookController"
                 })
                 .when("/account", {

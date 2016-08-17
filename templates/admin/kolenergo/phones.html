@@ -24,7 +24,7 @@
 
             <div class="row">
 
-                <table class="stripped selectable">
+                <table class="stripped selectable" ng-show="users.users.getAll().length > 0 && users.users.isLoading() === false">
                     <thead>
                     <tr>
                         <th>Фамилия, имя, отчество</th>
@@ -33,7 +33,7 @@
                         <th>Стр. подразделение</th>
                     </tr>
                     </thead>
-                    <tbody ng-show="users.users.isLoading() === false">
+                    <tbody>
                     <tr ng-class="{ 'selected': user._states_.selected() === true }" ng-repeat="user in users.users.getAll() track by $id(user)" ng-click="selectUser(user.id.value)">
                         <td>{{ user.fio }}</td>
                         <td>{{ user.position.value }}</td>

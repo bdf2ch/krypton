@@ -602,11 +602,11 @@
                     return false;
                 },
 
-                getByOrganizationId: function (organizationId) {
+                getByOrganizationId: function (organizationId, callback) {
                     $log.log("org id = ", organizationId);
                     if (organizationId === undefined) {
                         $errors.add(ERROR_TYPE_DEFAULT, "$kolenergo -> divisions -> getByOrganizationId: Не задан параметр - идентификатор организации");
-                        //return false;
+                        return false;
                     }
 
                     var result = [];
@@ -616,7 +616,10 @@
                             result.push(divisions[i]);
                     }
 
-                    return result;
+                    if (callback !== undefined && typeof callback === "function")
+                        callback(result);
+
+                    return true;
                 },
 
                 /**
@@ -1445,85 +1448,23 @@
         $scope.kolenergo = $kolenergo;
         $scope.modals = $modals;
         $scope.tree = [];
-        //$scope.hierarchy = $kolenergo.organizations.getCurrent() !== undefined ? $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value) : [];
-        //$scope.newOrganization = $factory({ classes: ["Organization", "Model", "Backup", "States"], base_class: "Organization" });
-        //$scope.newDepartment = $factory({ classes: ["Department", "Model", "Backup", "States"], base_class: "Department" });
-        //$scope.newDivision = $factory({ classes: ["Division", "Model", "Backup", "States"], base_class: "Division" });
         $scope.submitted = false;
 
-        if ($kolenergo.organizations.getCurrent() !== undefined && $scope.tree.length === 0) {
-            $scope.tree = $kolenergo.divisions.getByOrganizationId($kolenergo.organizations.getCurrent().id.value);
-            $log.log("stack before = ", $tree.getById("test-tree").stack);
-            for (var i = 0; i < $scope.tree.length; i ++) {
-                $tree.addItem("test-tree", $scope.tree[i]);
-            }
-            $log.log("stack after = ", $tree.getById("test-tree").stack);
-        }
 
-        $log.log("tree = ", $scope.tree);
-
-        
-        //$scope.newDivision._backup_.setup();
-
-
-        
-        //$scope.selectDivision = function (division) {
-        //    if (division !== undefined) {
-                //$log.log("onSelectHierarchyItem", division);
-        //        $scope.currentDivision = division;
-        //        $log.log("current division = ", $scope.currentDivision);
-                //$scope.newDivision.parentId.value = $scope.currentDivision.id.value;
-        //    } else {
-        //        $scope.currentDivision = undefined;
-                //$scope.newDivision.parentId.value = 0;
-        //    }
-        //};
-
-
-        
         $scope.selectOrganization = function (organizationId) {
             $log.log("org select callback");
             $kolenergo.organizations.select(organizationId, function (org) {
                 if (org !== undefined) {
-                    //$scope.newDepartment.organizationId.value = organizationId;
-                    $scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
-                    for (var x = 0; x < $scope.tree.length; x++) {
-                        $tree.addItem("test-tree", $scope.tree[x]);
-                    }
-                }// else {
-                //    $scope.newDepartment.organizationId.value = 0;
-                //}
+                    $kolenergo.divisions.getByOrganizationId(organizationId, function (divisions) {
+                        $log.log("total divisions = ", divisions.length);
+                        var length = divisions.length;
+                        for (var x = 0; x < length; x++) {
+                            $tree.addItem("test-tree", divisions[x]);
+                        }
+                    });
+                } else
+                    $tree.clear("test-tree");
             });
-            //$scope.newDepartment.organizationId.value = organizationId;
-            //$scope.$apply(function () {
-            //    $scope.newDepartment.organizationId.value = organizationId;
-            //});
-
-            /*
-            if ($kolenergo.organizations.getCurrent() === undefined) {
-                $kolenergo.organizations.select(organizationId);
-                //$scope.newDepartment.organizationId.value = organizationId;
-                $scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
-                for (var x = 0; x < $scope.tree.length; x++) {
-                    $tree.addItem("test-tree", $scope.tree[x]);
-                }
-            } else {
-                $kolenergo.organizations.select(organizationId);
-                //$scope.newDepartment.organizationId.value = 0;
-                //$scope.newDepartment._backup_.restore();
-                $log.log("new dep org id = ", $scope.newDepartment);
-                $tree.clear("test-tree");
-                $scope.tree = [];
-            }
-            */
-
-            //$scope.tree = $kolenergo.divisions.getByOrganizationId(organizationId);
-            //$scope.tree = $filter("orderBy")($scope.tree, "id.value");
-
-
-
-            //$log.log("tree = ", $scope.tree);
-            //$log.log("hierarchy = ", $scope.hierarchy);
         };
         
         

@@ -1514,6 +1514,98 @@ a.blue:hover {
   display: inline-block;
   vertical-align: bottom;
 }
+@import-once "utils.less";
+#phone-book {
+  overflow: auto;
+  background: #FAFAFA;
+}
+#phone-book #phone-book-header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 300px;
+  background: url("../images/powerlines-4.jpg");
+  background-size: cover;
+  box-sizing: border-box;
+  -webkit-transition: height 0.2s linear;
+}
+#phone-book #phone-book-header.collapsed {
+  height: 100px;
+}
+#phone-book #phone-book-header.collapsed input[type='text'] {
+  margin-top: 25px;
+}
+#phone-book #phone-book-header input[type='text'] {
+  display: block;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 125px;
+  padding: 25px !important;
+  border: none;
+  -webkit-transition: margin-top 0.2s linear;
+  -webkit-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+}
+#phone-book #phone-book-organizations {
+  position: absolute;
+  overflow: auto;
+  top: 300px;
+  left: 0px;
+  bottom: 0px;
+  width: 400px;
+  background: white;
+  -webkit-transition: top 0.2s linear;
+}
+#phone-book #phone-book-organizations.expanded {
+  top: 100px;
+}
+#phone-book #phone-book-contacts {
+  position: absolute;
+  overflow: auto;
+  left: 400px;
+  top: 300px;
+  right: 0px;
+  bottom: 0px;
+  padding: 30px;
+  background: #FAFAFA;
+  -webkit-transition: top 0.2s linear;
+}
+#phone-book #phone-book-contacts.expanded {
+  top: 100px;
+}
+#phone-book #phone-book-contacts .contact {
+  height: 200px;
+  margin-bottom: 20px;
+  background: white;
+  -webkit-box-shadow: 1px 1px 10px 0.5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 1px 1px 10px 0.5px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 1px 10px 0.5px rgba(0, 0, 0, 0.1);
+}
+#phone-book #phone-book-contacts .contact:last-of-type {
+  margin-bottom: 0px;
+}
+#phone-book #phone-book-contacts .notification {
+  display: block;
+  width: 400px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+  text-align: center;
+  color: #E0E0E0;
+  text-shadow: #ffffff 0px 1px 0px;
+}
+#phone-book #phone-book-contacts .notification .fa {
+  display: inline-block;
+  float: left;
+  font-size: 45px;
+}
+#phone-book #phone-book-contacts .notification .message {
+  font-size: 20px;
+}
 html,
 body {
   height: 100%;
