@@ -15,14 +15,78 @@
 
     <div id="phone-book-contacts" ng-class="{ 'expanded': contacts.length > 0 }">
 
+        <div class="toolbar">
+            <div class="options">
+                <select name="" id=""></select>
+            </div>
+            <div class="summary" ng-show="contacts.length > 0">Найдено абонентов: {{ contacts.length  }}</div>
+        </div>
+
+        <div class="content">
+
+
+            <div class="test-contact-container" ng-repeat="user in contacts track by $index">
+                <div class="test-contact">
+                    <div class="photo-container">
+                        <div class="photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ' '"></div>
+                        <div class="photo no-photo" ng-show="user.photo.value === ' '"></div>
+                    </div>
+
+                    <div class="details-container">
+                        <div class="surname">{{ user.surname.value}}</div>
+                        <div class="name">{{ user.name.value + " " + user.fname.value }}</div>
+                        <div class="position">{{ user.position.value }}</div>
+                    </div>
+
+                    <div class="contacts-container">
+                        <div class="email">
+                            <span class="fa fa-at"></span>&nbsp; {{ user.email.value }}
+                        </div>
+                        <div class="mobile">
+                            <span class="fa fa-mobile-phone"></span>&nbsp; 8 (921) 555-666-77
+                        </div>
+                        <div class="phones">
+                            <div class="phone">
+                                <span class="fa fa-phone"></span> &nbsp; 24-69, &nbsp; (820) 77-14
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--
+            <div class="contact" ng-repeat="user in contacts | orderBy: 'surname.value' track by $index">
+                <div class="photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ' '"></div>
+                <div class="photo no-photo" ng-show="user.photo.value === ' '"></div>
+
+                <div class="personal-info">
+                    <div class="fio">{{ user.fio }}</div>
+                    <div class="position">{{ user.position.value }}</div>
+                </div>
+
+                <div class="contacts">
+                    <div class="phones">
+                        <div class="phone">
+                            <span class="fa fa-phone"></span>&nbsp; 24-69
+                        </div>
+                        <div class="phone">
+                            <span class="fa fa-phone"></span>&nbsp; 24-77
+                        </div>
+                    </div>
+                    <div class="mobile"><span class="fa fa-mobile-phone"></span>&nbsp; 8 (921) 555-666-77{{ user.mobile.value }}</div>
+                    <div class="email"><span class="fa fa-at"></span>&nbsp;{{ user.email.value }}</div>
+                </div>
+            </div>
+            -->
+        </div>
+
         <div class="notification" ng-show="contacts.length === 0 && search.length < 3">
             <span class="fa fa-search"></span>
             <span class="message">Начните вводить имя абонента,<br> электронную почту или телефон</span>
         </div>
 
-        <div class="contact" ng-repeat="user in contacts | orderBy: 'surname.value' track by $index">
 
-        </div>
 
     </div>
 

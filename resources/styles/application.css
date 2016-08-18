@@ -1564,19 +1564,54 @@ a.blue:hover {
 }
 #phone-book #phone-book-contacts {
   position: absolute;
-  overflow: auto;
+  overflow: hidden;
   left: 400px;
   top: 300px;
   right: 0px;
   bottom: 0px;
-  padding: 30px;
+  padding: 20px;
+  padding-top: 0px;
   background: #FAFAFA;
   -webkit-transition: top 0.2s linear;
 }
 #phone-book #phone-book-contacts.expanded {
   top: 100px;
 }
-#phone-book #phone-book-contacts .contact {
+#phone-book #phone-book-contacts .toolbar {
+  position: absolute;
+  display: block;
+  z-index: 2;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  height: 50px;
+  margin-bottom: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background: #E0E0E0;
+  box-sizing: border-box;
+  border-bottom: 1px solid #D3D5E0;
+}
+#phone-book #phone-book-contacts .toolbar .options {
+  float: left;
+  padding: 10px;
+}
+#phone-book #phone-book-contacts .toolbar .summary {
+  float: right;
+  line-height: 50px;
+}
+#phone-book #phone-book-contacts .content {
+  position: absolute;
+  overflow: auto;
+  z-index: 1;
+  top: 50px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding: 30px;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .contact {
   height: 200px;
   margin-bottom: 20px;
   background: white;
@@ -1584,8 +1619,195 @@ a.blue:hover {
   -moz-box-shadow: 1px 1px 10px 0.5px rgba(0, 0, 0, 0.1);
   box-shadow: 1px 1px 10px 0.5px rgba(0, 0, 0, 0.1);
 }
-#phone-book #phone-book-contacts .contact:last-of-type {
+#phone-book #phone-book-contacts .content .contact:last-of-type {
   margin-bottom: 0px;
+}
+#phone-book #phone-book-contacts .content .contact .photo {
+  float: left;
+  width: 200px;
+  height: 200px;
+  border-right: 1px solid #F5F5F5;
+  background-size: cover !important;
+  -webkit-background-size: cover !important;
+}
+#phone-book #phone-book-contacts .content .contact .photo.no-photo {
+  background: url("../images/no_photo.png");
+  background-position: -37px;
+}
+#phone-book #phone-book-contacts .content .contact .personal-info {
+  margin-left: 200px;
+  padding-top: 30px;
+  height: 100px;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .contact .fio {
+  padding-left: 20px;
+  padding-bottom: 5px;
+  font-size: 27px;
+  line-height: 22px;
+  color: #0277BD;
+}
+#phone-book #phone-book-contacts .content .contact .position {
+  padding-left: 20px;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #BF360C;
+}
+#phone-book #phone-book-contacts .content .contact .contacts {
+  overflow: auto;
+  margin-left: 200px;
+  padding: 20px;
+  padding-top: 0px;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .fa {
+  font-size: 20px;
+  color: #9FA8DA;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .phones {
+  float: left;
+  height: 100%;
+  margin-right: 40px;
+  font-size: 20px;
+  line-height: 20px;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .phones .phone {
+  display: block;
+  margin-bottom: 5px;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .mobile {
+  float: left;
+  min-width: 200px;
+  height: 100%;
+  margin-right: 40px;
+  font-size: 20px;
+  line-height: 20px;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .email {
+  float: left;
+  min-width: 200px;
+  height: 100%;
+  font-size: 20px;
+  line-height: 20px;
+}
+#phone-book #phone-book-contacts .content .test-contact-container {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  float: left;
+  width: 25%;
+  min-width: 300px;
+  height: 400px;
+  margin-bottom: 20px;
+  padding: 5px;
+  text-align: justify;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact {
+  height: 100%;
+  background: white;
+  box-sizing: border-box;
+  -webkit-box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.1);
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container {
+  height: 170px;
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo {
+  width: 150px;
+  height: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background-repeat: no-repeat !important;
+  -webkit-background-size: cover;
+  background-size: cover !important;
+  background-position: center center;
+  transition: width linear 0.3s 0s;
+  transition: height linear 0.3s 0s;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo:hover {
+  width: 100%;
+  height: 100%;
+  margin-top: -10px;
+  border-radius: 0px;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo.no-photo {
+  background: url("../images/anonymous.png");
+  background-repeat: no-repeat;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: 0 10px;
+  border: 1px solid lightgray;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .details-container {
+  height: 90px;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .details-container .surname {
+  font-size: 23px;
+  line-height: 23px;
+  color: #4B5B73;
+  text-align: center;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .details-container .name {
+  margin-bottom: 10px;
+  font-size: 19px;
+  line-height: 19px;
+  color: #4B5B73;
+  text-align: center;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .details-container .position {
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 14px;
+  line-height: 15px;
+  color: #96A1B5;
+  text-align: center;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container {
+  height: 140px;
+  background: #E7EDF7;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .fa {
+  float: left;
+  width: 40px;
+  height: 100%;
+  font-size: 20px;
+  line-height: 46.66666667px !important;
+  text-align: center;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .email {
+  height: 46.66666667px;
+  font-size: 17px;
+  line-height: 46.66666667px;
+  color: #343846;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .email .fa {
+  background: #80CBC4;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .mobile {
+  height: 46.66666667px;
+  font-size: 17px;
+  line-height: 46.66666667px;
+  color: #343846;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .mobile .fa {
+  background: #E0F7FA;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .phones {
+  height: 46.66666667px;
+  line-height: 46.66666667px;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .phones .phone {
+  font-size: 17px;
+  color: #343846;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .phones .fa {
+  background: #C8E6C9;
 }
 #phone-book #phone-book-contacts .notification {
   display: block;

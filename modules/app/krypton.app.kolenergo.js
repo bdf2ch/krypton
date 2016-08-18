@@ -1172,35 +1172,36 @@
                 }
             },
 
+            phonebook: {
+                getUsersByDivisionId: function (id, callback) {
+                    if (id === undefined) {
+                        $errors.push(ERROR_TYPE_DEFAULT, "$kolenergo -> getUsersByDivisionId: Не задан парметр - идентификатор структурного подразделения");
+                        return false;
+                    }
 
-            getUsersByDivisionId: function (id, callback) {
-                if (id === undefined) {
-                    $errors.push(ERROR_TYPE_DEFAULT, "$kolenergo -> getUsersByDivisionId: Не задан парметр - идентификатор структурного подразделения");
-                    return false;
-                }
+                    var params = {
+                        action: "getUsersByDivisionId",
+                        id: id
+                    };
 
-                var params = {
-                    action: "getUsersByDivisionId",
-                    id: id
-                };
-
-                $http.post("/serverside/libs/krypton/api.php", params)
-                    .success(function (data) {
-                        if (data !== undefined) {
-                            $errors.checkResponse(data);
-                            if (data.result !== undefined && data.result !== false) {
-                                var users = [];
-                                var length = data.result.users.length;
-                                for (var i = 0; i < length; i++) {
-                                    var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
-                                    user._model_.fromAnother(data.result.users[i]);
-                                    users.push(user);
+                    $http.post("/serverside/libs/krypton/api.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $errors.checkResponse(data);
+                                if (data.result !== undefined && data.result !== false) {
+                                    var users = [];
+                                    var length = data.result.users.length;
+                                    for (var i = 0; i < length; i++) {
+                                        var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+                                        user._model_.fromAnother(data.result.users[i]);
+                                        users.push(user);
+                                    }
+                                    if (callback !== undefined && typeof callback === "function")
+                                        callback(users);
                                 }
-                                if (callback !== undefined && typeof callback === "function")
-                                    callback(users);
                             }
-                        }
-                    });
+                        });
+                }
             },
 
 
@@ -1850,7 +1851,7 @@
             //else
             //    $scope.div = 0;
             $scope.contacts = [];
-            $kolenergo.getUsersByDivisionId(div.id.value, function (result) {
+            $kolenergo.phonebook.getUsersByDivisionId(div.id.value, function (result) {
                 $scope.contacts = result;
                 $log.log("contacts = ", $scope.contacts);
             });
