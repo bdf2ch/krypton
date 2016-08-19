@@ -1081,9 +1081,10 @@
             }
 
             $id = $data -> id;
-            $result = new stdClass();
-            $result -> divisions = array();
-            $result -> users = array();
+            //$result = new stdClass();
+            //$result -> divisions = array();
+            //$result -> users = array();
+            $result = array();
 
             $divisions = DBManager::select_connect_by_prior("divisions", ["*"], "", "ID", "PARENT_ID", $id);
             if (!$divisions) {
@@ -1092,29 +1093,49 @@
             }
 
 
-
-            $ids = "";
-            for ($x = 0; $x < sizeof($divisions); $x++) {
+            foreach ($divisions as $key => $divisionItem) {
                 $division = Models::construct("Division", false);
-                $division -> fromSource($divisions[$x]);
-                array_push($result -> divisions, $division);
-                $ids .= $division -> id -> value;
-                $ids .= $x < sizeof($divisions) - 1 ? "," : "";
+                $division -> fromSource($divisionItem);
+                $div = new stdClass();
+                $div -> division = $division;
+                $div -> users = array();
+
+                $users = DBManager::select("kr_users", ["*"], "DIVISION_ID = ".$division -> id -> value." AND IS_DISPLAYABLE = 1");
+                if ($users != false) {
+                    foreach ($users as $userKey => $userItem) {
+                        $user = Models::construct("User1", false);
+                        $user -> fromSource($userItem);
+                        array_push($div -> users, $user);
+                    }
+                }
+
+                array_push($result, $div);
             }
-            $ids = "(".$ids.")";
+
+
+
+            //$ids = "";
+            //for ($x = 0; $x < sizeof($divisions); $x++) {
+            //    $division = Models::construct("Division", false);
+            //    $division -> fromSource($divisions[$x]);
+            //    array_push($result -> divisions, $division);
+            //    $ids .= $division -> id -> value;
+            //    $ids .= $x < sizeof($divisions) - 1 ? "," : "";
+            //}
+            //$ids = "(".$ids.")";
             //echo($ids);
 
-            $users = DBManager::select("kr_users", ["*"], "DIVISION_ID IN ".$ids." AND IS_DISPLAYABLE = 1");
+            //$users = DBManager::select("kr_users", ["*"], "DIVISION_ID IN ".$ids." AND IS_DISPLAYABLE = 1");
             //if (!$users) {
             //    Errors::push(Errors::ERROR_TYPE_ENGINE, "Kolenergo -> getUsersByDivisionId: Не удалось выбрать пользователей по идентификаторам отделов");
             //    return false;
             //}
 
-            for ($i = 0; $i < sizeof($users); $i++) {
-                $user = Models::construct("User1", false);
-                $user -> fromSource($users[$i]);
-                array_push($result -> users, $user);
-            }
+            //for ($i = 0; $i < sizeof($users); $i++) {
+            //    $user = Models::construct("User1", false);
+            //    $user -> fromSource($users[$i]);
+            //    array_push($result -> users, $user);
+            //}
 
             return $result;
         }

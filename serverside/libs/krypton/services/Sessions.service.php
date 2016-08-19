@@ -197,6 +197,8 @@
                 $newToken = self::generateToken();
                 $start = time();
                 $end = $start + Settings::getByCode("session_duration");
+                $organization = Kolenergo::getOrganizationByUserIP($_SERVER["REMOTE_ADDR"]);
+                var_dump($organization);
 
                 switch (Krypton::getDBType()) {
                     case Krypton::DB_TYPE_MYSQL:
@@ -233,6 +235,7 @@
                 $session -> start -> value = $start;
                 $session -> end -> value = $end;
                 $session -> ip -> value = $_SERVER["REMOTE_ADDR"];
+                //$session -> organizationId -> value = $organization -> id -> value;
                 self::$session = $session;
                 setcookie("krypton_session", $newToken, $end, "/", $_SERVER["SERVER_NAME"]);
 

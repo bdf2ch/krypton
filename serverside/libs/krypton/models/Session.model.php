@@ -9,6 +9,7 @@
             self::field("start", new Field(array( "source" => "SESSION_START", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("end", new Field(array( "source" => "SESSION_END", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
             self::field("ip", new Field(array( "source" => "IP", "type" => Krypton::DATA_TYPE_STRING, "value" => "", "defaultValue" => "" )));
+            self::field("organizationId", new Field(array( "source" => "ORGANIZATION_ID", "type" => Krypton::DATA_TYPE_INTEGER, "value" => 0, "defaultValue" => 0 )));
 
 
             if (is_null($parameters))

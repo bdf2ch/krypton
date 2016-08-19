@@ -1405,6 +1405,7 @@ function isField (obj) {
             start: new Field({ source: "SESSION_START", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
             end: new Field({ source: "SESSION_END", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 }),
             ip: new Field({ source: "IP", type: DATA_TYPE_STRING, value: "", default_value: "" }),
+            organizationId: new Field({ source: "ORGANIZATION_ID", type: DATA_TYPE_INTEGER, value: 0, default_value: 0 })
         });
 
         /**

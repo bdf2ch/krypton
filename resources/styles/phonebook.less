@@ -74,6 +74,10 @@
     padding: 20px;
     padding-top: 0px;
     background: #FAFAFA;
+    //background: #E1F5FE;
+    //background: url("../images/powerlines.jpg");
+    //-webkit-background-size: contain;
+    //background-size: contain;
     -webkit-transition: top 0.2s linear;
     //border: 1px solid blue;
 
@@ -223,6 +227,32 @@
       }
 
 
+      .division {
+        overflow: auto;
+        margin-bottom: 30px;
+
+        &.root {
+          margin-bottom: 0px;
+        }
+
+        .division-title {
+          padding-bottom: 5px;
+          margin-bottom: 10px;
+          padding-left: 5px;
+          font-size: 20px;
+          color: #01579B;
+          text-align: center;
+          border-bottom: 1px dotted lightgray;
+
+          &.root {
+            text-align: center;
+            font-size: 25px;
+            border-bottom: none;
+          }
+        }
+      }
+
+
       .test-contact-container {
         display: inline-block;
         position: relative;
@@ -249,7 +279,8 @@
           //border: 1px solid black;
 
           .photo-container {
-            height: 170px;
+            overflow: hidden;
+            height: 260px;
             padding-top: 10px;
             box-sizing: border-box;
             //border: 1px solid lightgray;
@@ -259,6 +290,7 @@
               height: 150px;
               margin-left: auto;
               margin-right: auto;
+              margin-bottom: 10px;
               //margin-top: 10px;
               box-sizing: border-box;
               border-radius: 50%;
@@ -268,11 +300,12 @@
               background-position: center center;
               transition: width linear 0.3s 0s;
               transition: height linear 0.3s 0s;
+              transition: border-radius linear 0.3s 0s;
 
 
               &:hover {
                 width: 100%;
-                height: 100%;
+                height: 260px;
                 margin-top: -10px;
                 border-radius: 0px;
               }
@@ -286,41 +319,52 @@
                 background-position: 0 10px;
                 //background-position: -37px;
                 border: 1px solid lightgray;
+
+
+                &:hover {
+                  width: 150px;
+                  height: 150px;
+                  margin-top: 0px;
+                  border-radius: 50%;
+
+                }
               }
+
+            }
+
+            .details-container {
+              height: 90px;
+              //border: 1px solid yellow;
+
+              .surname {
+                font-size: 25px;
+                line-height: 23px;
+                color: #0D47A1;
+                text-align: center;
+              }
+
+              .name {
+                margin-bottom: 10px;
+                font-size: 19px;
+                line-height: 19px;
+                color: #0D47A1;
+                text-align: center;
+              }
+
+              .position {
+                padding-left: 5px;
+                padding-right: 5px;
+                font-size: 14px;
+                line-height: 15px;
+                color: #96A1B5;
+                text-align: center;
+              }
+
             }
           }
 
 
-          .details-container {
-            height: 90px;
-            //border: 1px solid yellow;
 
-            .surname {
-              font-size: 23px;
-              line-height: 23px;
-              color: #4B5B73;
-              text-align: center;
-            }
-
-            .name {
-              margin-bottom: 10px;
-              font-size: 19px;
-              line-height: 19px;
-              color: #4B5B73;
-              text-align: center;
-            }
-
-            .position {
-              padding-left: 5px;
-              padding-right: 5px;
-              font-size: 14px;
-              line-height: 15px;
-              color: #96A1B5;
-              text-align: center;
-            }
-
-          }
-          
 
           .contacts-container {
             height: @phone-book-contact-contacts-height;
@@ -329,12 +373,12 @@
 
             .fa {
               float: left;
-              width: 40px;
+              width: @phone-book-contact-contacts-height / 3;
               height: 100%;
               //padding: 5px;
               //padding-top: 10px;
               //padding-bottom: 10px;
-              font-size: 20px;
+              font-size: 23px;
               line-height: @phone-book-contact-contacts-height / 3 !important;
               text-align: center;
               //border-right: 1px dotted #343846;
@@ -367,7 +411,7 @@
               //border: 1px solid red;
 
               .fa {
-                background: #E0F7FA;
+                background: #B3E5FC;
               }
             }
 

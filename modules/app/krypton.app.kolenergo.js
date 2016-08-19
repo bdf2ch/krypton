@@ -1189,18 +1189,52 @@
                             if (data !== undefined) {
                                 $errors.checkResponse(data);
                                 if (data.result !== undefined && data.result !== false) {
-                                    var users = [];
-                                    var length = data.result.users.length;
+                                    var result = [];
+                                    var length = data.result.length;
                                     for (var i = 0; i < length; i++) {
-                                        var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
-                                        user._model_.fromAnother(data.result.users[i]);
-                                        users.push(user);
+                                        var div = {
+                                            division: $factory({ classes: ["Division", "Model"], base_class: "Division" }),
+                                            users: []
+                                        };
+                                        div.division._model_.fromAnother(data.result[i].division);
+                                        if (data.result[i].users !== undefined && data.result[i].users !== null && data.result[i] !== false) {
+                                            var usersLength = data.result[i].users.length;
+                                            for (var x = 0; x < usersLength; x++) {
+                                                var user = $factory({ classes: ["User", "Model"], base_class: "User" });
+                                                user._model_.fromAnother(data.result[i].users[x]);
+                                                div.users.push(user);
+                                            }
+                                        }
+                                        result.push(div);
                                     }
+
+
+
+
+
+
+                                    //var users = [];
+                                    //var length = data.result.users.length;
+                                    //for (var i = 0; i < length; i++) {
+                                    //    var user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+                                    //    user._model_.fromAnother(data.result.users[i]);
+                                    //    users.push(user);
+                                    //}
                                     if (callback !== undefined && typeof callback === "function")
-                                        callback(users);
+                                        callback(result);
+
+                                    $log.log(result);
+                                    return true;
                                 }
                             }
                         });
+                },
+                
+                getUserOrganizationId: function () {
+                    if ($session.getCurrentUser() !== undefined)
+                        return $session.getCurrentUser.organizationId.value;
+                    else 
+                        return $session.getCurrentSession().organizationId.value;
                 }
             },
 
@@ -1828,7 +1862,7 @@
     function PhoneBookController ($scope, $log, $users, $kolenergo, $tree) {
         $scope.users = $users;
         $scope.kolenergo = $kolenergo;
-        $scope.search = "";
+        //$scope.search = "";
         $scope.contacts = [];
 
         $scope.div = 0;
@@ -1853,7 +1887,7 @@
             $scope.contacts = [];
             $kolenergo.phonebook.getUsersByDivisionId(div.id.value, function (result) {
                 $scope.contacts = result;
-                $log.log("contacts = ", $scope.contacts);
+                //$log.log("contacts = ", $scope.contacts);
             });
         };
     };

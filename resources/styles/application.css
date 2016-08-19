@@ -1690,6 +1690,27 @@ a.blue:hover {
   font-size: 20px;
   line-height: 20px;
 }
+#phone-book #phone-book-contacts .content .division {
+  overflow: auto;
+  margin-bottom: 30px;
+}
+#phone-book #phone-book-contacts .content .division.root {
+  margin-bottom: 0px;
+}
+#phone-book #phone-book-contacts .content .division .division-title {
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  padding-left: 5px;
+  font-size: 20px;
+  color: #01579B;
+  text-align: center;
+  border-bottom: 1px dotted lightgray;
+}
+#phone-book #phone-book-contacts .content .division .division-title.root {
+  text-align: center;
+  font-size: 25px;
+  border-bottom: none;
+}
 #phone-book #phone-book-contacts .content .test-contact-container {
   display: inline-block;
   position: relative;
@@ -1712,7 +1733,8 @@ a.blue:hover {
   box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.1);
 }
 #phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container {
-  height: 170px;
+  overflow: hidden;
+  height: 260px;
   padding-top: 10px;
   box-sizing: border-box;
 }
@@ -1721,6 +1743,7 @@ a.blue:hover {
   height: 150px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 10px;
   box-sizing: border-box;
   border-radius: 50%;
   background-repeat: no-repeat !important;
@@ -1729,10 +1752,11 @@ a.blue:hover {
   background-position: center center;
   transition: width linear 0.3s 0s;
   transition: height linear 0.3s 0s;
+  transition: border-radius linear 0.3s 0s;
 }
 #phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo:hover {
   width: 100%;
-  height: 100%;
+  height: 260px;
   margin-top: -10px;
   border-radius: 0px;
 }
@@ -1744,23 +1768,29 @@ a.blue:hover {
   background-position: 0 10px;
   border: 1px solid lightgray;
 }
-#phone-book #phone-book-contacts .content .test-contact-container .test-contact .details-container {
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo.no-photo:hover {
+  width: 150px;
+  height: 150px;
+  margin-top: 0px;
+  border-radius: 50%;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .details-container {
   height: 90px;
 }
-#phone-book #phone-book-contacts .content .test-contact-container .test-contact .details-container .surname {
-  font-size: 23px;
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .details-container .surname {
+  font-size: 25px;
   line-height: 23px;
-  color: #4B5B73;
+  color: #0D47A1;
   text-align: center;
 }
-#phone-book #phone-book-contacts .content .test-contact-container .test-contact .details-container .name {
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .details-container .name {
   margin-bottom: 10px;
   font-size: 19px;
   line-height: 19px;
-  color: #4B5B73;
+  color: #0D47A1;
   text-align: center;
 }
-#phone-book #phone-book-contacts .content .test-contact-container .test-contact .details-container .position {
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .details-container .position {
   padding-left: 5px;
   padding-right: 5px;
   font-size: 14px;
@@ -1774,9 +1804,9 @@ a.blue:hover {
 }
 #phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .fa {
   float: left;
-  width: 40px;
+  width: 46.66666667px;
   height: 100%;
-  font-size: 20px;
+  font-size: 23px;
   line-height: 46.66666667px !important;
   text-align: center;
 }
@@ -1796,7 +1826,7 @@ a.blue:hover {
   color: #343846;
 }
 #phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .mobile .fa {
-  background: #E0F7FA;
+  background: #B3E5FC;
 }
 #phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .phones {
   height: 46.66666667px;
