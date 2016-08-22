@@ -16,6 +16,7 @@
     Krypton::$app -> addInitialData("organizations", json_encode(Extensions::get("Kolenergo") -> getOrganizations()));
     Krypton::$app -> addInitialData("departments", json_encode(Extensions::get("Kolenergo") -> getDepartments()));
     Krypton::$app -> addInitialData("divisions", json_encode(Extensions::get("Kolenergo") -> getDivisions()));
+    Krypton::$app -> addInitialData("ats", json_encode(Extensions::get("Kolenergo") -> getAts()));
 
     $app -> start();
 

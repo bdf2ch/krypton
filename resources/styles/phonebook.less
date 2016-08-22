@@ -1,36 +1,60 @@
-@import-once "utils.less";
+@import "utils.less";
+@import "phone-book-search-bar.less";
 
 @phone-book-header-height-expanded: 300px;
-@phone-book-header-height-collapsed: 100px;
+@phone-book-header-height-collapsed: 150px;
 @phone-book-organizations-width: 400px;
 @phone-book-contact-height: 200px;
 @phone-book-toolbar-height: 50px;
 @phone-book-contact-contacts-height: 140px;
 
 #phone-book {
-  overflow: auto;
+  overflow: visible;
   background: #FAFAFA;
+  background: url("../images/phone-book-bg-1.jpg");
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  background-size: cover;
 
-  #phone-book-header {
+  #phone-book-wrapper {
     position: absolute;
+    left: @phone-book-organizations-width;
     top: 0px;
-    left: 0px;
     right: 0px;
-    height: @phone-book-header-height-expanded;
-    background: url("../images/powerlines-4.jpg");
+    bottom: 0px;
+    background: url("../images/powerlines.jpg");
     background-size: cover;
-    box-sizing: border-box;
-    -webkit-transition: height 0.2s linear;
+    //background-position: 0px -120px;
+    background-repeat: no-repeat;
     //border: 1px solid red;
 
-    &.collapsed {
+    #phone-book-header {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      right: 0px;
       height: @phone-book-header-height-collapsed;
+      padding-top: 20px;
+      padding-left: 20px;
+      padding-right: 20px;
+      //background: url("../images/powerlines-header-5.jpg");
+      //background-size: cover;
+      box-sizing: border-box;
+      -webkit-transition: height 0.2s linear;
+      //border: 1px solid red;
 
-      input[type='text'] {
-        margin-top: @phone-book-header-height-collapsed / 2 - 25px;
+      &.collapsed {
+        height: @phone-book-header-height-collapsed;
+
+        input[type='text'] {
+          margin-top: @phone-book-header-height-collapsed / 2 - 25px;
+        }
       }
-    }
+  }
 
+
+
+    /*
     input[type='text'] {
       display: block;
       width: 80%;
@@ -42,6 +66,70 @@
       -webkit-transition: margin-top 0.2s linear;
       .box-shadow(1px, 1px, 12px, 5px, rgba(0, 0, 0, 0.2));
     }
+    */
+
+    #phone-book-location {
+      //position: absolute;
+      height: 40px;
+      margin-top: 20px;
+      //margin-left: -20px;
+      //margin-right: -20px;
+      //background: RGBA(250, 250, 250, 0.9);
+      background: #004D40;
+      //border: 1px solid red;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+
+      .label {
+        float: left;
+        height: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
+        line-height: 40px;
+        color: white;
+      }
+
+      .organization {
+        float: left;
+        height: 40px;
+
+        select {
+          height: 40px;
+          border: none;
+          color: #E1F5FE;
+          text-decoration: underline;
+          background: transparent;
+          cursor: pointer;
+
+          option {
+            //padding: 10px !important;
+            //background: red;
+          }
+        }
+      }
+
+      .arrow {
+        float: left;
+        height: 40px;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 18px;
+        line-height: 40px;
+      }
+
+      .ats {
+
+        select {
+          height: 40px;
+          border: none;
+          color: #4FC3F7;
+          text-decoration: underline;
+          background: transparent;
+          cursor: pointer;
+        }
+
+      }
+    }
   }
 
 
@@ -49,7 +137,7 @@
   #phone-book-organizations {
     position: absolute;
     overflow: auto;
-    top: @phone-book-header-height-expanded;
+    top: 0;
     left: 0px;
     bottom: 0px;
     width: @phone-book-organizations-width;
@@ -67,17 +155,18 @@
   #phone-book-contacts {
     position: absolute;
     overflow: hidden;
-    left: @phone-book-organizations-width;
-    top: @phone-book-header-height-expanded;
-    right: 0px;
+    left: 20px;
+    top: @phone-book-header-height-collapsed - 20px;
+    right: 20px;
     bottom: 0px;
-    padding: 20px;
+    padding: 10px;
     padding-top: 0px;
-    background: #FAFAFA;
+    //background: #FAFAFA;
     //background: #E1F5FE;
     //background: url("../images/powerlines.jpg");
     //-webkit-background-size: contain;
     //background-size: contain;
+    background: RGBA(250, 250, 250, 0.5);
     -webkit-transition: top 0.2s linear;
     //border: 1px solid blue;
 
@@ -117,11 +206,11 @@
       position: absolute;
       overflow: auto;
       z-index: 1;
-      top: @phone-book-toolbar-height;
+      top: 0px;
       left: 0px;
       right: 0px;
       bottom: 0px;
-      padding: 30px;
+      padding: 10px;
       box-sizing: border-box;
       //border: 1px solid green;
 
@@ -236,13 +325,17 @@
         }
 
         .division-title {
-          padding-bottom: 5px;
+          //display: inline-block;
+          //padding-bottom: 5px;
           margin-bottom: 10px;
-          padding-left: 5px;
+          //padding-left: 5px;
+          padding: 10px;
           font-size: 20px;
           color: #01579B;
           text-align: center;
           border-bottom: 1px dotted lightgray;
+         // border-radius: 5px;
+          //background: rgba(255, 255, 255, 0.8);
 
           &.root {
             text-align: center;
@@ -275,7 +368,7 @@
           //margin-bottom: 20px;
           background: white;
           box-sizing: border-box;
-          .box-shadow(1px, 2px, 10px, 0.5px, rgba(0, 0, 0, 0.1));
+          .box-shadow(1px, 2px, 10px, 0.5px, rgba(0, 0, 0, 0.3));
           //border: 1px solid black;
 
           .photo-container {

@@ -1514,45 +1514,152 @@ a.blue:hover {
   display: inline-block;
   vertical-align: bottom;
 }
-@import-once "utils.less";
-#phone-book {
-  overflow: auto;
-  background: #FAFAFA;
+#phone-book-search-bar {
+  width: 100%;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  background: white;
+  box-sizing: border-box;
+  -webkit-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
 }
-#phone-book #phone-book-header {
+#phone-book-search-bar .search-icon {
+  display: block;
+  float: left;
+  width: 50px;
+  font-size: 23px;
+  line-height: 50px;
+  text-align: center;
+  color: #BDBDBD;
+  box-sizing: border-box;
+}
+#phone-book-search-bar .search-container {
+  overflow: hidden;
+  height: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+  box-sizing: border-box;
+}
+#phone-book-search-bar .search-container input[type="text"] {
+  display: block;
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  border: none;
+}
+#phone-book-search-bar .clear-search {
+  float: right;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
+  line-height: 50px;
+  text-align: center;
+  color: #E0E0E0;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+#phone-book-search-bar .clear-search:hover {
+  color: #BDBDBD;
+}
+#phone-book {
+  overflow: visible;
+  background: #FAFAFA;
+  background: url("../images/phone-book-bg-1.jpg");
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+#phone-book #phone-book-wrapper {
+  position: absolute;
+  left: 400px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: url("../images/powerlines.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  /*
+    input[type='text'] {
+      display: block;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: @phone-book-header-height-expanded / 2 - 25px;
+      padding: 25px !important;
+      border: none;
+      -webkit-transition: margin-top 0.2s linear;
+      .box-shadow(1px, 1px, 12px, 5px, rgba(0, 0, 0, 0.2));
+    }
+    */
+}
+#phone-book #phone-book-wrapper #phone-book-header {
   position: absolute;
   top: 0px;
   left: 0px;
   right: 0px;
-  height: 300px;
-  background: url("../images/powerlines-4.jpg");
-  background-size: cover;
+  height: 150px;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
   box-sizing: border-box;
   -webkit-transition: height 0.2s linear;
 }
-#phone-book #phone-book-header.collapsed {
-  height: 100px;
+#phone-book #phone-book-wrapper #phone-book-header.collapsed {
+  height: 150px;
 }
-#phone-book #phone-book-header.collapsed input[type='text'] {
-  margin-top: 25px;
+#phone-book #phone-book-wrapper #phone-book-header.collapsed input[type='text'] {
+  margin-top: 50px;
 }
-#phone-book #phone-book-header input[type='text'] {
-  display: block;
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 125px;
-  padding: 25px !important;
+#phone-book #phone-book-wrapper #phone-book-location {
+  height: 40px;
+  margin-top: 20px;
+  background: #004D40;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+#phone-book #phone-book-wrapper #phone-book-location .label {
+  float: left;
+  height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  line-height: 40px;
+  color: white;
+}
+#phone-book #phone-book-wrapper #phone-book-location .organization {
+  float: left;
+  height: 40px;
+}
+#phone-book #phone-book-wrapper #phone-book-location .organization select {
+  height: 40px;
   border: none;
-  -webkit-transition: margin-top 0.2s linear;
-  -webkit-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
-  box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  color: #E1F5FE;
+  text-decoration: underline;
+  background: transparent;
+  cursor: pointer;
+}
+#phone-book #phone-book-wrapper #phone-book-location .arrow {
+  float: left;
+  height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 18px;
+  line-height: 40px;
+}
+#phone-book #phone-book-wrapper #phone-book-location .ats select {
+  height: 40px;
+  border: none;
+  color: #4FC3F7;
+  text-decoration: underline;
+  background: transparent;
+  cursor: pointer;
 }
 #phone-book #phone-book-organizations {
   position: absolute;
   overflow: auto;
-  top: 300px;
+  top: 0;
   left: 0px;
   bottom: 0px;
   width: 400px;
@@ -1560,22 +1667,22 @@ a.blue:hover {
   -webkit-transition: top 0.2s linear;
 }
 #phone-book #phone-book-organizations.expanded {
-  top: 100px;
+  top: 150px;
 }
 #phone-book #phone-book-contacts {
   position: absolute;
   overflow: hidden;
-  left: 400px;
-  top: 300px;
-  right: 0px;
+  left: 20px;
+  top: 130px;
+  right: 20px;
   bottom: 0px;
-  padding: 20px;
+  padding: 10px;
   padding-top: 0px;
-  background: #FAFAFA;
+  background: rgba(250, 250, 250, 0.5);
   -webkit-transition: top 0.2s linear;
 }
 #phone-book #phone-book-contacts.expanded {
-  top: 100px;
+  top: 150px;
 }
 #phone-book #phone-book-contacts .toolbar {
   position: absolute;
@@ -1604,11 +1711,11 @@ a.blue:hover {
   position: absolute;
   overflow: auto;
   z-index: 1;
-  top: 50px;
+  top: 0px;
   left: 0px;
   right: 0px;
   bottom: 0px;
-  padding: 30px;
+  padding: 10px;
   box-sizing: border-box;
 }
 #phone-book #phone-book-contacts .content .contact {
@@ -1698,9 +1805,8 @@ a.blue:hover {
   margin-bottom: 0px;
 }
 #phone-book #phone-book-contacts .content .division .division-title {
-  padding-bottom: 5px;
   margin-bottom: 10px;
-  padding-left: 5px;
+  padding: 10px;
   font-size: 20px;
   color: #01579B;
   text-align: center;
@@ -1728,9 +1834,9 @@ a.blue:hover {
   height: 100%;
   background: white;
   box-sizing: border-box;
-  -webkit-box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.1);
-  box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.3);
 }
 #phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container {
   overflow: hidden;

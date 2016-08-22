@@ -1100,7 +1100,7 @@
                 $div -> division = $division;
                 $div -> users = array();
 
-                $users = DBManager::select("kr_users", ["*"], "DIVISION_ID = ".$division -> id -> value." AND IS_DISPLAYABLE = 1");
+                $users = DBManager::select("kr_users", ["*"], "DIVISION_ID = ".$division -> id -> value." AND IS_DISPLAYABLE = 1 ORDER BY SURNAME, NAME");
                 if ($users != false) {
                     foreach ($users as $userKey => $userItem) {
                         $user = Models::construct("User1", false);

@@ -1,52 +1,1102 @@
-#phone-book {
+/**
+*
+**/
+/**********
+** FONTS
+*********/
+@font-face {
+  font-family: "Roboto Regular";
+  src: url("../fonts/Roboto-Regular.ttf");
+}
+@font-face {
+  font-family: "Roboto Bold";
+  src: url("../fonts/Roboto-Bold.ttf");
+}
+@font-face {
+  font-family: "Roboto Italic";
+  src: url("../fonts/Roboto-Italic.ttf");
+}
+/**********
+** TEXT ALIGN
+**********/
+.text-left {
+  text-align: left !important;
+}
+.text-right {
+  text-align: right !important;
+}
+.text-center {
+  text-align: center !important;
+}
+.text-justify {
+  text-align: justify !important;
+}
+/**********
+** BLOCK FLOAT
+**********/
+.left {
+  float: left !important;
+}
+.right {
+  float: right !important;
+}
+.center {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  float: none !important;
+}
+/**********
+** GRID
+**********/
+.row {
   overflow: auto;
+}
+.row.bottom-split-5 {
+  margin-bottom: 5px;
+}
+/**********
+** WIDTH & height
+**********/
+.width-100 {
+  float: left;
+  width: 100% !important;
+}
+.width-90 {
+  float: left;
+  width: 90%;
+}
+.width-80 {
+  float: left;
+  width: 80%;
+}
+.width-70 {
+  float: left;
+  width: 70%;
+}
+.width-75 {
+  float: left;
+  width: 75%;
+  box-sizing: border-box;
+}
+.width-65 {
+  float: left;
+  width: 65%;
+}
+.width-60 {
+  float: left;
+  width: 60%;
+  box-sizing: border-box;
+}
+.width-50 {
+  float: left;
+  width: 50%;
+}
+.width-45 {
+  float: left;
+  width: 45%;
+}
+.width-40 {
+  float: left;
+  width: 40%;
+}
+.width-35 {
+  float: left;
+  width: 35%;
+}
+.width-33 {
+  float: left;
+  width: 33%;
+}
+.width-30 {
+  float: left;
+  width: 30%;
+  box-sizing: border-box;
+}
+.width-25 {
+  float: left;
+  width: 25%;
+  box-sizing: border-box;
+}
+.width-20 {
+  float: left;
+  width: 20%;
+}
+.width-15 {
+  float: left;
+  width: 15%;
+}
+.width-10 {
+  float: left;
+  width: 10%;
+}
+.height-100 {
+  height: 100%;
+}
+/**********
+** PADDINGS & MARGINS
+**********/
+.padding-5 {
+  padding: 5px;
+}
+.padding-10 {
+  padding: 10px;
+}
+.padding-20 {
+  padding: 20px;
+}
+.padding-30 {
+  padding: 30px;
+}
+.margin-top-5 {
+  margin-top: 5px;
+}
+.margin-20 {
+  margin: 20px !important;
+}
+.margin-bottom-5 {
+  margin-bottom: 5px !important;
+}
+.margin-bottom-10 {
+  margin-bottom: 10px !important;
+}
+.margin-bottom-20 {
+  margin-bottom: 20px !important;
+}
+.margin-bottom-30 {
+  margin-bottom: 30px !important;
+}
+.margin-bottom-40 {
+  margin-bottom: 40px !important;
+}
+.margin-right-5 {
+  margin-right: 5px !important;
+}
+.margin-right-10 {
+  margin-right: 10px !important;
+}
+/**********
+** FORMS
+**********/
+label {
+  display: inline-block;
+  margin-bottom: 3px;
+  font-size: 13px;
+  color: gray;
+}
+label.button {
+  height: 35px;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  line-height: 12px;
+  text-align: center;
+  box-sizing: border-box;
+  outline: none;
+}
+label.button.blue {
+  color: white;
+  background: #2196F3;
+}
+label.button.blue:hover {
+  background: #1976D2;
+}
+label.button.green {
+  color: white;
+  background: #4CAF50;
+}
+label.button.green:hover {
+  background: #388E3C;
+}
+label.button.green[disabled] {
+  background: #C8E6C9;
+}
+label.button.red {
+  color: white;
+  background: #F44336;
+}
+label.button.red:hover {
+  background: #D32F2F;
+}
+label.button.transparent {
+  background: transparent;
+}
+label.button input {
+  display: none;
+}
+input {
+  display: block;
+  font-family: "Roboto Regular";
+  font-size: 18px;
+  border: 1px solid lightgrey;
+  box-sizing: border-box;
+  outline: none;
+}
+input[type='text'],
+input[type='password'] {
+  height: 35px;
+  padding: 7px;
+  box-sizing: border-box;
+}
+input[type='text'].label,
+input[type='password'].label {
+  padding-left: 0px !important;
+  border: 1px solid transparent;
+  background: transparent;
+}
+input[type='text'].label.border-top,
+input[type='password'].label.border-top {
+  border-top: 1px solid lightgrey;
+}
+input[type='text'].dark,
+input[type='password'].dark {
+  background: #F5F5F5;
+  border: none;
+}
+input[type='text'].obtique,
+input[type='password'].obtique {
+  border-radius: 3px;
+}
+input[type='text'].big,
+input[type='password'].big {
+  height: 41px;
+  padding: 10px;
+}
+select {
+  height: 35px;
+  padding: 7px;
+  box-sizing: border-box;
+  font-family: "Roboto Regular";
+  font-size: 17px;
+  text-align: center !important;
+  border: 1px solid lightgrey;
+  outline: none;
+}
+select[disabled] {
   background: #FAFAFA;
 }
-#phone-book #phone-book-header {
+select.no-border {
+  border: none;
+}
+select option {
+  padding: 10px;
+  color: gray;
+}
+.input-comment {
+  display: block;
+  font-size: 13px;
+  color: #BDBDBD;
+}
+/**********
+** BUTTONS
+**********/
+input[type='button'],
+input[type='submit'],
+button {
+  height: 35px;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  line-height: 14px;
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+}
+input[type='button'].rounded,
+input[type='submit'].rounded,
+button.rounded {
+  border-radius: 50%;
+}
+input[type='button'].obtique,
+input[type='submit'].obtique,
+button.obtique {
+  border-radius: 3px;
+}
+input[type='button'].small,
+input[type='submit'].small,
+button.small {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  padding: 0px !important;
+  font-size: 11px;
+  text-align: center !important;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+input[type='button'].big,
+input[type='submit'].big,
+button.big {
+  height: 45px;
+}
+input[type='button'].very-big,
+input[type='submit'].very-big,
+button.very-big {
+  height: 60px;
+}
+input[type='button'][disabled='true'],
+input[type='submit'][disabled='true'],
+button[disabled='true'] {
+  cursor: default;
+}
+input[type='button'].blue,
+input[type='submit'].blue,
+button.blue {
+  color: white;
+  background: #2196F3;
+}
+input[type='button'].blue:hover,
+input[type='submit'].blue:hover,
+button.blue:hover {
+  background: #1976D2;
+}
+input[type='button'].blue[disabled],
+input[type='submit'].blue[disabled],
+button.blue[disabled] {
+  background: #BBDEFB;
+}
+input[type='button'].green,
+input[type='submit'].green,
+button.green {
+  color: white;
+  background: #4CAF50;
+}
+input[type='button'].green:hover,
+input[type='submit'].green:hover,
+button.green:hover {
+  background: #388E3C;
+}
+input[type='button'].green[disabled],
+input[type='submit'].green[disabled],
+button.green[disabled] {
+  background: #C8E6C9;
+}
+input[type='button'].red,
+input[type='submit'].red,
+button.red {
+  color: white;
+  background: #F44336;
+}
+input[type='button'].red:hover,
+input[type='submit'].red:hover,
+button.red:hover {
+  background: #D32F2F;
+}
+input[type='button'].transparent,
+input[type='submit'].transparent,
+button.transparent {
+  background: transparent;
+}
+/*********
+* TABLES
+*********/
+table {
+  width: 100%;
+  border-spacing: 0px;
+}
+table thead th {
+  padding: 10px;
+  font-size: 14px;
+  text-align: left;
+  box-sizing: border-box;
+  background: #E0F2F1;
+}
+table tbody tr {
+  border-bottom: 1px solid black;
+}
+table tbody tr td {
+  padding: 10px;
+  box-sizing: border-box;
+}
+table.stripped tbody tr:nth-child(even) {
+  background: #FAFAFA;
+}
+table.selectable tr {
+  cursor: pointer;
+}
+table.selectable tr:hover {
+  background: #FAFAFA;
+}
+table.selectable tr.selected {
+  background: #EEEEEE !important;
+}
+/**********
+* LINKS
+*********/
+a {
+  color: #64B5F6;
+}
+a:hover {
+  color: #1565C0;
+}
+a.green {
+  color: #4CAF50;
+}
+a.green:hover {
+  color: #388E3C;
+}
+a.red {
+  color: #F44336;
+}
+a.red:hover {
+  color: #D32F2F;
+}
+a.blue {
+  color: #2196F3;
+}
+a.blue:hover {
+  color: #1976D2;
+}
+/**********
+** COLORS
+**********/
+/*.red {
+  background-color: #F44336;
+  color: white;
+  &:hover {
+    background-color: #D32F2F;
+  }
+}
+
+.light-red {
+  background-color: #FFCDD2;
+  color: #D50000;
+}
+
+.blue {
+  background-color: #2196F3;
+  color: white;
+  &:hover {
+    background-color: #1976D2;
+  }
+}
+
+.light-blue {
+  background-color: #BBDEFB;
+  color: #0D47A1;
+}
+
+.green {
+  background-color: #4CAF50;
+  color: white;
+  &:hover {
+    background-color: #388E3C;
+  }
+  
+  &.disabled {
+    background: #C8E6C9;
+    color: #BDBDBD;
+  }
+}
+
+.light-green {
+  background-color: #C8E6C9;
+  color: #1B5E20;
+}
+*/
+/**********
+** CUSTOM CONTROLS
+*********/
+/**********
+** DEBUG CONSOLE
+**********/
+#krypton-debug-console {
+  position: absolute;
+  z-index: 2000;
+  right: 20px;
+  bottom: 0px;
+  width: 300px;
+  height: 300px;
+  background: rgba(0, 0, 0, 0.9);
+  -webkit-box-shadow: 1px 2px 15px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 2px 15px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 2px 15px 2px rgba(0, 0, 0, 0.2);
+}
+#krypton-debug-console table th {
+  padding: 10px;
+  font-size: 10px;
+  text-align: left;
+  text-transform: uppercase;
+  color: white;
+  background: rgba(0, 0, 0, 0.8);
+}
+#krypton-debug-console table td {
+  text-align: left;
+  vertical-align: top;
+  font-size: 11px;
+  color: white;
+}
+/**********
+* LIST
+**********/
+.list-item {
+  min-height: 44px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #E0E0E0;
+  cursor: pointer;
+}
+.list-item:hover {
+  background: #FAFAFA;
+}
+.list-item.active {
+  background: #EEEEEE;
+}
+.list-item.active .list-item-icon {
+  border-left: 3px solid #2196F3;
+}
+.list-item .list-item-icon {
+  float: left;
+  height: 44px;
+  padding: 5px;
+  padding-top: 6px;
+  text-align: center;
+  font-size: 15px;
+  color: #273A4D;
+  border-left: 3px solid transparent;
+  box-sizing: border-box;
+}
+.list-item .list-item-icon span {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  background: white;
+  border-radius: 50px;
+  border: 1px solid #E0E0E0;
+}
+.list-item .list-item-content-lead {
+  overflow: hidden;
+  height: 22px;
+  margin-left: 40px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  color: #1F3E4C;
+  box-sizing: border-box;
+  white-space: nowrap;
+  text-overflow: ellipsis !important;
+}
+.list-item .list-item-content-lead.only {
+  height: 44px;
+  line-height: 33px;
+}
+.list-item .list-item-content-secondary {
+  overflow: hidden;
+  height: 22px;
+  margin-left: 40px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #A7B0BB;
+  white-space: nowrap;
+  text-overflow: ellipsis !important;
+  box-sizing: border-box;
+}
+.system-info {
+  display: block;
+  margin-top: 100px;
+  text-align: center;
+  font-size: 17px;
+  color: #E0E0E0;
+  text-shadow: #ffffff 0px 1px 0px;
+}
+.badge {
+  display: inline-block;
+  height: 20px;
+  border-radius: 4px;
+  background: #607D8B;
+  color: white;
+  font-size: 13px;
+  line-height: 14px;
+}
+.content-caption {
+  border-bottom: 1px solid lightgrey;
+}
+.block-caption {
+  display: block;
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+  font-size: 22px;
+  color: #BDBDBD;
+  border-bottom: 1px dotted lightgrey;
+}
+/***** PAGINATION *****/
+.pagination {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.pagination a {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  text-decoration: none;
+  color: #2196F3;
+  background: #BBDEFB;
+  cursor: pointer;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.pagination a:hover {
+  color: white;
+  background: #1976D2;
+}
+.pagination a.current {
+  font-weight: bold;
+  color: white;
+  background: #2196F3;
+}
+.pagination .middle {
+  display: inline-block;
+  vertical-align: bottom;
+}
+#phone-book-search-bar {
+  width: 100%;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  background: white;
+  box-sizing: border-box;
+  -webkit-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 12px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+#phone-book-search-bar .search-icon {
+  display: block;
+  float: left;
+  width: 50px;
+  font-size: 23px;
+  line-height: 50px;
+  text-align: center;
+  color: #BDBDBD;
+  box-sizing: border-box;
+}
+#phone-book-search-bar .search-container {
+  overflow: hidden;
+  height: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+  box-sizing: border-box;
+}
+#phone-book-search-bar .search-container input[type="text"] {
+  display: block;
+  width: 100%;
+  height: 50px;
+  box-sizing: border-box;
+  border: none;
+}
+#phone-book-search-bar .clear-search {
+  float: right;
+  width: 50px;
+  height: 50px;
+  font-size: 22px;
+  line-height: 50px;
+  text-align: center;
+  color: #E0E0E0;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+#phone-book-search-bar .clear-search:hover {
+  color: #BDBDBD;
+}
+#phone-book {
+  overflow: visible;
+  background: #FAFAFA;
+  background: url("../images/phone-book-bg-1.jpg");
+  background-repeat: no-repeat;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+#phone-book #phone-book-wrapper {
+  position: absolute;
+  left: 400px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: url("../images/powerlines.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  /*
+    input[type='text'] {
+      display: block;
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: @phone-book-header-height-expanded / 2 - 25px;
+      padding: 25px !important;
+      border: none;
+      -webkit-transition: margin-top 0.2s linear;
+      .box-shadow(1px, 1px, 12px, 5px, rgba(0, 0, 0, 0.2));
+    }
+    */
+}
+#phone-book #phone-book-wrapper #phone-book-header {
   position: absolute;
   top: 0px;
   left: 0px;
   right: 0px;
-  height: 40%;
-  background: url("../images/powerlines-4.jpg");
-  background-size: cover;
+  height: 150px;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
   box-sizing: border-box;
   -webkit-transition: height 0.2s linear;
-  border: 1px solid red;
 }
-#phone-book #phone-book-header.collapsed {
-  height: 100px;
+#phone-book #phone-book-wrapper #phone-book-header.collapsed {
+  height: 150px;
 }
-#phone-book #phone-book-header input[type='text'] {
-  display: block;
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 25px !important;
+#phone-book #phone-book-wrapper #phone-book-header.collapsed input[type='text'] {
+  margin-top: 50px;
+}
+#phone-book #phone-book-wrapper #phone-book-location {
+  height: 40px;
+  margin-top: 20px;
+  background: #004D40;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+#phone-book #phone-book-wrapper #phone-book-location .label {
+  float: left;
+  height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  line-height: 40px;
+  color: white;
+}
+#phone-book #phone-book-wrapper #phone-book-location .organization {
+  float: left;
+  height: 40px;
+}
+#phone-book #phone-book-wrapper #phone-book-location .organization select {
+  height: 40px;
   border: none;
+  color: #E1F5FE;
+  text-decoration: underline;
+  background: transparent;
+  cursor: pointer;
+}
+#phone-book #phone-book-wrapper #phone-book-location .arrow {
+  float: left;
+  height: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-size: 18px;
+  line-height: 40px;
+}
+#phone-book #phone-book-wrapper #phone-book-location .ats select {
+  height: 40px;
+  border: none;
+  color: #4FC3F7;
+  text-decoration: underline;
+  background: transparent;
+  cursor: pointer;
 }
 #phone-book #phone-book-organizations {
   position: absolute;
-  top: 40%;
+  overflow: auto;
+  top: 0;
   left: 0px;
   bottom: 0px;
   width: 400px;
   background: white;
-  -webkit-transition: height 0.2s linear;
-  border: 1px solid green;
+  -webkit-transition: top 0.2s linear;
 }
 #phone-book #phone-book-organizations.expanded {
-  top: 100px;
+  top: 150px;
 }
 #phone-book #phone-book-contacts {
   position: absolute;
-  left: 400px;
-  top: 40%;
-  right: 0px;
+  overflow: hidden;
+  left: 20px;
+  top: 130px;
+  right: 20px;
   bottom: 0px;
-  background: #FAFAFA;
-  border: 1px solid blue;
+  padding: 10px;
+  padding-top: 0px;
+  background: rgba(250, 250, 250, 0.5);
+  -webkit-transition: top 0.2s linear;
 }
 #phone-book #phone-book-contacts.expanded {
-  top: 100px;
+  top: 150px;
+}
+#phone-book #phone-book-contacts .toolbar {
+  position: absolute;
+  display: block;
+  z-index: 2;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  height: 50px;
+  margin-bottom: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background: #E0E0E0;
+  box-sizing: border-box;
+  border-bottom: 1px solid #D3D5E0;
+}
+#phone-book #phone-book-contacts .toolbar .options {
+  float: left;
+  padding: 10px;
+}
+#phone-book #phone-book-contacts .toolbar .summary {
+  float: right;
+  line-height: 50px;
+}
+#phone-book #phone-book-contacts .content {
+  position: absolute;
+  overflow: auto;
+  z-index: 1;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .contact {
+  height: 200px;
+  margin-bottom: 20px;
+  background: white;
+  -webkit-box-shadow: 1px 1px 10px 0.5px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 1px 1px 10px 0.5px rgba(0, 0, 0, 0.1);
+  box-shadow: 1px 1px 10px 0.5px rgba(0, 0, 0, 0.1);
+}
+#phone-book #phone-book-contacts .content .contact:last-of-type {
+  margin-bottom: 0px;
+}
+#phone-book #phone-book-contacts .content .contact .photo {
+  float: left;
+  width: 200px;
+  height: 200px;
+  border-right: 1px solid #F5F5F5;
+  background-size: cover !important;
+  -webkit-background-size: cover !important;
+}
+#phone-book #phone-book-contacts .content .contact .photo.no-photo {
+  background: url("../images/no_photo.png");
+  background-position: -37px;
+}
+#phone-book #phone-book-contacts .content .contact .personal-info {
+  margin-left: 200px;
+  padding-top: 30px;
+  height: 100px;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .contact .fio {
+  padding-left: 20px;
+  padding-bottom: 5px;
+  font-size: 27px;
+  line-height: 22px;
+  color: #0277BD;
+}
+#phone-book #phone-book-contacts .content .contact .position {
+  padding-left: 20px;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #BF360C;
+}
+#phone-book #phone-book-contacts .content .contact .contacts {
+  overflow: auto;
+  margin-left: 200px;
+  padding: 20px;
+  padding-top: 0px;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .fa {
+  font-size: 20px;
+  color: #9FA8DA;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .phones {
+  float: left;
+  height: 100%;
+  margin-right: 40px;
+  font-size: 20px;
+  line-height: 20px;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .phones .phone {
+  display: block;
+  margin-bottom: 5px;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .mobile {
+  float: left;
+  min-width: 200px;
+  height: 100%;
+  margin-right: 40px;
+  font-size: 20px;
+  line-height: 20px;
+}
+#phone-book #phone-book-contacts .content .contact .contacts .email {
+  float: left;
+  min-width: 200px;
+  height: 100%;
+  font-size: 20px;
+  line-height: 20px;
+}
+#phone-book #phone-book-contacts .content .division {
+  overflow: auto;
+  margin-bottom: 30px;
+}
+#phone-book #phone-book-contacts .content .division.root {
+  margin-bottom: 0px;
+}
+#phone-book #phone-book-contacts .content .division .division-title {
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 20px;
+  color: #01579B;
+  text-align: center;
+  border-bottom: 1px dotted lightgray;
+}
+#phone-book #phone-book-contacts .content .division .division-title.root {
+  text-align: center;
+  font-size: 25px;
+  border-bottom: none;
+}
+#phone-book #phone-book-contacts .content .test-contact-container {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  float: left;
+  width: 25%;
+  min-width: 300px;
+  height: 400px;
+  margin-bottom: 20px;
+  padding: 5px;
+  text-align: justify;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact {
+  height: 100%;
+  background: white;
+  box-sizing: border-box;
+  -webkit-box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 2px 10px 0.5px rgba(0, 0, 0, 0.3);
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container {
+  overflow: hidden;
+  height: 260px;
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo {
+  width: 150px;
+  height: 150px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background-repeat: no-repeat !important;
+  -webkit-background-size: cover;
+  background-size: cover !important;
+  background-position: center center;
+  transition: width linear 0.3s 0s;
+  transition: height linear 0.3s 0s;
+  transition: border-radius linear 0.3s 0s;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo:hover {
+  width: 100%;
+  height: 260px;
+  margin-top: -10px;
+  border-radius: 0px;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo.no-photo {
+  background: url("../images/anonymous.png");
+  background-repeat: no-repeat;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: 0 10px;
+  border: 1px solid lightgray;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .photo.no-photo:hover {
+  width: 150px;
+  height: 150px;
+  margin-top: 0px;
+  border-radius: 50%;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .details-container {
+  height: 90px;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .details-container .surname {
+  font-size: 25px;
+  line-height: 23px;
+  color: #0D47A1;
+  text-align: center;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .details-container .name {
+  margin-bottom: 10px;
+  font-size: 19px;
+  line-height: 19px;
+  color: #0D47A1;
+  text-align: center;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .photo-container .details-container .position {
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 14px;
+  line-height: 15px;
+  color: #96A1B5;
+  text-align: center;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container {
+  height: 140px;
+  background: #E7EDF7;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .fa {
+  float: left;
+  width: 46.66666667px;
+  height: 100%;
+  font-size: 23px;
+  line-height: 46.66666667px !important;
+  text-align: center;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .email {
+  height: 46.66666667px;
+  font-size: 17px;
+  line-height: 46.66666667px;
+  color: #343846;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .email .fa {
+  background: #80CBC4;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .mobile {
+  height: 46.66666667px;
+  font-size: 17px;
+  line-height: 46.66666667px;
+  color: #343846;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .mobile .fa {
+  background: #B3E5FC;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .phones {
+  height: 46.66666667px;
+  line-height: 46.66666667px;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .phones .phone {
+  font-size: 17px;
+  color: #343846;
+}
+#phone-book #phone-book-contacts .content .test-contact-container .test-contact .contacts-container .phones .fa {
+  background: #C8E6C9;
+}
+#phone-book #phone-book-contacts .notification {
+  display: block;
+  width: 400px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 100px;
+  text-align: center;
+  color: #E0E0E0;
+  text-shadow: #ffffff 0px 1px 0px;
+}
+#phone-book #phone-book-contacts .notification .fa {
+  display: inline-block;
+  float: left;
+  font-size: 45px;
+}
+#phone-book #phone-book-contacts .notification .message {
+  font-size: 20px;
 }

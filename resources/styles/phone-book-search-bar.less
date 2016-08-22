@@ -1,0 +1,67 @@
+@phone-book-search-bar-height: 50px;
+@phone-book-search-icon-width: 50px;
+@phone-book-search-bar-search-width: 60%;
+@phone-book-search-bar-location-width: 40%;
+@phone-book-clear-search-width: 50px;
+
+
+#phone-book-search-bar {
+  width: 100%;
+  height: @phone-book-search-bar-height;
+  margin-left: auto;
+  margin-right: auto;
+  background: white;
+  box-sizing: border-box;
+  .box-shadow(1px, 1px, 12px, 5px, rgba(0, 0, 0, 0.2));
+  border-radius: 2px;
+  //border: 1px solid red;
+
+
+  .search-icon {
+    display: block;
+    float: left;
+    width: @phone-book-search-icon-width;
+    font-size: 23px;
+    line-height: @phone-book-search-bar-height;
+    text-align: center;
+    color: #BDBDBD;
+    box-sizing: border-box;
+  }
+
+  .search-container {
+    overflow: hidden;
+    height: @phone-book-search-bar-height;
+    margin-left: @phone-book-search-icon-width;
+    margin-right: @phone-book-clear-search-width;
+    box-sizing: border-box;
+
+      input[type="text"] {
+        display: block;
+        width: 100%;
+        height: @phone-book-search-bar-height;
+        box-sizing: border-box;
+        border: none;
+      }
+
+
+  }
+
+
+
+  .clear-search {
+    float: right;
+    width: @phone-book-clear-search-width;
+    height: @phone-book-search-bar-height;
+    font-size: 22px;
+    line-height: @phone-book-search-bar-height;
+    text-align: center;
+    color: #E0E0E0;
+    cursor: pointer;
+    box-sizing: border-box;
+    //border: 1px solid blue;
+
+    &:hover {
+      color: #BDBDBD;
+    }
+  }
+}

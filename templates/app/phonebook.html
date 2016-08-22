@@ -1,11 +1,8 @@
 <div id="phone-book">
 
-    <div id="phone-book-header" ng-class="{ 'collapsed': contacts.length > 0 }">
-        <input type="text" name="search" id="phone-book-search" ng-model="search" placeholder="Введите имя, e-mail или телефон абонента">
-    </div>
 
 
-    <div id="phone-book-organizations" ng-class="{ 'expanded': contacts.length > 0 }">
+    <div id="phone-book-organizations">
         <div class="row" ng-repeat="org in kolenergo.organizations.getAll() track by $index" ng-init="divisions = kolenergo.divisions.getAll()">
             <hierarchy class="stacked" id="{{ 'org' + $index }}" source="divisions" key="id" parent-key="parentId" display-field="title" on-select="selectDivision"></hierarchy>
             <!-- <tree id="test" key="id" parent-key="parentId" initial-key-value="0" initial-key-type="DATA_TYPE_INTEGER" display="title"></tree> -->
@@ -13,86 +10,118 @@
     </div>
 
 
-    <div id="phone-book-contacts" ng-class="{ 'expanded': contacts.length > 0 }">
+    <div id="phone-book-wrapper">
 
-        <div class="toolbar">
-            <div class="options">
-                <select name="" id="" ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll() | byOrganizationId:kolenergo.phonebook.getUserOrganizationId()"></select>
-            </div>
-            <div class="summary" ng-show="contacts.length > 0">Найдено абонентов: {{ contacts.length  }}</div>
-        </div>
-
-        <div class="content">
-
-            <div class="division" ng-class="{ 'root': $index === 0 }" ng-show="division.users.length > 0 || $index === 0" ng-repeat="division in contacts track by $index">
-                <div class="division-title" ng-class="{ 'root': $index === 0 }">{{ division.division.title.value }}</div>
-
-                <div class="test-contact-container" ng-repeat="user in division.users track by $index">
-                    <div class="test-contact">
-                        <div class="photo-container">
-                            <div class="photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ' '"></div>
-                            <div class="photo no-photo" ng-show="user.photo.value === ' '"></div>
-
-                            <div class="details-container">
-                                <div class="surname">{{ user.surname.value}}</div>
-                                <div class="name">{{ user.name.value + " " + user.fname.value }}</div>
-                                <div class="position">{{ user.position.value }}</div>
-                            </div>
-                        </div>
-
-                        <div class="contacts-container">
-                            <div class="email">
-                                <span class="fa fa-at"></span>&nbsp; {{ user.email.value }}
-                            </div>
-                            <div class="mobile">
-                                <span class="fa fa-mobile-phone"></span>&nbsp; 8 (921) 555-666-77
-                            </div>
-                            <div class="phones">
-                                <div class="phone">
-                                    <span class="fa fa-phone"></span> &nbsp; 24-69, &nbsp; (820) 77-14
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+        <div id="phone-book-header">
+            <!--<input type="text" name="search" id="phone-book-search" ng-model="search" placeholder="Введите имя, e-mail или телефон абонента">-->
+            <phone-book-search-bar></phone-book-search-bar>
+            <div id="phone-book-location">
+                <div class="label">
+                    Вы звоните из:
+                </div>
+                <!--
+                <div class="organization">
+                    <select name="" id="" ng-model="phoneBook.organizationId" ng-options="org.id.value as org.title.value for org in kolenergo.organizations.getAll()"></select>
+                </div>
+                <div class="arrow">
+                    <span class="fa fa-long-arrow-right"></span>
+                </div>
+                -->
+                <div class="ats">
+                    <select name="" id="" ng-model="phoneBook.atsId" ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll()"></select>
                 </div>
             </div>
+        </div>
 
 
+
+        <div id="phone-book-contacts">
 
             <!--
-            <div class="contact" ng-repeat="user in contacts | orderBy: 'surname.value' track by $index">
-                <div class="photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ' '"></div>
-                <div class="photo no-photo" ng-show="user.photo.value === ' '"></div>
-
-                <div class="personal-info">
-                    <div class="fio">{{ user.fio }}</div>
-                    <div class="position">{{ user.position.value }}</div>
+            <div class="toolbar">
+                <div class="options">
+                    <select name="" id="" ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll() | byOrganizationId:kolenergo.phonebook.getUserOrganizationId()"></select>
                 </div>
-
-                <div class="contacts">
-                    <div class="phones">
-                        <div class="phone">
-                            <span class="fa fa-phone"></span>&nbsp; 24-69
-                        </div>
-                        <div class="phone">
-                            <span class="fa fa-phone"></span>&nbsp; 24-77
-                        </div>
-                    </div>
-                    <div class="mobile"><span class="fa fa-mobile-phone"></span>&nbsp; 8 (921) 555-666-77{{ user.mobile.value }}</div>
-                    <div class="email"><span class="fa fa-at"></span>&nbsp;{{ user.email.value }}</div>
-                </div>
+                <div class="summary" ng-show="contacts.length > 0">Найдено абонентов: {{ contacts.length  }}</div>
             </div>
             -->
+
+            <div class="content">
+
+                <div class="division" ng-class="{ 'root': $index === 0 }" ng-show="division.users.length > 0 || $index === 0" ng-repeat="division in contacts track by $index">
+                    <div class="division-title" ng-class="{ 'root': $index === 0 }">{{ division.division.title.value }}</div>
+
+                    <div class="test-contact-container" ng-repeat="user in division.users track by $index">
+                        <div class="test-contact">
+                            <div class="photo-container">
+                                <div class="photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ' '"></div>
+                                <div class="photo no-photo" ng-show="user.photo.value === ' '"></div>
+
+                                <div class="details-container">
+                                    <div class="surname">{{ user.surname.value}}</div>
+                                    <div class="name">{{ user.name.value + " " + user.fname.value }}</div>
+                                    <div class="position">{{ user.position.value }}</div>
+                                </div>
+                            </div>
+
+                            <div class="contacts-container">
+                                <div class="email">
+                                    <span class="fa fa-at"></span>&nbsp; <a ng-href="{{ 'mailto:' + user.email.value }}">{{ user.email.value }}</a>
+                                </div>
+                                <div class="mobile">
+                                    <span class="fa fa-mobile-phone"></span>&nbsp; 8 (921) 555-666-77
+                                </div>
+                                <div class="phones">
+                                    <div class="phone">
+                                        <span class="fa fa-phone"></span> &nbsp; 24-69, &nbsp; (820) 77-14
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--
+                <div class="contact" ng-repeat="user in contacts | orderBy: 'surname.value' track by $index">
+                    <div class="photo" style="background: url('{{ user.photo.value }}')" ng-show="user.photo.value !== ' '"></div>
+                    <div class="photo no-photo" ng-show="user.photo.value === ' '"></div>
+
+                    <div class="personal-info">
+                        <div class="fio">{{ user.fio }}</div>
+                        <div class="position">{{ user.position.value }}</div>
+                    </div>
+
+                    <div class="contacts">
+                        <div class="phones">
+                            <div class="phone">
+                                <span class="fa fa-phone"></span>&nbsp; 24-69
+                            </div>
+                            <div class="phone">
+                                <span class="fa fa-phone"></span>&nbsp; 24-77
+                            </div>
+                        </div>
+                        <div class="mobile"><span class="fa fa-mobile-phone"></span>&nbsp; 8 (921) 555-666-77{{ user.mobile.value }}</div>
+                        <div class="email"><span class="fa fa-at"></span>&nbsp;{{ user.email.value }}</div>
+                    </div>
+                </div>
+                -->
+            </div>
+
+            <div class="notification" ng-show="contacts.length === 0 && search.length < 3">
+                <span class="fa fa-search"></span>
+                <span class="message">Начните вводить имя абонента,<br> электронную почту или телефон</span>
+            </div>
+
+
+
         </div>
-
-        <div class="notification" ng-show="contacts.length === 0 && search.length < 3">
-            <span class="fa fa-search"></span>
-            <span class="message">Начните вводить имя абонента,<br> электронную почту или телефон</span>
-        </div>
-
-
 
     </div>
+
+
+
 
 </div>

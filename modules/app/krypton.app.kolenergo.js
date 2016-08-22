@@ -14,6 +14,7 @@
         .filter("byUserId", byUserIdFilter)
         .filter("phoneBook", phoneBookFilter)
         .directive("notZero", notZeroDirective)
+        .directive("phoneBookSearchBar", phoneBookSearchBarDirective)
         .run(kolenergoRun);
 
 
@@ -1866,6 +1867,11 @@
         $scope.contacts = [];
 
         $scope.div = 0;
+        $scope.phoneBook = {
+            organizationId: 0,
+            atsId: 0
+        };
+
 
         //$scope.divs = $kolenergo.divisions.getByOrganizationId(8);
         //$log.log("divs = ", $scope.divs);
@@ -2034,6 +2040,33 @@
                         ngModel.$setValidity("zero", true);
                 });
 
+            }
+        }
+    };
+
+
+
+
+    function phoneBookSearchBarDirective ($kolenergo) {
+        return {
+            restrict: "E",
+            template:
+                "<div id='phone-book-search-bar'>" +
+                    "<div class='search-icon'>" +
+                        "<span class='fa fa-search'></span>" +
+                    "</div>" +
+                    "<div class='clear-search' title='Очистить поиск'>" +
+                        "<span class='fa fa-times'></span>" +
+                    "</div>" +
+                    "<div class='search-container'>" +
+                        "<input type='text' name='' id='' placeholder='Введите имя абонента, телефон или email'>" +
+                    "</div>" +
+
+                "</div>",
+            replace: true,
+            scope: {},
+            link: function (scope, element, attrs) {
+                scope.kolenergo = $kolenergo;
             }
         }
     };
