@@ -22,7 +22,7 @@
     top: 0px;
     right: 0px;
     bottom: 0px;
-    background: url("../images/powerlines.jpg");
+    background: url("../images/phone-book-bg-3.jpg");
     background-size: cover;
     //background-position: 0px -120px;
     background-repeat: no-repeat;
@@ -75,12 +75,13 @@
       //margin-left: -20px;
       //margin-right: -20px;
       //background: RGBA(250, 250, 250, 0.9);
-      background: #004D40;
+      background: #01579B;
       //border: 1px solid red;
       border-top-left-radius: 2px;
       border-top-right-radius: 2px;
 
       .label {
+        display: inline-block;
         float: left;
         height: 40px;
         padding-left: 20px;
@@ -118,6 +119,8 @@
       }
 
       .ats {
+        display: inline-block;
+        float: left;
 
         select {
           height: 40px;
@@ -128,6 +131,13 @@
           cursor: pointer;
         }
 
+      }
+
+      .summary {
+        float: right;
+        padding-right: 10px;
+        line-height: 40px;
+        color: white;
       }
     }
   }
@@ -155,18 +165,19 @@
   #phone-book-contacts {
     position: absolute;
     overflow: hidden;
-    left: 20px;
+    left: 0px;
     top: @phone-book-header-height-collapsed - 20px;
-    right: 20px;
+    right: 0px;
     bottom: 0px;
-    padding: 10px;
+    padding: 15px;
+    padding-right: 0px !important;
     padding-top: 0px;
     //background: #FAFAFA;
     //background: #E1F5FE;
     //background: url("../images/powerlines.jpg");
     //-webkit-background-size: contain;
     //background-size: contain;
-    background: RGBA(250, 250, 250, 0.5);
+    background: RGBA(250, 250, 250, 0.8);
     -webkit-transition: top 0.2s linear;
     //border: 1px solid blue;
 
@@ -197,6 +208,7 @@
       }
 
       .summary {
+        display: inline-block;
         float: right;
         line-height: @phone-book-toolbar-height;
       }
@@ -210,7 +222,8 @@
       left: 0px;
       right: 0px;
       bottom: 0px;
-      padding: 10px;
+      padding: 15px;
+      padding-right: 0px;
       box-sizing: border-box;
       //border: 1px solid green;
 

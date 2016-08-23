@@ -1578,7 +1578,7 @@ a.blue:hover {
   top: 0px;
   right: 0px;
   bottom: 0px;
-  background: url("../images/powerlines.jpg");
+  background: url("../images/phone-book-bg-3.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   /*
@@ -1616,11 +1616,12 @@ a.blue:hover {
 #phone-book #phone-book-wrapper #phone-book-location {
   height: 40px;
   margin-top: 20px;
-  background: #004D40;
+  background: #01579B;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
 }
 #phone-book #phone-book-wrapper #phone-book-location .label {
+  display: inline-block;
   float: left;
   height: 40px;
   padding-left: 20px;
@@ -1648,6 +1649,10 @@ a.blue:hover {
   font-size: 18px;
   line-height: 40px;
 }
+#phone-book #phone-book-wrapper #phone-book-location .ats {
+  display: inline-block;
+  float: left;
+}
 #phone-book #phone-book-wrapper #phone-book-location .ats select {
   height: 40px;
   border: none;
@@ -1655,6 +1660,12 @@ a.blue:hover {
   text-decoration: underline;
   background: transparent;
   cursor: pointer;
+}
+#phone-book #phone-book-wrapper #phone-book-location .summary {
+  float: right;
+  padding-right: 10px;
+  line-height: 40px;
+  color: white;
 }
 #phone-book #phone-book-organizations {
   position: absolute;
@@ -1672,13 +1683,14 @@ a.blue:hover {
 #phone-book #phone-book-contacts {
   position: absolute;
   overflow: hidden;
-  left: 20px;
+  left: 0px;
   top: 130px;
-  right: 20px;
+  right: 0px;
   bottom: 0px;
-  padding: 10px;
+  padding: 15px;
+  padding-right: 0px !important;
   padding-top: 0px;
-  background: rgba(250, 250, 250, 0.5);
+  background: rgba(250, 250, 250, 0.8);
   -webkit-transition: top 0.2s linear;
 }
 #phone-book #phone-book-contacts.expanded {
@@ -1704,6 +1716,7 @@ a.blue:hover {
   padding: 10px;
 }
 #phone-book #phone-book-contacts .toolbar .summary {
+  display: inline-block;
   float: right;
   line-height: 50px;
 }
@@ -1715,7 +1728,8 @@ a.blue:hover {
   left: 0px;
   right: 0px;
   bottom: 0px;
-  padding: 10px;
+  padding: 15px;
+  padding-right: 0px;
   box-sizing: border-box;
 }
 #phone-book #phone-book-contacts .content .contact {

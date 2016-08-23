@@ -14,7 +14,7 @@
 
         <div id="phone-book-header">
             <!--<input type="text" name="search" id="phone-book-search" ng-model="search" placeholder="Введите имя, e-mail или телефон абонента">-->
-            <phone-book-search-bar></phone-book-search-bar>
+            <phone-book-search-bar ng-model="phoneBook.search"></phone-book-search-bar>
             <div id="phone-book-location">
                 <div class="label">
                     Вы звоните из:
@@ -29,6 +29,9 @@
                 -->
                 <div class="ats">
                     <select name="" id="" ng-model="phoneBook.atsId" ng-options="ats.id.value as ats.title.value for ats in kolenergo.ats.getAll()"></select>
+                </div>
+                <div class="summary">
+                    Найдено абонентов: {{ contacts.length }}
                 </div>
             </div>
         </div>

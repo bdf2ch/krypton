@@ -1869,7 +1869,8 @@
         $scope.div = 0;
         $scope.phoneBook = {
             organizationId: 0,
-            atsId: 0
+            atsId: 0,
+            search: ""
         };
 
 
@@ -2055,18 +2056,24 @@
                     "<div class='search-icon'>" +
                         "<span class='fa fa-search'></span>" +
                     "</div>" +
-                    "<div class='clear-search' title='Очистить поиск'>" +
+                    "<div class='clear-search' title='Очистить поиск' ng-show='ngModel !== undefined && ngModel !== null && ngModel !== \"\"' ng-click='clear()'>" +
                         "<span class='fa fa-times'></span>" +
                     "</div>" +
                     "<div class='search-container'>" +
-                        "<input type='text' name='' id='' placeholder='Введите имя абонента, телефон или email'>" +
+                        "<input type='text' name='' id='' value='{{ ngModel }}' placeholder='Введите имя абонента, телефон или email'>" +
                     "</div>" +
 
                 "</div>",
             replace: true,
-            scope: {},
+            scope: {
+                ngModel: "="
+            },
             link: function (scope, element, attrs) {
                 scope.kolenergo = $kolenergo;
+
+                scope.clear = function () {
+                    scope.ngModel.$setViewValue();
+                };
             }
         }
     };
